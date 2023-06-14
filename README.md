@@ -15,5 +15,5 @@ Analysis categories:
 bias against some racial group.
 
 In the first case, we are checking for *societal* or *institutional*
-bias.  In the second, the issue is algorithmic bias.
+bias.  In the second, the issue is *algorithmic* bias.
 
