@@ -1,0 +1,29 @@
+Package: dsld
+Version: 0.1
+Title: Data Science Looks at Discrimination
+Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
+   role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9179-6785")),
+   person("Taha", "Abdullah", email = "tmabdullah@ucdavis.edu",
+   role = c("aut")),
+   person("Arjun", "Ashok", email = "arjashok@ucdavis.edu",
+   role = c("aut")),
+   person("Shubhada", "Martha", email = "smartha@ucdavis.edu",
+   role = c("aut")),
+   person("Aditya", "Mittal", email = "adimittal@ucdavis.edu",
+   role = c("aut")),
+   person("Billy", "Ouattara", email = "btouattara@ucdavis.edu",
+   role = c("aut")),
+   person("Jonathan", "Tran", email = "jsttran@ucdavis.edu",
+   role = c("aut")),
+   person("Brandon", "Zarate Estrada", email = "bdzarate@ucdavis.edu",
+   role = c("aut"))
+   )
+Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>
+VignetteBuilder: knitr
+License: GPL (>= 2) 
+Description: Statistical and graphical tools for detecting and measuring
+   discrimination and bias, be it racial, gender, age or other.
+   Detection and remediation of bias in machine learning algorithms.
+   This is an R package, with Python interfaces available.
+URL: https://github.com/matloff/dsld
+BugReports: https://github.com/matloff/dsld/issues
