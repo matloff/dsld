@@ -19,10 +19,10 @@ dsldParCoord <- function(data, yName, grpName) {
 }
 
 # sample data modification as per the quickstart guide
-data(prgeng)
-pe <- prgeng[,c(1,3,5,7:9)]
-pe25 <- pe[pe$wageinc < 250000,]
-pe25 <- makeFactor(pe25,c('educ','occ','sex'))
-pe25disc <- discretize(pe25,nlevels=5)  
-
-dsld(pe25disc, 'pe25 Sex DiscGraph', 'sex') # sample call to plot the graph
+# data(prgeng)
+# pe <- prgeng[,c(1,3,5,7:9)]
+# pe25 <- pe[pe$wageinc < 250000,]
+# pe25 <- makeFactor(pe25,c('educ','occ','sex'))
+# pe25disc <- discretize(pe25,nlevels=5)  
+# 
+# dsld(pe25disc, 'pe25 Sex DiscGraph', 'sex') # sample call to plot the graph
