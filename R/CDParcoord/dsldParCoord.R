@@ -25,4 +25,4 @@ pe25 <- pe[pe$wageinc < 250000,]
 pe25 <- makeFactor(pe25,c('educ','occ','sex'))
 pe25disc <- discretize(pe25,nlevels=5)  
 
-dsld(pe25disc, 'pe25 Sex DiscGraph', 'sex') # sample call to plot the graph
+dsldParCoord(pe25disc, 'pe25 Sex DiscGraph', 'sex') # sample call to plot the graph
