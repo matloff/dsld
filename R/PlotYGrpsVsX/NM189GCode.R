@@ -26,6 +26,7 @@ conditDisparity <- function(data,yName,sName,xName,condits,qeFtn,
       condits <- paste(condits,collapse=' & ')
    cmd <- sprintf('smallData <- subset(data,%s)',condits)
    evalr(cmd)
+   
    # won't use the restricting variables anymore
    smallData <- smallData[c(yName,xName,sName)]
 

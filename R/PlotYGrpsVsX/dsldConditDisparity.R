@@ -26,6 +26,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
     # fill plotting limits
     if (is.null(yLim)) {
         yLim <- c(0, max(data[[yName]]))                    # [0, max(y)]
+        print(yLim)
     }
 
     
@@ -36,10 +37,10 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
         condits <- paste(condits, collapse=' & ')
     }
     restrictions <- sprintf('focusedData <- subset(data, %s)', condits)
-    evalr(restrictions)
+    eval(parse(text=restrictions))
 
     # won't use the restricting variables anymore
-    focusedData <- focusedData[c(yName,xName,sName)]
+    focusedData <- focusedData[c(yName, xName, sName)]
     sCol <- which(names(focusedData) == sName)
 
     # group the data by S level & execute min size condition
@@ -65,12 +66,12 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
     for (i in 1:remainingS) { 
         # setup data for training
         curData <- groupByS[[i]][,-sCol]                    # data for current s-level w/o sensitive column
-        curXData <- unique(curSData[[xName]])               # data for only the numeric x column
-        curXDF <- as.data.frame(xs)                         # x-data as a dataframe
+        curXData <- unique(curData[[xName]])                # data for only the numeric x column
+        curXDF <- as.data.frame(curXData)                   # x-data as a dataframe
         names(curXDF) <- xName                              # adjust column name
 
         # fit ML model
-        model <- qeFtn(tmp, yName, holdout=NULL)            # `holdout=NULL` to best predict [overfit] dataset
+        model <- qeFtn(curData, yName, holdout=NULL)        # `holdout=NULL` to best predict [overfit] dataset
         preds <- predict(model, curXDF)
 
         # sort data for time series plotting
@@ -84,16 +85,16 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
 
         # check Loess
         if (useLoess) {
-            preds <- loess(preds ~ xs,plotdf)$fitted        # loess smoothing
+            preds <- loess(preds ~ curXData, plotdf)$fitted # loess smoothing
         }
 
         # plotting method
         if (i == 1) {
             # create plot
-            plot(curXData, regs, type='l', lty='solid', ylim=yLim, col=colors[i])
+            plot(curXData, preds, type='l', lty='solid', ylim=yLim, col=colors[i])
         } else {
             # plot points
-            points(curXData, regs, type='l', lty='solid', col=colors[i])
+            points(curXData, preds, type='l', lty='solid', col=colors[i])
         }
     }
 }
