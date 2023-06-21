@@ -34,6 +34,7 @@ Taha Abdullah, Billy Ouattara, Jonathan Tran, Brandon Zarate
 }
 
 \examples{
+% Need to fix the "run examples link". The error: "/Example/dsld not found" appears
 data(prgeng)
 pe <- prgeng[,c(1,3,5,7:9)]
 pe25 <- pe[pe$wageinc < 250000,]
