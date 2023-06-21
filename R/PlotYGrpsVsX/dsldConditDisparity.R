@@ -118,7 +118,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
 
             # create legend
             legend(
-                x = "topleft", 
+                x = "topright", 
                 lty = c(4,6), 
                 text.font=4, 
                 col=colors,
