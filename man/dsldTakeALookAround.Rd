@@ -43,25 +43,22 @@
 }
 
 \examples{
-    The dsldTakeALookAround function aims to provide a seamless experience, requiring minimal effort to utilize its
-    capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
-    employing similar commands shown in the examples.
+#   The dsldTakeALookAround function aims to provide a seamless experience, requiring minimal effort to utilize its
+#   capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
+#   employing similar commands shown in the examples.
+    
+#   The examples are conducted using the 'pef' dataset. 
 
-    The examples are conducted using the 'pef' dataset. 
+#   Example 1: We investigate the predictive accuracy for a continuous Y,'wageinc', using the default arguments for maxFeatureSetSize = 4
+    data(pef)
+    dsldTakeALookAround(pef, 'wageinc', 'sex', 4)
 
-    Example 1: We investigate the predictive accuracy for a continuous Y,'wageinc', using the default arguments for maxFeatureSetSize = 4
+#   Example 2:  We investigate the predictive accuracy for a categorical Y, 'educ', using the default arguments for maxFeatureSetSize = 4
+    data(pef)
+    dsldTakeALookAround(pef, 'educ', 'occ')
 
-    \code{data(pef)
-    dsldTakeALookAround(pef, 'wageinc','sex',4)}
-
-    Example 2:  We investigate the predictive accuracy for a categorical Y, 'educ', using the default arguments for maxFeatureSetSize = 4
-
-    \code{data(pef)
-    dsldTakeALookAround(pef, 'educ','occ')} 
-
-    Example 3:  We investigate the predictive accuracy for a continuous Y, 'wageinc', using the maxFeatureSetSize = 1
-
-    \code{data(pef)
-    dsldTakeALookAround(pef, 'wageinc','sex',1)}
+#   Example 3:  We investigate the predictive accuracy for a continuous Y, 'wageinc', using the maxFeatureSetSize = 1
+    data(pef)
+    dsldTakeALookAround(pef, 'wageinc', 'sex', 1)
 }
 
