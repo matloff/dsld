@@ -111,7 +111,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
                 type='l', 
                 lty='solid', 
                 ylim=yLim, 
-                col=colors[i]
+                col=colors[i],
                 xlab=xName, 
                 ylab=yName, 
                 main=paste("Underlying Effects of ", sName, " on ", yName, " wrt ", xName)
@@ -123,7 +123,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
                 lty = c(4,6), 
                 text.font=4, 
                 col=colors,
-                text.col=black
+                text.col=black,
                 legend=sLevels
             )
         } else {
