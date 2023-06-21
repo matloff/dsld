@@ -1,5 +1,5 @@
 \name{dsldTakeALookAround}
-\alias{dsld}
+\alias{dsldTakeALookAround}
 
 \title{DSLDTakeALookAround}
 
