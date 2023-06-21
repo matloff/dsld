@@ -43,12 +43,14 @@ dsldParCoord <- function(data, m, columns, grpName)
 
 \examples{
   % Need to fix the "run examples link". The error: "/Example/dsld not found"   appears
+  # Example 1
   data(prgeng)
   pe <- prgeng[,c(1,3,5,7:9)]
   pe25 <- pe[pe$wageinc < 250000,]
   dsldParCoord(pe25,10,c(1,5,6),'sex') # sample call to plot the graph
   %pe25 <- makeFactor(pe25,c('educ','occ','sex'))
   %pe25disc <- discretize(pe25,nlevels=5)
+  # Example 2
   data(mlb)
   dsldParCoord(mlb,5,4:6,7) # sample call to plot the graph
 }

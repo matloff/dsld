@@ -31,10 +31,10 @@
 }
 
 \arguments{
-    \item{data} {dataset in dataframe form}
-    \item{yName} {as in qeML functions, the response variable}
-    \item{sName} {name of the sensitive variable, an R factor}
-    \item{maxFeatureSetSize} {maximum number of combinations of features to be included in the dataframe; 
+    \item{data}{dataset in dataframe form}
+    \item{yName}{as in qeML functions, the response variable}
+    \item{sName}{name of the sensitive variable, an R factor}
+    \item{maxFeatureSetSize}{maximum number of combinations of features to be included in the dataframe; 
     default argument set as: maxFeatureSetSize = (ncol(data) - 2)}
 }
 
