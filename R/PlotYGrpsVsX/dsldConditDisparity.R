@@ -19,6 +19,20 @@
 dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
                                 minS=50, yLim=NULL, useLoess=TRUE)
 {
+    # args checking #
+    if (!is.data.frame(data)) {
+        stop("data must be a dataframe.")
+    }
+    if (!is.numeric(data[[yName]])) {
+        stop("yName must refer to a numeric column in data.")
+    }
+    if (!is.factor(data[[sName]])) {
+        stop("sName must refer to a factor column in data.")
+    }
+    if (!is.numeric(data[[xName]])) {
+        stop("xName must refer to a numeric column in data.")
+    }
+
     # function setup #
     # library requirements
     library(qeML)
