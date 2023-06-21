@@ -9,7 +9,7 @@
 #' @param xName: name of a numeric column
 #' @param sName: name of the sensitive variable, an R factor
 #' @param condits: an R vector; each component is a
-#'     character string for an R logial expression
+#'     character string for an R logical expression
 #'     representing a desired condition; these must NOT
 #'     involve sName
 #' @param qeFtn: reg function (defaults only), defaults to qeKNN
