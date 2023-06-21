@@ -91,7 +91,17 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
         # plotting method
         if (i == 1) {
             # create plot
-            plot(curXData, preds, type='l', lty='solid', ylim=yLim, col=colors[i])
+            plot(
+                curXData, 
+                preds, 
+                type='l', 
+                lty='solid', 
+                ylim=yLim, 
+                col=colors[i]
+                xlab = xName, 
+                ylab = yName, 
+                main = paste("Underlying Effects of ", sName, " on ", yName, " wrt ", xName)
+            )
         } else {
             # plot points
             points(curXData, preds, type='l', lty='solid', col=colors[i])
