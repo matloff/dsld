@@ -5,7 +5,15 @@
 \description{
     Plots Y against X, with restrictions `condits` placed upon the dataset
     prior to predictive modeling on the dataset with `qeFtn` to extract underlying 
-    patterns.
+    patterns with respect to different variables. Not unlike Simpson's paradox, but 
+    more specific to numeric data.
+
+    The utility of this function comes from its ability to determine marginal effects 
+    that might depend on the values of the other features. In other words, statistics that 
+    generalize across a whole group may fail to take into account specifics about underlying 
+    differences between subgroups (i.e. statistics about RECIDIVISM, a Y variable, relative to 
+    AGE, an X variable, may fail to take into account different relationships across RACE, a 
+    sensitive variable). This is shown in the first example given.
 }
 
 \usage{
