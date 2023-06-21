@@ -39,6 +39,10 @@ expression representing a desired condition; these must NOT involve sName}
 }
 
 \examples{
-
+example 1:
+    data(compas)
+    compas$two_year_recid <- as.numeric(compas$two_year_recid == 'Yes')
+    conditDisparity(compas,'two_year_recid', 'race', 'age', 
+                    c('priors_count <= 4','decile_score>=6'), qeKNN)
 }
 
