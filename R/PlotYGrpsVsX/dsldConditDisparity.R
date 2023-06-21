@@ -40,7 +40,6 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
     # fill plotting limits
     if (is.null(yLim)) {
         yLim <- c(0, max(data[[yName]]))                    # [0, max(y)]
-        print(yLim)
     }
 
     
@@ -123,7 +122,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
                 lty = c(4,6), 
                 text.font=4, 
                 col=colors,
-                text.col=black,
+                text.col="black",
                 legend=sLevels
             )
         } else {
