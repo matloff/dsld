@@ -1,5 +1,5 @@
 \name{dsldParCoord}
-\alias{dsld}
+\alias{dsldParCoord}
 
 \title{dsldParCoord}
 \description{
