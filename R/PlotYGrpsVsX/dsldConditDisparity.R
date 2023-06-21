@@ -98,9 +98,19 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
                 lty='solid', 
                 ylim=yLim, 
                 col=colors[i]
-                xlab = xName, 
-                ylab = yName, 
-                main = paste("Underlying Effects of ", sName, " on ", yName, " wrt ", xName)
+                xlab=xName, 
+                ylab=yName, 
+                main=paste("Underlying Effects of ", sName, " on ", yName, " wrt ", xName)
+            )
+
+            # create legend
+            legend(
+                x = "topleft", 
+                lty = c(4,6), 
+                text.font=4, 
+                col=colors,
+                text.col=black
+                legend=sLevels
             )
         } else {
             # plot points
