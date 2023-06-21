@@ -6,32 +6,32 @@
 #' 4. Prediction accuracy for sName of this feature set.
 #'
 #' ::: Arguments :::
-#' @param data: dataset
+#' @param data: dataset given in dataframe format
 #' @param yName: as in qeML functions, response variable
 #' @param sName: name of the sensitive variable, an R factor
-#' @param maxFeatureSetSize: maximum # of combinations of features to be returned; default argument set as: maxFeatureSetSize = (ncol(data) - 2)
+#' @param maxFeatureSetSize: maximum number of combinations of features to be included; default argument set as: maxFeatureSetSize = (ncol(data) - 2)
 
 dsldTakeALookAround <- function(data,yName,sName, maxFeatureSetSize = (ncol(data) - 2)) {
   
   # args checking #
   if (maxFeatureSetSize > (ncol(data) - 2)) { 
-    stop("maxFeatureSetSize too large!")              # Send error message if user enters invalid maxFeatureSetSize
+    stop("maxFeatureSetSize too large!")                            # Send error message if user enters invalid maxFeatureSetSize
   }
   if (!is.data.frame(data)) {
     stop("data must be a dataframe.")
   }
   
-  # function setup #
+  # load libraries #
   library(qeML)
   if (!require('Kendall')) install.packages('Kendall'); library('Kendall')
   
   # subset dataset to remove sName and yName
   max_features_data = data[,!names(data) %in% c(yName, sName)]
 
-  # get names of feature set from our subsetted data
+  # get names of feature set 
   feature_names = colnames(max_features_data) 
   
-  # initialize empty vectors to populate with data
+  # initialize empty vectors to populate with test accuracy scores
   col_names = c() 
   MSE_Y = c()
   MSE_YS = c()
