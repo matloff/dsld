@@ -55,6 +55,12 @@ Example 1:
     compas$two_year_recid <- as.numeric(compas$two_year_recid == 'Yes')
     dsldConditDisparity(compas,'two_year_recid', 'race', 'age', c('priors_count <= 4','decile_score>=6'), qeKNN)}
 
+    \figure{
+      \includegraphics{/Example1.png}
+      \caption{Caption for the image}
+      \label{fig:my-image}
+    }
+
     The blue (African-American) and red (Hispanic) curves exhibit the behavior that during middle age, the probability 
     of recidivism declines. But the purple curve (Caucasian) shows the opposite. This shows the importance of exploring 
     interactions between variables. Otherwise, we would have generalized that the probability of recidivism declines
