@@ -1,7 +1,7 @@
-\name{dsldConditDisparity}
+\name{dsldTakeALookAround}
 \alias{dsld}
 
-\title{DSLDConditDisparity}
+\title{DSLDTakeALookAround}
 \description{
     Plots Y against X, with restrictions `condits` placed upon the dataset
     prior to predictive modeling on the dataset with `qeFtn` to extract underlying 
@@ -17,21 +17,15 @@
 }
 
 \usage{
-    dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
-                            minS=50, yLim=NULL, useLoess=TRUE)
+    dsldTakeALookAround <- function(data,yName,sName, maxFeatureSetSize = (ncol(data) - 2))
 }
 
 \arguments{
 \item{data}{dataset in dataframe form}
-\item{yName}{as in qeML functions, predictive variable}
-\item{xName}{name of a numeric column to take comparisons with}
+\item{yName}{as in qeML functions, response variable}
 \item{sName}{name of the sensitive variable, an R factor}
-\item{condits}{an R vector; each component is a character string for an R logical 
-expression representing a desired condition; these must NOT involve sName}
-\item{qeFtn}{reg function (defaults only), defaults to qeKNN}
-\item{minS}{minimum size for an S group to be retained in the analysis, defaults to 50}
-\item{yLim}{a 2-element vector specifying the lower and upper vertical plot limits, defaults to fit data}
-\item{useLoess}{if TRUE, do Loess smoothing on the regression values, defaults to TRUE}
+\item{maxFeatureSetSize}{maximum # of combinations of features to be returned; 
+default argument set as: maxFeatureSetSize = (ncol(data) - 2)}
 }
 
 \author{
@@ -40,8 +34,12 @@ expression representing a desired condition; these must NOT involve sName}
 
 \examples{
 example 1:
-    data(compas)
-    compas$two_year_recid <- as.numeric(compas$two_year_recid == 'Yes')
-    conditDisparity(compas,'two_year_recid', 'race', 'age', 
-                    c('priors_count <= 4','decile_score>=6'), qeKNN)
+    data(pef)
+    dsldTakeALookAround(pef, 'wageinc','sex',4) # run w maxFeatureSetSize to get all possible combinations
+}
+
+\examples{
+example 2:
+    data(pef)
+    dsldTakeALookAround(pef, 'educ','occ') # with factor Y & all possible combinations of maxFeatureSetSize are shown
 }
