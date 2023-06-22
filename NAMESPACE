@@ -1,4 +1,4 @@
 export(
-   getSuggestedLib,dsldParCoord,dsldTakeALookAround
+   getSuggestedLib,dsldParCoord,dsldTakeALookAround,dsldConditDisparity
 )
 
