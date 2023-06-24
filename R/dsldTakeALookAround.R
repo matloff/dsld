@@ -23,7 +23,6 @@ dsldTakeALookAround <- function(data,yName,sName, maxFeatureSetSize = (ncol(data
   
   # load libraries #
   library(qeML)
-  if (!require('Kendall')) install.packages('Kendall'); library('Kendall')
   
   # subset dataset to remove sName and yName
   max_features_data = data[,!names(data) %in% c(yName, sName)]
