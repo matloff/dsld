@@ -68,4 +68,12 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
 
     return df_py
 
+robjects.r['data']('pef')
+pef = robjects.r['pef']
 
+yName = 'wageinc'
+sName = 'sex'
+
+result = dsldPyTakeALookAround(pef, yName, sName, maxFeatureSetSize=4)
+
+print(result)
