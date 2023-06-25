@@ -26,39 +26,40 @@ library(qeML)
 
 # First fct: dsldCreateModel <- this fct. outputs an S3 Objects of terms
 # currently:: output is summary obj
-dsldCreateModel <- function(data, yName, sName, function_type, interactions = TRUE) {
-  dsld = list()
+dsldCreateModel <- function(data, yName, sName, function_type, interactions=TRUE) {
+  dsld <- list()
   if (interactions == TRUE) {
-    data_split = split(data,data[[sName]])
-    x = names(data_split) # get list attributes, i.e. names
+    data_split <- split(data,data[[sName]])
+    x <- names(data_split) # get list attributes, i.e. names
     for (i in x) { # loop through each component of list; i is the name of the list at each iteration
       temp_data <- data_split[[i]] # get subset of data for i-th iteration
       response_var <- temp_data[[yName]]
       drop <- c(sName, yName)
-      temp_data = temp_data[,!(names(temp_data) %in% drop)]
-      temp_model <- glm(formula = response_var ~ ., family = function_type, data = temp_data)
+      temp_data <- temp_data[, !(names(temp_data) %in% drop)]
+      temp_model <- glm(formula=response_var ~ ., family=function_type, data=temp_data)
       dsld[[i]] <- summary(temp_model)
     }
-  } else{
+  } else {
     response_var <- data[[yName]]
     drop <- c(yName)
-    data = data[,!(names(data) %in% drop)]
-    temp_model <- glm(formula = response_var ~ ., family = function_type, data = data)
+    data <- data[, !(names(data) %in% drop)]
+    temp_model <- glm(formula=response_var ~ ., family=function_type, data=data)
     dsld[[1]] <- summary(temp_model)
   }
+
   return(dsld)
 }
 
 # Test runs
 # regression
 data(pef)
-dsldCreateModel(data = pef, yName = 'wageinc', sName = 'sex', function_type = 'gaussian', interactions = TRUE)
-dsldCreateModel(data = pef, yName = 'wageinc', sName = 'sex', function_type = 'gaussian', interactions = FALSE)
+dsldCreateModel(data=pef, yName='wageinc', sName='sex', function_type='gaussian', interactions=TRUE)
+dsldCreateModel(data=pef, yName='wageinc', sName='sex', function_type='gaussian', interactions=FALSE)
 
 # binomial output
 load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/packages/fairml/data/german.credit.rda') # german credit
 View(german.credit)
-dsldCreateModel(data = german.credit, yName = 'Credit_risk', sName = 'Gender', function_type = 'binomial', interactions = TRUE)
+dsldCreateModel(data=german.credit, yName='Credit_risk', sName='Gender', function_type='binomial', interactions=TRUE)
 
 # poisson
 data(mtcars)
@@ -69,7 +70,7 @@ View(mtcars)
 # Random test code
 # No interaction --------------------------------------------------------------------
 data(pef) 
-z <- glm(formula = wageinc ~ ., family = "gaussian", data = pef) # thought: output can be summary outputs
+z <- glm(formula=wageinc ~ ., family="gaussian", data=pef) # thought: output can be summary outputs
 summary(z)
 tt <- list()
 x <- summary(z)
@@ -94,23 +95,23 @@ xx <- t(u) %*% C %*% u
 colnames(vcov(z))
 
 # Full Interaction -------------------------------------------------------------------
-data_split = split(pef,pef[['sex']])
+data_split <- split(pef,pef[['sex']])
 data_split
 
 
 # male data
 pefm <- data_split$`1`
 drop <- c("sex")
-pefm = pefm[,!(names(pefm) %in% drop)]
+pefm <- pefm[,!(names(pefm) %in% drop)]
 
 # female data
 peff <- data_split$`2`
 drop <- c("sex")
-peff = peff[,!(names(peff) %in% drop)]
+peff <- peff[,!(names(peff) %in% drop)]
 
 
-m <- glm(formula = wageinc ~ ., family = "gaussian", data = pefm)
-f <- glm(formula = wageinc ~ ., family = "gaussian", data = peff)
+m <- glm(formula=wageinc ~ ., family="gaussian", data=pefm)
+f <- glm(formula=wageinc ~ ., family="gaussian", data=peff)
 
 summary(m)
 summary(f)
