@@ -44,11 +44,100 @@ dsldCreateModel <- function(data, yName, sName, function_type, interactions=TRUE
         drop <- c(yName)
         data <- data[, !(names(data) %in% drop)]
         temp_model <- glm(formula=response_var ~ ., family=function_type, data=data)
-        dsld[[1]] <- summary(temp_model)
+        dsld[["summary"]] <- summary(temp_model)
     }
+
+    # return class #
+    class(dlsd) <- "dsldLinearModel"
 
     return(dsld)
 }
+
+
+#' Defining some basic polymorphic methods for the linear model
+#'  - str()     :: in string form, accesses the summary for the model
+#'  - print()   :: will print the str()
+#'  - summary() :: prints out a new level for each statistically independent portion of data
+#'  - plot()    :: plots the linear model give the data it stores
+
+#' ::: Description ::
+#' @brief Polymorphic method that overrides the str() function, returning a string representation of the 
+#'      dsld linear model object. For now, the string representation will be a simple summary printed out 
+#'      as accessed through the summary() method, but in the future this may be adjusted to provide a simpler 
+#'      set of information for users to look at (intercepts, std-err, etc.) in a table-like format.
+#' 
+#' ::: Arguments :::
+#' @param dsldModel: an instance of the dsldLinearModel s3 object to convert to string representation
+#' 
+str.dsldLinearModel <- function(dsldModel) {
+    # return summary #
+    return(summary(dsldModel))
+}
+
+
+#' ::: Description ::
+#' @brief Polymorphic method that overrides the print() function, printing a string representation of the 
+#'      dsld linear model object. For now, the string representation will be a simple summary printed out 
+#'      as accessed through the summary() method, but in the future this may be adjusted to provide a simpler 
+#'      set of information for users to look at (intercepts, std-err, etc.) in a table-like format.
+#' 
+#' ::: Arguments :::
+#' @param dsldModel: an instance of the dsldLinearModel s3 object to print
+#' 
+print.dsldLinearModel <- function(dsldModel) {
+    # print string representation #
+    print(str(dsldModel))
+}
+
+
+#' ::: Description ::
+#' @brief Polymorphic method that overrides the summary() method, extracting information regarding 
+#'      standard errors with regards to sensitive variables (this can be for each level and the differences 
+#'      between each level).
+#' 
+#' ::: Arguments :::
+#' @param dsldModel: an instance of the dsldLinearModel s3 object to summarize
+#' 
+summary.dsldLinearModel <- function(dsldModel) {
+    # return summary #
+    return(dsldModel$summary)
+}
+
+
+#' ::: Description ::
+#' @brief Polymorphic method that overrides the str() function, returning a string representation of the 
+#'      dsld linear model object. For now, the string representation will be a simple summary printed out 
+#'      as accessed through the summary() method, but in the future this may be adjusted to provide a simpler 
+#'      set of information for users to look at (intercepts, std-err, etc.) in a table-like format.
+#' 
+#' ::: Arguments :::
+#' @param dsldModel: an instance of the dsldLinearModel s3 object to print
+#' 
+plot.dsldLinearModel <- function(dsldModel) {
+    # variable handling #
+    data <- dsldModel$data
+    linModel <- dsldModel$model
+
+    xData <- data[dsldModel$xCols, ]
+    yData <- data[dsldModel$yCol, ]
+
+    # plotting #
+    # create plot
+    plot(
+        xData, 
+        yData, 
+        type='l', 
+        lty='solid',  
+        col="black",
+        xlab=dsldModel$xCols, 
+        ylab=dsldMode$yCol, 
+        main="DSLD Linear Model Plot"
+    )
+
+    # plot predictive model
+    points(xData, dsldModel$pred, type='l', lty='solid', col="red")
+}
+
 
 # Test runs
 # regression

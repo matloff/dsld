@@ -10,7 +10,7 @@
 #' @param yName: as in qeML functions, response variable
 #' @param sName: name of the sensitive variable, an R factor
 #' @param maxFeatureSetSize: maximum number of combinations of features to be included; default argument set as: maxFeatureSetSize = (ncol(data) - 2)
-
+#'
 dsldTakeALookAround <- function(data,yName,sName, maxFeatureSetSize = (ncol(data) - 2)) {
   
   # args checking #

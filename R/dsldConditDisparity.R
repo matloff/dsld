@@ -16,6 +16,7 @@
 #' @param minS: minimum size for an S group to be retained in the analysis, defaults to 50
 #' @param yLim: a 2-element vector specifying the lower and upper vertical plot limits, defaults to fit data
 #' @param useLoess: if TRUE, do Loess smoothing on the regression values, defaults to TRUE
+#' 
 dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
                                 minS=50, yLim=NULL, useLoess=TRUE)
 {
