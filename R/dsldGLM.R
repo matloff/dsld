@@ -25,7 +25,6 @@ library(qeML)
 # Collection of functions maybe
 
 # First fct: dsldCreateModel <- this fct. outputs an S3 Objects of terms
-
 # currently:: output is summary obj
 dsldCreateModel <- function(data, yName, sName, function_type, interactions = TRUE) {
   dsld = list()
@@ -50,10 +49,24 @@ dsldCreateModel <- function(data, yName, sName, function_type, interactions = TR
   return(dsld)
 }
 
+# Test runs
+# regression
+data(pef)
 dsldCreateModel(data = pef, yName = 'wageinc', sName = 'sex', function_type = 'gaussian', interactions = TRUE)
 dsldCreateModel(data = pef, yName = 'wageinc', sName = 'sex', function_type = 'gaussian', interactions = FALSE)
 
+# binomial output
+load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/packages/fairml/data/german.credit.rda') # german credit
+View(german.credit)
+dsldCreateModel(data = german.credit, yName = 'Credit_risk', sName = 'Gender', function_type = 'binomial', interactions = TRUE)
 
+# poisson
+data(mtcars)
+View(mtcars)
+
+
+
+# Random test code
 # No interaction --------------------------------------------------------------------
 data(pef) 
 z <- glm(formula = wageinc ~ ., family = "gaussian", data = pef) # thought: output can be summary outputs
@@ -78,11 +91,6 @@ xx <- t(u) %*% C %*% u
 
 
 # potential plots <- separate function?
-
-
-
-
-
 colnames(vcov(z))
 
 # Full Interaction -------------------------------------------------------------------
