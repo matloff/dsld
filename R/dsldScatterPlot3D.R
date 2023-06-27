@@ -1,24 +1,27 @@
 # TODO
 # documentation
 # gets the group names (catcher, outfielder, etc) automatically (Completed?)
-data("mlb1")
-dsldScatterPlot3D <- function (data, axiscols, grpcol, angle, grpnames=NULL, sortedby="Name",
-                               numgrps=NULL, main=NULL, sub=NULL, xlim=NULL,
+library(qeML)
+library(scatterplot3d)
+data("mlb")
+dsldScatterPlot3D <- function (data, axiscols, grpcol, angle = 45, grpnames=NULL, sortedby="Name",
+                               numgrps=3, main=NULL, sub=NULL, xlim=NULL,
                                ylim=NULL, zlim=NULL)
 {
+  #User chooses the order of plotting groups
   group <- switch(
     sortedby,
-    "Name" = groups <- levels(unique(data[,grpcol])),
-    "Frequency" = groups <- names(sort(table(data[,grpcol]),decreasing=T)),
-    "Frequnecy-Descending" = groups <- names(sort(table(data[,grpcol]),decreasing=F))
+    "Name" = groups <- levels(unique(data[,grpcol])), #Alphabetically
+    "Frequency" = groups <- names(sort(table(data[,grpcol]),decreasing=T)), #Most Frequent
+    "Frequnecy-Descending" = groups <- names(sort(table(data[,grpcol]),decreasing=F))#Least Frequent
   )
-  
+
   if (!missing(grpnames)) groups <- grpnames
   else
   {
     groups <- groups[1:numgrps]
   }
-  
+
   legend_labels <- groups
   legend_col <- 1
   #Creates a subset of the data set for each group
@@ -47,12 +50,9 @@ dsldScatterPlot3D <- function (data, axiscols, grpcol, angle, grpnames=NULL, sor
                   eval(parse(text=group_name))[,3], col = i)
       legend_col <- c(legend_col, i)
     }
-    
+
   }
-  
+
   legend("topright", inset=c(-0.05,-0.05), legend=legend_labels, col=legend_col, pch = 1, xpd = TRUE)
 }
-library(qeML)
-data(mlb1)
-dsldScatterPlot3D(mlb1, 2:4, 1, 30, numgrps = 3, sortedby="Frequency")
 
