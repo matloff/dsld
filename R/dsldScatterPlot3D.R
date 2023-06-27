@@ -1,9 +1,7 @@
 # TODO
-# documentation
-# gets the group names (catcher, outfielder, etc) automatically (Completed?)
-
+# make this work even with 2 variables
 dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle=40,  
-                               sortedby="Name",
+                               sortedby="Frequency",
                                numgrps=3, main=NULL, sub=NULL, xlim=NULL,
                                ylim=NULL, zlim=NULL) {
   data_types <- sapply(data, class) # the datatypes of each column in data
@@ -35,6 +33,7 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
       if (length(axiscols) == 3) break
     }
   }
+  if (length(axiscols) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
   
   # grpnames <- a vector of the individual group names in the 'data'. 
   # the user can supply grpnames as an vector of names they want to look at
@@ -48,7 +47,7 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
       "Frequency-Descending" = grpnames <- names(sort(table(data[,grpcol]),decreasing=F))
     )
     # otherwise the vector is cut off to only have numgrps number of grpnames
-    grpnames <- grpnames[1:numgrps]
+    if (length(grpnames) > numgrps) grpnames <- grpnames[1:numgrps]
   }
   
   # The legend that displays what each circle color means
@@ -62,8 +61,12 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
     group <- data[data[grpcol] == grpnames[i],][axiscols]
     assign(group_name, group)
 
-    #Initializes a scatter plot with the first data
+    
     if (i == 1) { 
+      # makes a normal scatterplot if there are no groups
+      if (missing(grpcol)) data1 <- data[axiscols]
+      
+      # Initializes a scatter plot with the first data
       sp <- scatterplot3d::scatterplot3d(data1[,1], data1[,2], data1[,3], 
                           color = 1, 
                           angle = angle,
@@ -85,11 +88,9 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
     
   }
   
-  # creates the legend
-  legend("topright", inset=c(-0.05,-0.05), title=names(data[grpcol]),
+  # creates the legend if there are more than 1 groups
+  if (!missing(grpcol)) legend("bottomright", inset=c(-0.05, -0.3), title=names(data[grpcol]),
          legend=legend_labels, col=legend_col, pch = 1, xpd = TRUE)
 }
-library(qeML)
-data(mlb1)
-dsldScatterPlot3D(mlb)
+
 
