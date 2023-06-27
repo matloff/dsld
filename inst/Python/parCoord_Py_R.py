@@ -8,6 +8,9 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
+import numpy as np
+from rpy2.robjects import r, ListVector
+
 
 devtools = importr("devtools")
 
@@ -49,8 +52,8 @@ def dsldPyParCoord(data, m, columns, grpName):
     r_data = dsldIsRDataframe(data)
 
     m_r = robjects.IntVector([m])                               # Convert variable name to R character vector
-    columns_r = robjects.IntVector([columns])                            # Convert variable name to R character vector
-    grpName_r = robjects.StrVector([grpName])   
+    columns_r = robjects.ListVector([columns])                            # Convert variable name to R character vector
+    grpName_r = robjects.StrVector([grpName])
 
     dsldParCoord = dsld.dsldParCoord
 
@@ -65,3 +68,16 @@ if "__name__" == "__main__":
     data = pd.read_csv(file_path)
     
     dsldPyParCoord(data, int(args[2]), int(args[3]), args[4])
+
+'''
+robjects.r['data']('pef')
+pef = robjects.r['pef']
+
+m = 3
+# Example list of integers using NumPy
+#columns = np.array([1,5,6])
+columns = [1,2]
+grpName = 'sex'
+
+dsldPyParCoord(pef, m, columns, grpName)
+'''
