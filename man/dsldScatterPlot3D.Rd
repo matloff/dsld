@@ -40,13 +40,12 @@ Jonathan Tran and Brandon Zarate }
 
 
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+#Example 1: Using column names
+data(mlb)
+axisColumns <- c("Height", "Weight", "Age")
+groupColumn <- "Position"
 
-## The function is currently defined as
-function (x)
-{
-  }
+dsldScatterPlot3D(mlb, axisColumns, groupColumn, main= "Example 1")
+
 }
 
