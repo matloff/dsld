@@ -68,12 +68,15 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
 
     return df_py
 
-robjects.r['data']('pef')
-pef = robjects.r['pef']
+if "__name__" == "__main__":
+    args = sys.argv
 
-yName = 'wageinc'
-sName = 'sex'
+    file_path = args[1]
 
-result = dsldPyTakeALookAround(pef, yName, sName, maxFeatureSetSize=4)
+    print(file_path)
+    data = pd.read_csv(file_path)
 
-print(result)
+    if args[4] is None:
+        dsldPyTakeALookAround(data, args[2], args[3])
+    else:
+        dsldPyTakeALookAround(data, args[2], args[3], int(args[4]))
