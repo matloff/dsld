@@ -1,34 +1,55 @@
 # TODO
 # documentation
 # gets the group names (catcher, outfielder, etc) automatically (Completed?)
-data("mlb1")
-dsldScatterPlot3D <- function (data, axiscols, grpcol, angle, grpnames=NULL, 
+
+dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle=30,  
                                sortedby="Name",
                                numgrps=3, main=NULL, sub=NULL, xlim=NULL,
                                ylim=NULL, zlim=NULL) {
-  # groups <- a vector of the individual groups in the 'data'. If there are 8 possible
-  # types the group variable can be, the vector is 8 long. Sorted according to user
-  switch(
-    sortedby,
-    "Name" = groups <- levels(unique(data[,grpcol])),
-    "Frequency" = groups <- names(sort(table(data[,grpcol]),decreasing=T)),
-    "Frequnecy-Descending" = groups <- names(sort(table(data[,grpcol]),decreasing=F))
-  )
+  data_types <- sapply(data, class) # the datatypes of each column in data
   
-  # the user can supply groups as an vector of names they want to look at
-  if (!missing(grpnames)) groups <- grpnames
-  # otherwise the vector is cut off to only have numgrps number of groups
-  else groups <- groups[1:numgrps]
+  if (missing(grpcol)) {
+    num_uniques <- sapply(sapply(data, unique), length) # how many distinct values for each column
+    
+  }
+  
+  # axiscols <- a vector of 3 ints that correspond to the columns to be used for
+  # the 3 axis on the graph. The user can specify the cols or
+  if (missing(axiscols)) {
+    # axiscols will be the first 3 columns that are of numeric or integer data type
+    axiscols <- vector()
+    for (i in 1:length(data_types)) {
+      if (data_types[i] == "numeric" || data_types[i] == "integer") {
+        axiscols <- c(axiscols, i)
+      }
+      if (length(axiscols) == 3) break
+    }
+  }
+  
+  # grpnames <- a vector of the individual group names in the 'data'. 
+  # the user can supply grpnames as an vector of names they want to look at
+  if (missing(grpnames)) {
+    # If there are 8 possible types the group variable can be, the vector is 8 long. 
+    # Sorted according to user
+    switch(
+      sortedby,
+      "Name" = grpnames <- levels(unique(data[,grpcol])),
+      "Frequency" = grpnames <- names(sort(table(data[,grpcol]),decreasing=T)),
+      "Frequency-Descending" = grpnames <- names(sort(table(data[,grpcol]),decreasing=F))
+    )
+    # otherwise the vector is cut off to only have numgrps number of grpnames
+    grpnames <- grpnames[1:numgrps]
+  }
   
   # The legend that displays what each circle color means
-  legend_labels <- groups
+  legend_labels <- grpnames
   legend_col <- 1
   
-  for(i in 1:length(groups)) {
+  for(i in 1:length(grpnames)) {
     # group_name <- a new variable that holds every point belonging to a specific group name
     # for example, a new variable data1 could contain the 3 columns of only catchers
     group_name <- paste("data", i, sep = "")
-    group <- data[data[grpcol] == groups[i],][axiscols]
+    group <- data[data[grpcol] == grpnames[i],][axiscols]
     assign(group_name, group)
 
     #Initializes a scatter plot with the first data
@@ -60,5 +81,5 @@ dsldScatterPlot3D <- function (data, axiscols, grpcol, angle, grpnames=NULL,
 }
 library(qeML)
 data(mlb1)
-dsldScatterPlot3D(mlb1, 2:4, 1, 30, numgrps = 3, sortedby="Frequency")
+dsldScatterPlot3D(mlb, grpcol = "Team", sortedby = "Frequency")
 
