@@ -20,6 +20,7 @@ import sys
 base = importr('base')
 graphics = importr('graphics')
 
+# Installing DSLD: must install devtools first since that's how we access dsld during development
 devtools = importr("devtools")
 
 # This below line may need to be commented
@@ -56,13 +57,17 @@ def dsldIsRDataframe(data):
 # The arguments are passed inside dsldParCoord as r format
 # and the result is a graph handled by R.
 def dsldPyParCoord(data, m, columns, grpName):
-    print(columns)
-
     # Assuming you have the required arguments in Python variables
     r_data = dsldIsRDataframe(data)
+    
+    # TODO: Delete
+    robjects.r['data']('pef')
+    pef = robjects.r['pef']
+    r_data = pef
 
     m_r = robjects.IntVector([m])                               # Convert variable name to R character vector
-    columns_r = robjects.IntVector([columns])                            # Convert variable name to R character vector
+    # columns_r = robjects.IntVector([columns])                # Convert variable name to R character vector
+    columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
     grpName_r = robjects.StrVector([grpName])
 
     dsldParCoord = dsld.dsldParCoord
@@ -79,27 +84,29 @@ if __name__ == "__main__":
 
     file_path = args[1]
 
-    print(file_path)
+    #print(file_path)
     data = pd.read_csv(file_path)
     
     #dsldPyParCoord(data, int(args[2]), int(args[3]), args[4])
     
     # Attempts to comvert Cmd Line string list input into array
     # example: "1,3,5" becomes [1,3,5]
-    dsldPyParCoord(data, int(args[2]), sys.argv[1].split(','), args[4])
+    dsldPyParCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
 
 '''
 robjects.r['data']('pef')
 pef = robjects.r['pef']
-robjects.r['data']('mlb')
-mlb = robjects.r['mlb']
+# robjects.r['data']('mlb')
+# mlb = robjects.r['mlb']
 
 m = 10
 # Example list of integers using NumPy
-columns = np.array([1])
+columns = np.array([1,5,6])
 #columns = [2]
 grpName = 'sex'
 
-dsldPyParCoord(pef, m, columns, grpName)
+data = pd.read_csv("/Users/tahaabdullah/Downloads/rtestTA.csv")
+
+dsldPyParCoord(data, m, columns, grpName)
 #dsldPyParCoord(mlb, m, columns, grpName)
 '''
