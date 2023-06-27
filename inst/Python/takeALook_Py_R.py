@@ -9,6 +9,9 @@ import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
 
+# For accessing cmd line args
+import sys
+
 devtools = importr("devtools")
 
 # This below line may need to be commented
@@ -68,6 +71,8 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
 
     return df_py
 
+# Code to allow users to run this file from the shell
+# Use sys to import and handle command line args
 if __name__ == "__main__":
     args = sys.argv
 

@@ -25,3 +25,6 @@ dsldParCoord <- function(data, m, columns, grpName) {
 # 
 # data(mlb)
 # dsldParCoord(mlb,5,4:6,7) # sample call to plot the graph
+# dsldParCoord(mlb,5,6,'PosCategory') # 1 col call
+# data(pef)
+# dsldParCoord(pef,10,1,'sex') # sample call to plot the graph
