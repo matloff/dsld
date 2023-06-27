@@ -37,65 +37,67 @@
 #' @param sName: name of the sensitive column [character]
 #' @param interactions: specifies whether or not to consider interactions. 
 #'      Defaults to TRUE [boolean]
-#' 
-dsldLinModel <- function(data, yName, sName, interactions=TRUE) {
+#'
+dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
     # setup linear model #
     # library requirements
     library(sandwich)
     library(qeML)
 
     # initialize class
-    dsldLinModel = list()
+    dsldLinModel <- list()
 
     # interactions #
     if (interactions == TRUE) {
         # split data by sensitive level
-        dataSplit = split(data, data[[sName]])
-        dataNames = names(dataSplit)
-        
+        dataSplit <- split(data, data[[sName]])
+        dataNames <- names(dataSplit)
+
         # populate linear model for each level
         for (name in dataNames) {
             # initialize instance of dsldDiffModel
             dsldDiffModel <- list()
-            
+
             # data for this level, drop sensitive column
             diffData <- dataSplit[[name]]
             drop <- c(sName)
             diffData <- diffData[, !(names(diffData) %in% drop)]
-            
+
             # get formula & diff model
             formula <- as.formula(paste(yName, "~ ."))
-            diffModel <- lm(formula, data=diffData)
-            
+            diffModel <- lm(formula, data = diffData)
+
             # setup instance of dsldDiffModel
-            dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)), list(coef(diffModel)), list(diffData))
+            dsldDiffModel <- c(dsldDiffModel, formula,
+                list(summary(diffModel)), list(coef(diffModel)),
+                list(diffData))
             names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
             class(dsldDiffModel) <- "dsldDiffModel"
 
             # add instance into dsldLinModel
             dsldLinModel[[name]] <- dsldDiffModel
         }
-    } 
-    else {
+    } else {
         # initialize instance of dsldDiffModel
         dsldDiffModel <- list()
-        
+
         # data for non-interactive
         diffData <- data
-        
+
         # get formula & diff model
         formula <- as.formula(paste(yName, "~ ."))
-        diffModel <- lm(formula, data=diffData)
-        
+        diffModel <- lm(formula, data = diffData)
+
         # setup instance of dsldDiffModel
-        dsldDiffModel <- c(temp_list, formula, list(summary(diffModel)), list(coef(diffModel)), list(diffData))
+        dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
+            list(coef(diffModel)), list(diffData))
         names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
         class(dsldDiffModel) <- "dsldDiffModel"
 
         # add instance into dsldLinModel
         dsldLinModel[[sName]] <- dsldDiffModel
     }
-    
+
     # finalize dsldLinModel #
     class(dsldLinModel) <- "dsldLinModel"
     return(dsldLinModel)
@@ -104,7 +106,8 @@ dsldLinModel <- function(data, yName, sName, interactions=TRUE) {
 
 # ------------ Linear Model Testing ------------ #
 data(pef)
-x <- dsldLinModel(data=pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
+x <- dsldLinModel(data = pef, yName = "wageinc", sName = "sex",
+    interactions = TRUE)
 x # creates a list of two that contains useful info of the linear model. 
 x$`1`
 x$`2`
@@ -182,7 +185,6 @@ summary.dsldLinModel <- function(dsldModel) {
 plot.dsldLinModel <- function(dsldModel) {
     # variable handling #
     data <- dsldModel$data
-    linModel <- dsldModel$model
 
     xData <- data[dsldModel$xCols, ]
     yData <- data[dsldModel$yCol, ]
@@ -190,17 +192,17 @@ plot.dsldLinModel <- function(dsldModel) {
     # plotting #
     # create plot
     plot(
-        xData, 
-        yData, 
-        type='l', 
-        lty='solid',  
-        col="black",
-        xlab=dsldModel$xCols, 
-        ylab=dsldMode$yCol, 
-        main="DSLD Linear Model Plot"
+        xData,
+        yData,
+        type = 'l',
+        lty = 'solid',
+        col = "black",
+        xlab = dsldModel$xCols,
+        ylab = dsldModel$yCol,
+        main = "DSLD Linear Model Plot"
     )
 
     # plot predictive model
-    points(xData, dsldModel$pred, type='l', lty='solid', col="red")
+    points(xData, dsldModel$pred, type = "l", lty = "solid", col = "red")
 }
 
