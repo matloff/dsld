@@ -1,6 +1,6 @@
 # TODO
 # make this work even with 2 variables
-dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle=40,  
+dsldScatterPlot3D <- function (data, grpcol=NULL, axiscols=NULL, grpnames=NULL, angle=40,  
                                sortedby="Frequency", numgrps=3, 
                                colors=NULL, pchs=NULL, main=NULL, sub=NULL, 
                                xlim=NULL, ylim=NULL, zlim=NULL) {
@@ -105,5 +105,4 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
   if (!missing(grpcol)) legend("bottomright", inset=c(0, -0.3), title=names(data[grpcol]),
          legend=grpnames, col=colors, pch = pchs, xpd = TRUE)
 }
-dsldScatterPlot3D(mlb1)
 
