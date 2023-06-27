@@ -1,9 +1,9 @@
 # TODO
 # make this work even with 2 variables
 dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle=40,  
-                               sortedby="Frequency",
-                               numgrps=3, main=NULL, sub=NULL, xlim=NULL,
-                               ylim=NULL, zlim=NULL) {
+                               sortedby="Frequency", numgrps=3, 
+                               colors=NULL, pchs=NULL, main=NULL, sub=NULL, 
+                               xlim=NULL, ylim=NULL, zlim=NULL) {
   data_types <- sapply(data, class) # the datatypes of each column in data
   
   # grpcol <- an int/string of the col of the grouping variable. 
@@ -49,12 +49,23 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
     # otherwise the vector is cut off to only have numgrps number of grpnames
     if (length(grpnames) > numgrps) grpnames <- grpnames[1:numgrps]
   }
+  numgrps <- length(grpnames)
   
-  # The legend that displays what each circle color means
-  legend_labels <- grpnames
-  legend_col <- 1
+  # Colors and symbols displayed on the graph
+  if (missing(colors)) colors <- 1:numgrps + 1
+  else colors <- rep(colors, numgrps) # add enough colors to be displayed if not enough
+  if (missing(pchs)) pchs <- 1:numgrps 
+  else pchs <- rep(pchs, numgrps) # add enough symbols to be displayed if not enough
   
-  for(i in 1:length(grpnames)) {
+  # Title of the graph
+  if (missing(main) && !missing(grpcol)) {
+    main <- paste(names(data[grpcol]), " vs. ", 
+                  names(data[axiscols[1]]), ", ", 
+                  names(data[axiscols[2]]), ", ", 
+                  names(data[axiscols[3]]))
+  }
+  
+  for(i in 1:numgrps) {
     # group_name <- a new variable that holds every point belonging to a specific group name
     # for example, a new variable data1 could contain the 3 columns of only catchers
     group_name <- paste("data", i, sep = "")
@@ -68,7 +79,8 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
       
       # Initializes a scatter plot with the first data
       sp <- scatterplot3d::scatterplot3d(data1[,1], data1[,2], data1[,3], 
-                          color = 1, 
+                          color = colors[1], 
+                          pch = pchs[1],
                           angle = angle,
                           xlab = names(data[axiscols[1]]),
                           ylab = names(data[axiscols[2]]),
@@ -82,15 +94,16 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
       # Adds points to the already existing scatterplot, sp
       sp$points3d(eval(parse(text=group_name))[,1],
                   eval(parse(text=group_name))[,2],
-                  eval(parse(text=group_name))[,3], col = i)
-      legend_col <- c(legend_col, i)
+                  eval(parse(text=group_name))[,3], 
+                  col = colors[i], 
+                  pch = pchs[i])
     }
     
   }
   
   # creates the legend if there are more than 1 groups
-  if (!missing(grpcol)) legend("bottomright", inset=c(-0.05, -0.3), title=names(data[grpcol]),
-         legend=legend_labels, col=legend_col, pch = 1, xpd = TRUE)
+  if (!missing(grpcol)) legend("bottomright", inset=c(0, -0.3), title=names(data[grpcol]),
+         legend=grpnames, col=colors, pch = pchs, xpd = TRUE)
 }
-
+dsldScatterPlot3D(mlb1)
 
