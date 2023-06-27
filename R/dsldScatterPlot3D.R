@@ -2,21 +2,31 @@
 # documentation
 # gets the group names (catcher, outfielder, etc) automatically (Completed?)
 
-dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle=30,  
+dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle=40,  
                                sortedby="Name",
                                numgrps=3, main=NULL, sub=NULL, xlim=NULL,
                                ylim=NULL, zlim=NULL) {
   data_types <- sapply(data, class) # the datatypes of each column in data
   
+  # grpcol <- an int/string of the col of the grouping variable. 
+  # the variable the determines the colors of the dots. user can specify or
+  # grpcol will be the col with the lowest amount of unique values
   if (missing(grpcol)) {
-    num_uniques <- sapply(sapply(data, unique), length) # how many distinct values for each column
-    
+    num_uniques <- sort(sapply(sapply(data, unique), length)) 
+    # how many distinct values for each column, sorted by least unique values
+    for (i in 1:length(data_types)) {
+      col <- data_types[names(num_uniques[i])]
+      if (col == "factor" || col == "character"){
+        grpcol <- names(col)
+        break
+      }
+    }
   }
   
-  # axiscols <- a vector of 3 ints that correspond to the columns to be used for
+  # axiscols <- a vector of 3 ints/strings that correspond to the columns to be used for
   # the 3 axis on the graph. The user can specify the cols or
+  # axiscols will be the first 3 columns that are of numeric or integer data type
   if (missing(axiscols)) {
-    # axiscols will be the first 3 columns that are of numeric or integer data type
     axiscols <- vector()
     for (i in 1:length(data_types)) {
       if (data_types[i] == "numeric" || data_types[i] == "integer") {
@@ -81,5 +91,5 @@ dsldScatterPlot3D <- function (data, grpcol, axiscols=NULL, grpnames=NULL, angle
 }
 library(qeML)
 data(mlb1)
-dsldScatterPlot3D(mlb, grpcol = "Team", sortedby = "Frequency")
+dsldScatterPlot3D(mlb)
 
