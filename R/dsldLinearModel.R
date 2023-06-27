@@ -59,7 +59,7 @@ dsldLinModel <- function(data, yName, sName, interactions=TRUE) {
             dsldDiffModel <- list()
             
             # data for this level, drop sensitive column
-            diffData <- dataSplit[[i]]
+            diffData <- dataSplit[[name]]
             drop <- c(sName)
             diffData <- diffData[, !(names(diffData) %in% drop)]
             
@@ -103,7 +103,8 @@ dsldLinModel <- function(data, yName, sName, interactions=TRUE) {
 
 
 # ------------ Linear Model Testing ------------ #
-x <- dsldLinModel(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
+data(pef)
+x <- dsldLinModel(data=pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
 x # creates a list of two that contains useful info of the linear model. 
 x$`1`
 x$`2`
