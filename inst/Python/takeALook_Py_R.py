@@ -68,7 +68,7 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
 
     return df_py
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     args = sys.argv
 
     file_path = args[1]
