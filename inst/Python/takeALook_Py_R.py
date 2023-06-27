@@ -68,15 +68,14 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
 
     return df_py
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     args = sys.argv
 
     file_path = args[1]
 
-    print(file_path)
     data = pd.read_csv(file_path)
 
-    if args[4] is None:
+    if len(args) != 5:
         dsldPyTakeALookAround(data, args[2], args[3])
     else:
         dsldPyTakeALookAround(data, args[2], args[3], int(args[4]))
