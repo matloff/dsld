@@ -59,7 +59,7 @@ def dsldPyParCoord(data, m, columns, grpName):
 
     dsldParCoord(r_data, m_r, columns_r, grpName_r)
 
-if "__name__" == "__main__":
+if __name__ == "__main__":
     args = sys.argv
 
     file_path = args[1]
