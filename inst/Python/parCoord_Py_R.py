@@ -3,11 +3,15 @@
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
-
 import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
+
+# For displaying the graph
+import os
+from PIL import Image
+ggplot2 = importr('ggplot2')
 
 # Column vector input
 import numpy as np
@@ -15,6 +19,7 @@ from rpy2.robjects import r, ListVector
 
 # Cmd line args
 import sys
+
 
 # Displaying the graph: User must have the following installed in R env: Ggally, ggplo2, and graphics 
 base = importr('base')
@@ -60,22 +65,30 @@ def dsldPyParCoord(data, m, columns, grpName):
     # Assuming you have the required arguments in Python variables
     r_data = dsldIsRDataframe(data)
     
-    # TODO: Delete
+    # TODO: Delete these 3 lines -- they disregard the csv and directly pass in an R dataframe
     robjects.r['data']('pef')
     pef = robjects.r['pef']
     r_data = pef
+    # end TODO
 
     m_r = robjects.IntVector([m])                               # Convert variable name to R character vector
-    # columns_r = robjects.IntVector([columns])                # Convert variable name to R character vector
     columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
     grpName_r = robjects.StrVector([grpName])
 
-    dsldParCoord = dsld.dsldParCoord
+    # Graph plot will be saved as a file
+    plot_filename = "plot.png"
 
-    dsldParCoord(r_data, m_r, columns_r, grpName_r)
+    # Calling the R function
+    dsld.dsldParCoord(r_data, m_r, columns_r, grpName_r, plot_filename)
+    
+    # Load and display the saved image in Python
+    img = Image.open(plot_filename)
+    img.show()
+    # Close the displayed image
+    img.close()
+    # Delete the image file
+    os.remove(plot_filename)
 
-    # By default, Rpy2 suppresses the graph, so we force the plot
-    graphics.plot_new()
 
 # Code to allow users to run this file from the shell
 # Use sys to import and handle command line args
@@ -84,12 +97,9 @@ if __name__ == "__main__":
 
     file_path = args[1]
 
-    #print(file_path)
     data = pd.read_csv(file_path)
     
-    #dsldPyParCoord(data, int(args[2]), int(args[3]), args[4])
-    
-    # Attempts to comvert Cmd Line string list input into array
+    # split() attempts to comvert Cmd Line string list input into array
     # example: "1,3,5" becomes [1,3,5]
     dsldPyParCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
 
