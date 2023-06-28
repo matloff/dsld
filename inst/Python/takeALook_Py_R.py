@@ -4,15 +4,13 @@
     users data input is in pandas data frame before doing any computation
 '''
 
+import sys
 import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
 
-# For accessing cmd line args
-import sys
-
-devtools = importr("devtools")
+#devtools = importr("devtools")
 
 # This below line may need to be commented
 # Would have to use utils package in order to install dsld from CRAN
@@ -27,6 +25,7 @@ dsld = importr("dsld")
 def dsldPandasToRDataframe(pandas_df):
     pandas2ri.activate()
     r_dataframe = pandas2ri.py2rpy(pandas_df)
+    print(type(r_dataframe))
     return r_dataframe
 
 
@@ -71,8 +70,11 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
 
     return df_py
 
-# Code to allow users to run this file from the shell
-# Use sys to import and handle command line args
+'''
+    For testing: Make sure to print the return value of the function
+'''
+
+
 if __name__ == "__main__":
     args = sys.argv
 
