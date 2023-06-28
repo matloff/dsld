@@ -102,31 +102,55 @@ dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
 # Test runs 
 data(pef)
 x <- dsldLinModel(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
-x
+
 
 # some other polymorphic functions  ------------------------------------------------------------
 summary.dsld <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$summary)
   return(result)
 }
-summary(x)
+#summary(x)
 
 coef.dsld <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$coef)
   return(result)
 }
-coef(x)
+#coef(x)
 
 get_data <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$temp_data)
   return(result)
 }
+#get_data(x)
 
-get_data(x)
-
+dsld_is_valid_name <- function(name, list) {
+  name %in% names(list)
+}
+                   
 # this function is intended to compare effects across S level  -----------------------------------
 dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
-  summary_list <- summary(dsld_obj)
+  
+  # Prompt the user to enter two component names
+  component1_name <- ""
+  component2_name <- ""
+  
+  while (!dsld_is_valid_name(component1_name, dsld_obj)) {
+    component1_name <- as.character(readline("Enter the name of the first S level: "))
+  }
+  
+  while (!dsld_is_valid_name(component2_name, dsld_obj)) {
+    component2_name <- as.character(readline("Enter the name of the second S level: "))
+  }
+  
+  # Subset the list to include only the specified components
+  subsetted_list <- dsld_obj[c(component1_name, component2_name)]
+  
+  # Subset the list to include only the specified components
+  subsetted_list <- dsld_obj[c(component1_name, component2_name)]
+  class(subsetted_list) <- 'dsld'
+  
+  summary_list <- summary(subsetted_list)
+  
   
   # What to do when xName is numeric
   if (is.numeric(data[[xName]])) {
@@ -146,7 +170,7 @@ dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
     my_list <- list(estimate, standard_error)
     names(my_list) <- c("Estimate of difference", "Standard error of difference")
     
-  } else {
+  } else { # This part is currently incomplete, trying to figure out best way to make it work well for user purposes.
     
     coefficient_xName <- sapply(summary_list, function(summary_output) {
       summary_output$coefficients[grepl(xName, rownames(summary_output$coefficients)), "Estimate"]
@@ -175,13 +199,14 @@ dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
     names(my_list) <- c("Estimate of difference", "Standard error of difference")
     
   }
-  
   return(my_list)
 }
 
+# Test run
 b <- dsldCompareDifferencesOfEffects(x, 'age', pef)
 b
 
+# CI interval
 dsldConfidenceInterval <- function(estimates, confidence_level) {
   # Extract point estimate and standard error from the list
   point_estimate <- estimates[[1]]
@@ -203,6 +228,7 @@ dsldConfidenceInterval <- function(estimates, confidence_level) {
   return(confidence_interval)
 }
 
+# test run
 bt <- dsldConfidenceInterval(b, 0.95)
 bt
                        
