@@ -117,3 +117,12 @@ dsldScatterPlot3D <- function (data, grpcol=NULL, axiscols=NULL, grpnames=NULL, 
          legend=grpnames, col=colors, pch = pchs, xpd = TRUE)
 }
 
+# ---- Test Cases ----
+# library(dsld)
+# data(pef)
+# dsldScatterPlot3D(pef, axiscols = c("educ", "wageinc", "occ"))
+
+# library(qeML)
+# data(mlb)
+# dsldScatterPlot3D(mlb)
+

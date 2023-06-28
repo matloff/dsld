@@ -80,15 +80,17 @@ Scaterrplot3d function:
 Jonathan Tran and Brandon Zarate }
 
 \examples{
-# Example 1:
-data(pef)
+# Example 1: Using dataframe alone
+library(qeML)
+data(mlb)
+dsldScatterPlot3d(mlb, main = "Example 1")
 
 # Example 2: Using column names
-data(mlb)
-axisColumns <- c("Height", "Weight", "Age")
-groupColumn <- "Position"
+data(pef)
+axisColumns <- c("educ", "wageinc", "occ")
+groupColumn <- "sex"
 
-dsldScatterPlot3D(mlb, axisColumns, groupColumn, main= "Example 2")
+dsldScatterPlot3D(pef, axisColumns, groupColumn, main= "Example 2")
 
 }
 
