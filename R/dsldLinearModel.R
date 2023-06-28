@@ -107,8 +107,8 @@ dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
 # ------------ Testing Linear Model ------------ #
 library(sandwich)
 library(qeML)
-data(pef)
-x <- dsldLinModel(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
+#data(pef)
+#x <- dsldLinModel(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
 
 
 # ------------ Auxiliary Functions ------------ #
@@ -212,8 +212,8 @@ dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
 }
 
 # ------------ Testing Linear Model ------------ #
-b <- dsldCompareDifferencesOfEffects(x, 'age', pef)
-b
+#b <- dsldCompareDifferencesOfEffects(x, 'age', pef)
+#b
 
 
 # CI interval
@@ -239,8 +239,8 @@ dsldConfidenceInterval <- function(estimates, confidence_level) {
 }
 
 # test run
-bt <- dsldConfidenceInterval(b, 0.95)
-bt
+#bt <- dsldConfidenceInterval(b, 0.95)
+#bt
 
 
 # ------------ Polymorphic Methods for the Linear Model ------------ #
