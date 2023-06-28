@@ -81,7 +81,6 @@ dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
                          list(summary(diffModel)), list(coef(diffModel)),
                          list(diffData))
       names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-      class(dsldDiffModel) <- "dsldDiffModel"
       
       # add instance into dsldLinModel
       dsldLinModel[[name]] <- dsldDiffModel
@@ -101,7 +100,6 @@ dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
     dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
                        list(coef(diffModel)), list(diffData))
     names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-    class(dsldDiffModel) <- "dsldDiffModel"
     
     # add instance into dsldLinModel
     dsldLinModel[[sName]] <- dsldDiffModel
