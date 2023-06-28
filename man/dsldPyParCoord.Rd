@@ -21,17 +21,19 @@
 
 \arguments{
     \item{data}{
-        dataset in dataframe form
+        The data, in data frame or matrix form. If there are indicator
     }
-    \item{yName}{
-        as in qeML functions, the response variable
+    \item{m}{
+        Number of lines to plot for each group. A negative value in conjunction with
+        method being "maxdens" indicates that the lowest-density lines are to be plotted.
+        If method is "locmax", m is forced to 1.
     }
-    \item{sName}{
-        name of the sensitive variable, an R factor
+    \item{columns}{
+        Numbers of the columns of x to be displayed.
     }
-    \item{maxFeatureSetSize}{
-        maximum number of combinations of features to be included in the dataframe; 
-        default argument set as: maxFeatureSetSize = (ncol(data) - 2)
+    \item{grpName}{
+        Column number for the grouping variable, if any (if none, all the data is treated
+        as a single group); vector or factor.
     }
 }
 

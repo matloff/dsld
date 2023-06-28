@@ -13,24 +13,22 @@
 }
 
 \usage{
-    python takeALook_Py_R <FilePath> yName sName
+    python takeALook_Py_R <FilePath> yName sName maxFeatureSetSize
 }
 
 \arguments{
     \item{data}{
-        The data, in data frame or matrix form. If there are indicator
+        dataset in dataframe form
     }
-    \item{m}{
-        Number of lines to plot for each group. A negative value in conjunction with
-        method being "maxdens" indicates that the lowest-density lines are to be plotted.
-        If method is "locmax", m is forced to 1.
+    \item{yName}{
+        as in qeML functions, the response variable
     }
-    \item{columns}{
-        Numbers of the columns of x to be displayed.
+    \item{sName}{
+        name of the sensitive variable, an R factor
     }
-    \item{grpName}{
-        Column number for the grouping variable, if any (if none, all the data is treated
-        as a single group); vector or factor.
+    \item{maxFeatureSetSize}{
+        maximum number of combinations of features to be included in the dataframe; 
+        default argument set as: maxFeatureSetSize = (ncol(data) - 2)
     }
 }
 
