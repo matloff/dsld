@@ -46,58 +46,72 @@ library(qeML)
 # DSLD Collection of functions to be used ::
 
 # Linear ---------------------------------------------------------------------------------------
+
+library(sandwich)
+library(qeML)
+
 dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
-  # This functions creates a linear model with/without interactions based on user input of yName, sName, and Data
-  # Will return a list of lists 3 objects:
-  # 1. formula to go into the model (yName ~.,)
-  # 2. summary output of model
-  # 3. data used in the model (useful to see for interactions)
+  # setup linear model #
   
-  dsld = list()  # initialize empty list 
+  # initialize class
+  dsldLinModel <- list()
   
-  # case if interactions == TRUE
+  # interactions #
   if (interactions == TRUE) {
-    data_split = split(data,data[[sName]]) # split data by S level 
-    x = names(data_split) # get names 
+    # split data by sensitive level
+    dataSplit <- split(data, data[[sName]])
+    dataNames <- names(dataSplit)
     
-    # loop through each S level
-    for (i in x) { 
-      temp_list <- list() # initialize second list, to be populated into main DSLD list 
+    # populate linear model for each level
+    for (name in dataNames) {
+      # initialize instance of dsldDiffModel
+      dsldDiffModel <- list()
       
-      # Get temp_data
-      temp_data <- data_split[[i]] 
+      # data for this level, drop sensitive column
+      diffData <- dataSplit[[name]]
       drop <- c(sName)
-      temp_data = temp_data[,!(names(temp_data) %in% drop)]
+      diffData <- diffData[, !(names(diffData) %in% drop)]
       
-      # get formula & summary output 
+      # get formula & diff model
       formula <- as.formula(paste(yName, "~ ."))
-      temp_model <- lm(formula, data = temp_data)
+      diffModel <- lm(formula, data = diffData)
       
-      temp_list <- c(temp_list, formula, list(summary(temp_model)), list(coef(temp_model)), list(temp_data))
-      names(temp_list) <- c("formula", "summary", "coef", "temp_data")
-      dsld[[i]] <- temp_list
+      # setup instance of dsldDiffModel
+      dsldDiffModel <- c(dsldDiffModel, formula,
+                         list(summary(diffModel)), list(coef(diffModel)),
+                         list(diffData))
+      names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
+      class(dsldDiffModel) <- "dsldDiffModel"
+      
+      # add instance into dsldLinModel
+      dsldLinModel[[name]] <- dsldDiffModel
     }
-  } 
-  # case if interactions == FALSE 
-  else {
+  } else {
+    # initialize instance of dsldDiffModel
+    dsldDiffModel <- list()
     
-    temp_list <- list() # initialize second list, to be populated into main DSLD list 
+    # data for non-interactive
+    diffData <- data
     
-    # get data
-    temp_data <- data 
-    
-    # get formula & summary output 
+    # get formula & diff model
     formula <- as.formula(paste(yName, "~ ."))
-    temp_model <- lm(formula, data = temp_data)
+    diffModel <- lm(formula, data = diffData)
     
-    # populate list
-    temp_list <- c(temp_list, formula, list(summary(temp_model)),list(coef(temp_model)), list(temp_data))
-    names(temp_list) <- c("formula", "summary", "coef", "temp_data")
-    dsld[[1]] <- temp_list
+    # setup instance of dsldDiffModel
+    dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
+                       list(coef(diffModel)), list(diffData))
+    names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
+    class(dsldDiffModel) <- "dsldDiffModel"
+    
+    # add instance into dsldLinModel
+    dsldLinModel[[sName]] <- dsldDiffModel
   }
-  class(dsld) <- 'dsld'
-  return(dsld)
+  
+  # finalize dsldLinModel #
+  class(dsldLinModel) <- "dsld"
+  return(dsldLinModel)
 }
+
 
 # Test runs 
 data(pef)
