@@ -1,5 +1,6 @@
 # TODO
 # make this work even with 2 variables
+# specify correct group col even if only grpnames is supplied
 dsldScatterPlot3D <- function (data, grpcol=NULL, axiscols=NULL, grpnames=NULL, angle=40,  
                                sortedby="Frequency", numgrps=3, 
                                colors=NULL, pchs=NULL, main=NULL, sub=NULL, 
@@ -19,6 +20,9 @@ dsldScatterPlot3D <- function (data, grpcol=NULL, axiscols=NULL, grpnames=NULL, 
         break
       }
     }
+  } else {
+    if (data_types[grpcol] != "factor" && data_types[grpcol] != "character")
+      stop("grpcol should be of factor or character data type. Consider setting this as an axiscol instead")
   }
   
   # axiscols <- a vector of 3 ints/strings that correspond to the columns to be used for
@@ -35,9 +39,10 @@ dsldScatterPlot3D <- function (data, grpcol=NULL, axiscols=NULL, grpnames=NULL, 
   }
   if (length(axiscols) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
   
+  
   # grpnames <- a vector of the individual group names in the 'data'. 
   # the user can supply grpnames as an vector of names they want to look at
-  if (missing(grpnames)) {
+  if (missing(grpnames) && !missing(grpcol)) {
     # If there are 8 possible types the group variable can be, the vector is 8 long. 
     # Sorted according to user
     switch(
@@ -102,7 +107,9 @@ dsldScatterPlot3D <- function (data, grpcol=NULL, axiscols=NULL, grpnames=NULL, 
   }
   
   # creates the legend if there are more than 1 groups
-  if (!missing(grpcol)) legend("bottomright", inset=c(0, -0.3), title=names(data[grpcol]),
+  legend_side <- "bottomright"
+  if (angle < 0 || angle > 180) legend_side <- "bottomleft"
+  if (!missing(grpcol)) legend(legend_side, inset=c(0, -0.3), title=names(data[grpcol]),
          legend=grpnames, col=colors, pch = pchs, xpd = TRUE)
 }
 
