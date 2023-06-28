@@ -23,7 +23,6 @@ dsld = importr("dsld")
 def dsldPandasToRDataframe(pandas_df):
     pandas2ri.activate()
     r_dataframe = pandas2ri.py2rpy(pandas_df)
-    print(type(r_dataframe))
     return r_dataframe
 
 
