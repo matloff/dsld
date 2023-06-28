@@ -11,22 +11,15 @@ from rpy2.robjects import pandas2ri
 # For displaying the graph
 import os
 from PIL import Image
-ggplot2 = importr('ggplot2')
 
 # Column vector input
-import numpy as np
-from rpy2.robjects import r, ListVector
+from rpy2.robjects import r
 
 # Cmd line args
 import sys
 
-
-# Displaying the graph: User must have the following installed in R env: Ggally, ggplo2, and graphics 
-base = importr('base')
-graphics = importr('graphics')
-
 # Installing DSLD: must install devtools first since that's how we access dsld during development
-devtools = importr("devtools")
+# devtools = importr("devtools")
 
 # This below line may need to be commented
 # Would have to use utils package in order to install dsld from CRAN
@@ -66,14 +59,18 @@ def dsldPyParCoord(data, m, columns, grpName):
     r_data = dsldIsRDataframe(data)
     
     # TODO: Delete these 3 lines -- they disregard the csv and directly pass in an R dataframe
-    robjects.r['data']('pef')
-    pef = robjects.r['pef']
-    r_data = pef
+    # robjects.r['data']('pef')
+    # pef = robjects.r['pef']
+    # r_data = pef
     # end TODO
+
+    # At this point, data is always intended to be in R dataframe format
 
     m_r = robjects.IntVector([m])                              # Convert variable name to R character vector
     columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
     grpName_r = robjects.StrVector([grpName])
+
+    # All necessary arguments are in R format at this point
 
     # Graph plot will be saved as a file
     plot_filename = "plot.png"
@@ -104,21 +101,6 @@ if __name__ == "__main__":
     dsldPyParCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
 
 '''
-robjects.r['data']('pef')
-pef = robjects.r['pef']
-# robjects.r['data']('mlb')
-# mlb = robjects.r['mlb']
-
-m = 10
-# Example list of integers using NumPy
-columns = np.array([1,5,6])
-#columns = [2]
-grpName = 'sex'
-
-data = pd.read_csv("/Users/tahaabdullah/Downloads/rtestTA.csv")
-
-dsldPyParCoord(data, m, columns, grpName)
-#dsldPyParCoord(mlb, m, columns, grpName)
+    Test case
+    python parCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
 '''
-
-# python3 parCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex

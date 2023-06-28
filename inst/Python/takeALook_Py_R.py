@@ -3,7 +3,6 @@
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
-
 import sys
 import pandas as pd
 import rpy2.robjects as robjects
@@ -73,7 +72,6 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
     For testing: Make sure to print the return value of the function
 '''
 
-
 if __name__ == "__main__":
     args = sys.argv
 
@@ -86,4 +84,7 @@ if __name__ == "__main__":
     else:
         dsldPyTakeALookAround(data, args[2], args[3], int(args[4]))
 
-# python takeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
+'''
+    Test Case
+    python takeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
+'''
