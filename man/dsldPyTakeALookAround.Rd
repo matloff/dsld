@@ -43,6 +43,6 @@
 
 \examples{
     # This example uses a csv version of the 'pef' dataset.
-    python takeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
+    python dsldTakeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
 }
 

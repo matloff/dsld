@@ -49,6 +49,6 @@
 \examples{    
     # This example uses a modified version 'pef' dataset.
     # Due to an error in conversion from Rdata to csv using write.csv, we had to modify the csv file to remove an extra column
-    python parCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
+    python dsldParCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
 }
 
