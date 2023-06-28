@@ -81,7 +81,7 @@ Jonathan Tran and Brandon Zarate }
 
 \examples{
 # Example 1:
-
+data(pef)
 
 # Example 2: Using column names
 data(mlb)

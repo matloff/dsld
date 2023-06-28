@@ -1,10 +1,14 @@
 # TODO
-# make this work even with 2 variables
-# specify correct group col even if only grpnames is supplied
+# specify correct grpcol even if only grpnames is supplied
+# extra arguments
+# have user limit the amount of points on the screen
+# graph draggaround ability
 dsldScatterPlot3D <- function (data, grpcol=NULL, axiscols=NULL, grpnames=NULL, angle=40,  
                                sortedby="Frequency", numgrps=3, 
                                colors=NULL, pchs=NULL, main=NULL, sub=NULL, 
                                xlim=NULL, ylim=NULL, zlim=NULL) {
+  getSuggestedLib("scatterplot3d")
+  
   data_types <- sapply(data, class) # the datatypes of each column in data
   
   # grpcol <- an int/string of the col of the grouping variable. 

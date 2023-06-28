@@ -9,6 +9,6 @@
 
 getSuggestedLib <- function(pkgName)
    if (!requireNamespace(pkgName,quietly=TRUE))
-      stop(paste0(pkgName, 'not loaded'))
+      stop(paste0(pkgName, ' not loaded'))
 
 
