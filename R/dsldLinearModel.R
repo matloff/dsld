@@ -38,85 +38,80 @@
 #' @param interactions: specifies whether or not to consider interactions. 
 #'      Defaults to TRUE [boolean]
 #'
-# Task 2: linear/generalized linear models:
-# IN PROGRESS - Brainstorming collection of functions that can be used for statistical inferences
-
-library(qeML)
-
-# DSLD Collection of functions to be used ::
-
-# Linear ---------------------------------------------------------------------------------------
-
-library(sandwich)
-library(qeML)
-
 dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
-  # setup linear model #
-  
-  # initialize class
-  dsldLinModel <- list()
-  
-  # interactions #
-  if (interactions == TRUE) {
-    # split data by sensitive level
-    dataSplit <- split(data, data[[sName]])
-    dataNames <- names(dataSplit)
-    
-    # populate linear model for each level
-    for (name in dataNames) {
-      # initialize instance of dsldDiffModel
-      dsldDiffModel <- list()
-      
-      # data for this level, drop sensitive column
-      diffData <- dataSplit[[name]]
-      drop <- c(sName)
-      diffData <- diffData[, !(names(diffData) %in% drop)]
-      
-      # get formula & diff model
-      formula <- as.formula(paste(yName, "~ ."))
-      diffModel <- lm(formula, data = diffData)
-      
-      # setup instance of dsldDiffModel
-      dsldDiffModel <- c(dsldDiffModel, formula,
-                         list(summary(diffModel)), list(coef(diffModel)),
-                         list(diffData))
-      names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-      
-      # add instance into dsldLinModel
-      dsldLinModel[[name]] <- dsldDiffModel
+    # setup linear model #
+    # libraries
+    require(sandwich)
+    require(qeML)
+
+    # initialize class
+    dsldLinModel <- list()
+
+    # interactions #
+    if (interactions == TRUE) {
+        # split data by sensitive level
+        dataSplit <- split(data, data[[sName]])
+        dataNames <- names(dataSplit)
+
+        # populate linear model for each level
+        for (name in dataNames) {
+            # initialize instance of dsldDiffModel
+            dsldDiffModel <- list()
+
+            # data for this level, drop sensitive column
+            diffData <- dataSplit[[name]]
+            drop <- c(sName)
+            diffData <- diffData[, !(names(diffData) %in% drop)]
+
+            # get formula & diff model
+            formula <- as.formula(paste(yName, "~ ."))
+            diffModel <- lm(formula, data = diffData)
+
+            # setup instance of dsldDiffModel
+            dsldDiffModel <- c(dsldDiffModel, formula,
+                                list(summary(diffModel)), list(coef(diffModel)),
+                                list(diffData))
+            names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
+            class(dsldDiffModel) <- "dsldDiffModel"
+
+            # add instance into dsldLinModel
+            dsldLinModel[[name]] <- dsldDiffModel
+        }
+    } else {
+        # initialize instance of dsldDiffModel
+        dsldDiffModel <- list()
+
+        # data for non-interactive
+        diffData <- data
+
+        # get formula & diff model
+        formula <- as.formula(paste(yName, "~ ."))
+        diffModel <- lm(formula, data = diffData)
+
+        # setup instance of dsldDiffModel
+        dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
+                        list(coef(diffModel)), list(diffData))
+        names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
+        class(dsldDiffModel) <- "dsldDiffModel"
+
+        # add instance into dsldLinModel
+        dsldLinModel[[sName]] <- dsldDiffModel
     }
-  } else {
-    # initialize instance of dsldDiffModel
-    dsldDiffModel <- list()
-    
-    # data for non-interactive
-    diffData <- data
-    
-    # get formula & diff model
-    formula <- as.formula(paste(yName, "~ ."))
-    diffModel <- lm(formula, data = diffData)
-    
-    # setup instance of dsldDiffModel
-    dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
-                       list(coef(diffModel)), list(diffData))
-    names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-    
-    # add instance into dsldLinModel
-    dsldLinModel[[sName]] <- dsldDiffModel
-  }
-  
-  # finalize dsldLinModel #
-  class(dsldLinModel) <- "dsld"
-  return(dsldLinModel)
+
+    # finalize dsldLinModel #
+    class(dsldLinModel) <- "dsldLinModel"
+    return(dsldLinModel)
 }
 
 
-# Test runs 
+# ------------ Testing Linear Model ------------ #
+library(sandwich)
+library(qeML)
 data(pef)
 x <- dsldLinModel(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
 
 
-# some other polymorphic functions  ------------------------------------------------------------
+# ------------ Auxiliary Functions ------------ #
 summary.dsld <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$summary)
   return(result)
@@ -138,7 +133,9 @@ get_data <- function(dsld_obj) {
 dsld_is_valid_name <- function(name, list) {
   name %in% names(list)
 }
-                   
+
+
+# ------------ Testing Linear Model ------------ #
 # this function is intended to compare effects across S level  -----------------------------------
 dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
   
@@ -214,9 +211,10 @@ dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
   return(my_list)
 }
 
-# Test run
+# ------------ Testing Linear Model ------------ #
 b <- dsldCompareDifferencesOfEffects(x, 'age', pef)
 b
+
 
 # CI interval
 dsldConfidenceInterval <- function(estimates, confidence_level) {
@@ -243,7 +241,8 @@ dsldConfidenceInterval <- function(estimates, confidence_level) {
 # test run
 bt <- dsldConfidenceInterval(b, 0.95)
 bt
-                       
+
+
 # ------------ Polymorphic Methods for the Linear Model ------------ #
 #' Defining some basic polymorphic methods for the linear model
 #'  - str()     :: in string form, accesses the summary for the model
