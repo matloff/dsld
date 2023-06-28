@@ -10,8 +10,8 @@ getSuggestedLib('freqparcoord') # Installs cdparcoord on user machine if necessa
 #' @param grpName What to group the data by
 #' @return a plot (in parallel coordinates) with freqparcoord()
 dsldParCoord <- function(data, m, columns, grpName, plot_filename) {
-  freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
-  ggsave(plot_filename)
+    freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
+    ggsave(plot_filename)
 }
 
 # sample data modification using the Gender Pay dataset

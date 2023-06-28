@@ -20,7 +20,6 @@ from rpy2.robjects import pandas2ri
 # dsld package instance. It allows us to call dsld functions inside Python code
 dsld = importr("dsld")
 
-
 # This function converts a pandas data frame into an R data frame
 def dsldPandasToRDataframe(pandas_df):
     pandas2ri.activate()
@@ -86,3 +85,5 @@ if __name__ == "__main__":
         dsldPyTakeALookAround(data, args[2], args[3])
     else:
         dsldPyTakeALookAround(data, args[2], args[3], int(args[4]))
+
+# python takeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex

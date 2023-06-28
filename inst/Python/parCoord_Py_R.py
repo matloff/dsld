@@ -71,7 +71,7 @@ def dsldPyParCoord(data, m, columns, grpName):
     r_data = pef
     # end TODO
 
-    m_r = robjects.IntVector([m])                               # Convert variable name to R character vector
+    m_r = robjects.IntVector([m])                              # Convert variable name to R character vector
     columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
     grpName_r = robjects.StrVector([grpName])
 
@@ -120,3 +120,5 @@ data = pd.read_csv("/Users/tahaabdullah/Downloads/rtestTA.csv")
 dsldPyParCoord(data, m, columns, grpName)
 #dsldPyParCoord(mlb, m, columns, grpName)
 '''
+
+# python3 parCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
