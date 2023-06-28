@@ -38,81 +38,174 @@
 #' @param interactions: specifies whether or not to consider interactions. 
 #'      Defaults to TRUE [boolean]
 #'
+# Task 2: linear/generalized linear models:
+# IN PROGRESS - Brainstorming collection of functions that can be used for statistical inferences
+
+library(qeML)
+
+# DSLD Collection of functions to be used ::
+
+# Linear ---------------------------------------------------------------------------------------
 dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
-    # setup linear model #
-    # library requirements
-    library(sandwich)
-    library(qeML)
-
-    # initialize class
-    dsldLinModel <- list()
-
-    # interactions #
-    if (interactions == TRUE) {
-        # split data by sensitive level
-        dataSplit <- split(data, data[[sName]])
-        dataNames <- names(dataSplit)
-
-        # populate linear model for each level
-        for (name in dataNames) {
-            # initialize instance of dsldDiffModel
-            dsldDiffModel <- list()
-
-            # data for this level, drop sensitive column
-            diffData <- dataSplit[[name]]
-            drop <- c(sName)
-            diffData <- diffData[, !(names(diffData) %in% drop)]
-
-            # get formula & diff model
-            formula <- as.formula(paste(yName, "~ ."))
-            diffModel <- lm(formula, data = diffData)
-
-            # setup instance of dsldDiffModel
-            dsldDiffModel <- c(dsldDiffModel, formula,
-                list(summary(diffModel)), list(coef(diffModel)),
-                list(diffData))
-            names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-            class(dsldDiffModel) <- "dsldDiffModel"
-
-            # add instance into dsldLinModel
-            dsldLinModel[[name]] <- dsldDiffModel
-        }
-    } else {
-        # initialize instance of dsldDiffModel
-        dsldDiffModel <- list()
-
-        # data for non-interactive
-        diffData <- data
-
-        # get formula & diff model
-        formula <- as.formula(paste(yName, "~ ."))
-        diffModel <- lm(formula, data = diffData)
-
-        # setup instance of dsldDiffModel
-        dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
-            list(coef(diffModel)), list(diffData))
-        names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-        class(dsldDiffModel) <- "dsldDiffModel"
-
-        # add instance into dsldLinModel
-        dsldLinModel[[sName]] <- dsldDiffModel
+  # This functions creates a linear model with/without interactions based on user input of yName, sName, and Data
+  # Will return a list of lists 3 objects:
+  # 1. formula to go into the model (yName ~.,)
+  # 2. summary output of model
+  # 3. data used in the model (useful to see for interactions)
+  
+  dsld = list()  # initialize empty list 
+  
+  # case if interactions == TRUE
+  if (interactions == TRUE) {
+    data_split = split(data,data[[sName]]) # split data by S level 
+    x = names(data_split) # get names 
+    
+    # loop through each S level
+    for (i in x) { 
+      temp_list <- list() # initialize second list, to be populated into main DSLD list 
+      
+      # Get temp_data
+      temp_data <- data_split[[i]] 
+      drop <- c(sName)
+      temp_data = temp_data[,!(names(temp_data) %in% drop)]
+      
+      # get formula & summary output 
+      formula <- as.formula(paste(yName, "~ ."))
+      temp_model <- lm(formula, data = temp_data)
+      
+      temp_list <- c(temp_list, formula, list(summary(temp_model)), list(coef(temp_model)), list(temp_data))
+      names(temp_list) <- c("formula", "summary", "coef", "temp_data")
+      dsld[[i]] <- temp_list
     }
-
-    # finalize dsldLinModel #
-    class(dsldLinModel) <- "dsldLinModel"
-    return(dsldLinModel)
+  } 
+  # case if interactions == FALSE 
+  else {
+    
+    temp_list <- list() # initialize second list, to be populated into main DSLD list 
+    
+    # get data
+    temp_data <- data 
+    
+    # get formula & summary output 
+    formula <- as.formula(paste(yName, "~ ."))
+    temp_model <- lm(formula, data = temp_data)
+    
+    # populate list
+    temp_list <- c(temp_list, formula, list(summary(temp_model)),list(coef(temp_model)), list(temp_data))
+    names(temp_list) <- c("formula", "summary", "coef", "temp_data")
+    dsld[[1]] <- temp_list
+  }
+  class(dsld) <- 'dsld'
+  return(dsld)
 }
 
-
-# ------------ Linear Model Testing ------------ #
+# Test runs 
 data(pef)
-x <- dsldLinModel(data = pef, yName = "wageinc", sName = "sex",
-    interactions = TRUE)
-x # creates a list of two that contains useful info of the linear model. 
-x$`1`
-x$`2`
+x <- dsldLinModel(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
+x
 
+# some other polymorphic functions  ------------------------------------------------------------
+summary.dsld <- function(dsld_obj) {
+  result <- lapply(dsld_obj, function(x) x$summary)
+  return(result)
+}
+summary(x)
 
+coef.dsld <- function(dsld_obj) {
+  result <- lapply(dsld_obj, function(x) x$coef)
+  return(result)
+}
+coef(x)
+
+get_data <- function(dsld_obj) {
+  result <- lapply(dsld_obj, function(x) x$temp_data)
+  return(result)
+}
+
+get_data(x)
+
+# this function is intended to compare effects across S level  -----------------------------------
+dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
+  summary_list <- summary(dsld_obj)
+  
+  # What to do when xName is numeric
+  if (is.numeric(data[[xName]])) {
+    coefficient_xName <- sapply(summary_list, function(summary_output) summary_output$coefficients[xName, "Estimate"])
+    se_xName <- sapply(summary_list, function(summary_output) summary_output$coefficients[xName, "Std. Error"])
+  
+    difference_xName <- diff(coefficient_xName)
+    standard_error_difference <- sqrt(sum(unlist(se_xName)^2))
+    
+    # Print the results
+    cat("Difference in coefficients (age_female - age_male):", round(difference_xName, 2), "\n")
+    cat("Standard error for the difference:", round(standard_error_difference, 2), "\n")
+    
+    estimate = difference_xName
+    standard_error = standard_error_difference
+    
+    my_list <- list(estimate, standard_error)
+    names(my_list) <- c("Estimate of difference", "Standard error of difference")
+    
+  } else {
+    
+    coefficient_xName <- sapply(summary_list, function(summary_output) {
+      summary_output$coefficients[grepl(xName, rownames(summary_output$coefficients)), "Estimate"]
+    })
+    
+    se_xName <- sapply(summary_list, function(summary_output) {
+      summary_output$coefficients[grepl(xName, rownames(summary_output$coefficients)), "Std. Error"]
+    })
+    
+    # Compute the difference in coefficients
+    difference_in_coefficients <- apply(coefficient_xName, 1, diff)
+    standard_error_difference <- sqrt(sum(se_xName^2))
+    
+    print(coefficient_xName)
+    print(se_xName)
+    print(difference_in_coefficients)
+    print(standard_error_difference)
+  
+    cat("Difference in coefficients (education_female - education_male):", round(difference_in_coefficients, 2), "\n")
+    cat("Standard error for the difference:", round(standard_error_difference, 2), "\n")
+    
+    estimate = difference_in_coefficients
+    standard_error = standard_error_difference
+    
+    my_list <- list(estimate, standard_error)
+    names(my_list) <- c("Estimate of difference", "Standard error of difference")
+    
+  }
+  
+  return(my_list)
+}
+
+b <- dsldCompareDifferencesOfEffects(x, 'age', pef)
+b
+
+dsldConfidenceInterval <- function(estimates, confidence_level) {
+  # Extract point estimate and standard error from the list
+  point_estimate <- estimates[[1]]
+  standard_error <- estimates[[2]]
+  
+  # Calculate the critical value based on the confidence level
+  z_value <- qnorm((1 + confidence_level) / 2)
+  
+  # Calculate the margin of error
+  margin_of_error <- z_value * standard_error
+  
+  # Calculate the lower and upper bounds of the confidence interval
+  lower_bound <- point_estimate - margin_of_error
+  upper_bound <- point_estimate + margin_of_error
+  
+  # Create the confidence interval as a named vector
+  confidence_interval <- c(lower = lower_bound, upper = upper_bound)
+  
+  return(confidence_interval)
+}
+
+bt <- dsldConfidenceInterval(b, 0.95)
+bt
+                       
 # ------------ Polymorphic Methods for the Linear Model ------------ #
 #' Defining some basic polymorphic methods for the linear model
 #'  - str()     :: in string form, accesses the summary for the model
