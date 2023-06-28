@@ -51,6 +51,33 @@ ages, don't let a desire for simplicity neglect this underlying trend in the
 data.
 
 Moreover, although we provide the tools to perform it in the form of standard 
-errors, hypothesis testing is deemed a 
+errors, hypothesis testing is similarly deemed an oversimplification of the 
+reality of results. First, consider that most null hypotheses are false based 
+on a priori grounds, so the results will almost always favor the expected 
+results the statistician wants. Next, consider the rising opposition against 
+the extreme focus on signficance testing that has recently come about, forcing 
+even the American Statistical Association to release a position paper about 
+the widespread mis-use of the test. Then, consider how signficance itself can 
+be faked simply by virtue of a large enough dataset (as sample size grows, the 
+standard error in estimation falls to zero and difference in population to 
+sample starts shrinking to zero). Furthermore, consider the erroeneous 
+signs of signficance as described in p-hacking, whereby random samples may 
+occasionally by chance result in statistically signficant results, creating 
+grounds for rejecting the null hypothesis by virtue of chance. Finally, 
+consider that hypothesis testing lacks the nuanced information that a 
+confidence interval provides.
+
+Confidence intervals give a range that allows statisticians to interpret the 
+margin of error (through the interval's width) and accuracy (through the 
+interval's center), as well as more easily convey results to the public since 
+intervals and margin of error are easier concepts to understand than p-values.
+
+Essentially, though the package doesn't restrict users from signficance 
+testing, it does promote the use of confidence intervals in replacement of S.T.
+}
+
+\seealso{
+    \link{https://github.com/matloff/qeML/blob/master/inst/mdFiles/No_P_Values.md}
+    \link{https://academic.oup.com/ee/article-abstract/20/5/1246/2480617?redirectedFrom=fulltext&login=false}
 }
 
