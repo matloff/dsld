@@ -13,7 +13,7 @@
 }
 
 \usage{
-    python takeALook_Py_R <FilePath> yName sName maxFeatureSetSize
+    python dsldTakeALook_Py_R <FilePath> yName sName maxFeatureSetSize
 }
 
 \arguments{
@@ -37,12 +37,19 @@
     note that this process may create a csv with an extra column. This can significantly change the result.
 }
 
+\note{
+    The user is required to have Python 3.10 in order to run this function.
+}
+
 \author{
     T. Abdullah, S. Martha, B. Ouattara, B. Zarate
 }
 
 \examples{
-    # This example uses a csv version of the 'pef' dataset.
+    # This running from the shell example uses a csv version of the 'pef' dataset.
     python dsldTakeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
+
+    # This Python example uses a csv version of the 'pef' dataset.
+    python dsldPyTakeALookAround "/Path/To/pefcsvTA.csv" wageinc sex
 }
 
