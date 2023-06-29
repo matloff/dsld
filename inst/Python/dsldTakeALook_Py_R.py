@@ -8,6 +8,7 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
+from Utils import dsldPandasToRDataframe,dsldIsRDataframe
 
 #devtools = importr("devtools")
 
@@ -18,27 +19,6 @@ from rpy2.robjects import pandas2ri
 
 # dsld package instance. It allows us to call dsld functions inside Python code
 dsld = importr("dsld")
-
-# This function converts a pandas data frame into an R data frame
-def dsldPandasToRDataframe(pandas_df):
-    pandas2ri.activate()
-    r_dataframe = pandas2ri.py2rpy(pandas_df)
-    return r_dataframe
-
-
-# This function checks if the data input from the user is in
-# R data frame, pandas' data frame or a different type of data frame.
-# The function converts the data into r's data frame or
-# return -1 which represent an error.
-def dsldIsRDataframe(data):
-    if isinstance(data, robjects.vectors.DataFrame):
-        return data
-    elif isinstance(data, pd.DataFrame):
-        return dsldPandasToRDataframe(data)
-    else:
-        # Error case or csv file or other options
-        return -1
-
 
 # dsldTakeALookAround function is called inside this function
 # The default value of the maxFeatureSetSize is set to None
@@ -85,5 +65,5 @@ if __name__ == "__main__":
 
 '''
     Test Case
-    python takeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
+    python dsldTakeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
 '''

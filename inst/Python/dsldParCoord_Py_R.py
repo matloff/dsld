@@ -7,6 +7,7 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
+from Utils import dsldPandasToRDataframe,dsldIsRDataframe
 
 # For displaying the graph
 import os
@@ -34,40 +35,12 @@ import sys
 # dsld package instance. It allows us to call dsld functions inside Python code
 dsld = importr("dsld")
 
-
-# This function converts a pandas data frame into an R data frame
-def dsldPandasToRDataframe(pandas_df):
-    pandas2ri.activate()
-    r_dataframe = pandas2ri.py2rpy(pandas_df)
-    return r_dataframe
-
-
-# This function checks if the data input from the user is in
-# R data frame, pandas' data frame or a different type of data frame.
-# The function converts the data into r's data frame or
-# return -1 which represent an error.
-def dsldIsRDataframe(data):
-    if isinstance(data, robjects.vectors.DataFrame):
-        return data
-    elif isinstance(data, pd.DataFrame):
-        return dsldPandasToRDataframe(data)
-    else:
-        # Error case or csv file or other options
-        return -1
-
-
 # dsldParCoord function is called inside this function
 # The arguments are passed inside dsldParCoord as r format
 # and the result is a graph handled by R.
 def dsldPyParCoord(data, m, columns, grpName):
     # Assuming you have the required arguments in Python variables
     r_data = dsldIsRDataframe(data)
-    
-    # TODO: Delete these 3 lines -- they disregard the csv and directly pass in an R dataframe
-    # robjects.r['data']('pef')
-    # pef = robjects.r['pef']
-    # r_data = pef
-    # end TODO
 
     # At this point, data is always intended to be in R dataframe format
 
@@ -107,5 +80,5 @@ if __name__ == "__main__":
 
 '''
     Test case
-    python parCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
+    python dsldParCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
 '''

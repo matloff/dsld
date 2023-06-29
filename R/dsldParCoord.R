@@ -1,6 +1,7 @@
 #' This file stores wrappers for the functions in the freqparcoord pkg
 
 library(freqparcoord)
+library(ggplot2)
 # library(dsld)
 getSuggestedLib('freqparcoord') # Installs cdparcoord on user machine if necessary
 
@@ -9,9 +10,13 @@ getSuggestedLib('freqparcoord') # Installs cdparcoord on user machine if necessa
 #' @param m The number of lines to plot for each group
 #' @param grpName What to group the data by
 #' @return a plot (in parallel coordinates) with freqparcoord()
-dsldParCoord <- function(data, m, columns, grpName, plot_filename) {
-    freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
-    ggsave(plot_filename)
+dsldParCoord <- function(data, m, columns, grpName, plot_filename = "null.png") {
+    if (plot_filename == "null.png"){
+        freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
+    } else{
+        freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
+        ggsave(plot_filename)
+    }
 }
 
 # sample data modification using the Gender Pay dataset
@@ -28,4 +33,4 @@ dsldParCoord <- function(data, m, columns, grpName, plot_filename) {
 # dsldParCoord(mlb,5,4:6,7) # sample call to plot the graph
 # dsldParCoord(mlb,5,6,'PosCategory') # 1 col call
 # data(pef)
-# dsldParCoord(pef,10,1,'sex') # sample call to plot the graph
+# dsldParCoord(pef,10,c(1,5,6),'sex') # sample call to plot the graph
