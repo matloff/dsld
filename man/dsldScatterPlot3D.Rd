@@ -73,7 +73,7 @@ scatterplot of this data.}
   A visual of the 3D scatterPlot
 }
 \references{
-Scaterrplot3d function:
+Scaterrplot3D function:
 \link{ https://cran.r-project.org/web/packages/scatterplot3d/index.html}
 }
 \author{
@@ -83,7 +83,7 @@ Jonathan Tran and Brandon Zarate }
 # Example 1: Using dataframe alone
 library(qeML)
 data(mlb)
-dsldScatterPlot3d(mlb, main = "Example 1")
+dsldScatterPlot3D(mlb, main = "Example 1")
 
 # Example 2: Using column names
 data(pef)
