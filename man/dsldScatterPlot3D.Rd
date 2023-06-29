@@ -90,7 +90,7 @@ data(pef)
 axisColumns <- c("educ", "wageinc", "occ")
 groupColumn <- "sex"
 
-dsldScatterPlot3D(pef, axisColumns, groupColumn, main= "Example 2")
+dsldScatterPlot3D(pef, groupColumn, axisColumns, main= "Example 2")
 
 }
 
