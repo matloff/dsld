@@ -49,10 +49,13 @@
     # This running from the shell example uses a csv version of the 'pef' dataset.
     python dsldTakeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
 
-    # This Python example uses a csv version of the 'pef' dataset.
+    # This Python Terminal example uses a csv version of the 'pef' dataset.
     # Make sure you in the correct directory before running these commands.
     import pandas as pd
-    data = pd.read_csv('csvFileName.csv')
+    from dsldTakeALook_Py_R import dsldPyTakeALookAround
+    data = pd.read_csv('pefcsvTA.csv')
     result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
+    # The user needs to print out the result to be able to see the results
+    print(result)
 }
 
