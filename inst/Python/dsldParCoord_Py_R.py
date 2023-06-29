@@ -11,12 +11,17 @@ from rpy2.robjects import pandas2ri
 # For displaying the graph
 import os
 from PIL import Image
+ggplot2 = importr('ggplot2')
 
 # Column vector input
 from rpy2.robjects import r
 
 # Cmd line args
 import sys
+
+# Displaying the graph: User must have the following installed in R env: Ggally, ggplo2, and graphics
+#base = importr('base')
+#graphics = importr('graphics')
 
 # Installing DSLD: must install devtools first since that's how we access dsld during development
 # devtools = importr("devtools")
