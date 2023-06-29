@@ -13,7 +13,7 @@
 }
 
 \usage{
-    python dsldTakeALook_Py_R <FilePath> yName sName maxFeatureSetSize
+    python dsldTakeALook_Py_R.py <FilePath> yName sName maxFeatureSetSize
 }
 
 \arguments{
@@ -38,7 +38,7 @@
 }
 
 \note{
-    The user is required to have Python 3.10 in order to run this function.
+    The usage of this function requires Python 3.10.
 }
 
 \author{
