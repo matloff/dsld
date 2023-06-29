@@ -16,7 +16,7 @@
 }
 
 \usage{
-    python parCoord_Py_R <FilePath> 10 columns grpName
+    python dsldParCoord_Py_R.py <FilePath> 10 columns grpName
 }
 
 \arguments{
@@ -42,13 +42,20 @@
     note that this process may create a csv with an extra column. This has been known to significantly change the resulting graph.
 }
 
+\note{
+    The usage of this function requires Python 3.10.
+}
+
 \author{
     T. Abdullah, S. Martha, B. Ouattara, B. Zarate
 }
 
 \examples{    
-    # This example uses a modified version 'pef' dataset.
+    # This runnning from the Shell example uses a modified version 'pef' dataset.
     # Due to an error in conversion from Rdata to csv using write.csv, we had to modify the csv file to remove an extra column
     python dsldParCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
+
+    # This running from Python example uses a csv version of the 'pef' dataset.
+    python dsldPyParCoord "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
 }
 
