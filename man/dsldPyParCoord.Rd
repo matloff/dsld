@@ -58,7 +58,8 @@
     # This running from Python example uses a csv version of the 'pef' dataset.
     # Make sure you in the correct directory before running these commands.
     import pandas as pd
+    from from dsldParCoord_Py_R import dsldPyParCoord
     data = pd.read_csv('csvFileName.csv')
-    result = dsldPyParCoord(data, '10', '1,5,6', 'sex')
+    result = dsldPyParCoord(data, 10, [1,5,6], 'sex')
 }
 
