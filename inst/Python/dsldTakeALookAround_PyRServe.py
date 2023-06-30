@@ -25,8 +25,6 @@ def convert_to_r_dataframe(pandas_df):
         conn.r.assign(f'{col_names[i]}', columns[i])
 
     conn.r(f'r_df <- data.frame({r_data_frame_args})')
-    conn.r('col <- r_df$age')
-    print(conn.r('r_df'))
 
     return
 
@@ -36,6 +34,11 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSize=None):
 
     convert_to_r_dataframe(data)
 
+    # Used iris data for testing and it worked
+    # When testing with iris data replace data argument inside dsldTakeALookAround to iris
+    # ex: dsldTakeALookAround(iris, yName, sName)
+    # Can test it with the follwoing shell command:
+    # python dsldTakeLookAround_PyRServe.py iris Sepal.Length Petal.Length
     #conn.r('data(iris)')
 
     conn.r.assign("yName", yName)
@@ -49,14 +52,12 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSize=None):
         conn.r('dsld_result <- dsldTakeALookAround(data, yName, sName, maxFeatureSize)')
         df_r = conn.r('dsld_result')
 
-    print(df_r)
 
     df_py = pd.DataFrame(df_r)
 
-    print(df_py)
-
     conn.close()
 
+    return df_py
 
 if __name__ == "__main__":
     args = sys.argv
