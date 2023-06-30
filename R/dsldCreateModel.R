@@ -1,15 +1,3 @@
-# Task 2: linear/generalized linear models:
-# IN PROGRESS - Brainstorming collection of functions that can be used for statistical inferences
-
-
-# ------------ Ideas ------------ #
-#' - Want to include for single effects of each S levels AND for differences between S levels
-#' - Initial Function: Creates model, outputs S3 list 'dsld' object. This will contain summaries of 
-#'      the linear models. Allows for interactions vs. no interactions.
-#' - Plot function: Diagnostic plots - could be useful to see how the model diagnostics hold up
-#' - Comparison functions <- not sure how to implement
-
-
 # ------------ Class Design ------------ #
 #' The class hierarchy will be as such:
 #' - dsldDiffModel  :: stores a list of traits such as summary, formula, coefficients, etc. that shows the linear 
@@ -18,13 +6,10 @@
 #'      2. summary output of model; [character] @ summary
 #'      3. coef of beta parameters; [list] @ coef
 #'      4. data used in the model (useful to see for interactions); [dataframe] @ data
-#'
-#' - dsldLinModel   :: stores a list of dsldDiffModels
 
-
-# ------------ Linear Model ------------ #
+# -------------------------- dsldCreateModel ------------------------ #
 #' ::: Descripton :::
-#' @brief This function produces an instance of the `dsldLinModel` class that 
+#' @brief This function produces an instance of the `dsld` class that 
 #'      houses a separate instance of the `dsldDiffModel` class for each 
 #'      unique, interactive level in the sensitive column specified. The end 
 #'      result is a linear model that with or without interactions that 
@@ -35,106 +20,129 @@
 #'      in the final outputted `dsldLinModel` object [dataframe]
 #' @param yName: name of the predictive column [character]
 #' @param sName: name of the sensitive column [character]
+#' @param family_type: type of model user wants to fit - enter 'gaussian' for linear; 'binomial' for logistic; 'poisson' for poisson
 #' @param interactions: specifies whether or not to consider interactions. 
 #'      Defaults to TRUE [boolean]
-#'
-dsldLinModel <- function(data, yName, sName, interactions = TRUE) {
-    # setup linear model #
-    # libraries
-    require(sandwich)
-    require(qeML)
 
-    # initialize class
-    dsldLinModel <- list()
-
-    # interactions #
-    if (interactions == TRUE) {
-        # split data by sensitive level
-        dataSplit <- split(data, data[[sName]])
-        dataNames <- names(dataSplit)
-
-        # populate linear model for each level
-        for (name in dataNames) {
-            # initialize instance of dsldDiffModel
-            dsldDiffModel <- list()
-
-            # data for this level, drop sensitive column
-            diffData <- dataSplit[[name]]
-            drop <- c(sName)
-            diffData <- diffData[, !(names(diffData) %in% drop)]
-
-            # get formula & diff model
-            formula <- as.formula(paste(yName, "~ ."))
-            diffModel <- lm(formula, data = diffData)
-
-            # setup instance of dsldDiffModel
-            dsldDiffModel <- c(dsldDiffModel, formula,
-                                list(summary(diffModel)), list(coef(diffModel)),
-                                list(diffData))
-            names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-            class(dsldDiffModel) <- "dsldDiffModel"
-
-            # add instance into dsldLinModel
-            dsldLinModel[[name]] <- dsldDiffModel
-        }
-    } else {
-        # initialize instance of dsldDiffModel
-        dsldDiffModel <- list()
-
-        # data for non-interactive
-        diffData <- data
-
-        # get formula & diff model
-        formula <- as.formula(paste(yName, "~ ."))
-        diffModel <- lm(formula, data = diffData)
-
-        # setup instance of dsldDiffModel
-        dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
-                        list(coef(diffModel)), list(diffData))
-        names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
-        class(dsldDiffModel) <- "dsldDiffModel"
-
-        # add instance into dsldLinModel
-        dsldLinModel[[sName]] <- dsldDiffModel
+dsldCreateModel <- function(data, yName, sName, family_type, interactions = TRUE) {
+  # create list
+  dsldModel <- list()
+  
+  # user selects for interactions #
+  if (interactions == TRUE) {
+    
+    # split data by sensitive level
+    dataSplit <- split(data, data[[sName]])
+    dataNames <- names(dataSplit)
+    
+    # populate model for each level
+    for (name in dataNames) {
+      
+      # initialize instance of dsldDiffModel
+      dsldDiffModel <- list()
+      
+      # data for this level, drop sensitive column
+      diffData <- dataSplit[[name]]
+      drop <- c(sName)
+      diffData <- diffData[, !(names(diffData) %in% drop)]
+      
+      # get formula & diff model
+      formula <- as.formula(paste(yName, "~ ."))
+      diffModel <- glm(formula = formula, family = family_type, data = diffData)
+      
+      # setup instance of dsldDiffModel
+      dsldDiffModel <- c(dsldDiffModel, formula,
+                         list(summary(diffModel)), list(coef(diffModel)),
+                         list(diffData))
+      names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
+      class(dsldDiffModel) <- "dsldDiffModel"
+      
+      # add instance into dsldModel
+      dsldModel[[name]] <- dsldDiffModel
     }
-
-    # finalize dsldLinModel #
-    class(dsldLinModel) <- "dsldLinModel"
-    return(dsldLinModel)
+  
+    # user does not select for interactions #
+  } else {
+    # initialize instance of dsldDiffModel
+    dsldDiffModel <- list()
+    
+    # data for non-interactive
+    diffData <- data
+    
+    # get formula & diff model
+    formula <- as.formula(paste(yName, "~ ."))
+    diffModel <- glm(formula = formula, family = family_type, data = diffData)
+    
+    # setup instance of dsldDiffModel
+    dsldDiffModel <- c(dsldDiffModel, formula, list(summary(diffModel)),
+                       list(coef(diffModel)), list(diffData))
+    names(dsldDiffModel) <- c("formula", "summary", "coef", "data")
+    class(dsldDiffModel) <- "dsldDiffModel"
+    
+    # add instance into dsldModel
+    dsldModel[[sName]] <- dsldDiffModel
+  }
+  
+  # finalize dsldModel #
+  class(dsldModel) <- "dsld"
+  return(dsldModel)
+  
 }
 
-
-# ------------ Testing Linear Model ------------ #
-library(sandwich)
-library(qeML)
+#------------------------------------------------------------------------------------------------
+# Test runs :: Linear model // pef data
+#library(qeML)
 #data(pef)
-#x <- dsldLinModel(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE)
+#lin_model <- dsldCreateModel(data = pef, yName = 'wageinc', sName = 'sex', family_type = 'gaussian', interactions = TRUE)
+#lin_model
 
 
-# ------------ Auxiliary Functions ------------ #
+# Test runs :: Logistic Model// law.school.admissions data
+#load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw2/law.school.admissions.rda') # load data
+#law.school.admissions$bar <- as.integer(law.school.admissions$bar)
+#law.school.admissions$bar <- as.factor(law.school.admissions$bar)
+#str(law.school.admissions)
+#View(law.school.admissions) # view data
+#log_model <- dsldCreateModel(data = law.school.admissions, yName = 'bar', sName = 'gender', family_type = 'binomial', interactions = TRUE)
+#log_model
+
+# another run w/ Compas data
+#load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw3/compas.rda') # load dataset 
+#log_model_2 <- dsldCreateModel(data = compas, yName = 'two_year_recid', sName = 'race', family_type = 'binomial', interactions = TRUE)
+#log_model_2
+#-----------------------------------------------------------------------------------------------
+
+#' ::: Description ::
+#' @brief Polymorphic method that overrides the summary() method, extracting information regarding 
+#'      standard errors with regards to sensitive variables (this can be for each level and the differences 
+#'      between each level).
+#' 
+#' ::: Arguments :::
+#' @param dsldModel: an instance of the dsldLinearModel s3 object to summarize
+
 summary.dsld <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$summary)
   return(result)
 }
-#summary(x)
+
+#summary(lin_model) 
 
 coef.dsld <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$coef)
   return(result)
 }
-#coef(x)
+
+#coef(lin_model)
+#coef(log_model_2)
 
 get_data <- function(dsld_obj) {
-  result <- lapply(dsld_obj, function(x) x$temp_data)
+  result <- lapply(dsld_obj, function(x) x$data)
   return(result)
 }
-#get_data(x)
 
-dsld_is_valid_name <- function(name, list) {
-  name %in% names(list)
-}
+#get_data(lin_model)
 
-
+            
 # ------------ Testing Linear Model ------------ #
 # this function is intended to compare effects across S level  -----------------------------------
 dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
@@ -215,7 +223,6 @@ dsldCompareDifferencesOfEffects <- function(dsld_obj, xName, data) {
 #b <- dsldCompareDifferencesOfEffects(x, 'age', pef)
 #b
 
-
 # CI interval
 dsldConfidenceInterval <- function(estimates, confidence_level) {
   # Extract point estimate and standard error from the list
@@ -241,7 +248,6 @@ dsldConfidenceInterval <- function(estimates, confidence_level) {
 # test run
 #bt <- dsldConfidenceInterval(b, 0.95)
 #bt
-
 
 # ------------ Polymorphic Methods for the Linear Model ------------ #
 #' Defining some basic polymorphic methods for the linear model
