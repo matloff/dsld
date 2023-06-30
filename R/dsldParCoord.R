@@ -28,7 +28,7 @@ dsldParCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
     } else{
         freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
         ggsave(plot_filename) # Save as img
-        # saveFile(plot_filename)
+        # pr2file(plot_filename)
     }
 }
 

@@ -11,7 +11,7 @@ getSuggestedLib <- function(pkgName)
    if (!requireNamespace(pkgName,quietly=TRUE))
       stop(paste0(pkgName, ' not loaded'))
 
-saveFile <- function(filename)
+pr2file <- function(filename)
 {
    origdev <- dev.cur()
    parts <- strsplit(filename,".",fixed=TRUE)
