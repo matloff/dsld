@@ -3,7 +3,7 @@ import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
 
 # This function converts a pandas data frame into an R data frame
-def dsldPandasToRDataframe(pandas_df):
+def dsld_Rpy2_PandasToRDataframe(pandas_df):
     pandas2ri.activate()
     r_dataframe = pandas2ri.py2rpy(pandas_df)
     return r_dataframe
@@ -12,11 +12,11 @@ def dsldPandasToRDataframe(pandas_df):
 # R data frame, pandas' data frame or a different type of data frame.
 # The function converts the data into r's data frame or
 # return -1 which represent an error.
-def dsldIsRDataframe(data):
+def dsld_Rpy2_IsRDataframe(data):
     if isinstance(data, robjects.vectors.DataFrame):
         return data
     elif isinstance(data, pd.DataFrame):
-        return dsldPandasToRDataframe(data)
-    else:
-        # Error case
+        return dsld_Rpy2_PandasToRDataframe(data)
+    else: # Error case
+        print("Error: not Rdata or Pandas Dataframe")
         return -1

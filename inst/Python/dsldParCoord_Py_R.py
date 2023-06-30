@@ -7,7 +7,7 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
-from Utils import dsldPandasToRDataframe,dsldIsRDataframe
+from Utils import dsld_Rpy2_IsRDataframe
 
 # For displaying the graph
 import os
@@ -40,12 +40,14 @@ dsld = importr("dsld")
 # and the result is a graph handled by R.
 def dsldPyParCoord(data, m, columns, grpName):
     # Assuming you have the required arguments in Python variables
-    r_data = dsldIsRDataframe(data)
+    r_data = dsld_Rpy2_IsRDataframe(data) # At this point, data is always intended to be in R dataframe format
 
-    # At this point, data is always intended to be in R dataframe format
-
+    # Columns can be entered in shell as all strings or all ints
+    if all(column.isdigit() for column in columns):
+        columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
+    else:
+        columns_r = robjects.StrVector(columns)
     m_r = robjects.IntVector([m])                              # Convert variable name to R character vector
-    columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
     grpName_r = robjects.StrVector([grpName])
 
     # All necessary arguments are in R format at this point
@@ -75,7 +77,7 @@ if __name__ == "__main__":
     data = pd.read_csv(file_path)
     
     # split() attempts to comvert Cmd Line string list input into array
-    # example: "1,3,5" becomes [1,3,5]
+    # example: "1,3,5" becomes ['1','3','5']
     dsldPyParCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
 
 '''

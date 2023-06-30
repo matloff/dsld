@@ -8,7 +8,7 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
-from Utils import dsldPandasToRDataframe,dsldIsRDataframe
+from Utils import dsld_Rpy2_IsRDataframe
 
 #devtools = importr("devtools")
 
