@@ -8,8 +8,8 @@
 #' @return a plot (in parallel coordinates) with freqparcoord()
 dsldParCoord <- function(data, m, columns, grpName, plot_filename = "null.png") {
     # May need to delete these 3 library() lines
-    library(freqparcoord)
-    library(ggplot2)
+    if (!require('freqparcoord')) install.packages('freqparcoord'); library('freqparcoord')
+    if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
     # library(dsld)
     
     getSuggestedLib('freqparcoord') # Installs freqparcoord on user machine if necessary
