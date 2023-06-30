@@ -4,9 +4,13 @@ import pandas as pd
 
 port = 6311
 
+# Connect to R server on default port 6311
 conn = pyRserve.connect(host='localhost', port=port)
 
 
+# col_names        : List to of pandas data frame columns
+# columns          : Values of each columns of pandas data frame
+# r_data_frame_args: Forms string containing arguments of R's data.frame()
 def convert_to_r_dataframe(pandas_df):
     col_names = pandas_df.columns.tolist()
     columns = []
@@ -15,15 +19,19 @@ def convert_to_r_dataframe(pandas_df):
     for i in range(0, len(col_names)):
         columns.append(pandas_df[col_names[i]].values.tolist())
 
+        # Forms argument for R's data.frame() function
+        # Adds name of columns with comma
         if i != len(col_names) - 1:
             r_data_frame_args += (col_names[i] + ",")
         else:
             r_data_frame_args += col_names[i]
 
+        # Creates variable with column name on R's environment
+        # with it's column values as a vector
         conn.r.assign(f'{col_names[i]}', columns[i])
 
+    # Creates a data frame with the column vector with created on R environment
     conn.r(f'r_df <- data.frame({r_data_frame_args})')
-
     return
 
 
