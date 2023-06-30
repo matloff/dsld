@@ -7,31 +7,21 @@ port = 6311
 # Connect to R server on default port 6311
 conn = pyRserve.connect(host='localhost', port=port)
 
-
-# col_names        : List to of pandas data frame columns
-# columns          : Values of each columns of pandas data frame
-# r_data_frame_args: Forms string containing arguments of R's data.frame()
+# This one might work with some more modification
 def convert_to_r_dataframe(pandas_df):
-    col_names = pandas_df.columns.tolist()
-    columns = []
-    r_data_frame_args = ""
+    # Create an R DataFrame with the correct number of rows
+    num_rows = len(pandas_df)
+    conn.r(f'r_df <- data.frame(matrix(nrow={num_rows}))')
 
-    for i in range(0, len(col_names)):
-        columns.append(pandas_df[col_names[i]].values.tolist())
+    # Iterate over the columns of the Pandas DataFrame
+    for col_name in pandas_df.columns:
+        # Convert the column values to an R vector
+        col_values = pandas_df[col_name].values.tolist()
+        r_vector = 'c(' + ', '.join(str(val) for val in col_values) + ')'
 
-        # Forms argument for R's data.frame() function
-        # Adds name of columns with comma
-        if i != len(col_names) - 1:
-            r_data_frame_args += (col_names[i] + ",")
-        else:
-            r_data_frame_args += col_names[i]
-
-        # Creates variable with column name on R's environment
-        # with it's column values as a vector
-        conn.r.assign(f'{col_names[i]}', columns[i])
-
-    # Creates a data frame with the column vector with created on R environment
-    conn.r(f'r_df <- data.frame({r_data_frame_args})')
+        # Add the column to the R DataFrame
+        r_code = f'r_df${col_name} <- {r_vector}'
+        conn.r(r_code)
     return
 
 
@@ -52,13 +42,12 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSize=None):
     conn.r.assign("sName", sName)
 
     if maxFeatureSize is None:
-        conn.r('dsld_result <- dsldTakeALookAround(data, yName, sName)')
+        conn.r('dsld_result <- dsldTakeALookAround(r_df, yName, sName)')
         df_r = conn.r('dsld_result')
     else:
         conn.r.assign("maxFeatureSize", maxFeatureSize)
-        conn.r('dsld_result <- dsldTakeALookAround(data, yName, sName, maxFeatureSize)')
+        conn.r('dsld_result <- dsldTakeALookAround(r_df, yName, sName, maxFeatureSize)')
         df_r = conn.r('dsld_result')
-
 
     df_py = pd.DataFrame(df_r)
 
