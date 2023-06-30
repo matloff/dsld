@@ -10,12 +10,10 @@ conn = pyRserve.connect(host='localhost', port=port)
 def convert_to_r_dataframe(pandas_df):
     col_names = pandas_df.columns.tolist()
     columns = []
-    r_data_frame_args = col_names[0] + ","
+    r_data_frame_args = ""
 
     for i in range(0, len(col_names)):
         columns.append(pandas_df[col_names[i]].values.tolist())
-
-        print(col_names[i], len(columns[i]))
 
         if i != len(col_names) - 1:
             r_data_frame_args += (col_names[i] + ",")
@@ -39,6 +37,7 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSize=None):
     # ex: dsldTakeALookAround(iris, yName, sName)
     # Can test it with the follwoing shell command:
     # python dsldTakeLookAround_PyRServe.py iris Sepal.Length Petal.Length
+    # uncomment code below before running it
     #conn.r('data(iris)')
 
     conn.r.assign("yName", yName)
