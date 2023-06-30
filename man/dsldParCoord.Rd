@@ -6,7 +6,7 @@
     This is a wrapper for the freqparcoord function from the freqparcoord package (link in references).
 }
 \usage{
-    dsldParCoord <- function(data, m, columns, grpName)
+    dsldParCoord <- function(data, m, columns, grpName, plot_filename = NULL)
 }
 
 \arguments{
@@ -25,6 +25,11 @@
     \item{grpName}{
         Column number for the grouping variable, if any (if none, all the data is treated
         as a single group); vector or factor.
+    }
+    \item{plot_filename}{
+        Name of the file that will hold the saved graph image. 
+        If null, the graph will not be saved as an image -- it will be generated and displayed without being saved.
+        If a filename is provided, the graph will not be displayed, only saved to a file with this filename.
     }
   }
 \details{
