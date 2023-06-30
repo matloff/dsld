@@ -19,7 +19,8 @@
         If method is "locmax", m is forced to 1.
     }
     \item{columns}{
-        Numbers of the columns of x to be displayed.
+        Numbers of the columns of x to be displayed. This can be entered as either a string or an integer
+        but not a mixture of both.
     }
     \item{grpName}{
         Column number for the grouping variable, if any (if none, all the data is treated
