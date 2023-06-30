@@ -6,7 +6,7 @@
 #' @param m The number of lines to plot for each group
 #' @param grpName What to group the data by
 #' @return a plot (in parallel coordinates) with freqparcoord()
-dsldParCoord <- function(data, m, columns, grpName, plot_filename = "null.png") {
+dsldParCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
     # May need to delete these 3 library() lines
     if (!require('freqparcoord')) install.packages('freqparcoord'); library('freqparcoord')
     if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
@@ -23,11 +23,12 @@ dsldParCoord <- function(data, m, columns, grpName, plot_filename = "null.png") 
     }
     
     # If no filename argument provided, do not save an image file, just generate the image
-    if (plot_filename == "null.png"){
+    if (is.null(plot_filename)){
         freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
     } else{
         freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
         ggsave(plot_filename) # Save as img
+        # saveFile(plot_filename)
     }
 }
 
