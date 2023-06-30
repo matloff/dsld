@@ -3,7 +3,7 @@
 library(freqparcoord)
 library(ggplot2)
 # library(dsld)
-getSuggestedLib('freqparcoord') # Installs cdparcoord on user machine if necessary
+getSuggestedLib('freqparcoord') # Installs freqparcoord on user machine if necessary
 
 #' dsldParCoord is a function that plots points in parallel coordinates
 #' @param data The data we want to look at
@@ -11,11 +11,19 @@ getSuggestedLib('freqparcoord') # Installs cdparcoord on user machine if necessa
 #' @param grpName What to group the data by
 #' @return a plot (in parallel coordinates) with freqparcoord()
 dsldParCoord <- function(data, m, columns, grpName, plot_filename = "null.png") {
+    # This code allows for columns to be inputted as all strings or all ints 
+    # (no mix, has to be one or the other)
+    if (is.vector(columns) && all(sapply(columns, is.character))){
+        # Convert strings to their corresponding column numbers
+        columns <- match(columns, colnames(data))
+    }
+    
+    # If no filename argument provided, do not save an image file, just generate the image
     if (plot_filename == "null.png"){
         freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
     } else{
         freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
-        ggsave(plot_filename)
+        ggsave(plot_filename) # Save as img
     }
 }
 
