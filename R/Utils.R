@@ -11,4 +11,23 @@ getSuggestedLib <- function(pkgName)
    if (!requireNamespace(pkgName,quietly=TRUE))
       stop(paste0(pkgName, ' not loaded'))
 
-
+saveFile <- function(filename)
+{
+   origdev <- dev.cur()
+   parts <- strsplit(filename,".",fixed=TRUE)
+   nparts <- length(parts[[1]])
+   suff <- parts[[1]][nparts]
+   if (suff == "pdf") {
+       pdf(filename)
+   }
+   else if (suff == "png") {
+       png(filename,bg='white')
+   }
+   else jpeg(filename)
+   devnum <- dev.cur()
+   dev.set(origdev)
+   dev.copy(which = devnum)
+   dev.set(devnum)
+   dev.off()
+   dev.set(origdev)
+}
