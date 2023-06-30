@@ -1,9 +1,5 @@
 #' This file stores wrappers for the functions in the freqparcoord pkg
 
-library(freqparcoord)
-library(ggplot2)
-# library(dsld)
-getSuggestedLib('freqparcoord') # Installs freqparcoord on user machine if necessary
 
 #' dsldParCoord is a function that plots points in parallel coordinates
 #' @param data The data we want to look at
@@ -11,6 +7,14 @@ getSuggestedLib('freqparcoord') # Installs freqparcoord on user machine if neces
 #' @param grpName What to group the data by
 #' @return a plot (in parallel coordinates) with freqparcoord()
 dsldParCoord <- function(data, m, columns, grpName, plot_filename = "null.png") {
+    # May need to delete these 3 library() lines
+    library(freqparcoord)
+    library(ggplot2)
+    # library(dsld)
+    
+    getSuggestedLib('freqparcoord') # Installs freqparcoord on user machine if necessary
+    getSuggestedLib('ggplot2')
+    
     # This code allows for columns to be inputted as all strings or all ints 
     # (no mix, has to be one or the other)
     if (is.vector(columns) && all(sapply(columns, is.character))){
