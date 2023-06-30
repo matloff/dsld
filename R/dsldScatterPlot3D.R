@@ -38,7 +38,12 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL) {
   }
   if (length(yNames) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
   
-  fig <- plotly::plot_ly(data, x = data[,yNames[1]], y = data[,yNames[2]], z = data[,yNames[3]], color = data[,sName], colors = "Paired")
+  fig <- plotly::plot_ly(data, 
+                         x = data[,yNames[1]], 
+                         y = data[,yNames[2]], 
+                         z = data[,yNames[3]], 
+                         color = data[,sName], 
+                         colors = "Paired")
   fig <- fig %>% add_markers()
   fig <- fig %>% layout(scene = list(xaxis = list(title = names(data[yNames[1]])),
                                      yaxis = list(title = names(data[yNames[2]])),
