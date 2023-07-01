@@ -3,7 +3,8 @@
 
 dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL, 
                               sortedBy="Name", numGroups=8, maxPoints=NULL, 
-                              main=NULL) {
+                              main=NULL, colors="Paired", opacity=1, 
+                              pointSize=8) {
   dsld::getSuggestedLib("plotly")
   
   if (!missing(maxPoints))
@@ -27,6 +28,12 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
   } else {
     if (!data_types[sName] %in% c("factor", "character"))
       stop("sName should be of factor or character data type. Consider setting this as an axiscol instead")
+  }
+  # for now, if theres no sName, this makes one so the function doesnt break
+  if (missing(sName)) {
+    group <- as.factor(rep(1,length(data[,1])))
+    data <- cbind(data, group)
+    sName <- length(data)
   }
 
   # yNames <- a vector of 3 ints/strings that correspond to the columns to be used for
@@ -57,6 +64,7 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
     # otherwise the vector is cut off to only have numGroups number of sGroups
     if (length(sGroups) > numGroups) sGroups <- sGroups[1:numGroups]
   }
+  # limits dataset to include only those with a group in groupNames
   data <- data[data[,sName] %in% sGroups,]
   data <- droplevels(data)
   
@@ -67,27 +75,30 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
       main <- paste(main, yName)
   }
   
-  # unused columns of the dataset. Doesn't work if yNames has differing types likely
-  oNames <- names(data)[!names(data) %in% names(c(data[sName], data[yNames]))]
+
+    
   
   # save this to print to the text of each point
-  fact <- data[,yNames]
+  original <- data
   # numeric for a cleaner looking graph if the axis is factor type
   data[,yNames] <- sapply(data[,yNames], as.numeric)
   
-  text <- paste("<extra></extra>",names(data[sName]), ": ", data[,sName], "<br>", sep="")
-  for (i in 1:length(yNames)) 
-    text <- paste(text, names(data[yNames[i]]), ": ", fact[,i], "<br>", sep="")
-  for (i in 1:length(oNames)) 
-    text <- paste(text, names(data[oNames[i]]), ": ", data[,oNames[i]], "<br>", sep="")
+  # info card for each data point
+  text <- paste("<extra></extra>", sep="")
+  for (i in 1:length(data)) 
+    text <- paste(text, names(data[i]), ": ", original[,i], "<br>", sep="")
+   
   
   fig <- plotly::plot_ly(data, 
                          x = data[,yNames[1]], 
                          y = data[,yNames[2]], 
                          z = data[,yNames[3]], 
                          color = data[,sName], 
-                         colors = "Paired",
-                         hovertemplate = text)
+                         colors = colors,
+                         hovertemplate = text,
+                         marker = list(
+                           size = pointSize,
+                           opacity = opacity))
   fig <- plotly::add_markers(fig)
   fig <- plotly::layout(fig, 
                         title = main,
