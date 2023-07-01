@@ -46,6 +46,10 @@
 
 \note{
     The usage of this function requires Python 3.10.
+    If the user intends to pass in an R dataframe by using R write.csv to generate a csv file which will be passed into this Python function,
+    note that this process may create a csv with an extra column. This extra column has an empty name(“”). When fetching the data using pandas
+    data frame and calling the head function of pandas object, you would notice a column with the label “unamed: 0”. This has been known to 
+    significantly change the resulting data. In order to fix this issue the entire column with the empty name or “” should be deleted.
 }
 
 \author{
