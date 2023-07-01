@@ -28,7 +28,15 @@
 }
 
 \examples{
-    # empty for now
+#   The dsldLinear function aims to provide a seamless experience, requiring minimal effort to utilize its
+#   capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
+#   employing similar commands shown in the examples.
+    
+#   The examples are conducted using the pef dataset. 
+#   Example 1: Using pef dataset. We fit a linear regression model, with 'wageinc' as the response variable and 'gender' as sensitive variable.
+    data(pef)
+    lin_model_1 <- dsldLinear(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE) # account for interactions
+    lin_model_2 <- dsldLinear(data = pef, yName = 'wageinc', sName = 'sex', interactions = FALSE) # does not account for interactions
 }
 
 \note{
