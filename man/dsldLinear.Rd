@@ -1,7 +1,8 @@
-\name{dsldLinearModel}
-\alias{dsldLinModel}
+\name{dsldLinear}
+\alias{dsldLinear}
 
-\title{DSLD Linear Model}
+\title{DSLDLinear}
+
 \description{
     This function produces an instance of the `dsldLinModel` class that 
     houses a separate instance of the `dsldDiffModel` class for each 
@@ -37,6 +38,8 @@
     data(pef)
     lin_model_1 <- dsldLinear(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE) # account for interactions
     lin_model_2 <- dsldLinear(data = pef, yName = 'wageinc', sName = 'sex', interactions = FALSE) # does not account for interactions
+
+#   The user can also call summary(lin_model_1), coef(lin_model_1), dsldGetData(lin_model_1) to extract individual components of the dsld model. 
 }
 
 \note{
