@@ -31,8 +31,8 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
   }
   # for now, if theres no sName, this makes one so the function doesnt break
   if (missing(sName)) {
-    group <- as.factor(rep(1,length(data[,1])))
-    data <- cbind(data, group)
+    Group <- as.factor(rep(1,length(data[,1])))
+    data <- cbind(data, Group)
     sName <- length(data)
   }
 
@@ -74,9 +74,6 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
     for (yName in names(data[yNames]))
       main <- paste(main, yName)
   }
-  
-
-    
   
   # save this to print to the text of each point
   original <- data

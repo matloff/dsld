@@ -81,10 +81,11 @@ dsldScatterPlot3D(mlb, main = "Example 1")
 
 # Example 2: Using column names
 data(pef)
-sName <- "sex"
-yName <- c("educ", "wageinc", "occ")
+sName <- "gender"
+yNames <- c("educ", "wageinc", "occ")
 
-dsldScatterPlot3D(pef, sName = sName, yNames = yName, main = "Example 2")
+dsldScatterPlot3D(pef, sName = sName, yNames = yNames, main = "Example 2", 
+pointSize = 5)
 
 }
 
