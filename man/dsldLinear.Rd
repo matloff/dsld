@@ -12,7 +12,7 @@
 }
 
 \usage{
-    dsldLinModel <- function(data, yName, sName, interactions=TRUE)
+    dsldLinear <- function(data, yName, sName, interactions=TRUE)
 }
 
 \arguments{
