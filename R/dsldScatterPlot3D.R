@@ -67,12 +67,7 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
                         scene = list(xaxis = list(title = names(data[yNames[1]])),
                                      yaxis = list(title = names(data[yNames[2]])),
                                      zaxis = list(title = names(data[yNames[3]]))),
-                        annotations = list(text = names(data[sName]),
-                                           showarrow = FALSE,
-                                           x = 1,
-                                           y = 1,
-                                           xref = 'paper',
-                                           yref = 'paper'))
+                        legend = list(title = list(text = names(data[sName]))))
   
   fig
 }
