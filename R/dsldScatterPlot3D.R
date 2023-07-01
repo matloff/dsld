@@ -99,13 +99,7 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
                          hovertemplate = text,
                          marker = list(
                            size = pointSize,
-                           opacity = 0.5,
-                           line = list(
-                            color = colors,
-                            opacity = 1
-                            )
-                          )
-                        )
+                           opacity = opacity))
   fig <- plotly::add_markers(fig)
   fig <- plotly::layout(fig, 
                         title = main,
