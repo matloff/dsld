@@ -2,7 +2,8 @@
 # ---- plotly ----
 
 dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL, 
-                              sortedBy="Name", numGroups=8, maxPoints=NULL) {
+                              sortedBy="Name", numGroups=8, maxPoints=NULL, 
+                              main=NULL) {
   dsld::getSuggestedLib("plotly")
   
   if (!missing(maxPoints))
@@ -59,16 +60,37 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
   data <- data[data[,sName] %in% sGroups,]
   data <- droplevels(data)
   
+  # Creates a title
+  if (missing(main) && !missing(sName)) {
+    main <- paste(names(data[sName]), " vs. ")
+    for (yName in names(data[yNames]))
+      main <- paste(main, yName)
+  }
+  
+  # unused columns of the dataset. Doesn't work if yNames has differing types likely
+  oNames <- names(data)[!names(data) %in% names(c(data[sName], data[yNames]))]
+  
+  # save this to print to the text of each point
+  fact <- data[,yNames]
+  # numeric for a cleaner looking graph if the axis is factor type
   data[,yNames] <- sapply(data[,yNames], as.numeric)
+  
+  text <- paste("<extra></extra>",names(data[sName]), ": ", data[,sName], "<br>", sep="")
+  for (i in 1:length(yNames)) 
+    text <- paste(text, names(data[yNames[i]]), ": ", fact[,i], "<br>", sep="")
+  for (i in 1:length(oNames)) 
+    text <- paste(text, names(data[oNames[i]]), ": ", data[,oNames[i]], "<br>", sep="")
   
   fig <- plotly::plot_ly(data, 
                          x = data[,yNames[1]], 
                          y = data[,yNames[2]], 
                          z = data[,yNames[3]], 
                          color = data[,sName], 
-                         colors = "Paired")
+                         colors = "Paired",
+                         hovertemplate = text)
   fig <- plotly::add_markers(fig)
   fig <- plotly::layout(fig, 
+                        title = main,
                         scene = list(xaxis = list(title = names(data[yNames[1]])),
                                      yaxis = list(title = names(data[yNames[2]])),
                                      zaxis = list(title = names(data[yNames[3]]))),
