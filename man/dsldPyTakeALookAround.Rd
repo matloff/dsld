@@ -13,7 +13,7 @@
 }
 
 \usage{
-    python dsldTakeALook_Py_R.py <FilePathToData> yName sName maxFeatureSetSize = (ncol(data) - 2)
+    python dsldTakeALook_Py_R.py <data> yName sName maxFeatureSetSize = (ncol(data) - 2)
 }
 
 \arguments{
