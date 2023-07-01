@@ -8,7 +8,7 @@ import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
-from Utils import dsld_Rpy2_IsRDataframe
+from Utils import dsld_Rpy2_IsRDataframe, print_takeALookAround_usage
 
 INPUT_1 = 1
 INPUT_2 = 2
@@ -62,6 +62,15 @@ if __name__ == "__main__":
         file_path = args[INPUT_1]
 
         data = pd.read_csv(file_path)
+
+        if len(args) - 1 > MAX_ARGS:
+            print("Error: Too many arguments")
+            print_takeALookAround_usage()
+            exit(1)
+        if len(args) - 1 < MAX_ARGS - 1:
+            print("ERROR: more arguments are required")
+            print_takeALookAround_usage()
+            exit(1)
 
         if len(args) != MAX_ARGS:
             print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3]))
