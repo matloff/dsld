@@ -1,7 +1,8 @@
 
 # ---- plotly ----
 
-dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL) {
+dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL, 
+                              sortedby="Name", numgrps=8) {
   dsld::getSuggestedLib("plotly")
   
   data_types <- sapply(data, class) # the datatypes of each column in data
@@ -14,13 +15,13 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL) {
     # how many distinct values for each column, sorted by least unique values
     for (i in 1:length(data_types)) {
       col <- data_types[names(num_uniques[i])]
-      if (col == "factor" || col == "character"){
+      if (data_types[i] %in% c("factor", "character")){
         sName <- names(col)
         break
       }
     }
   } else {
-    if (data_types[sName] != "factor" && data_types[sName] != "character")
+    if (!data_types[sName] %in% c("factor", "character"))
       stop("sName should be of factor or character data type. Consider setting this as an axiscol instead")
   }
 
@@ -30,7 +31,7 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL) {
   if (missing(yNames)) {
     yNames <- vector()
     for (i in 1:length(data_types)) {
-      if (data_types[i] == "numeric" || data_types[i] == "integer") {
+      if (data_types[i] %in% c("integer", "numeric")) {
         yNames <- c(yNames, i)
       }
       if (length(yNames) == 3) break
@@ -38,16 +39,40 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL) {
   }
   if (length(yNames) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
   
+  # sGroups <- a vector of the individual group names in the 'data'.
+  # the user can supply sGroups as an vector of names they want to look at
+  if (missing(sGroups) && !missing(sName)) {
+    # If there are 8 possible types the group variable can be, the vector is 8 long.
+    # Sorted according to user
+    switch(
+      sortedby,
+      "Name" = sGroups <- levels(unique(data[,sName])),
+      "Frequency" = sGroups <- names(sort(table(data[,sName]),decreasing=T)),
+      "Frequency-Descending" = sGroups <- names(sort(table(data[,sName]),decreasing=F))
+    )
+    # otherwise the vector is cut off to only have numgrps number of sGroups
+    if (length(sGroups) > numgrps) sGroups <- sGroups[1:numgrps]
+  }
+  data <- data[data[,sName] %in% sGroups,]
+  data <- droplevels(data)
+  
   fig <- plotly::plot_ly(data, 
                          x = data[,yNames[1]], 
                          y = data[,yNames[2]], 
                          z = data[,yNames[3]], 
                          color = data[,sName], 
                          colors = "Paired")
-  fig <- fig %>% add_markers()
-  fig <- fig %>% layout(scene = list(xaxis = list(title = names(data[yNames[1]])),
+  fig <- plotly::add_markers(fig)
+  fig <- plotly::layout(fig, 
+                        scene = list(xaxis = list(title = names(data[yNames[1]])),
                                      yaxis = list(title = names(data[yNames[2]])),
-                                     zaxis = list(title = names(data[yNames[3]]))))
+                                     zaxis = list(title = names(data[yNames[3]]))),
+                        annotations = list(text = names(data[sName]),
+                                           showarrow = FALSE,
+                                           x = 1,
+                                           y = 1,
+                                           xref = 'paper',
+                                           yref = 'paper'))
   
   fig
 }
