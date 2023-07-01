@@ -2,8 +2,11 @@
 # ---- plotly ----
 
 dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL, 
-                              sortedby="Name", numgrps=8) {
+                              sortedBy="Name", numGroups=8, maxPoints=NULL) {
   dsld::getSuggestedLib("plotly")
+  
+  if (!missing(maxPoints))
+    data <- data[1:maxPoints,]
   
   data_types <- sapply(data, class) # the datatypes of each column in data
 
@@ -15,7 +18,7 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
     # how many distinct values for each column, sorted by least unique values
     for (i in 1:length(data_types)) {
       col <- data_types[names(num_uniques[i])]
-      if (data_types[i] %in% c("factor", "character")){
+      if (col %in% c("factor", "character")){
         sName <- names(col)
         break
       }
@@ -45,16 +48,18 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
     # If there are 8 possible types the group variable can be, the vector is 8 long.
     # Sorted according to user
     switch(
-      sortedby,
+      sortedBy,
       "Name" = sGroups <- levels(unique(data[,sName])),
       "Frequency" = sGroups <- names(sort(table(data[,sName]),decreasing=T)),
       "Frequency-Descending" = sGroups <- names(sort(table(data[,sName]),decreasing=F))
     )
-    # otherwise the vector is cut off to only have numgrps number of sGroups
-    if (length(sGroups) > numgrps) sGroups <- sGroups[1:numgrps]
+    # otherwise the vector is cut off to only have numGroups number of sGroups
+    if (length(sGroups) > numGroups) sGroups <- sGroups[1:numGroups]
   }
   data <- data[data[,sName] %in% sGroups,]
   data <- droplevels(data)
+  
+  data[,yNames] <- sapply(data[,yNames], as.numeric)
   
   fig <- plotly::plot_ly(data, 
                          x = data[,yNames[1]], 
