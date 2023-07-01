@@ -1,17 +1,17 @@
-\name{dsldParCoord}
-\alias{dsldParCoord}
+\name{dsldFreqPCoord}
+\alias{dsldFreqPCoord}
 
-\title{dsldParCoord}
+\title{dsldFreqPCoord}
 \description{
     This is a wrapper for the freqparcoord function from the freqparcoord package (link in references).
 }
 \usage{
-    dsldParCoord <- function(data, m, columns, grpName, plot_filename = NULL)
+    dsldFreqPCoord <- function(data, m, columns, grpName, plot_filename = NULL)
 }
 
 \arguments{
     \item{data}{
-        The data, in data frame or matrix form. If there are indicator
+        The data, in data frame or matrix form.
     }
     \item{m}{
         Number of lines to plot for each group. A negative value in conjunction with
@@ -33,7 +33,7 @@
     }
   }
 \details{
-    dsldParCoord is a wrapper function of the function freqparcoord package in which,
+    dsldFreqPCoord is a wrapper function of the function freqparcoord package in which,
     freqparcoord creates a parallel coordinate graph.
     The y-axis represents the distance from the mean of the column variable
 }
@@ -53,11 +53,9 @@
     data(prgeng)
     pe <- prgeng[,c(1,3,5,7:9)]
     pe25 <- pe[pe$wageinc < 250000,]
-    dsldParCoord(pe25,10,c(1,5,6),'sex') # sample call to plot the graph
-    %pe25 <- makeFactor(pe25,c('educ','occ','sex'))
-    %pe25disc <- discretize(pe25,nlevels=5)
+    dsldFreqPCoord(pe25,10,c(1,5,6),'sex') # sample call to plot the graph
     # Example 2
     data(mlb)
-    dsldParCoord(mlb,5,4:6,7) # sample call to plot the graph
+    dsldFreqPCoord(mlb,5,4:6,7) # sample call to plot the graph
 }
 

@@ -14,6 +14,7 @@ INPUT_1 = 1
 INPUT_2 = 2
 INPUT_3 = 3
 INPUT_4 = 4
+MAX_ARGS = 5
 
 # This below line may need to be commented
 # Would have to use utils package in order to install dsld from CRAN
@@ -32,7 +33,7 @@ dsld = importr("dsld")
 # and the result is returned as Python's pandas data frame.
 def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
     # Assuming you have the required arguments in Python variables
-    r_data = dsldIsRDataframe(data)
+    r_data = dsld_Rpy2_IsRDataframe(data)
 
     yName_r = robjects.StrVector([yName])                               # Convert variable name to R character vector
     sName_r = robjects.StrVector([sName])                               # Convert variable name to R character vector
@@ -63,10 +64,10 @@ if __name__ == "__main__":
         data = pd.read_csv(file_path)
 
         if len(args) != MAX_ARGS:
-            dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3])
+            print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3]))
         else:
             try:
-                dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3], int(args[INPUT_4]))
+                print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3], int(args[INPUT_4])))
             except ValueError:
                 print("Error: 5th input must be of type int. Entered: ", args[INPUT_4])
     except FileNotFoundError:
@@ -74,5 +75,6 @@ if __name__ == "__main__":
 
 '''
     Test Case
-    python dsldTakeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
+    # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
+    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc sex
 '''

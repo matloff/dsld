@@ -1,4 +1,4 @@
 export(
-   getSuggestedLib,dsldParCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D
+   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D
 )
 

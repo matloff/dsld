@@ -1,12 +1,12 @@
 #' This file stores wrappers for the functions in the freqparcoord pkg
 
 
-#' dsldParCoord is a function that plots points in parallel coordinates
+#' dsldFreqPCoord is a function that plots points in parallel coordinates
 #' @param data The data we want to look at
 #' @param m The number of lines to plot for each group
 #' @param grpName What to group the data by
 #' @return a plot (in parallel coordinates) with freqparcoord()
-dsldParCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
+dsldFreqPCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
     # May need to delete these 3 library() lines
     if (!require('freqparcoord')) install.packages('freqparcoord'); library('freqparcoord')
     if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
@@ -28,7 +28,7 @@ dsldParCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
     } else{
         freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
         ggsave(plot_filename) # Save as img
-        # pr2file(plot_filename)
+        # pr2file(plot_filename) # Doesn't work with Python, so we are leaving this commented for now
     }
 }
 
@@ -40,10 +40,11 @@ dsldParCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
 # pe25 <- makeFactor(pe25,c('educ','occ','sex'))
 # pe25disc <- discretize(pe25,nlevels=5)
 # 
-# dsldParCoord(pe25,10,c(1,5,6),'sex') # sample call to plot the graph
+# dsldFreqPCoord(pe25,10,c(1,5,6),'sex') # sample call to plot the graph
 # 
 # data(mlb)
-# dsldParCoord(mlb,5,4:6,7) # sample call to plot the graph
-# dsldParCoord(mlb,5,6,'PosCategory') # 1 col call
+# dsldFreqPCoord(mlb,5,4:6,7) # sample call to plot the graph
+# dsldFreqPCoord(mlb,5,6,'PosCategory') # 1 col call
 # data(pef)
-# dsldParCoord(pef,10,c(1,5,6),'sex') # sample call to plot the graph
+# dsldFreqPCoord(pef,10,c(1,5,6),'sex') # sample call to plot the graph
+# dsldFreqPCoord(pef,10,c(1,5,6),'sex','pr2fileTest.png')

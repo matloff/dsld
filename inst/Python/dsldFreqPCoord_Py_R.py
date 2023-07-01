@@ -1,5 +1,5 @@
 '''
-    This file contains the interface code for calling the dsldParCoord from dsld R package.
+    This file contains the interface code for calling the dsldFreqPCoord from dsld R package.
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
@@ -35,10 +35,10 @@ import sys
 # dsld package instance. It allows us to call dsld functions inside Python code
 dsld = importr("dsld")
 
-# dsldParCoord function is called inside this function
-# The arguments are passed inside dsldParCoord as r format
+# dsldFreqPCoord function is called inside this function
+# The arguments are passed inside dsldFreqPCoord as r format
 # and the result is a graph handled by R.
-def dsldPyParCoord(data, m, columns, grpName):
+def dsldPyFreqPCoord(data, m, columns, grpName):
     # Assuming you have the required arguments in Python variables
     r_data = dsld_Rpy2_IsRDataframe(data) # At this point, data is always intended to be in R dataframe format
 
@@ -56,7 +56,7 @@ def dsldPyParCoord(data, m, columns, grpName):
     plot_filename = "plot.png"
 
     # Calling the R function
-    dsld.dsldParCoord(r_data, m_r, columns_r, grpName_r, plot_filename)
+    dsld.dsldFreqPCoord(r_data, m_r, columns_r, grpName_r, plot_filename)
     
     # Load and display the saved image in Python
     img = Image.open(plot_filename)
@@ -78,9 +78,10 @@ if __name__ == "__main__":
     
     # split() attempts to comvert Cmd Line string list input into array
     # example: "1,3,5" becomes ['1','3','5']
-    dsldPyParCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
+    dsldPyFreqPCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
 
 '''
     Test case
-    python dsldParCoord_Py_R.py "/Path/To/pefcsvTAFixed.csv" 10 1,5,6 sex
+    # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
+    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
 '''

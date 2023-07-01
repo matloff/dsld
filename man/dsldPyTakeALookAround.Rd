@@ -13,12 +13,13 @@
 }
 
 \usage{
-    python dsldTakeALook_Py_R.py <FilePath> yName sName maxFeatureSetSize
+    python dsldTakeALook_Py_R.py <FilePathToData> yName sName maxFeatureSetSize = (ncol(data) - 2)
 }
 
 \arguments{
     \item{data}{
-        dataset in dataframe form
+        If running from the terminal: A filepath to the csv file which holds your data.
+        If running from the Python shell/prompt: A pandas or R dataframe that holds your data
     }
     \item{yName}{
         as in qeML functions, the response variable
@@ -47,13 +48,16 @@
 
 \examples{
     # This running from the shell example uses a csv version of the 'pef' dataset.
-    python dsldTakeALook_Py_R.py "/Path/To/pefcsvTA.csv" wageinc sex
+    # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
+    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc sex
 
-    # This Python Terminal example uses a csv version of the 'pef' dataset.
-    # Make sure you in the correct directory before running these commands.
+    # This example is meant for entering the Python shell and running from there.
+    # Make sure you are in the correct directory before running these commands.
+    python # Opens the python shell
+    # All of the next commands will be entered in the Python shell; you should see a >>> as your prompt.
     import pandas as pd
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
-    data = pd.read_csv('pefcsvTA.csv')
+    data = pd.read_csv('pefFixed.csv')
     result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
     # The user needs to print out the result to be able to see the results
     print(result)
