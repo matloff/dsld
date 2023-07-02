@@ -83,5 +83,5 @@ if __name__ == "__main__":
 '''
     Test case
     # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
-    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
+    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 gender
 '''

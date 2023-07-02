@@ -51,7 +51,7 @@
 
 #   Example 1: We investigate the predictive accuracy for a continuous Y,'wageinc', using the default arguments for maxFeatureSetSize = 4
     data(pef)
-    dsldTakeALookAround(pef, 'wageinc', 'sex', 4)
+    dsldTakeALookAround(pef, 'wageinc', 'gender', 4)
 
 #   Example 2:  We investigate the predictive accuracy for a categorical Y, 'educ', using the default arguments for maxFeatureSetSize = 4
     data(pef)
@@ -59,6 +59,6 @@
 
 #   Example 3:  We investigate the predictive accuracy for a continuous Y, 'wageinc', using the maxFeatureSetSize = 1
     data(pef)
-    dsldTakeALookAround(pef, 'wageinc', 'sex', 1)
+    dsldTakeALookAround(pef, 'wageinc', 'gender', 1)
 }
 

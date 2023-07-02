@@ -58,7 +58,7 @@
     import pandas as pd
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     data = pd.read_csv('pefFixed.csv')
-    result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
+    result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     # The user needs to print out the result to be able to see the results
     print(result)
 }

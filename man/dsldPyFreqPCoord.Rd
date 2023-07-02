@@ -69,6 +69,6 @@
     import pandas as pd
     from from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     data = pd.read_csv('pefFixed.csv')
-    dsldPyFreqPCoord(data, 10, [1,5,6], 'sex')
+    dsldPyFreqPCoord(data, 10, [1,5,6], 'gender')
 }
 
