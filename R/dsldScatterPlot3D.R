@@ -1,7 +1,7 @@
 # TODO
 # make sName work with numeric (use a heat map)
 # make circles hollow
-
+# have x,y,zlim
 
 # ---- plotly ----
 
