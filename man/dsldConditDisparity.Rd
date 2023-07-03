@@ -23,9 +23,9 @@
 
 \arguments{
 \item{data}{dataset in dataframe form}
-\item{yName}{as in qeML functions, predictive variable}
-\item{xName}{name of a numeric column to take comparisons with}
+\item{yName}{as in qeML functions, predictive variable, must be numeric}
 \item{sName}{name of the sensitive variable, an R factor}
+\item{xName}{name of a numeric column to take comparisons with}
 \item{condits}{an R vector; each component is a character string for an R logical 
 expression representing a desired condition; these must NOT involve sName}
 \item{qeFtn}{reg function (defaults only), defaults to qeKNN}
