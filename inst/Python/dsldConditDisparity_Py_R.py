@@ -3,9 +3,8 @@
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
-import pandas as pd
 import sys
-import time
+import pandas as pd
 from PIL import Image
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
@@ -18,6 +17,25 @@ qeML = importr("qeML")
 ggplot2 = importr('ggplot2')  # May remove this line
 grdevices = importr('grDevices')
 
+
+# When saving our plot from R, it comes up with a transparent background.
+# This function is designed to set the background of the saved image to
+# a white background. 
+def changeBg(path):
+    # Open the image
+    image_path = path
+    image = Image.open(image_path)
+    image = image.convert("RGBA")  # Convert to RGBA mode
+
+    # Create a new image with a white background
+    new_image = Image.new("RGB", image.size, "white")
+
+    # Paste the original image onto the new image with alpha blending
+    new_image.paste(image, (0, 0), image)
+
+    # Save the modified image
+    output_path = path
+    new_image.save(output_path)
 
 # This is the interface function for R's dsldConditDisparity function
 # The arguments are converted into R data type before calling dsldConditDisparity function
@@ -43,11 +61,14 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn=qeML.qeKNN, 
     dsld.dsldConditDisparity(r_data, yName_r, sName_r, xName_r, condits_r, qeFtn, minS_r, yLim_r, useLoess_r)
 
     # Copy and saves the image as plot.png
-    grdevices.dev_copy(device=r.png, filename="plot.png")
+    grdevices.dev_copy(device=r.png, filename="condits_disparity_plot.png")
     grdevices.dev_off()
-    
+
+    # Set background of image saved to white
+    changeBg("condits_disparity_plot.png")
+
     # Load the image file in Python
-    image = Image.open("plot.png")
+    image = Image.open("condits_disparity_plot.png")
     image.show()  # Display the plot using the default image viewer
 
     return
