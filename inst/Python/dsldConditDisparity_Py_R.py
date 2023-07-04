@@ -4,6 +4,7 @@
     users data input is in pandas data frame before doing any computation
 '''
 import sys
+import os
 import pandas as pd
 from PIL import Image
 import rpy2.robjects as robjects
@@ -43,6 +44,11 @@ def changeBg(path):
 def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn=qeML.qeKNN, minS=50, yLim=None, useLoess=True):
     r_data = dsld_Rpy2_IsRDataframe(data)
 
+    robjects.r.assign("r_data", r_data)  # Assign the 'r_data' variable to R
+    # robjects.r('r_data$race <- as.factor(r_data$race)')  # Call as.factor() on the 'race' column
+    robjects.r(f"r_data${sName} <- as.factor(r_data${sName})")  # Call as.factor() on the 'race' column
+    r_data = robjects.r("r_data")  # Assign the modified R dataframe back to Python
+
     yName_r = robjects.StrVector([yName])  # Convert variable name to R character vector
     sName_r = robjects.StrVector([sName])  # Convert variable name to R character vector
     xName_r = robjects.StrVector([xName])  # Convert variable name to R character vector
@@ -50,8 +56,7 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn=qeML.qeKNN, 
     minS_r = robjects.IntVector([minS])    # Convert variable name to R;s number type
 
     yLim_r = robjects.NULL
-    print(sName)
-    print(sName_r)
+
     if yLim is not None:
         yLim_r = robjects.IntVector([int(x) for x in yLim])
         print(yLim_r)
@@ -61,26 +66,44 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn=qeML.qeKNN, 
     dsld.dsldConditDisparity(r_data, yName_r, sName_r, xName_r, condits_r, qeFtn, minS_r, yLim_r, useLoess_r)
 
     # Copy and saves the image as plot.png
-    grdevices.dev_copy(device=r.png, filename="condits_disparity_plot.png")
+    plot_filename = "condits_disparity_plot.png"
+    grdevices.dev_copy(device=r.png, filename=plot_filename)
     grdevices.dev_off()
 
     # Set background of image saved to white
-    changeBg("condits_disparity_plot.png")
+    changeBg(plot_filename)
 
     # Load the image file in Python
-    image = Image.open("condits_disparity_plot.png")
+    image = Image.open(plot_filename)
     image.show()  # Display the plot using the default image viewer
 
-    return
+    # Close the displayed image
+    image.close()
+    # Delete the image file
+    os.remove(plot_filename)
 
 
 # The code below is for testing purposes. We'll remove it 
 # once we're done working on the shell command inputs
 # The code uses pef data for testing
-robjects.r['data']('pef')
-pef = robjects.r['pef']
+# robjects.r['data']('pef')
+# pef = robjects.r['pef']
+# print(robjects.r['head'](pef))
 
-dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
+# dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
+'''
+# Load the dataset 'compas' into R
+robjects.r['data']('compas')
+compas = robjects.r['compas']
+# print(robjects.r['head'](compas))
+# Convert the 'two_year_recid' variable to numeric
+robjects.r('compas$two_year_recid <- as.numeric(as.character(compas$two_year_recid) == "Yes")')
+compas = robjects.r['compas']
+# print(robjects.r['head'](compas))
+
+dsldPyConditDisparity(compas,'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], qeML.qeKNN)
+'''
+
 
 
 '''
@@ -90,14 +113,16 @@ dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
 
 # We'll do some additional work on the shell command
 # The code below is not currently working properly
-'''
+
 if __name__ == "__main__":
     args = sys.argv
     file_path = args[1]
 
     data = pd.read_csv(file_path)
 
-    dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','))'''
+    dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','))
+
+    # dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','), qeFtn = args[6])
 
 
-# python dsldConditDisparity_Py_R.py ../../data/pefFixed.csv age gender wageinc age=60,wkswrkd=25
+# python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6'
