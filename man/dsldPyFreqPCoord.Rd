@@ -55,6 +55,8 @@
 }
 
 \examples{    
+    % TODO: These examples use 'sex', but pef should be updated to use 'gender'. We seem to be using an outdated pef dataset.
+
     # This runnning from the Shell example uses a modified version 'pef' dataset.
     # Due to an error in conversion from Rdata to csv using write.csv, we had to modify the csv file to remove an extra column
 
@@ -69,5 +71,8 @@
     data = pd.read_csv('../../data/pefFixed.csv')
     # Note that you can input column numbers, but they still have to be in string format. You can input column names as well. 
     dsldPyFreqPCoord(data, 10, ['1','5','6'], 'sex')
+
+    # Here is how you can call the function with the same columns, just with names instead of column numbers. This should yield the same output as above.
+    dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'sex')
 }
 
