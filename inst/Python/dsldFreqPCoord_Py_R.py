@@ -53,16 +53,17 @@ def dsldPyFreqPCoord(data, m, columns, grpName):
     # All necessary arguments are in R format at this point
 
     # Graph plot will be saved as a file
-    plot_filename = "plot.png"
+    plot_filename = "freqp_coord.png"
 
     # Calling the R function
     dsld.dsldFreqPCoord(r_data, m_r, columns_r, grpName_r, plot_filename)
     
     # Load and display the saved image in Python
-    img = Image.open(plot_filename)
-    img.show()
+    image = Image.open(plot_filename)
+    image.show()
+    
     # Close the displayed image
-    img.close()
+    image.close()
     # Delete the image file
     os.remove(plot_filename)
 
@@ -83,5 +84,5 @@ if __name__ == "__main__":
 '''
     Test case
     # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
-    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 gender
+    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
 '''
