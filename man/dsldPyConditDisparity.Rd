@@ -1,7 +1,7 @@
-\name{dsldConditDisparity}
-\alias{dsldConditDisparity}
+\name{dsldPyConditDisparity}
+\alias{dsldPyConditDisparity}
 
-\title{DSLDConditDisparity}
+\title{DSLDPyConditDisparity}
 \description{
     This function, meant for Python users, uses the rpy2 library to call the R function dsldConditDisparity() from within a Python environment. 
 
