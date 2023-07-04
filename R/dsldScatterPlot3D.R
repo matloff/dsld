@@ -1,12 +1,13 @@
 # TODO
 # make sName work with numeric (use a heat map)
 # make circles hollow
-# have x,y,zlim
+# have x,y,zlim: Added limits but best to use seq() rather than c()
 
 # ---- plotly ----
 
 dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL, 
-                              sortedBy="Name", numGroups=8, maxPoints=NULL, 
+                              sortedBy="Name", numGroups=8, maxPoints=NULL,
+                              xlim=NULL, ylim=NULL, zlim=NULL,
                               main=NULL, colors="Paired", opacity=1, 
                               pointSize=8) {
   dsld::getSuggestedLib("plotly")
@@ -53,6 +54,23 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
     }
   }
   if (length(yNames) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
+  
+  #INSERT LIMITING STUFF HERE
+  limitRange <- function(data, xlim=NULL, ylim=NULL, zlim=NULL){
+    df <- data
+    if(!is.null(xlim)) df <- df[df[,yNames[1]] > xlim[1] & df[,yNames[1]] < xlim[2],]
+    if(!is.null(ylim)) df <- df[df[,yNames[2]] > ylim[1] & df[,yNames[2]] < ylim[2],]
+    if(!is.null(zlim)) df <- df[df[,yNames[3]] > zlim[1] & df[,yNames[3]] < zlim[2],]
+    return(df)
+
+  }
+  
+  
+  if (!missing(xlim) | !missing(ylim) | !missing(zlim)) data <- limitRange(data, xlim, ylim, zlim)
+
+  
+  
+  
   
   # sGroups <- a vector of the individual group names in the 'data'.
   # the user can supply sGroups as an vector of names they want to look at
