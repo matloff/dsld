@@ -32,14 +32,33 @@
 #   The dsldLinear function aims to provide a seamless experience, requiring minimal effort to utilize its
 #   capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
 #   employing similar commands shown in the examples.
+
+#   Furthermore, the user can also call summary(), coef(), dsldGetData() to extract individual components of the dsld model. 
     
 #   The examples are conducted using the pef dataset. 
-#   Example 1: Using pef dataset. We fit a linear regression model, with 'wageinc' as the response variable and 'gender' as sensitive variable.
     data(pef)
-    lin_model_1 <- dsldLinear(data = pef, yName = 'wageinc', sName = 'sex', interactions = TRUE) # account for interactions
-    lin_model_2 <- dsldLinear(data = pef, yName = 'wageinc', sName = 'sex', interactions = FALSE) # does not account for interactions
 
-#   The user can also call summary(lin_model_1), coef(lin_model_1), dsldGetData(lin_model_1) to extract individual components of the dsld model. 
+#   Example 1: Using pef dataset. We fit a linear regression model, with 'wageinc' as the response variable and 'gender' as sensitive variable. Interactions == TRUE.
+    lin1 = dsldLinear(pef,'wageinc','sex', interactions = TRUE); lin1
+
+    # extract individual components #
+    summary(lin1)
+    coef(lin1)
+    dsldGetData(lin1)
+
+#   Example 2: Using pef dataset. We fit a linear regression model, with 'wageinc' as the response variable and 'gender' as sensitive variable. Interactions == FALSE.
+    lin2 = dsldLinear(pef,'wageinc','sex', interactions = FALSE); lin2
+
+    # extract individual components #
+    summary(lin2)
+    coef(lin2)
+    dsldGetData(lin2)
+
+    # dsldDiffS #
+    dat2 <- dsldDiffS(lin2); View(dat2) 
+
+    # compute confidence interval of differences between S #
+    dsldConfidenceInterval(dat2, 0.95) 
 }
 
 \note{
