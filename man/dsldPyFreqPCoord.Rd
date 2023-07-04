@@ -61,9 +61,9 @@
     # Make sure you are in the Python directory of the dsld library before running these commands.
     python # Opens the python shell
     # All of the next commands will be entered in the Python shell; you should see a >>> as your prompt.
-    import pandas as pd
-    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
-    data = pd.read_csv('pefFixed.csv')
-    dsldPyFreqPCoord(data, 10, [1,5,6], 'gender')
+    >>> import pandas as pd
+    >>> from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    >>> data = pd.read_csv('pefFixed.csv')
+    >>> dsldPyFreqPCoord(data, 10, [1,5,6], 'gender')
 }
 
