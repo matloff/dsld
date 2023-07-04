@@ -56,36 +56,31 @@
 
 \examples{    
     % TODO: These examples use 'sex', but pef should be updated to use 'gender'. We seem to be using an outdated pef dataset.
+    # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python
 
-    # These examples use a modified version 'pef' dataset.
+    # These examples use a modified version of the 'pef' dataset.
     # Due to an error in conversion from Rdata to csv using write.csv, we had to modify the csv file to remove an extra column
 
     # Example 1a: Using Column Numbers (OS Shell Prompt)
-    # Running from the OS shell prompt (Before running, go to /dsld/inst/Python)
     python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
 
-
     # Example 1b: Using Column Numbers (Python Shell Prompt)
-    # Running from the Python shell prompt (Before running, go to /dsld/inst/Python)
     python # Open Python shell prompt
     import pandas as pd
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     data = pd.read_csv('../../data/pefFixed.csv')
-    # Note that you can input column numbers, but they still have to be in string format. You can input column names as well. 
+    # Note that you can input column numbers, but they still have to be in string format. See example 2b for inputting column names
     dsldPyFreqPCoord(data, 10, ['1','5','6'], 'sex')
 
-
-
-    # Here is 2 examples (a and b) on how you can call the function with the same columns, just with names instead of column numbers. 
-    # These should yield the same output as above examples 1a and 1b.
+    # ********************************************************
+    # Here are 2 more examples (a and b) on how you can call the function with the same columns, just with column names instead of column numbers. 
+    # These below 2 examples should produce the SAME GRAPHS as above examples 1a and 1b.
+    # ********************************************************
 
     # Example 2a: Using Column Names (OS Shell Prompt)
-    # Running from the OS shell prompt (Before running, go to /dsld/inst/Python)
     python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 age,wageinc,wkswrkd sex
 
-
     # Example 2b: Using Column Names (Python Shell Prompt)
-    # Running from the Python shell prompt (Before running, go to /dsld/inst/Python)
     python # Open Python shell prompt
     import pandas as pd
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord

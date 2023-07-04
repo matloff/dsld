@@ -61,11 +61,12 @@
 }
 
 \examples{
-    # Running from the OS shell prompt (Before running, go to /dsld/inst/Python)
+    # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python
+
+    # Example 1a: Running from the OS shell prompt
     python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6'
 
-
-    # Running from the Python shell prompt (Before running, go to /dsld/inst/Python)
+    # Example 1b: Running from the Python shell prompt
     python # Open Python shell prompt
     import pandas as pd
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
