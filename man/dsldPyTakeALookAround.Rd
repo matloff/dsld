@@ -47,14 +47,17 @@
 }
 
 \examples{
-    # This running from the shell example uses a csv version of the 'pef' dataset.
+    % TODO: These examples use 'sex', but pef should be updated to use 'gender'. We seem to be using an outdated pef dataset.
 
-    # Running from the Terminal (Before running, go to /dsld/inst/Python)
-    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
+    # These examples use a csv version of the 'pef' dataset.
+    # Due to an error in conversion from Rdata to csv using write.csv, we had to modify the csv file to remove an extra column
+
+    # Running from the OS shell prompt (Before running, go to /dsld/inst/Python)
+    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc sex
 
 
-    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
-    python # Open python prompt
+    # Running from the Python shell prompt (Before running, go to /dsld/inst/Python)
+    python # Open Python shell prompt
     import pandas as pd
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     data = pd.read_csv('../../data/pefFixed.csv')

@@ -61,16 +61,12 @@
 }
 
 \examples{
-    # The dsldConditDisparity function aims to provide a seamless experience, requiring minimal effort to utilize its
-    # capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
-    # employing similar commands shown in the examples.
-
-    # Running from the Terminal (Before running, go to /dsld/inst/Python)
+    # Running from the OS shell prompt (Before running, go to /dsld/inst/Python)
     python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6'
 
 
-    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
-    python # Open python prompt
+    # Running from the Python shell prompt (Before running, go to /dsld/inst/Python)
+    python # Open Python shell prompt
     import pandas as pd
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     data = pd.read_csv('../../data/compasNumericFixed.csv')
