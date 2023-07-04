@@ -48,18 +48,17 @@
 
 \examples{
     # This running from the shell example uses a csv version of the 'pef' dataset.
-    # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
-    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc sex
 
-    # This example is meant for entering the Python shell and running from there.
-    # Make sure you are in the correct directory before running these commands.
-    python # Opens the python shell
-    # All of the next commands will be entered in the Python shell; you should see a >>> as your prompt.
+    # Running from the Terminal (Before running, go to /dsld/inst/Python)
+    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
+
+
+    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
+    python # Open python prompt
     import pandas as pd
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
-    data = pd.read_csv('pefFixed.csv')
-    result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
-    # The user needs to print out the result to be able to see the results
+    data = pd.read_csv('../../data/pefFixed.csv')
+    result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
     print(result)
 }
 

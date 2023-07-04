@@ -54,16 +54,16 @@
 \examples{    
     # This runnning from the Shell example uses a modified version 'pef' dataset.
     # Due to an error in conversion from Rdata to csv using write.csv, we had to modify the csv file to remove an extra column
-    # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
+
+    # Running from the Terminal (Before running, go to /dsld/inst/Python)
     python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
 
-    # This example is meant for entering the Python shell and running from there.
-    # Make sure you are in the Python directory of the dsld library before running these commands.
-    python # Opens the python shell
-    # All of the next commands will be entered in the Python shell; you should see a >>> as your prompt.
-    >>> import pandas as pd
-    >>> from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
-    >>> data = pd.read_csv('pefFixed.csv')
-    >>> dsldPyFreqPCoord(data, 10, [1,5,6], 'gender')
+
+    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
+    python # Open python prompt
+    import pandas as pd
+    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    data = pd.read_csv('../../data/pefFixed.csv')
+    dsldPyFreqPCoord(data, 10, ['1','5','6'], 'sex')
 }
 

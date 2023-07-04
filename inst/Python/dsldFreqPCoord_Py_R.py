@@ -82,7 +82,15 @@ if __name__ == "__main__":
     dsldPyFreqPCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
 
 '''
-    Test case
-    # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
+    # Test case
+    # Running from the Terminal (Before running, go to /dsld/inst/Python)
     python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
+
+
+    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
+    python # Open python prompt
+    import pandas as pd
+    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    data = pd.read_csv('../../data/pefFixed.csv')
+    dsldPyFreqPCoord(data, 10, ['1','5','6'], 'sex')
 '''

@@ -83,7 +83,16 @@ if __name__ == "__main__":
         print("Error: File not found")
 
 '''
-    Test Case
-    # Before running, go to the Python directory in the dsld library (or change the file path to correspond to where you are)
+    # Test Case
+    # Running from the Terminal (Before running, go to /dsld/inst/Python)
     python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
+
+
+    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
+    python # Open python prompt
+    import pandas as pd
+    from dsldTakeALook_Py_R import dsldPyTakeALookAround
+    data = pd.read_csv('../../data/pefFixed.csv')
+    result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
+    print(result)
 '''

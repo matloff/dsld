@@ -124,5 +124,16 @@ if __name__ == "__main__":
 
     # dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','), qeFtn = args[6])
 
+'''
+    # Test case
+    # Running from the Terminal (Before running, go to /dsld/inst/Python)
+    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6'
 
-# python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6'
+
+    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
+    python # Open python prompt
+    import pandas as pd
+    from dsldConditDisparity_Py_R import dsldPyConditDisparity
+    data = pd.read_csv('../../data/compasNumericFixed.csv')
+    dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'])
+'''
