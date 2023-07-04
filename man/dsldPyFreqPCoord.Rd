@@ -30,8 +30,11 @@
         If method is "locmax", m is forced to 1.
     }
     \item{columns}{
-        Numbers of the columns of x to be displayed. This can be entered as either a string or integers of the 
-        columns separated by commas but not a mixture of both.
+        Numbers of the columns of x to be displayed. 
+        These columns can be numbers or names of the columns, but in both cases, this must be in string format.
+        If running from the Terminal (not the python prompt), enter the columns normally, separated by columns, without spaces.
+        If running from the Python prompt, enter the columns as an array of strings, meaning you surround either the number or name with quotes ''.
+        See the examples section below if you're having trouble understanding these directions.
     }
     \item{grpName}{
         Column number for the grouping variable, if any (if none, all the data is treated
@@ -64,6 +67,7 @@
     import pandas as pd
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     data = pd.read_csv('../../data/pefFixed.csv')
+    # Note that you can input column numbers, but they still have to be in string format. You can input column names as well. 
     dsldPyFreqPCoord(data, 10, ['1','5','6'], 'sex')
 }
 

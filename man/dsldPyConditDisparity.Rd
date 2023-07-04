@@ -15,8 +15,7 @@
 }
 
 \usage{
-    dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
-                            minS=50, yLim=NULL, useLoess=TRUE)
+    python dsldConditDisparity_Py_R.py <data> yName sName xName condits
 }
 
 \arguments{
@@ -52,12 +51,9 @@
 }
 
 \note{
+    The usage of this function requires Python 3.10.
     If the user intends to pass in an R dataframe by using R write.csv to generate a csv file which will be passed into this Python function,
     note that this process may create a csv with an extra column. This can significantly change the result.
-}
-
-\note{
-    The usage of this function requires Python 3.10.
 }
 
 \author{
