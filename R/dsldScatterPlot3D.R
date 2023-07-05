@@ -1,7 +1,6 @@
 # TODO
 # make sName work with numeric (use a heat map)
 # make circles hollow
-# have x,y,zlim: Added limits but best to use seq() rather than c()
 
 # ---- plotly ----
 
@@ -12,30 +11,19 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
                               pointSize=8) {
   dsld::getSuggestedLib("plotly")
   
-  if (!missing(maxPoints))
+  # Limit amount of data points
+  if (!is.null(maxPoints))
     data <- data[1:maxPoints,]
   
-  data_types <- sapply(data, class) # the datatypes of each column in data
-
   # sName <- an int/string of the col of the grouping variable.
   # the variable the determines the colors of the dots. user can specify or
   # sName will be the col with the lowest amount of unique values
-  if (missing(sName)) {
-    num_uniques <- sort(sapply(sapply(data, unique), length))
-    # how many distinct values for each column, sorted by least unique values
-    for (i in 1:length(data_types)) {
-      col <- data_types[names(num_uniques[i])]
-      if (col %in% c("factor", "character")){
-        sName <- names(col)
-        break
-      }
-    }
-  } else {
-    if (!data_types[sName] %in% c("factor", "character"))
-      stop("sName should be of factor or character data type. Consider setting this as an axiscol instead")
-  }
+  if (is.null(sName)) sName <- makeSName(data)
+  else if (!class(data[,sName]) %in% c("factor", "character")) 
+    stop("sName should be of factor or character data type. Consider setting this as an axiscol instead")
+  
   # for now, if theres no sName, this makes one so the function doesnt break
-  if (missing(sName)) {
+  if (is.null(sName)) {
     Group <- as.factor(rep(1,length(data[,1])))
     data <- cbind(data, Group)
     sName <- length(data)
@@ -44,54 +32,25 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
   # yNames <- a vector of 3 ints/strings that correspond to the columns to be used for
   # the 3 axis on the graph. The user can specify the cols or
   # yNames will be the first 3 columns that are of numeric or integer data type
-  if (missing(yNames)) {
-    yNames <- vector()
-    for (i in 1:length(data_types)) {
-      if (data_types[i] %in% c("integer", "numeric")) {
-        yNames <- c(yNames, i)
-      }
-      if (length(yNames) == 3) break
-    }
-  }
-  if (length(yNames) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
-  
-  #INSERT LIMITING STUFF HERE
-  limitRange <- function(data, xlim=NULL, ylim=NULL, zlim=NULL){
-    df <- data
-    if(!is.null(xlim)) df <- df[df[,yNames[1]] > xlim[1] & df[,yNames[1]] < xlim[2],]
-    if(!is.null(ylim)) df <- df[df[,yNames[2]] > ylim[1] & df[,yNames[2]] < ylim[2],]
-    if(!is.null(zlim)) df <- df[df[,yNames[3]] > zlim[1] & df[,yNames[3]] < zlim[2],]
-    return(df)
-
-  }
-  
-  
-  if (!missing(xlim) | !missing(ylim) | !missing(zlim)) data <- limitRange(data, xlim, ylim, zlim)
-
-  
-  
-  
+  if (is.null(yNames)) 
+    yNames <- makeYNames(data)
+  else if (length(yNames) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
   
   # sGroups <- a vector of the individual group names in the 'data'.
   # the user can supply sGroups as an vector of names they want to look at
-  if (missing(sGroups) && !missing(sName)) {
-    # If there are 8 possible types the group variable can be, the vector is 8 long.
-    # Sorted according to user
-    switch(
-      sortedBy,
-      "Name" = sGroups <- levels(unique(data[,sName])),
-      "Frequency" = sGroups <- names(sort(table(data[,sName]),decreasing=T)),
-      "Frequency-Descending" = sGroups <- names(sort(table(data[,sName]),decreasing=F))
-    )
-    # otherwise the vector is cut off to only have numGroups number of sGroups
-    if (length(sGroups) > numGroups) sGroups <- sGroups[1:numGroups]
-  }
+  if (is.null(sGroups) && !is.null(sName)) 
+    sGroups <- makeSGroups(data, sName, numGroups, sortedBy)
+  
   # limits dataset to include only those with a group in groupNames
   data <- data[data[,sName] %in% sGroups,]
   data <- droplevels(data)
   
+  # Limit values of data points
+  if (!is.null(xlim) | !is.null(ylim) | !is.null(zlim)) 
+    data <- limitRange(data, yNames, xlim, ylim, zlim)
+  
   # Creates a title
-  if (missing(main) && !missing(sName)) {
+  if (is.null(main) && !is.null(sName)) {
     main <- paste(names(data[sName]), " vs. ")
     for (yName in names(data[yNames]))
       main <- paste(main, yName)
@@ -101,7 +60,6 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
   original <- data
   # numeric for a cleaner looking graph if the axis is factor type
   data[,yNames] <- sapply(data[,yNames], as.numeric)
-  
   # info card for each data point
   text <- paste("<extra></extra>", sep="")
   for (i in 1:length(data)) 
@@ -121,12 +79,73 @@ dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL,
   fig <- plotly::add_markers(fig)
   fig <- plotly::layout(fig, 
                         title = main,
-                        scene = list(xaxis = list(title = names(data[yNames[1]])),
-                                     yaxis = list(title = names(data[yNames[2]])),
-                                     zaxis = list(title = names(data[yNames[3]]))),
-                        legend = list(title = list(text = names(data[sName]))))
+                        scene = list(xaxis = list(title = paste(names(data[yNames[1]]), "(X)")),
+                                     yaxis = list(title = paste(names(data[yNames[2]]), "(Y)")),
+                                     zaxis = list(title = paste(names(data[yNames[3]]), "(Z)")),
+                        legend = list(title = list(text = names(data[sName])))))
   
   fig
+}
+
+makeSName <- function(data) {
+  data_types <- sapply(data, class) # the datatypes of each column in data
+  
+  num_uniques <- sort(sapply(sapply(data, unique), length))
+  sName <- NULL
+  # how many distinct values for each column, sorted by least unique values
+  for (i in 1:length(data_types)) {
+    col <- data_types[names(num_uniques[i])]
+    if (col %in% c("factor", "character")){
+      sName <- names(col)
+      break
+    }
+  }
+  return(sName)
+}
+
+makeYNames <- function(data) {
+  data_types <- sapply(data, class)
+  yNames <- vector()
+  for (i in 1:length(data_types)) {
+    if (data_types[i] %in% c("integer", "numeric")) {
+      yNames <- c(yNames, i)
+    }
+    if (length(yNames) == 3) break
+  }
+  # if no more numeric columns have been found, use the first other
+  i <- 1
+  while (length(yNames) < 3) {
+    if (!i %in% yNames) yNames <- c(yNames, i)
+    i <- i + 1
+  }
+  return(yNames)
+}
+
+makeSGroups <- function(data, sName, numGroups, sortedBy) {
+  # If there are 8 possible types the group variable can be, the vector is 8 long.
+  # Sorted according to user
+  sGroups <- NULL
+  switch(
+    sortedBy,
+    "Name" = sGroups <- levels(unique(data[,sName])),
+    "Frequency" = sGroups <- names(sort(table(data[,sName]),decreasing=T)),
+    "Frequency-Descending" = sGroups <- names(sort(table(data[,sName]),decreasing=F))
+  )
+  # otherwise the vector is cut off to only have numGroups number of sGroups
+  if (length(sGroups) > numGroups) sGroups <- sGroups[1:numGroups]
+  return(sGroups)
+}
+
+
+limitRange <- function(data, yNames, xlim=NULL, ylim=NULL, zlim=NULL){
+  # in case the user only gives lim as a single number
+  xlim <- rep(xlim, 2)
+  ylim <- rep(ylim, 2)
+  zlim <- rep(zlim, 2)
+  if(!is.null(xlim)) data <- data[data[,yNames[1]] >= xlim[1] & data[,yNames[1]] <= xlim[2],]
+  if(!is.null(ylim)) data <- data[data[,yNames[2]] >= ylim[1] & data[,yNames[2]] <= ylim[2],]
+  if(!is.null(zlim)) data <- data[data[,yNames[3]] >= zlim[1] & data[,yNames[3]] <= zlim[2],]
+  return(data)
 }
 
 # ---- Test Cases ----

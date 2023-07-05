@@ -4,7 +4,8 @@
 \description{ Plots a dataset on 3 axes, with the color of the point depending 
 on a 4th variable.}
 \usage{dsldScatterPlot3D(data, sName=NULL, yNames=NULL, sGroups=NULL, 
-                              sortedBy="Name", numGroups=8, maxPoints=NULL, 
+                              sortedBy="Name", numGroups=8, maxPoints=NULL,
+                              xlim=NULL, ylim=NULL, zlim=NULL,
                               main=NULL, colors="Paired", opacity=1, 
                               pointSize=8)}
 
@@ -46,6 +47,9 @@ on a 4th variable.}
   \item{maxPoints}{
   a limit to how many points may be displayed on the graph.
   There is no limit by default.
+  }
+  \item{xlim, ylim, zlim} {
+  the x, y and z limits [a vector with c(min, max)] of the plot.
   }
   \item{main}{
   the title of the graph. By default, its the name of the sName "vs. " the yNames
