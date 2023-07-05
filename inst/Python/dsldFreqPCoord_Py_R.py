@@ -11,6 +11,7 @@ from Utils import dsld_Rpy2_IsRDataframe
 
 # For displaying the graph
 import os
+import stat
 from PIL import Image
 ggplot2 = importr('ggplot2')
 
@@ -53,19 +54,22 @@ def dsldPyFreqPCoord(data, m, columns, grpName):
     # All necessary arguments are in R format at this point
 
     # Graph plot will be saved as a file
-    plot_filename = "freqp_coord.png"
-
+    plot_filename = os.getcwd()+"/freqp_coord.png"
+    print(plot_filename)
     # Calling the R function
     dsld.dsldFreqPCoord(r_data, m_r, columns_r, grpName_r, plot_filename)
+
+    # Current image file permissions: -rw-r--r-- (Owner can read/write, Group can read, Others can read)
+    os.chmod(plot_filename, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH | stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH)
     
     # Load and display the saved image in Python
     image = Image.open(plot_filename)
     image.show()
-    
+
     # Close the displayed image
-    image.close()
+    # image.close()
     # Delete the image file
-    os.remove(plot_filename)
+    # os.remove(plot_filename)
 
 
 # Code to allow users to run this file from the shell
