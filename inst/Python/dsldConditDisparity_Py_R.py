@@ -41,7 +41,7 @@ def changeBg(path):
 # This is the interface function for R's dsldConditDisparity function
 # The arguments are converted into R data type before calling dsldConditDisparity function
 # This function uses qeML's qeKNN function as default argument for qeFtn
-def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn=qeML.qeKNN, minS=50, yLim=None, useLoess=True):
+def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", minS=50, yLim=None, useLoess=True):
     r_data = dsld_Rpy2_IsRDataframe(data)
 
     robjects.r.assign("r_data", r_data)  # Assign the 'r_data' variable to R
@@ -55,6 +55,8 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn=qeML.qeKNN, 
     condits_r = robjects.StrVector([cond for cond in condits])  # Convert variable name to R character vector
     minS_r = robjects.IntVector([minS])    # Convert variable name to R;s number type
 
+    qeFtn_r = getattr(qeML, qeFtn)
+
     yLim_r = robjects.NULL
 
     if yLim is not None:
@@ -63,7 +65,7 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn=qeML.qeKNN, 
 
     useLoess_r = robjects.BoolVector([useLoess])
 
-    dsld.dsldConditDisparity(r_data, yName_r, sName_r, xName_r, condits_r, qeFtn, minS_r, yLim_r, useLoess_r)
+    dsld.dsldConditDisparity(r_data, yName_r, sName_r, xName_r, condits_r, qeFtn_r, minS_r, yLim_r, useLoess_r)
 
     # Copy and saves the image as plot.png
     plot_filename = "condits_disparity_plot.png"
@@ -120,9 +122,9 @@ if __name__ == "__main__":
 
     data = pd.read_csv(file_path)
 
-    dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','))
+    #dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','))
 
-    # dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','), qeFtn = args[6])
+    dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','), qeFtn = args[6])
 
 '''
     # Test case
