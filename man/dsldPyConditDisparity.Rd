@@ -49,32 +49,47 @@
         sName
     }
     \item{qeFtn}{
-        reg function (defaults only), defaults to qeKNN (IN PROGRESS)
+        reg function (defaults only), defaults to qeKNN
+
+        Must be entered as a string. In the OS Shell, you can enter the function 
+        name without any special characters, for example: qeKNN.
+
+        In the Python Shell Prompt, you must use quotes, for example: 'qeKNN'.
+        
+        See the examples for clarification.
     }
     \item{minS}{
         minimum size for an S group to be retained in the analysis, defaults to 
-        50 (IN PROGRESS)
+        50
     }
     \item{yLim}{
         a 2-element vector specifying the lower and upper vertical plot limits, 
-        defaults to fit data (IN PROGRESS)
+        defaults to fit data
     }
     \item{useLoess}{
-        if TRUE, do Loess smoothing on the regression values, defaults to TRUE 
-        (IN PROGRESS)
+        if TRUE, do Loess smoothing on the regression values, defaults to TRUE
     }
 }
 
 \note{
     The usage of this function requires Python 3.10.
-    
-    
+}    
+
+\note{ 
     If the user intends to pass in an R dataframe by using the R function 
     write.csv to convert from rdata to csv may create a csv with an extra 
     column. This extra column has an empty name(“”). This change to the data has 
     been known to significantly change the results when fetching with pandas. In 
     order to fix this issue, the entire column with the empty name or “” should 
     be deleted.
+}
+
+\note{
+    It is better to run through the Python Shell Prompt. If you run through the 
+    OS Shell Prompt instead, you have to enter the arguments in their proper 
+    order -- in the Python Shell Prompt, this is not required, as you can 
+    instead use the convention argName=argValue. In OS Shell Prompt, you cannot 
+    specify the argName, only the argValue, so the order must be correct.
 }
 
 \author{
@@ -84,14 +99,19 @@
 \examples{
     # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python
 
-    # Example 1a: Running from the OS shell prompt
-    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6'
+    # IMPORTANT: It is better to run through the Python Shell Prompt (see 
+    # example 1b). If you run through the OS Shell Prompt instead, you have to 
+    # enter the arguments in their proper order. See the above note for more 
+    # information.
+
+    # Example 1a: Running from the OS shell
+    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost
 
     # Example 1b: Running from the Python shell prompt
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     import pandas as pd
     data = pd.read_csv('../../data/compasNumericFixed.csv')
-    dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'])
+    dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], 'qeGBoost')
 }
 

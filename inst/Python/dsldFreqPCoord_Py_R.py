@@ -87,14 +87,14 @@ if __name__ == "__main__":
 
 '''
     # Test case
-    # Running from the Terminal (Before running, go to /dsld/inst/Python)
+    # Running from the OS Shell (Before running, go to /dsld/inst/Python)
     python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
 
 
-    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
-    python # Open python prompt
-    import pandas as pd
+    # Running from the Python Shell Prompt (Before running, go to /dsld/inst/Python)
+    python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    import pandas as pd
     data = pd.read_csv('../../data/pefFixed.csv')
-    dsldPyFreqPCoord(data, 10, ['1','5','6'], 'sex')
+    dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'sex')   
 '''

@@ -84,14 +84,14 @@ if __name__ == "__main__":
 
 '''
     # Test Case
-    # Running from the Terminal (Before running, go to /dsld/inst/Python)
+    # Running from the OS SHell (Before running, go to /dsld/inst/Python)
     python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
 
 
-    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
+    # Running from the Python Shell Prompt (Before running, go to /dsld/inst/Python)
     python # Open python prompt
-    import pandas as pd
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
+    import pandas as pd
     data = pd.read_csv('../../data/pefFixed.csv')
     result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
     print(result)

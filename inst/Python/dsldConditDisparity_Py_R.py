@@ -128,14 +128,14 @@ if __name__ == "__main__":
 
 '''
     # Test case
-    # Running from the Terminal (Before running, go to /dsld/inst/Python)
-    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6'
+    # Running from the OS Shell (Before running, go to /dsld/inst/Python)
+    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost
 
 
-    # Running from the Python Prompt (Before running, go to /dsld/inst/Python)
-    python # Open python prompt
-    import pandas as pd
+    # Running from the Python Shell Prompt (Before running, go to /dsld/inst/Python)
+    python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
+    import pandas as pd
     data = pd.read_csv('../../data/compasNumericFixed.csv')
-    dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'])
+    dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], 'qeGBoost')
 '''

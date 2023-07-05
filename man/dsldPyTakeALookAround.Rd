@@ -44,14 +44,23 @@
 
 \note{
     The usage of this function requires Python 3.10.
-    
-    
+}    
+
+\note{ 
     If the user intends to pass in an R dataframe by using the R function 
     write.csv to convert from rdata to csv may create a csv with an extra 
     column. This extra column has an empty name(“”). This change to the data has 
     been known to significantly change the results when fetching with pandas. In 
     order to fix this issue, the entire column with the empty name or “” should 
     be deleted.
+}
+
+\note{
+    It is better to run through the Python Shell Prompt. If you run through the 
+    OS Shell Prompt instead, you have to enter the arguments in their proper 
+    order -- in the Python Shell Prompt, this is not required, as you can 
+    instead use the convention argName=argValue. In OS Shell Prompt, you cannot 
+    specify the argName, only the argValue, so the order must be correct.
 }
 
 \author{
@@ -61,20 +70,24 @@
 \examples{
     % TODO: These examples use 'sex', but pef should be updated to use 'gender'. 
     % We seem to be using an outdated pef dataset.
-    # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python
-
-    # These examples use a csv version of the 'pef' dataset.
+    # IMPORTANT: Before running any of these examples, go to /dsld/inst/
     
-    # Due to an error in conversion from Rdata to csv using write.csv, we had to 
-    # modify the csv file to remove an extra column
+    # IMPORTANT: It is better to run through the Python Shell Prompt (see 
+    # example 1b). If you run through the OS Shell Prompt instead, you have to 
+    # enter the arguments in their proper order. See the above note for more 
+    # information.
+
+    # These examples use a csv version of the 'pef' dataset.   
+    % Due to an error in conversion from Rdata to csv using write.csv, we had to 
+    % modify the csv file to remove an extra column
 
     # Example 1a: Running from the OS shell prompt
     python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc sex
 
     # Example 1b: Running from the Python shell prompt
     python # Open Python shell prompt
-    import pandas as pd
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
+    import pandas as pd
     data = pd.read_csv('../../data/pefFixed.csv')
     result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
     print(result)
