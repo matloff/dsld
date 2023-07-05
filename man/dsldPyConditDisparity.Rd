@@ -20,8 +20,8 @@
 
 \arguments{
     \item{data}{
-        If running from the terminal: A filepath to the csv file which holds your data.
-        If running from the Python shell/prompt: A pandas or R dataframe that holds your data
+        If running from the OS shell prompt: A filepath to the csv file which holds your data
+        If running from the Python shell prompt: A pandas or R dataframe that holds your data
     }
     \item{yName}{
         as in qeML functions, predictive variable, must be numeric

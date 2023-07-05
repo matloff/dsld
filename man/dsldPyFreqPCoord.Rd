@@ -21,8 +21,8 @@
 
 \arguments{
     \item{data}{
-        If running from the terminal: A filepath to the csv file which holds your data.
-        If running from the Python shell/prompt: A pandas or R dataframe that holds your data
+        If running from the OS shell prompt: A filepath to the csv file which holds your data
+        If running from the Python shell prompt: A pandas or R dataframe that holds your data
     }
     \item{m}{
         Number of lines to plot for each group. A negative value in conjunction with
