@@ -15,7 +15,7 @@
 }
 
 \usage{
-    python dsldConditDisparity_Py_R.py <data> yName sName xName condits
+    dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn, minS, yLim, useLoess)
 }
 
 \arguments{

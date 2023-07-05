@@ -16,7 +16,7 @@
 }
 
 \usage{
-    python dsldFreqPCoord_Py_R.py <data> m columns grpName
+    dsldPyFreqPCoord(data, m, columns, grpName)
 }
 
 \arguments{
