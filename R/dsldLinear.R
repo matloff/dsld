@@ -133,9 +133,32 @@ dsldGetData <- function(dsld_obj) {
 
 
 ### ------------------------- dsldDiffS function -----------------------------------------
+dsldValidateData <- function(new_data, model) {
+  # Used to check if user entries in new data are valid or not
+  # First: check to see if columns in new_data exist in the original data #
+  missing_columns <- setdiff(names(new_data), names(model$model))
+  if (length(missing_columns) > 0) {
+    stop(paste("Invalid column(s):", paste(missing_columns, collapse = ", ")))
+  }
+  
+  # Check if categorical variables are valid #
+  categorical_vars <- names(model$model)[sapply(model$model, is.factor)]
+  
+  for (i in 1:nrow(new_data)) {
+    current_row <- new_data[i, ]
+    
+    for (var in categorical_vars) {
+      levels <- unique(model$model[[var]])
+      if (!(current_row[[var]] %in% levels)) {
+        stop(paste("Invalid", var, "level in row", i, "."))
+      }
+    }
+  }
+  return(new_data)
+}
 
 dsldDiffS <- function(dsldObj, new_data = NULL) {
-  
+
   # get sName and yName from the output #
   sName <- dsldObj[[1]]$sName
   yName <- dsldObj[[1]]$yName 
@@ -160,7 +183,7 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
       sPairs <- combn(levels(data[[sName]]),2)
       a <- sPairs[1]
       b <- sPairs[2]
-      index_val = sprintf("%s - %s", a,b)
+      index_val = sprintf("%s - %s", b,a)
       df <- data.frame(index_val, estimate, standard_error)
       names(df) <- c("Factors Compared", "Estimates", "Standard Errors")
       return(df)
@@ -239,13 +262,49 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
     if (is.null(new_data)) {
       stop("Please enter the new_data input to compare for interactions")
     }
-    return('still working on this')
+
+    sNames <- names(dsldObj)
+    df = data.frame()
+    
+    for (i in sNames) {
+      data = dsldObj[[i]]$data
+      model <- glm(as.formula(paste(yName, "~ .")), family = 'gaussian', data = data)
+      X_new <- dsldValidateData(new_data, model)
+      predictions = predict(model, X_new, type="response", se.fit =TRUE)
+      pred <- predictions$fit
+      se <- predictions$se.fit
+      temp_df <- data.frame(level = i, row = 1:nrow(X_new), prediction = pred, standard_error = se)
+      df <- rbind(df, temp_df)
+    }
+    
+    unique_elements <- sort(unique(df$row))
+    pairwise_df = data.frame()
+    
+    for (i in unique_elements) {
+      row_dat = subset(df, row == i)
+      character_vector <- as.character(row_dat$level)
+      combination_matrix = combn(character_vector, 2) 
+      for (j in 1:dim(combination_matrix)[2]) {
+        val <- combination_matrix[,j]                   
+        a <- val[1]                                 
+        b <- val[2] 
+        a_dat = subset(row_dat, level == a)
+        b_dat = subset(row_dat, level == b)
+        index_val = sprintf("%s - %s", a,b)
+        estimated_difference = a_dat$prediction - b_dat$prediction
+        standard_error = sqrt(((a_dat$standard_error)^2) + ((b_dat$standard_error)^2))
+        temp_df <- data.frame(index_val, i, estimated_difference, standard_error)
+        names(temp_df) <- c("Factors Compared", "Row", "Estimates", "Standard Errors")
+        pairwise_df <- rbind(pairwise_df, temp_df)
+      }
+    }
+    return(pairwise_df)
   }
-  return('1')
 }
 
 # ---------------------------- Test runs  --------------------------------------
-# dat1 <- dsldDiffS(lin1) # run with interactions 
+# X1 <- data.frame(age = c(50,50), educ = c("zzzOther",'14'), occ = c("106","106"),wkswrkd = c(23,23))
+# dat1 <- dsldDiffS(lin1, X1) # run with interactions // will raise error if doesnt work. 
 # dat2 <- dsldDiffS(lin2) # run without interactions
 # View(dat2)
 
