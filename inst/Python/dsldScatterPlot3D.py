@@ -5,7 +5,7 @@
 #TODO:
 #   Remove hardcoded example (pef) in dsldScatterPlot to accept any dataset  
 #   Incorporate more arguments from dsldScatterPlot3D R function to Python's equivalent function
-#   Possibly add more datatypes accepted through universalConverterToPandasDf function
+#   Possibly add more datatypes accepted through universalConverterToPdf function
 #   Change name to dsldPlotly?
 
 #Do:  Install pandas, plotly, pyreadr
@@ -19,28 +19,26 @@ import plotly.express as px #Create interactive graphs
 
 #at the moment, assuming data is csv and is using pef dataframe
 def dsldScatterPlot(data):
-    df = universalConverterToPandasDf(data)
+    df = universalConverterToPdf(data)
     fig = px.scatter_3d(df, x='age', y='wageinc', z='wkswrkd') #z,y,x values must be column names of dataframe
     fig.show()
-def csvToPandasDf(data):
+def csvToPdf(data):
     #Converts any .csv file to a panda's dataframe
     pdf = pd.read_csv(data)
     return pdf
-def rDataToPandasDf(data):
+def rDataToPdf(data):
     #Converts any .rData file to a panda's dataframe
     dictResult = pyreadr.read_r(data)
     pdfName = list(dictResult.keys())[0]
     pdf = dictResult[pdfName]
     return pdf
-def universalConverterToPandasDf(data):
+def universalConverterToPdf(data):
     fileExt = data[len(data) - 4:] #temporary way to get fileExt
-    if fileExt == ".csv": return csvToPandasDf(data)
-    if fileExt == "Data": return rDataToPandasDf(data)
+    if fileExt == ".csv": return csvToPdf(data)
+    if fileExt == "Data": return rDataToPdf(data)
     else: 
         print("File extension must be .csv or .rData")
         exit(1)
-        
-
 '''
 __________________________________________________________________________________________________________________________
 #EXAMPLE 1: Use this example to test if plotly worked.
