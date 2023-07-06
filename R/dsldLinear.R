@@ -1,4 +1,4 @@
-# -------------------------- dsldLinear ------------------------ #
+# -------------------------- dsldLinear ---------------------------------------#
 #' ::: Descripton :::
 #' @brief This function produces an instance of the `dsldLinear` class (an S3 object) that 
 #'      houses a separate instances of the `dsldDiffModel` class for each 
@@ -16,72 +16,55 @@
 #' @param yName: name of the predictive column [character]
 #' @param sName: name of the sensitive column [character]
 #' @param interactions: specifies whether or not to consider interactions; Defaults to TRUE [boolean]
-# -------------------------- dsldLinear ------------------------ #
+# -------------------------- dsldLinear ---------------------------------------#
 
 dsldLinear <- function(data, yName, sName, interactions = TRUE) {
-  # create list
+  
+  # create output list to by populated with information #
   dsldModel <- list()
   
-  # user selects for interactions #
+  # user selects interactions == TRUE #
   if (interactions == TRUE) {
     
-    # split data by sensitive level
+    # split data into list of dataframes by each level of sName #
     dataSplit <- split(data, data[[sName]])
     dataNames <- names(dataSplit)
     
-    # populate model for each level
+    # loop and populate model for each level in sName #
     for (name in dataNames) {
       
-      # initialize instance of dsldDiffModel
+      # initialize instance of dsldDiffModel #
       dsldDiffModel <- list()
       
-      # data for this level, drop sensitive column
+      # get data for each specific S factor & drop sensitive column #
       diffData <- dataSplit[[name]]
       drop <- c(sName)
       diffData <- diffData[, !(names(diffData) %in% drop)]
       
-      # get formula & diff model
-      formula <- as.formula(paste(yName, "~ ."))
-      diffModel <- glm(formula = formula, family = 'gaussian', data = diffData)
+      # create the model #
+      diffModel <- glm(formula = as.formula(paste(yName, "~ .")), family = 'gaussian', data = diffData)
       
-      # setup instance of dsldDiffModel
-      dsldDiffModel <- c(dsldDiffModel, 
-                         yName, 
-                         sName, 
-                         formula,
-                         list(summary(diffModel)), 
-                         list(coef(diffModel)),
-                         list(diffData))
-      names(dsldDiffModel) <- c("yName", "sName", "formula", "summary", "coef", "data")
+      # setup instance of dsldDiffModel #
+      dsldDiffModel <- c(dsldDiffModel, yName, sName, list(summary(diffModel)), list(coef(diffModel)), list(diffData))
+      names(dsldDiffModel) <- c("yName", "sName", "summary", "coef", "data")
+      class(dsldDiffModel) <- "dsldDiffModel"
       
-      # class(dsldDiffModel) <- "dsldDiffModel"
-      
-      # add instance into dsldModel
+      # add instance into output list: dsldModel #
       dsldModel[[name]] <- dsldDiffModel
     }
     
-    # user does not select for interactions #
+    # user selects interactions == TRUE #
   } else {
-    # initialize instance of dsldDiffModel
+    
+    # initialize instance of dsldDiffModel #
     dsldDiffModel <- list()
     
-    # data for non-interactive
-    diffData <- data
+    # create model #
+    diffModel <- glm(formula = as.formula(paste(yName, "~ .")), family = 'gaussian', data = data)
     
-    # get formula & diff model
-    formula <- as.formula(paste(yName, "~ ."))
-    diffModel <- glm(formula = formula, family = 'gaussian', data = diffData)
-    
-    # setup instance of dsldDiffModel
-    dsldDiffModel <- c(dsldDiffModel, 
-                       yName, 
-                       sName, 
-                       formula, 
-                       list(summary(diffModel)),
-                       list(coef(diffModel)), 
-                       list(diffData))
-    names(dsldDiffModel) <- c("yName", "sName", "formula", "summary", "coef", "data")
-    class(dsldDiffModel) <- "dsldDiffModel"
+    # setup instance of dsldDiffModel #
+    dsldDiffModel <- c(dsldDiffModel, yName, sName, list(summary(diffModel)), list(coef(diffModel)), list(data))
+    names(dsldDiffModel) <- c("yName", "sName", "summary", "coef", "data")
     
     # add instance into dsldModel
     dsldModel[[sName]] <- dsldDiffModel
@@ -93,14 +76,17 @@ dsldLinear <- function(data, yName, sName, interactions = TRUE) {
   
 }
 
-# -------------------- Test Run dsldLinear --------------------------------------------------
+# -------------------- Test Run dsldLinear ------------------------------------#
 #library(qeML)
-#data(pef)
-#lin1 = dsldLinear(pef,'wageinc','sex', interactions = TRUE); lin1
-#lin2 = dsldLinear(pef,'wageinc','occ', interactions = FALSE); lin2
-# -------------------------------------------------------------------------------------------
+#pef <- read.csv("~/Desktop/Dsld_Package/pef.csv"); View(pef)
+#pef$occ <- as.factor(pef$occ)
+#pef$educ <- as.factor(pef$educ)
+#pef$gender <- as.factor(pef$gender)
+#lin1 = dsldLinear(pef,'wageinc','gender', interactions = TRUE); lin1
+#lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE); lin2
+# -----------------------------------------------------------------------------#
 
-# -------------------------------- Auxillary Functions -------------------------------------------------------
+# -------------------------------- Auxiliary (Helpful) Functions --------------#
 
 #' ::: Description ::
 #' @brief Polymorphic method that overrides the summary() method, extracting information regarding 
@@ -115,35 +101,38 @@ summary.dsldLinear <- function(dsld_obj) {
   return(result)
 }
 
-# summary(lin1) # test run
+#summary(lin1) # test run
+#summary(lin2) # test run
 
 coef.dsldLinear <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$coef)
   return(result)
 }
 
-# coef(lin1) # test run
+#coef(lin1) # test run
+#coef(lin2)
 
 dsldGetData <- function(dsld_obj) {
   result <- lapply(dsld_obj, function(x) x$data)
   return(result)
 }
 
-# dsldGetData(lin1) test run
+#dsldGetData(lin1)
+#dsldGetData(lin2)
 
+#------------------------- dsldDiffS function ---------------------------------#
 
-### ------------------------- dsldDiffS function -----------------------------------------
+# this function is helpful for the interactions case to make sure new_data is a valid entry from the user. 
 dsldValidateData <- function(new_data, model) {
-  # Used to check if user entries in new data are valid or not
-  # First: check to see if columns in new_data exist in the original data #
+  
+  #  check to see if columns in new_data exist in the original data #
   missing_columns <- setdiff(names(new_data), names(model$model))
   if (length(missing_columns) > 0) {
     stop(paste("Invalid column(s):", paste(missing_columns, collapse = ", ")))
   }
   
-  # Check if categorical variables are valid #
+  # Check if categorical variables entries are valid #
   categorical_vars <- names(model$model)[sapply(model$model, is.factor)]
-  
   for (i in 1:nrow(new_data)) {
     current_row <- new_data[i, ]
     
@@ -154,60 +143,58 @@ dsldValidateData <- function(new_data, model) {
       }
     }
   }
+  
+  # return the data back if everything is good #
   return(new_data)
 }
 
 dsldDiffS <- function(dsldObj, new_data = NULL) {
-
-  # get sName and yName from the output #
-  sName <- dsldObj[[1]]$sName
-  yName <- dsldObj[[1]]$yName 
   
-  # case with no interactions #
+  # get sName and yName from the output of dsldLinear #
+  sName <- dsldObj[[1]]$sName
+  yName <- dsldObj[[1]]$yName
+  
+  # diffS results when interaction == FALSE in dsldLinear #
   if (length(dsldObj) == 1) {
     
-    # extract [dummary - factor levels] from summary #
+    # we can extract [dummy level in glm output - factor levels] from summary output #
     data <- dsldGetData(dsldObj)[[1]]
     model <- glm(as.formula(paste(yName, "~ .")), family = 'gaussian', data = data)
-    c <- coef(model)
-    C <- vcov(model)
+    C <- vcov(model); c <- coef(model)
     
-    # get factors levels containing s #
+    # get all values containing sName levels from summary(model) #
     rows_with_race <- grep(sName, rownames(coef(summary(model))))
     regularS <- summary(model)$coefficients[rows_with_race, ]
     
-    # for the case when we have two levels in S #
+    # for the case when we have only two levels in S; ex: male/female #
     if (length(levels(data[[sName]])) == 2) {
       estimate <- regularS[1]
       standard_error <- regularS[2]
+      p_val <- regularS[4]
       sPairs <- combn(levels(data[[sName]]),2)
       a <- sPairs[1]
       b <- sPairs[2]
       index_val = sprintf("%s - %s", b,a)
-      df <- data.frame(index_val, estimate, standard_error)
-      names(df) <- c("Factors Compared", "Estimates", "Standard Errors")
+      df <- data.frame(index_val, estimate, standard_error, p_val)
+      names(df) <- c("Factors Compared", "Estimates", "Standard Errors","P-Value")
       return(df)
     }
     
     # extract estimates and standard errors #
     estimates <- regularS[,1]
     standard_errors <- regularS[,2]
+    p_val <- regularS[,4]
     
     # create dataframe #
-    df <- data.frame(estimates, standard_errors)
+    df <- data.frame(estimates, standard_errors, p_val); df$estimates <- -df$estimates
     
     # extract other pairwise combinations #
     feature_names = colnames(vcov(model))
     combination_matrix = combn(feature_names, 2) 
     
-    # remove all columns containing "Intercept" #
-    drop_value <- "(Intercept)" 
-    drop_columns <- apply(combination_matrix, 2, function(col) any(col %in% drop_value)) 
-    result <- combination_matrix[, !drop_columns] 
-    
     # remove all columns that do not have sName #
-    matching_columns <- which(apply(result, 2, function(col) all(grepl(sName, col))))
-    result_final <- result[, matching_columns, drop = FALSE]
+    matching_columns <- which(apply(combination_matrix, 2, function(col) all(grepl(sName, col))))
+    result_final <- combination_matrix[, matching_columns, drop = FALSE]
     
     # loops through each pair #
     for (j in 1:dim(result_final)[2]) {
@@ -235,7 +222,12 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
       # get estimates & standard errors # 
       estimates = value_a - value_b
       standard_errors = sqrt((t(rt) %*% C %*% rt))
-      temp_df <- data.frame(estimates, standard_errors)
+      
+      t_statistic <- (estimates) / standard_errors
+      degrees_of_freedom <- nrow(data) - 1 # degrees of freedom
+      p_val <- 2 * pt(abs(t_statistic), df = degrees_of_freedom, lower.tail = FALSE)
+      
+      temp_df <- data.frame(estimates, standard_errors, p_val)
       df <- rbind(df, temp_df)
     }
     
@@ -253,19 +245,23 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
     # create final data-frame #
     df <- cbind(test, df)
     df <- data.frame(df, row.names = NULL)
-    names(df) <- c("Factors Compared", "Estimates", "Standard Errors")
+    names(df) <- c("Factors Compared", "Estimates", "Standard Errors", "P-Value")
     return(df)
   } 
   
-  # case with interactions #
+  # diffS results when interactions == TRUE in dsldLinear #
   else {
+    
+    # raise error if the user doesn't input new data #
     if (is.null(new_data)) {
       stop("Please enter the new_data input to compare for interactions")
     }
-
+    
+    # get vector of all levels in sName #
     sNames <- names(dsldObj)
     df = data.frame()
     
+    # loop through each level of S name to compute estimates and standard errors #
     for (i in sNames) {
       data = dsldObj[[i]]$data
       model <- glm(as.formula(paste(yName, "~ .")), family = 'gaussian', data = data)
@@ -276,11 +272,11 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
       temp_df <- data.frame(level = i, row = 1:nrow(X_new), prediction = pred, standard_error = se)
       df <- rbind(df, temp_df)
     }
-    
-    unique_elements <- sort(unique(df$row))
+
+    # compute difference in estimates between each pair factor level for each row #
+    unique_elements <- sort(unique(df$row)) 
     pairwise_df = data.frame()
-    
-    for (i in unique_elements) {
+    for (i in unique_elements) {  
       row_dat = subset(df, row == i)
       character_vector <- as.character(row_dat$level)
       combination_matrix = combn(character_vector, 2) 
@@ -302,22 +298,24 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
   }
 }
 
-# ---------------------------- Test runs  --------------------------------------
-# X1 <- data.frame(age = c(50,50), educ = c("zzzOther",'14'), occ = c("106","106"),wkswrkd = c(23,23))
-# dat1 <- dsldDiffS(lin1, X1) # run with interactions // will raise error if doesnt work. 
-# dat2 <- dsldDiffS(lin2) # run without interactions
-# View(dat2)
+# ---------------------------- Test runs  -------------------------------------#
+#X_New <- data.frame(age = c(22,45), educ = c("zzzOther",'zzzOther'), occ = c("141","141"),wkswrkd = c(40,40)) # compare genders across different age // early vs late career 
+#dat1 <- dsldDiffS(lin1, X_New) # run with interactions 
+#View(dat1)
 
-# dsldConfidenceInterval function
+#dat2 <- dsldDiffS(lin2) # no interactions case
+#View(dat2)
+                                    
+# --------------------  dsldConfidenceInterval function -----------------------#
 dsldConfidenceInterval <- function(data, confidence_level) {
-  # Calculate z-score based on alpha level
+  # get z value #
   z <- qnorm((1 + confidence_level) / 2)
   
-  # Calculate lower and upper bounds for each row
-  lower_bound <- data$Estimates - z * data$`Standard Errors`
-  upper_bound <- data$Estimates + z * data$`Standard Errors`
+  # Calculate lower and upper bounds for each row #
+  lower_bound <- data$Estimates - (z * data$`Standard Errors`)
+  upper_bound <- data$Estimates + (z * data$`Standard Errors`)
 
-  # Create a new dataframe with factor name, lower bound, and upper bound
+  # Create a new dataframe with factor name, lower bound, and upper bound #
   result <- data.frame(
     factor_name = data$`Factors Compared`,
     lower_bound = lower_bound,
@@ -326,5 +324,5 @@ dsldConfidenceInterval <- function(data, confidence_level) {
   return(result)
 }
 
-# --------------------------- Test run -----------------------------------------
-# dsldConfidenceInterval(dat2, 0.95) # test run with no interactions 
+# dsldConfidenceInterval(dat1,0.95) # test run with interactions 
+# dsldConfidenceInterval(dat2,0.95) # test run with no interactions 
