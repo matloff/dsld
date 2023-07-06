@@ -48,6 +48,13 @@
     coef(lin1)
     dsldGetData(lin1)
 
+    # dsldDiffS #
+    X1 <- data.frame(age = c(50,50), educ = c("zzzOther",'14'), occ = c("106","106"), wkswrkd = c(23,23))
+    dat1 <- dsldDiffS(lin1, X1)
+
+    # compute confidence interval of differences between S #
+    dsldConfidenceInterval(dat1, 0.95) 
+
 #   Example 2: Using pef dataset. We fit a linear regression model, with 'wageinc' as the response variable and 'gender' as sensitive variable. Interactions == FALSE.
     lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE); lin2
 
