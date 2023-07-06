@@ -127,12 +127,12 @@ if __name__ == "__main__":
     dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','), qeFtn = args[6])
 
 '''
-    # Test case
-    # Running from the OS Shell (Before running, go to /dsld/inst/Python)
+    # Test cases: Before running, go to /dsld/inst/Python
+
+    # Running from the OS Shell
     python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost
 
-
-    # Running from the Python Shell Prompt (Before running, go to /dsld/inst/Python)
+    # Running from the Python Shell Prompt
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     import pandas as pd

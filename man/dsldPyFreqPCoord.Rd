@@ -100,7 +100,7 @@
     % modify the csv file to remove an extra column
 
     # Example 1a: Using Column Numbers (OS Shell Prompt)
-    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,5,6 sex
+    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 1,4,5 gender
 
     # Example 1b: Using Column Numbers (Python Shell Prompt)
     python # Open Python shell prompt
@@ -109,7 +109,7 @@
     data = pd.read_csv('../../data/pefFixed.csv')
     # Note that you can input column numbers, but they still have to be in 
     # string format. See example 2b for inputting column names
-    dsldPyFreqPCoord(data, 10, ['1','5','6'], 'sex')
+    dsldPyFreqPCoord(data, 10, ['1','4','5'], 'gender')
 
     # ********************************************************
     # Here are 2 more examples (a and b) on how you can call the function with 
@@ -119,13 +119,22 @@
     # ********************************************************
 
     # Example 2a: Using Column Names (OS Shell Prompt)
-    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 age,wageinc,wkswrkd sex
+    python dsldFreqPCoord_Py_R.py ../../data/pefFixed.csv 10 age,wageinc,wkswrkd gender
 
     # Example 2b: Using Column Names (Python Shell Prompt)
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import pandas as pd
     data = pd.read_csv('../../data/pefFixed.csv')
-    dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'sex')   
+    dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')   
+
+
+    # Example 3: Using Rdata input data instead of CSV input data
+    python # Open Python shell prompt
+    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    import rpy2.robjects as robjects
+    robjects.r['data']('pef')
+    data = robjects.r('pef')
+    dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')
 }
 

@@ -77,19 +77,29 @@
     # enter the arguments in their proper order. See the above note for more 
     # information.
 
-    # These examples use a csv version of the 'pef' dataset.   
+    # Examples 1 and 2 use a csv version of the 'pef' dataset.   
     % Due to an error in conversion from Rdata to csv using write.csv, we had to 
     % modify the csv file to remove an extra column
 
     # Example 1a: Running from the OS shell prompt
-    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc sex
+    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
 
     # Example 1b: Running from the Python shell prompt
     python # Open Python shell prompt
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import pandas as pd
     data = pd.read_csv('../../data/pefFixed.csv')
-    result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
+    result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
+    print(result)
+
+    # Example 2: Using Rdata input data instead of CSV input data
+    # Running from the Python shell prompt
+    python # Open Python shell prompt
+    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    import rpy2.robjects as robjects
+    robjects.r['data']('pef')
+    data = robjects.r('pef')
+    result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     print(result)
 }
 

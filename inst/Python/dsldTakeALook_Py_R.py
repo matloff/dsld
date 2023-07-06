@@ -67,7 +67,7 @@ if __name__ == "__main__":
             print("Error: Too many arguments")
             print_takeALookAround_usage()
             exit(1)
-        if len(args) - 1 < MAX_ARGS - 1:
+        if len(args) - 1 < MAX_ARGS - 2:
             print("ERROR: more arguments are required")
             print_takeALookAround_usage()
             exit(1)
@@ -83,16 +83,25 @@ if __name__ == "__main__":
         print("Error: File not found")
 
 '''
-    # Test Case
-    # Running from the OS SHell (Before running, go to /dsld/inst/Python)
+    # Test Cases: Before running, go to /dsld/inst/Python
+
+    # Running from the OS Shell - CSV input
     python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
 
-
-    # Running from the Python Shell Prompt (Before running, go to /dsld/inst/Python)
+    # Running from the Python Shell Prompt - CSV input
     python # Open python prompt
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import pandas as pd
     data = pd.read_csv('../../data/pefFixed.csv')
-    result = dsldPyTakeALookAround(data, 'wageinc', 'sex')
+    result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
+    print(result)
+
+    # Running from the Python Shell Prompt - Rdata input
+    python # Open Python shell prompt
+    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    import rpy2.robjects as robjects
+    robjects.r['data']('pef')
+    data = robjects.r('pef')
+    result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     print(result)
 '''
