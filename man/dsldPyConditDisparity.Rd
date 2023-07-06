@@ -47,6 +47,16 @@
         an R vector; each component is a character string for an R logical 
         expression representing a desired condition; these must NOT involve 
         sName
+
+        If running from OS Shell Prompt, conditions cannot have spaces.
+        Each condition should be surrounded by quotes '' so that it is 
+        considered a string. Conditions are separated by commas.
+
+        If running from the Python Shell Prompt, enter as an array of 
+        strings separated by commas. Spaces are ok.
+
+        See the examples section for differences in entering the condits
+        for OS Shell vs Python Shell prompt.
     }
     \item{qeFtn}{
         reg function (defaults only), defaults to qeKNN

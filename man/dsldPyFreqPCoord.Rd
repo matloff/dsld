@@ -44,14 +44,15 @@
         These columns can be numbers or names of the columns, but in both cases, 
         this must be in string format.
         
-        If running from the Terminal (not the python prompt), enter the columns 
-        normally, separated by columns, without spaces.
+        If running from the OS Shell, enter the columns normally, separated by 
+        columns, without spaces.
         
-        If running from the Python prompt, enter the columns as an array of 
-        strings, meaning you surround either the number or name with quotes ''.
+        If running from the Python Shell prompt, enter the columns as an array 
+        of strings, meaning you surround either the number or name with 
+        quotes ''.
         
-        See the examples section below if you're having trouble understanding 
-        these directions.
+        See the examples section for differences in entering the condits
+        for OS Shell vs Python Shell prompt.
     }
     \item{grpName}{
         Column number for the grouping variable, if any (if none, all the data 
