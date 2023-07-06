@@ -49,7 +49,7 @@
     dsldGetData(lin1)
 
     # dsldDiffS #
-    X1 <- data.frame(age = c(50,50), educ = c("zzzOther",'14'), occ = c("106","106"), wkswrkd = c(23,23))
+    X1  <- data.frame(age = c(22,45), educ = c("zzzOther",'zzzOther'), occ = c("141","141"),wkswrkd = c(40,40)) # compare genders across different age // early vs late career 
     dat1 <- dsldDiffS(lin1, X1)
 
     # compute confidence interval of differences between S #
