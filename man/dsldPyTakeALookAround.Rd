@@ -33,6 +33,9 @@
     }
     \item{sName}{
         name of the sensitive variable, an R factor
+
+        This should be numeric -- if it is not numeric, the code will convert 
+        the column to numeric values.
     }
     \item{maxFeatureSetSize}{
         maximum number of combinations of features to be included in the 
