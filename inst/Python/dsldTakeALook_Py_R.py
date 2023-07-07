@@ -35,6 +35,10 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
     # Assuming you have the required arguments in Python variables
     r_data = dsld_Rpy2_IsRDataframe(data)
 
+    robjects.r.assign("r_data", r_data)  # Assign the 'r_data' variable to R
+    robjects.r(f"r_data${sName} <- as.numeric(as.character(r_data${sName}) == r_data${sName}[1])") 
+    r_data = robjects.r("r_data")  # Assign the modified R dataframe back to Python
+
     yName_r = robjects.StrVector([yName])                               # Convert variable name to R character vector
     sName_r = robjects.StrVector([sName])                               # Convert variable name to R character vector
 
