@@ -95,7 +95,7 @@
     # Example 2: Using Rdata input data instead of CSV input data
     # Running from the Python shell prompt
     python # Open Python shell prompt
-    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import rpy2.robjects as robjects
     robjects.r['data']('pef')
     data = robjects.r('pef')
