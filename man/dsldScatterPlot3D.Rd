@@ -20,7 +20,7 @@ on a 4th variable.}
   If not supplied, the function will use a non-logical column with the least 
   number of unique values.
   }
-  \item{yName}{
+  \item{yNames}{
   a vector of the indices or names of the columns that are graphed on the 
   3 axes. These columns should have numeric data.
   If not supplied, the function will use the first 3 numeric columns in the dataframe.
