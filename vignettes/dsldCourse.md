@@ -1,17 +1,7 @@
 
 # Data Science Looks at Discrimination
 
-## A toolkit for investigating bias regarding race, gender, age and so on.
-
-![alt text](CompasDecile.png)
-
-<!---
-library(fairml)
-compasRpart <- rpart(decile_score ~ .,compas[,-c(6,7,9,13,14)])
-rpart.plot(compasRpart,,box.palette=c('red','yellow','green'))
---->
-
-## Overview
+##   Race, gender, age and so on.
 
 Discrimination is one of the key social issues, in the US and in a
 number of other countries.  There is lots of available data with which
