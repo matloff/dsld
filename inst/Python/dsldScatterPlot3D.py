@@ -5,19 +5,25 @@
 #           
 
 #TODO:
-#   Remove hardcoded example (pef) in dsldScatterPlot to accept any dataset  || I think finished this - Shubhada
+#   Update the man page with the examples and explanation
 #   Incorporate more arguments from dsldScatterPlot3D R function to Python's equivalent function || Work in progress - Shubhada
-#   Edit the getFileExt() so that it can take in the example path: "../../data/pefFixed.csv"
-#       * Basically get this working: dsldScatterPlot("../../data/pefFixed.csv", "age", "wageinc", "wkswrkd")
 #   Possibly add more datatypes accepted through universalConverterToPdf function
-#   Make functions accessible from console
+#       Atm I think accepting .rdata and .csv is enough
+#   Make functions accessible from console || They are accesible from the Python prompt need to implement from the OS Shell
 #       I believe this part should be done near the end when dsldScatterPlot is fully/nearly functioning
 #   Change name to dsldPlotly?
+
+#FINISHED TODO:
+#   Remove hardcoded example (pef) in dsldScatterPlot to accept any dataset  || I think finished this - Shubhada
+#   Edit the getFileExt() so that it can take in the example path: "../../data/pefFixed.csv" || Done
+#       * Basically get this working: dsldScatterPlot("../../data/pefFixed.csv", "age", "wageinc", "wkswrkd")
 
 import pyreadr #convert .rData to panda's data frame
 import pandas as pd #Convert .csv to panda's data frame
 import plotly.express as px #Create interactive graphs
+import os
 
+# R function call
 # dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL, 
                             #   sortedBy="Name", numGroups=8, maxPoints=NULL,
                             #   xlim=NULL, ylim=NULL, zlim=NULL,
@@ -33,8 +39,11 @@ def dsldScatterPlot(data, sName, yName, sGroups):
 
     fig.show()
 
-def getFileExt(data): # only works with the path to dataset on the users device within dsld
-    return data.split(".",1)[1].lower()
+def getFileExt(data):
+    #Gets the file_path and returns the file type
+    #return data.split(".",1)[1].lower()
+    file_extension = os.path.splitext(data)[1]
+    return file_extension.lower()
 
 def csvToPdf(data):
     #Converts any .csv file to a panda's dataframe
@@ -50,8 +59,8 @@ def rDataToPdf(data):
 
 def universalConverterToPdf(data):
     fileExt = getFileExt(data)
-    if fileExt == "csv": return csvToPdf(data)
-    if fileExt == "rda" or fileExt == "rdata": return rDataToPdf(data)
+    if fileExt == ".csv": return csvToPdf(data)
+    if fileExt == ".rda" or fileExt == ".rdata": return rDataToPdf(data)
     else: 
         print("File extension must be .csv or .rData")
         exit(1)
@@ -69,7 +78,7 @@ fig = px.scatter_3d(df1, x='sepal_length', y='sepal_width', z='petal_width',
 fig.show()
 
 ___________________________________________________________________________________________________________________________
-NEWEXAMPLE 2: Copy paste this outside of the comment box with the right file path:
+NEWEXAMPLE 2: Copy paste this outside of the comment box with the right file path and press the run button:
 .csv:
 dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/pefFixed.csv", "age", "wageinc", "wkswrkd")
 
@@ -83,4 +92,20 @@ dsldScatterPlot("C:/Users/Brandon/Documents/dsld/data/pefFixed.csv")
 dsldScatterPlot("C:/Users/Brandon/Documents/dsld/data/pef.rData")
 
 ___________________________________________________________________________________________________________________________
+PYTHON PROMPT EXAMPLE:
+Navigate to the correct directory (cd /Users/<YourComputersHome>/Documents/GitHub/dsld/inst/Python)
+
+Then type python to enter the python prompt:
+python
+
+Inside the python prompt type the following:
+import pandas as pd
+import plotly.express as px
+from dsldScatterPlot3D import dsldScatterPlot
+dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/pefFixed.csv", "age", "wageinc", "wkswrkd")
+
+___________________________________________________________________________________________________________________________
+RUNNING THROUGH THE OS SHELL: || NEED TO IMPLEMENT THIS
+python dsldScatterPlot3D.py ../../data/pefFixed.csv wageinc gender
+
 '''
