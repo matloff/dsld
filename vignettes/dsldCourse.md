@@ -1,7 +1,7 @@
 
 # Data Science Looks at Discrimination
 
-##   Race, gender, age and so on.
+##   A toolkit for investigating bias in race, gender, age and so on.
 
 Discrimination is one of the key social issues, in the US and in a
 number of other countries.  There is lots of available data with which
@@ -19,6 +19,9 @@ use cases:
 * Litigation involving discrimination and related issues.
 
 * Concerned citizenry. 
+
+This document provides a tutorial regarding applicable methodology, as
+well as introduction to use of the package.
 
 ## Prerequisite background
 
