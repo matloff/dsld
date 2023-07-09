@@ -44,10 +44,9 @@ def changeBg(path):
 def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", minS=50, yLim=None, useLoess=True):
     r_data = dsld_Rpy2_IsRDataframe(data)
 
-    robjects.r.assign("r_data", r_data)  # Assign the 'r_data' variable to R
-    # robjects.r('r_data$race <- as.factor(r_data$race)')  # Call as.factor() on the 'race' column
-    robjects.r(f"r_data${sName} <- as.factor(r_data${sName})")  # Call as.factor() on the 'race' column
-    r_data = robjects.r("r_data")  # Assign the modified R dataframe back to Python
+    robjects.r.assign("r_data", r_data)                         # Assign the 'r_data' variable to R
+    robjects.r(f"r_data${sName} <- as.factor(r_data${sName})")  # Call as.factor() on the 'sName' column
+    r_data = robjects.r("r_data")                               # Assign the modified R dataframe back to Python
 
     yName_r = robjects.StrVector([yName])  # Convert variable name to R character vector
     sName_r = robjects.StrVector([sName])  # Convert variable name to R character vector
@@ -55,7 +54,13 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     condits_r = robjects.StrVector([cond for cond in condits])  # Convert variable name to R character vector
     minS_r = robjects.IntVector([minS])    # Convert variable name to R;s number type
 
-    qeFtn_r = getattr(qeML, qeFtn)
+    # Checks if the qeFtn function exists in qeML library before calling it
+    if hasattr(qeML, qeFtn) and callable(getattr(qeML, qeFtn)):
+        # Call the function
+        qeFtn_r = getattr(qeML, qeFtn)
+    else:
+        print(f"ERROR: qeML do not have function name: '{qeFtn}'\n")
+        return
 
     yLim_r = robjects.NULL
 
