@@ -55,12 +55,7 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     condits_r = robjects.StrVector([cond for cond in condits])  # Convert variable name to R character vector
     minS_r = robjects.IntVector([minS])    # Convert variable name to R;s number type
 
-    if hasattr(qeML, qeFtn) and callable(getattr(qeML, qeFtn)):
-        # Call the function
-       qeFtn_r = getattr(qeML, qeFtn)
-    else:
-        print(f"ERROR: qeML do not have function name: '{qeFtn}'\n")
-        return
+    qeFtn_r = getattr(qeML, qeFtn)
 
     yLim_r = robjects.NULL
 
