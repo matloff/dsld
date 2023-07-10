@@ -1,19 +1,25 @@
 # -------------------------- dsldLinear ---------------------------------------#
 #' ::: Descripton :::
-#' @brief This function produces an instance of the `dsldLinear` class (an S3 object) that 
-#'      houses a separate instances of the `dsldDiffModel` class for each 
-#'      unique, interactive level of the sensitive column specified. In particular dsldLinear fits 
-#'      a linear model with the response variable, yName, with or without interactions that depending on user specifications.
-#'      The output of the dsldDiff model will store a list of traits such as model, model summary, model coefficients, model data.
-#'      1. Model formula as.formula(yName ~.); [character] @ formula
-#'      2. Summary Output of model; [character] @ summary
-#'      3. Coef of beta parameters; [list] @ coef
-#'      4. Data used in the model (useful to see for interactions); [dataframe] @ data
-#'      
+#' @brief The dsldLinear function fits a linear model to the response variable, 
+#'        yName, using all other available covariates in the user provided dataset. 
+#'        The user may select for full interactions across the sensitive variable, 
+#'        sName, in which case the function will fit m separate models, where m is 
+#'        the number of levels of sName.
+#'        
+#'        The function produces an instance of the `dsldLinear` class (an S3 object) 
+#'        that houses a several instances of the `dsldDiffModel` class for each unique, 
+#'        interactive level of the sensitive column specified.
+#'       
+#'        The output of dsldLinear will store a list of useful traits pertaining the linear model;
+#'        the following useful information will be stored: 
+#'        1. yName & sName; [character] @ yName, @ sName
+#'        2. Summary Output of model; [character] @ summary
+#'        3. Coef of beta parameters; [list] @ coef
+#'        4. Data used in the model (useful to see for interactions); [dataframe] @ data
+#'        
 #' ::: Arguments :::
-#' @param data: dataset to model over, will be split according to each level 
-#'      in the final outputted `dsldLinModel` object [dataframe]
-#' @param yName: name of the predictive column [character]
+#' @param data: dataset used to train the model [dataframe]
+#' @param yName: name of the response column [character]
 #' @param sName: name of the sensitive column [character]
 #' @param interactions: specifies whether or not to consider interactions; Defaults to TRUE [boolean]
 # -------------------------- dsldLinear ---------------------------------------#
@@ -84,6 +90,15 @@ dsldLinear <- function(data, yName, sName, interactions = TRUE) {
 #pef$gender <- as.factor(pef$gender)
 #lin1 = dsldLinear(pef,'wageinc','gender', interactions = TRUE); lin1
 #lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE); lin2
+# -----------------------------------------------------------------------------#
+
+# ------------------- Test Run dsldLinear -------------------------------------#
+#load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw2/law.school.admissions.rda') # law schools data, predict undergrad gpa
+#drop <- c('fulltime', 'bar','cluster')
+#law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
+#View(law.school.admissions) # view data
+#lin_1 <- dsldLinear(law.school.admissions,'ugpa','gender', interactions = TRUE); lin_1
+#lin_2 <- dsldLinear(law.school.admissions,'ugpa','gender', interactions = FALSE); lin_2
 # -----------------------------------------------------------------------------#
 
 # -------------------------------- Auxiliary (Helpful) Functions --------------#
