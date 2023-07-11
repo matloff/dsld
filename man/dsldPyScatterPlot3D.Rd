@@ -89,9 +89,11 @@
     }
     \item{opacity}{
         a value between 0 and 1.
+        Enter as a string
     }
     \item{pointSize}{
         a value above 1.
+        Enter as a string
     }
 }
 
