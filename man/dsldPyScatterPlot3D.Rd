@@ -139,8 +139,8 @@
     # enter the arguments in their proper order. See the above note for more 
     # information.
 
-    # Example 1a: Running from the OS shell
-    insert here
+    %# Example 1a: Running from the OS shell
+    %insert here
 
     # Example 1b: Running from the Python shell prompt
     python # Open Python shell prompt
