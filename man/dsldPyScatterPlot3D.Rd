@@ -85,8 +85,7 @@
         or a vector of colors to interpolate in hexadecimal   "#RRGGBB" format, 
         or a color interpolation function like colorRamp().
         
-        In the python shell, if entering just 1 color, do not use brackets [].
-        If entering multiple colors, put the strings in a list [].
+        In the python shell, enter as a list of strings [].
     }
     \item{opacity}{
         a value between 0 and 1.
