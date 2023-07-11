@@ -84,6 +84,9 @@
         either a colorbrewer2.org palette name (e.g. "YlOrRd" or "Blues"), 
         or a vector of colors to interpolate in hexadecimal   "#RRGGBB" format, 
         or a color interpolation function like colorRamp().
+        
+        In the python shell, if entering just 1 color, do not use brackets [].
+        If entering multiple colors, put the strings in a list [].
     }
     \item{opacity}{
         a value between 0 and 1.
