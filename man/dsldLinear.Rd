@@ -11,26 +11,26 @@
     ## Fit linear model
     dsldLinear(data, yName, sName, interactions = FALSE, new_data = NULL)
 
-    ## summary method for class 'dsldLinear'
-    summary(object)
+    ## summary method for class 'dsldLinear'; 'dsldObj' is the output of dsldLinear
+    summary(dsldObj)
 
-    ## compare additional data in full-interactions case
-    dsldDiffs(object, X_new)
-
+    ## users can also compare mean Y | X for additional data as well in full-interactions case 
+    dsldDiffs(dsldObj, new_data)
 }
 
 \arguments{
-    \item {data} {data frame used to train the linear model; will be split according to each level of sName 
-    in output if interactions = TRUE [dataframe]}
+    \item {data} {data frame used to train the linear model; will be split according to each level of sName in output if interactions = TRUE [dataframe]}
 
-    \item{yName} {a string, the response variable [character]}
+    \item {yName} {a string, the response variable [character]}
 
-    \item{sName} {a string, the sensitive variable; an R factor [character]}
+    \item {sName} {a string, the sensitive variable (an R factor) [character]}
 
-    \item{interactions} {a logical value indicating whether or not to fit interactions with the sensitive variable. Defaults to FALSE [logical]}
+    \item {interactions} {a logical value indicating whether or not to fit interactions with the sensitive variable. Defaults to FALSE [logical]}
 
-    \item{new_data} {dataframe of new cases for which mean Y | X will be compared between each pairs of S levels. Defaults to NULL for the 
+    \item {new_data} {dataframe of new cases for which mean Y | X will be compared between each pairs of S levels. Defaults to NULL for the 
     no-interactions case [dataframe]}
+
+    \item {dsldObj} {output of dsldLinear, an s3 object of class 'dsldLinear' [list]}
 }
 
 \author{
@@ -51,14 +51,14 @@
 #   Extract individiual regression coefficients AND compare differences in Y | X between each pairs of sName levels:
     summary(lin1)
 
-#   Users can make comparisons with additional data as well using dsldDiffS
-    X1  <- data.frame(age = c(18,60), educ = c("16",'16'), occ = c("141","141"),wkswrkd = c(40,40)) # Note: educLevel = '16'
-    dat1 <- dsldDiffS(lin1, X1)
+#   Users can also make additional comparisons with new data as well using dsldDiffS to compare mean Y|X between each pair of S levels.
+    X_new  <- data.frame(age = c(18,60), educ = c("16",'16'), occ = c("141","141"),wkswrkd = c(40,40)) # Note: educLevel = '16' not educLevel = 'zzzOther'
+    dat1 <- dsldDiffS(lin1, X_new)
 
 #   Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; new_data = NULL
     lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE)
 
-#   Extract individiual regression coefficients AND compare differences in regression coefficients each pairs of sName levels:
+#   Extract individiual regression coefficients AND compare differences in regression coefficients between each pairs of S levels:
     summary(lin2)
 }
 
@@ -78,30 +78,32 @@
             4. Coef of beta parameters; [character] @ coef
             5. Data used in the model (useful to see for interactions); [dataframe] @ data
     
-        summary() is a polymorphic method that takes in an object of the 'dsldLinear' class and outputs an S3 object of the class 'dsldSummary'. 
-        For the no-interactions case: the first element of dsldSummary outputs a dataframe containing information regarding individiual regression coefficients;
-        the second element compares differences in regression coefficients each pairs of sName levels.
+        Furthermore, summary() is a polymorphic method that takes in an object of the 'dsldLinear' class and outputs an S3 object of the class 'dsldSummary'.
+        The function is intended to allow users to see the comparisons of conditions for sensitive groups via linear models, with and without interactions, in a user-friendly
+        data frame format. 
 
-        In the full-interactions case: the first m (where m is the number of levels in sName) elements contain individual regression coefficients with 
-        respect to each level in sName; the final element compares differences in Y | X between each pairs of sName levels. 
- 
-        In addition, the dsldDiffS() function helps users quantify possible evidence of discrimination between S levels. For the no-interactions case, 
-        dsldDiffS compares differences in regression coefficients between each pairs of S levels. For the full-interactions case, dsldDiffS 
-        now requires an argument, in data-frame form, of new test cases where difference in mean Y at that X value will be compared between 
-        each pair of S levels.
+        For the no-interactions case: the first element of dsldSummary outputs a dataframe containing information regarding individiual regression coefficients; the second element 
+        compares differences in regression coefficients each pairs of sName levels.
 
-        For no-interaction case, dsldDiffS returns a data frame with 4 columns:
+        For differences in regression coefficients for no-interactions case, summary() returns a data frame with 4 columns:
         1. Pairs of S level names 
         2. Estimates of the differences
         3. Associated standard errors
         4. P-values
         There will be one row for each pair of S levels.
-  
-        For full-interactions case, dsldDiffs returns a data frame with 3 columns:
+
+        In the full-interactions case: the first m (where m is the number of levels in sName) elements contain individual regression coefficients with 
+        respect to each level in sName; the final element compares differences in Y | X between each pairs of sName levels.
+
+        For differences in Y | X  in the full-interactions case, summary() returns a data frame with 3 columns:
         1. Col. number of diffs argument
         2. Estimate of the difference in mean Y at that X value
         3. Associated std. err.
         There will be one row for each pair of S levels.
+ 
+        The dsldDiffS() function allows user compare mean Y at that X between each pair of S level for additional new data levels using the model fitted from
+        dsldLinear. The user can input additional data if they'd like to make new comparisons IN addition to those from output of summary(dsldObj). Note: the output
+        of dsldDiffS is the same dataframe format as summary().
 }
 
 
