@@ -17,9 +17,9 @@ from IPython.display import display
 R_NULL = robjects.NULL
 
 #TODO:
-#Implement the yName to take in both strings and numbers in the vector input
+#Implement the yNames to take in both strings and numbers in the vector input
 
-def dsldPyScatterPlot3D(data, sName = R_NULL, yName = R_NULL):
+def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL):
     r_data = dsld_Rpy2_IsRDataframe(data)
 
     if type(sName) == str:
@@ -33,14 +33,19 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yName = R_NULL):
         else:
             sName_r = sName
 
-    if yName == R_NULL:
-        yName_r = yName
-    elif all(y.isdigit() for y in yName):
-        yName_r = robjects.IntVector([int(x) for x in yName])  # Convert 'yName' to an R integer vector
+    if yNames == R_NULL:
+        yNames_r = yNames
+    elif all(y.isdigit() for y in yNames):
+        yNames_r = robjects.IntVector([int(x) for x in yNames])  # Convert 'yNames' to an R integer vector
     else:
-        yName_r = robjects.StrVector(yName)
+        yNames_r = robjects.StrVector(yNames)
 
-    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yName_r)
+    if sGroups == R_NULL:
+        sGroups_r = sGroups
+    else:
+        sGroups_r = robjects.StrVector(sGroups)    # Convert variable name to R character vector
+
+    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r)
 
     # Convert the plot to a Plotly widget
     #plot_widget = rplotly.toWidget(scatter_plot)
@@ -62,5 +67,5 @@ pip install IPython
 
 Other Examples:
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['occ', 'wageinc', 'wkswrkd'])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['3', '5', '6'])
+    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['3', '5', '6'], ['1', '2'])
 '''
