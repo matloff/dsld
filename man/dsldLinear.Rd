@@ -14,23 +14,23 @@
     ## summary method for class 'dsldLinear'
     summary(object)
 
-    ## full-interactions case
+    ## compare additional data in full-interactions case
     dsldDiffs(object, X_new)
 
 }
 
 \arguments{
-    \item {data} {dataset used to train the linear model, will be split according to each level of sName in output if 
-    interactions = TRUE [dataframe]}
+    \item {data} {data frame used to train the linear model; will be split according to each level of sName 
+    in output if interactions = TRUE [dataframe]}
 
-    \item{yName} {response variable [character]}
+    \item{yName} {a string, the response variable [character]}
 
-    \item{sName} {sensitive variable; an R factor [character]}
+    \item{sName} {a string, the sensitive variable; an R factor [character]}
 
-    \item{interactions}{specifies whether or not to consider interactions. Defaults to FALSE [logical]}
+    \item{interactions} {a logical value indicating whether or not to fit interactions with the sensitive variable. Defaults to FALSE [logical]}
 
-    \item{new_data} {dataframe of new cases for which Y | X will be compared between pairs of S levels. 
-    Defaults to NULL for no the interaction case [dataframe]}
+    \item{new_data} {dataframe of new cases for which mean Y | X will be compared between each pairs of S levels. Defaults to NULL for the 
+    no-interactions case [dataframe]}
 }
 
 \author{
@@ -58,7 +58,7 @@
 #   Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; new_data = NULL
     lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE)
 
-#   Extract individiual regression coefficients AND compare differences in Y | X between each pairs of sName levels:
+#   Extract individiual regression coefficients AND compare differences in regression coefficients each pairs of sName levels:
     summary(lin2)
 }
 
@@ -71,17 +71,21 @@
         class for each unique level of the sensitive column specified.
 
         The output of dsldLinear will store a list of useful traits pertaining the linear model; the following useful information will be stored: 
-        1. yName & sName; [character] @ yName, @ sName
-        2. Model; [character] @ model
-        3. (Full Interactions only) New data input by user; [dataframe] @ data   
-        3. Summary Output of model; [character] @ summary
-        4. Coef of beta parameters; [character] @ coef
-        5. Data used in the model (useful to see for interactions); [dataframe] @ data
+            1. yName & sName; [character] @ yName, @ sName
+            2. Model; [character] @ model
+            3. (Full Interactions only) New data input by user; [dataframe] @ data   
+            3. Summary Output of model; [character] @ summary
+            4. Coef of beta parameters; [character] @ coef
+            5. Data used in the model (useful to see for interactions); [dataframe] @ data
     
-        summary() is a polymorphic method that takes in an object of the 'dsldLinear' class. The function provides m summaries of the model, 
-        where m is the number of levels of sName. Additionally, the summary function also report differences across S levels. 
+        summary() is a polymorphic method that takes in an object of the 'dsldLinear' class and outputs an S3 object of the class 'dsldSummary'. 
+        For the no-interactions case: the first element of dsldSummary outputs a dataframe containing information regarding individiual regression coefficients;
+        the second element compares differences in regression coefficients each pairs of sName levels.
+
+        In the full-interactions case: the first m (where m is the number of levels in sName) elements contain individual regression coefficients with 
+        respect to each level in sName; the final element compares differences in Y | X between each pairs of sName levels. 
  
-        The dsldDiffS() function helps users quantify possible evidence of discrimination between S levels. For the no-interactions case, 
+        In addition, the dsldDiffS() function helps users quantify possible evidence of discrimination between S levels. For the no-interactions case, 
         dsldDiffS compares differences in regression coefficients between each pairs of S levels. For the full-interactions case, dsldDiffS 
         now requires an argument, in data-frame form, of new test cases where difference in mean Y at that X value will be compared between 
         each pair of S levels.
