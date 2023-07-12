@@ -92,12 +92,12 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
 
 if __name__ == "__main__":
     #args = sys.argv
-    #cmd, data, sName, yNames, sGroups, sortedBy, numGroups, maxPoints, xlim, ylim, zlim, main, colors, opacity, pointSize = sys.argv
-    cmd, data = sys.argv
-    csvdata = pd.read_csv(data)
-    print(data)
-    dsldPyScatterPlot3D(csvdata)
-    #dsldPyScatterPlot3D(data, sName, yNames.split(','), sGroups.split(','), sortedBy, int(numGroups), maxPoints, xlim.split(','), ylim.split(','), zlim.split(','), main, colors.split(','), opacity, pointSize)
+    cmd, data, sName, yNames, sGroups, sortedBy, numGroups, maxPoints, xlim, ylim, zlim, main, colors, opacity, pointSize = sys.argv
+    # cmd, data = sys.argv
+    data = pd.read_csv()
+    # print(data)
+    # dsldPyScatterPlot3D(data)
+    dsldPyScatterPlot3D(data, sName, yNames.split(','), sGroups.split(','), sortedBy, int(numGroups), maxPoints, xlim.split(','), ylim.split(','), zlim.split(','), main, colors.split(','), opacity, pointSize)
     # try:
     #     file_path = args[INPUT_1]
 
