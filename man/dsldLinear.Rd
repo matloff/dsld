@@ -11,11 +11,14 @@
     ## Fit linear model
     dsldLinear(data, yName, sName, interactions = FALSE, new_data = NULL)
 
-    ## summary method for class 'dsldLinear'; 'dsldObj' is the output of dsldLinear
-    summary(dsldObj)
-
-    ## users can also compare mean Y | X for additional data as well in full-interactions case 
-    dsldDiffs(dsldObj, new_data)
+    ## s3 polymorphic functionalities for class 'dsldLinear'
+    print(dsldLinear)
+    summary(dsldLinear)
+    plot(dsldLinear)
+    data(dsldLinear)
+    coef(dsldLinear)
+    dsldDiffs(dsldLinear, newData) # compare mean Y | X for additional data in
+                                   # the full interactions case
 }
 
 \arguments{
@@ -42,8 +45,10 @@
 
     # Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, 
     #   new_data [dataframe]
+
+    # compare early vs late career
     new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), 
-        wkswrkd = c(50, 50), occ = c("106", "106")) # we can compare wage differences for early in career vs. late in career
+        wkswrkd = c(50, 50), occ = c("106", "106"))
     lin1 = dsldLinear(pef,'wageinc','gender', interactions = TRUE, new_data)
 
     # Extract individual regression coefficients AND compare differences in 
