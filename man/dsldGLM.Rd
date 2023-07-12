@@ -12,11 +12,7 @@
     dsldGLM <- function(data, yName, sName, family_type, interactions = TRUE)
 
     ## s3 polymorphic functionalities for class 'dsldGLM'
-    print(dsldGLM)
     summary(dsldGLM)
-    plot(dsldGLM)
-    data(dsldGLM)
-    coef(dsldGLM)
 }
 
 \arguments{

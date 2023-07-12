@@ -12,11 +12,7 @@
     dsldLinear(data, yName, sName, interactions = FALSE, new_data = NULL)
 
     ## s3 polymorphic functionalities for class 'dsldLinear'
-    print(dsldLinear)
     summary(dsldLinear)
-    plot(dsldLinear)
-    data(dsldLinear)
-    coef(dsldLinear)
     dsldDiffs(dsldLinear, newData) # compare mean Y | X for additional data in
                                    # the full interactions case
 }
