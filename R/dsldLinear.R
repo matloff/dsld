@@ -28,69 +28,83 @@
 #'      Defaults to FALSE [boolean]
 #' @param new_data: new test cases to compute Y | X ; REQUIRED when
 #'      interactions = TRUE [dataframe]
-#' 
-# -------------------------- dsldLinear ---------------------------------------#
+#'
 dsldLinear <- function(data, yName, sName, interactions = FALSE, new_data = NULL) {
-  # create final output list to by populated with results #
-  dsldModel <- list()
+    # create final output list to by populated with results #
+    dsldModel <- list()
 
-  # user selects interactions == TRUE #
-  if (interactions == TRUE) {
-    
-    # raise error if user doesn't input new_data # 
-    if (is.null(new_data)) {
-      stop("Please enter the new_data input to compare for interactions in summary()")
-    }
-    
-    # split data into list of dataframes by each level of sName #
-    dataSplit <- split(data, data[[sName]])
-    dataNames <- names(dataSplit)
-    
-    # loop and create model for each level in sName #
-    for (name in dataNames) {
-      
-      # initialize instance of dsldDiffModel #
-      dsldDiffModel <- list()
-      
-      # get data for each specific S factor & drop sensitive column #
-      diffData <- dataSplit[[name]]
-      drop <- c(sName)
-      diffData <- diffData[, !(names(diffData) %in% drop)]
-      
-      # create the model #
-      diffModel <- glm(formula = as.formula(paste(yName, "~ .")), family = 'gaussian', data = diffData)
-      
-      # setup individual instance of dsldDiffModel #
-      dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel), list(new_data), list(summary(diffModel)), list(coef(diffModel)), list(diffData))
-      names(dsldDiffModel) <- c("yName", "sName", "model", "new_data", "summary", "coef", "data")
-      
-      class(dsldDiffModel) <- "dsldDiffModel"
-      
-      # add instance into output list: dsldModel #
-      dsldModel[[name]] <- dsldDiffModel
-    }
-    
+    # user wants interactions #
+    if (interactions) {
+        # raise error if user doesn't input new_data #
+        if (is.null(new_data)) {
+            stop(paste("Please enter the new_data input to compare for ",
+                "interactions in summary()"))
+        }
+
+        # split data into list of dataframes by each level of sName #
+        dataSplit <- split(data, data[[sName]])
+        dataNames <- names(dataSplit)
+
+        # loop and create model for each level in sName #
+        for (name in dataNames) {
+            # initialize instance of dsldDiffModel #
+            dsldDiffModel <- list()
+
+            # get data for each specific S factor & drop sensitive column #
+            diffData <- dataSplit[[name]]
+            drop <- c(sName)
+            diffData <- diffData[, !(names(diffData) %in% drop)]
+
+            # create the model #
+            diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
+                family = "gaussian", data = diffData)
+
+            # setup individual instance of dsldDiffModel #
+            dsldDiffModel <- c(dsldDiffModel,
+                yName,
+                sName,
+                list(diffModel),
+                list(new_data),
+                list(summary(diffModel)),
+                list(coef(diffModel)),
+                list(diffData)
+            )
+            names(dsldDiffModel) <- c("yName", "sName", "model", "new_data", 
+                "summary", "coef", "data")
+            class(dsldDiffModel) <- "dsldDiffModel"
+
+            # add instance into output list: dsldModel #
+            dsldModel[[name]] <- dsldDiffModel
+        }
+
     # user selects interactions == FALSE #
-  } else {
-    
-    # initialize instance of dsldDiffModel #
-    dsldDiffModel <- list()
-    
-    # create model #
-    diffModel <- glm(formula = as.formula(paste(yName, "~ .")), family = 'gaussian', data = data)
-    
-    # setup instance of dsldDiffModel #
-    dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel), list(summary(diffModel)), list(coef(diffModel)), list(data))
-    names(dsldDiffModel) <- c("yName", "sName", "model", "summary", "coef", "data")
-    
-    # add instance into dsldModel
-    dsldModel[[sName]] <- dsldDiffModel
-  }
-  
-  # finalize dsldModel #
-  class(dsldModel) <- "dsldLinear"
-  return(dsldModel)
-  
+    } else {
+        # initialize instance of dsldDiffModel #
+        dsldDiffModel <- list()
+
+        # create model #
+        diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
+            family = "gaussian", data = data)
+
+        # setup instance of dsldDiffModel #
+        dsldDiffModel <- c(dsldDiffModel,
+            yName,
+            sName,
+            list(diffModel),
+            list(summary(diffModel)),
+            list(coef(diffModel)),
+            list(data)
+        )
+        names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
+            "coef", "data")
+
+        # add instance into dsldModel
+        dsldModel[[sName]] <- dsldDiffModel
+    }
+
+    # finalize dsldModel #
+    class(dsldModel) <- "dsldLinear"
+    return(dsldModel)
 }
 
 # -------------------- Test Run dsldLinear ------------------------------------#
