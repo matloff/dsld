@@ -1,37 +1,39 @@
 # -------------------------- dsldLinear ---------------------------------------#
 #' ::: Descripton :::
-#' @brief The dsldLinear function fits a linear model to the response variable, 
-#'        yName, using all other available covariates in the user provided dataset. 
-#'        The user may select for full interactions across the sensitive variable, 
-#'        sName, in which case the function will fit m separate models, where m is 
-#'        the number of levels of sName.
-#'        
-#'        The function produces an instance of the `dsldLinear` class (an S3 object) 
-#'        that houses a several instances of the `dsldDiffModel` class for each unique, 
-#'        interactive level of the sensitive column specified.
-#'       
-#'        The output of dsldLinear will store a list of useful traits pertaining the linear model;
-#'        the following useful information will be stored: 
-#'        1. yName & sName; [character] @ yName, @ sName
-#'        2. Model; [character] @ model
-#'        3. (Full Interactions only) New data input by user; [dataframe] @ data
-#'        3. Summary Output of model; [character] @ summary
-#'        4. Coef of beta parameters; [character] @ coef
-#'        5. Data used in the model (useful to see for interactions); [dataframe] @ data
-#'        
+#' @brief The dsldLinear function fits a linear model to the response variable,
+#'      yName, using all other available covariates in the user provided
+#'      dataset. The user may select for full interactions across the sensitive
+#'      variable, sName, in which case the function will fit m separate models,
+#'      where m is the number of levels of sName.
+#'
+#'      The function produces an instance of the `dsldLinear` class (an S3
+#'      object).
+#'
+#'      The output of dsldLinear will store a list of useful traits pertaining
+#'      the linear model; the following useful information will be stored:
+#'          1. yName & sName; [character] @ yName, @ sName
+#'          2. Model; [character] @ model
+#'          3. (Full Interactions only) New data input by user;
+#'             [dataframe] @ data
+#'          3. Summary Output of model; [character] @ summary
+#'          4. Coef of beta parameters; [character] @ coef
+#'          5. Data used in the model (useful to see for interactions);
+#'             [dataframe] @ data
+#'
 #' ::: Arguments :::
 #' @param data: dataset used to train the model [dataframe]
 #' @param yName: name of the response column [character]
 #' @param sName: name of the sensitive column [character]
-#' @param interactions: specifies whether or not to consider interactions; Defaults to FALSE [boolean]
-#' @param new_data: new test cases to compute Y | X ; REQUIRED when interactions = TRUE [dataframe]
+#' @param interactions: specifies whether or not to consider interactions;
+#'      Defaults to FALSE [boolean]
+#' @param new_data: new test cases to compute Y | X ; REQUIRED when
+#'      interactions = TRUE [dataframe]
+#' 
 # -------------------------- dsldLinear ---------------------------------------#
-
 dsldLinear <- function(data, yName, sName, interactions = FALSE, new_data = NULL) {
-  
   # create final output list to by populated with results #
   dsldModel <- list()
-  
+
   # user selects interactions == TRUE #
   if (interactions == TRUE) {
     
@@ -188,14 +190,14 @@ dsldValidateData <- function(new_data, model) {
 #'      coefficients between each pairs of S levels. For the full-interactions case, dsldDiffS 
 #'      now requires an argument, in data-frame form, of new test cases where difference in mean Y at 
 #'      that X value will be compared between each pair of S levels.
-#'      
+#'
 #'      For no-interaction case, dsldDiffS returns a data frame with 4 columns:
-#'      1. Pairs of S level names 
+#'      1. Pairs of S level names
 #'      2. Estimates of the differences
 #'      3. Associated standard errors
 #'      4. P-values
 #'      There will be one row for each pair of S levels.
-#'      
+#'
 #'      For full-interactions case, dsldDiffs returns a data frame with 3 columns:
 #'      1. Col. number of diffs argument
 #'      2. Estimate of the difference in mean Y at that X value
@@ -205,9 +207,8 @@ dsldValidateData <- function(new_data, model) {
 #' ::: Arguments :::
 #' @param dsldObj: output from dsldLinear() function 
 #' @param new_data: new test cases to be provided; required for full-interactions case 
-
+#'
 dsldDiffS <- function(dsldObj, new_data = NULL) {
-  
   # get sName and yName from the output of dsldLinear #
   sName <- dsldObj[[1]]$sName
   yName <- dsldObj[[1]]$yName
