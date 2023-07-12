@@ -13,7 +13,7 @@ from Utils import dsld_Rpy2_IsRDataframe
 import os
 import stat
 from PIL import Image
-ggplot2 = importr('ggplot2')
+# ggplot2 = importr('ggplot2')
 
 # Column vector input
 from rpy2.robjects import r
