@@ -114,14 +114,22 @@
     # enter the arguments in their proper order. See the above note for more 
     # information.
 
-    # Example 1a: Running from the OS shell
+    # Example 1: Running from the OS shell
     python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost
 
-    # Example 1b: Running from the Python shell prompt
+    # Example 2a: Running from the Python shell prompt
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     import pandas as pd
     data = pd.read_csv('../../data/compasNumericFixed.csv')
     dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], 'qeGBoost')
+
+    # Example 2b: Running from the Python shell prompt
+    python # Open Python shell prompt
+    from dsldConditDisparity_Py_R import dsldPyConditDisparity
+    import rpy2.robjects as robjects
+    robjects.r['data']('pef')
+    data = robjects.r('pef')
+    dsldPyConditDisparity(data, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
 }
 
