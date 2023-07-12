@@ -38,11 +38,50 @@ def changeBg(path):
     output_path = path
     new_image.save(output_path)
 
+
+# May not be necesarry if R function hanldes input validation.
+def validate_input(yName, sName, xName, condits, minS, yLim, useLoess):
+    if type(yName) != list or type(yName) != str:
+        print('Error: yName must be a list of string. Entered type:', type(yName))
+        exit(1)
+
+    if type(sName) != list or type(sName) != str:
+        print('Error: sName must be a list of string. Entered type:', type(sName))
+        exit(1)
+
+    if type(xName) != list or type(xName) != str:
+        print('Error: xName must be a list of string. Entered type:', type(xName))
+        exit(1)
+
+    if type(condits) != list or type(condits) != str:
+        print('Error: condits must be a list of string. Entered type:', type(condits))
+        exit(1)
+
+    if type(minS) != int:
+        print('Error: minS must be an int type. Entered type:', type(minS))
+        exit(1)
+
+    if type(useLoess) != bool:
+        print('Error: useLoess must be boolean type. Entered:', type(useLoess))
+        exit(1)
+
+
+    if yLim is not None and type(yLim) != list:
+        print('Error: yLim must be a list of integers. Entered type:', type(yLim))
+        exit(1)
+    
+    if yLim is not None and len(yLim) != 2:
+        print('Error: yLim must be a list of 2 integers(lower and upper bound). Size Entered:', len(yLim))
+        exit(1)
+
+    
 # This is the interface function for R's dsldConditDisparity function
 # The arguments are converted into R data type before calling dsldConditDisparity function
 # This function uses qeML's qeKNN function as default argument for qeFtn
 def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", minS=50, yLim=None, useLoess=True):
     r_data = dsld_Rpy2_IsRDataframe(data)
+
+    #validate_input(yName, sName, xName, condits, qeFtn, minS, yLim, useLoess)
 
     robjects.r.assign("r_data", r_data)                         # Assign the 'r_data' variable to R
     robjects.r(f"r_data${sName} <- as.factor(r_data${sName})")  # Call as.factor() on the 'sName' column
@@ -144,3 +183,12 @@ if __name__ == "__main__":
     data = pd.read_csv('../../data/compasNumericFixed.csv')
     dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], 'qeGBoost')
 '''
+
+""" 
+PEF Data Example
+python # Open Python shell prompt
+from dsldConditDisparity_Py_R import dsldPyConditDisparity
+robjects.r['data']('pef')
+pef = robjects.r['pef']
+dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
+"""
