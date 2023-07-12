@@ -4,7 +4,7 @@
 
 # ---- plotly ----
 
-dsldScatterPlot3D <- function(data, sName=NULL, yNames=NULL, sGroups=NULL, 
+dsldScatterPlot3D <- function(data, yNames=NULL, sName=NULL, sGroups=NULL, 
                               sortedBy="Name", numGroups=8, maxPoints=NULL,
                               xlim=NULL, ylim=NULL, zlim=NULL,
                               main=NULL, colors="Paired", opacity=1, 
