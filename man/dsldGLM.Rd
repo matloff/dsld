@@ -12,10 +12,10 @@
 }
 
 \arguments{
-    \item{data} {dataset in dataframe form}
-    \item{yName} {as in qeML functions, the response variable}
-    \item{sName} {name of the sensitive variable, an R factor}
-    \item{family_type} {Type of model user wants to fit}
+    \item{data}{dataset in dataframe form}
+    \item{yName}{as in qeML functions, the response variable}
+    \item{sName}{name of the sensitive variable, an R factor}
+    \item{family_type}{Type of model user wants to fit}
     \item{Interactions}{ADD}
 }
 
