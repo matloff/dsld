@@ -130,80 +130,88 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE, new_data = NULL
 # ----------------------- Auxiliary Functions ---------------------------------#
 
 #' ::: Description ::
-#' @brief coef() is a polymorphic method that takes in an object of the 'dsldLinear' 
-#'      class. The function provides m regression coefficients of the model, where m 
-#'      is the number of levels of sName.
-#' 
+#' @brief coef() is a polymorphic method that takes in an object of the
+#'      'dsldLinear' class. The function provides m regression coefficients
+#'      of the model, where m is the number of levels of sName.
+#'
 #' ::: Arguments :::
 #' @param dsld_obj: an instance of the dsldLinearModel s3 object.
-
-coef.dsldLinear <- function(dsld_obj) {
-  result <- lapply(dsld_obj, function(x) x$coef)
-  return(result)
+#'
+coef.dsldLinear <- function(dsldObj) {
+    # merge & return coefficients #
+    mergedCoef <- lapply(dsldObj, function(x) x$coef)
+    return(mergedCoef)
 }
+
 
 #coef(lin1) # test run
 #coef(lin2)
 
-#' ::: Description ::
-#' @brief the dsldGetData() function takes in an object of the 'dsldLinear' class. 
-#'      The function provides m dataset(s) used to train the linear model, where m 
-#'      is the number of levels of sName.
-#' 
-#' ::: Arguments :::
-#' @param dsld_obj: an instance of the dsldLinearModel s3 object. 
 
-dsldGetData <- function(dsld_obj) {
-  result <- lapply(dsld_obj, function(x) x$data)
-  return(result)
+#' ::: Description ::
+#' @brief the dsldGetData() function takes in an object of the 'dsldLinear'
+#'      class. The function provides m dataset(s) used to train the linear
+#'      model, where m is the number of levels of sName.
+#'
+#' ::: Arguments :::
+#' @param dsldObj: an instance of the dsldLinearModel s3 object.
+#'
+dsldGetData <- function(dsldObj) {
+    # merge & return datasets #
+    mergedData <- lapply(dsldObj, function(x) x$data)
+    return(mergedData)
 }
+
 
 #dsldGetData(lin1)
 #dsldGetData(lin2)
 
+
 #------------------------- dsldDiffS function ---------------------------------#
-
 #' ::: Description ::
-#' @brief dsldValidateData() is an indirect helper function for dsldDiffS() 
-#'      full-interactions case. The function takes in the new_data argument from 
-#'      dsldDiffS() and validates if the user has entered appropriate entries for 
-#'      new_data. 
-#' 
+#' @brief dsldValidateData() is an indirect helper function for dsldDiffS()
+#'      full-interactions case. The function takes in the new_data argument
+#'      from dsldDiffS() and validates if the user has entered appropriate
+#'      entries for new_data.
+#'
 #' ::: Arguments :::
-#' @param new_data: user inputted data for incoming new test cases.
+#' @param newData: user inputted data for incoming new test cases.
 #' @param model: linear model fitted by output of dsldLinear().
-
-dsldValidateData <- function(new_data, model) {
-  
-  #  check to see if columns in new_data exist in the original data #
-  missing_columns <- setdiff(names(new_data), names(model$model))
-  if (length(missing_columns) > 0) {
-    stop(paste("Invalid column(s):", paste(missing_columns, collapse = ", ")))
-  }
-  
-  # Check if categorical variables entries are valid #
-  categorical_vars <- names(model$model)[sapply(model$model, is.factor)]
-  for (i in 1:nrow(new_data)) {
-    current_row <- new_data[i, ]
-    
-    for (var in categorical_vars) {
-      levels <- unique(model$model[[var]])
-      if (!(current_row[[var]] %in% levels)) {
-        stop(paste("Invalid", var, "level in row", i, "."))
-      }
+#'
+dsldValidateData <- function(newData, model) {
+    #  check to see if columns in newData exist in the original data #
+    missingCols <- setdiff(names(newData), names(model$model))
+    if (length(missingCols) > 0) {
+        stop(paste("Invalid column(s):", paste(missingCols,
+            collapse = ", ")))
     }
-  }
-  
-  # return the data back if everything is good #
-  return(new_data)
+
+    # Check if categorical variables entries are valid #
+    categoricalVars <- names(model$model)[sapply(model$model, is.factor)]
+    for (i in 1:nrow(newData)) {
+        curRow <- newData[i, ]
+
+        for (var in categoricalVars) {
+            levels <- unique(model$model[[var]])
+            if (!(curRow[[var]] %in% levels)) {
+                stop(paste("Invalid", var, "level in row", i, "."))
+            }
+        }
+    }
+
+    # return the data back if everything is good #
+    return(newData)
 }
 
+
 #' ::: Description ::
-#' @brief The dsldDiffS() function helps users quantify possible evidence of discrimination 
-#'      between S levels. For the no-interactions case, dsldDiffS compares differences in regression 
-#'      coefficients between each pairs of S levels. For the full-interactions case, dsldDiffS 
-#'      now requires an argument, in data-frame form, of new test cases where difference in mean Y at 
-#'      that X value will be compared between each pair of S levels.
+#' @brief The dsldDiffS() function helps users quantify possible evidence of
+#'      discrimination between S levels. For the no-interactions case,
+#'      dsldDiffS compares differences in regression coefficients between each
+#'      pairs of S levels. For the full-interactions case, dsldDiffS now
+#'      requires an argument, in data-frame form, of new test cases where
+#'      difference in mean Y at that X value will be compared between each pair
+#'      of S levels.
 #'
 #'      For no-interaction case, dsldDiffS returns a data frame with 4 columns:
 #'      1. Pairs of S level names
@@ -212,15 +220,17 @@ dsldValidateData <- function(new_data, model) {
 #'      4. P-values
 #'      There will be one row for each pair of S levels.
 #'
-#'      For full-interactions case, dsldDiffs returns a data frame with 3 columns:
+#'      For full-interactions case, dsldDiffs returns a data frame with 3
+#'      columns:
 #'      1. Col. number of diffs argument
 #'      2. Estimate of the difference in mean Y at that X value
 #'      3. Associated std. err.
 #'      There will be one row for each pair of S levels.
-#' 
+#'
 #' ::: Arguments :::
-#' @param dsldObj: output from dsldLinear() function 
-#' @param new_data: new test cases to be provided; required for full-interactions case 
+#' @param dsldObj: output from dsldLinear() function
+#' @param new_data: new test cases to be provided; required for
+#'      full-interactions case
 #'
 dsldDiffS <- function(dsldObj, new_data = NULL) {
   # get sName and yName from the output of dsldLinear #
@@ -229,7 +239,6 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
   
   # diffS results when interaction == FALSE in dsldLinear #
   if (length(dsldObj) == 1) {
-    
     # extract pairwise combination of [dummy level in glm - factor levels] from summary output #
     data <- dsldGetData(dsldObj)[[1]]
     model <- dsldObj[[1]]$model
