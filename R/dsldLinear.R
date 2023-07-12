@@ -317,7 +317,7 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
     
     # get vector of all levels in sName #
     sNames <- names(dsldObj)
-    df = data.frame()
+    df <- data.frame()
     
     # loop through each level of S name to compute estimates and standard errors #
     for (i in sNames) {
@@ -333,20 +333,20 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
     
     # compute difference in estimates between each pair factor level for each row #
     unique_elements <- sort(unique(df$row)) 
-    pairwise_df = data.frame()
+    pairwise_df <- data.frame()
     for (i in unique_elements) {  
-      row_dat = subset(df, row == i)
+      row_dat <- subset(df, row == i)
       character_vector <- as.character(row_dat$level)
-      combination_matrix = combn(character_vector, 2) 
+      combination_matrix <- combn(character_vector, 2) 
       for (j in 1:dim(combination_matrix)[2]) {
         val <- combination_matrix[,j]                   
         a <- val[1]                                 
         b <- val[2] 
-        a_dat = subset(row_dat, level == a)
-        b_dat = subset(row_dat, level == b)
-        index_val = sprintf("%s - %s", a,b)
-        estimated_difference = a_dat$prediction - b_dat$prediction
-        standard_error = sqrt(((a_dat$standard_error)^2) + ((b_dat$standard_error)^2))
+        a_dat <- subset(row_dat, level == a)
+        b_dat <- subset(row_dat, level == b)
+        index_val <- sprintf("%s - %s", a,b)
+        estimated_difference <- a_dat$prediction - b_dat$prediction
+        standard_error <- sqrt(((a_dat$standard_error)^2) + ((b_dat$standard_error)^2))
         temp_df <- data.frame(index_val, i, estimated_difference, standard_error)
         names(temp_df) <- c("Factors Compared", "Row", "Estimates", "Standard Errors")
         pairwise_df <- rbind(pairwise_df, temp_df)
