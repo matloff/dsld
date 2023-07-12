@@ -23,11 +23,17 @@ R_NULL = robjects.NULL
 def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL, sortedBy = "Name", numGroups = 8, maxPoints = R_NULL, xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL, colors = ["Paired"], opacity = "1", pointSize = "8"):
     r_data = dsld_Rpy2_IsRDataframe(data)
     
-    # print(robjects.r['head'](r_data))
     robjects.r.assign("r_data", r_data)  
-    robjects.r('r_data <- as.data.frame(lapply(r_data, as_factor))')
+
+    # robjects.r('r_data <- as.data.frame(lapply(r_data, as_factor))')
+    # Identify columns with string data
+    robjects.r('string_cols <- sapply(r_data, is.character)')
+    # Convert selected columns to factors
+    robjects.r('r_data[string_cols] <- lapply(r_data[string_cols], as.factor)')
+
     r_data = robjects.r("r_data")    
-    print(robjects.r['head'](r_data))
+
+    # print(robjects.r['head'](r_data))
 
     if type(sName) == str:
         sName_r = robjects.StrVector([sName])    # Convert variable name to R character vector
