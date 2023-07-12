@@ -1,4 +1,4 @@
 export(
-   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, summary.dsldLinear, coef.dsldLinear, dsldGetData, dsldValidateData, dsldDiffS
+   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, summary, coef, dsldGetData, dsldValidateData, dsldDiffS
 )
 
