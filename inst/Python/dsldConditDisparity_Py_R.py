@@ -104,7 +104,7 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     yLim_r = robjects.NULL
 
     if yLim is not None:
-        yLim_r = robjects.IntVector([int(x) for x in yLim])
+        yLim_r = robjects.FloatVector([float(x) for x in yLim])
         print(yLim_r)
 
     useLoess_r = robjects.BoolVector([useLoess])
