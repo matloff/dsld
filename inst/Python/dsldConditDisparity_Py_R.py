@@ -121,7 +121,7 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
 
     # Load the image file in Python
     image = Image.open(plot_filename)
-    image.show()  # Display the plot using the default image viewer
+    image.show()                                # Display the plot using the default image viewer
 
     # Close the displayed image
     image.close()
