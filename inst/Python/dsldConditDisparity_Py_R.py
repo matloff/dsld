@@ -182,6 +182,14 @@ if __name__ == "__main__":
     import pandas as pd
     data = pd.read_csv('../../data/compasNumericFixed.csv')
     dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], 'qeGBoost')
+
+    # Running from the Python Shell Prompt
+    python # Open Python shell prompt
+    from dsldConditDisparity_Py_R import dsldPyConditDisparity
+    import rpy2.robjects as robjects
+    robjects.r['data']('pef')
+    data = robjects.r('pef')
+    dsldPyConditDisparity(data, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
 '''
 
 """ 

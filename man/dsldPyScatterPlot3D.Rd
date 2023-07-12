@@ -73,7 +73,7 @@
         a limit to how many points may be displayed on the graph.
         There is no limit by default.
     }
-    \item{xlim, ylim, zlim} {
+    \item{xlim, ylim, zlim}{
         the x, y and z limits [a vector with c(min, max)] of the plot.
     }
     \item{main}{
@@ -98,7 +98,7 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10.
+    The usage of this function requires Python 3.10, rpy2, plotly, and IPython.
 }    
 
 \note{ 
