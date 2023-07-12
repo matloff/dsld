@@ -39,7 +39,7 @@ dsld = importr("dsld")
 # dsldFreqPCoord function is called inside this function
 # The arguments are passed inside dsldFreqPCoord as r format
 # and the result is a graph handled by R.
-def dsldPyFreqPCoord(data, m, columns, grpName):
+def dsldPyFreqPCoord(data, m, columns, sName):
     # Assuming you have the required arguments in Python variables
     r_data = dsld_Rpy2_IsRDataframe(data) # At this point, data is always intended to be in R dataframe format
 
@@ -49,7 +49,7 @@ def dsldPyFreqPCoord(data, m, columns, grpName):
     else:
         columns_r = robjects.StrVector(columns)
     m_r = robjects.IntVector([m])                              # Convert variable name to R character vector
-    grpName_r = robjects.StrVector([grpName])
+    sName_r = robjects.StrVector([sName])
 
     # All necessary arguments are in R format at this point
 
@@ -59,7 +59,7 @@ def dsldPyFreqPCoord(data, m, columns, grpName):
     # print(plot_filename)
 
     # Calling the R function
-    dsld.dsldFreqPCoord(r_data, m_r, columns_r, grpName_r, plot_filename)
+    dsld.dsldFreqPCoord(r_data, m_r, columns_r, sName_r, plot_filename)
 
     # Current image file permissions: -rw-r--r-- (Owner can read/write, Group can read, Others can read)
     # os.chmod(plot_filename, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH | stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH)

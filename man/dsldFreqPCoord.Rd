@@ -6,7 +6,7 @@
     This is a wrapper for the freqparcoord function from the freqparcoord package (link in references).
 }
 \usage{
-    dsldFreqPCoord <- function(data, m, columns, grpName, plot_filename = NULL)
+    dsldFreqPCoord <- function(data, m, columns, sName, plot_filename = NULL)
 }
 
 \arguments{
@@ -22,7 +22,7 @@
         Numbers of the columns of x to be displayed. This can be entered as either a string or integers of the 
         columns separated by commas but not a mixture of both.
     }
-    \item{grpName}{
+    \item{sName}{
         Column number for the grouping variable, if any (if none, all the data is treated
         as a single group); vector or factor.
     }

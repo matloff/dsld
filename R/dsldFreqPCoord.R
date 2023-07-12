@@ -4,9 +4,9 @@
 #' dsldFreqPCoord is a function that plots points in parallel coordinates
 #' @param data The data we want to look at
 #' @param m The number of lines to plot for each group
-#' @param grpName What to group the data by
+#' @param sName What to group the data by
 #' @return a plot (in parallel coordinates) with freqparcoord()
-dsldFreqPCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
+dsldFreqPCoord <- function(data, m, columns, sName, plot_filename = NULL) {
     # May need to delete these 3 library() lines
     if (!require('freqparcoord')) install.packages('freqparcoord'); library('freqparcoord')
     if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
@@ -24,9 +24,9 @@ dsldFreqPCoord <- function(data, m, columns, grpName, plot_filename = NULL) {
     
     # If no filename argument provided, do not save an image file, just generate the image
     if (is.null(plot_filename)){
-        freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
+        freqparcoord::freqparcoord(data, m, columns, grpvar = sName)
     } else{
-        freqparcoord::freqparcoord(data, m, columns, grpvar = grpName)
+        freqparcoord::freqparcoord(data, m, columns, grpvar = sName)
         ggsave(plot_filename) # Save as img
         # pr2file(plot_filename) # Doesn't work with Python, so we are leaving this commented for now
     }

@@ -23,7 +23,7 @@
 }
 
 \usage{
-    dsldPyFreqPCoord(data, m, columns, grpName)
+    dsldPyFreqPCoord(data, m, columns, sName)
 }
 
 \arguments{
@@ -54,7 +54,7 @@
         See the examples section for differences in entering the condits
         for OS Shell vs Python Shell prompt.
     }
-    \item{grpName}{
+    \item{sName}{
         Column number for the grouping variable, if any (if none, all the data 
         is treated as a single group); vector or factor.
     }
