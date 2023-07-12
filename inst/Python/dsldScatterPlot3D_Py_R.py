@@ -8,9 +8,10 @@ from Utils import dsld_Rpy2_IsRDataframe
 # from rpy2.robjects import r
 
 dsld = importr("dsld")
-qeML = importr("qeML")
+# qeML = importr("qeML")
 # ggplot2 = importr('ggplot2')  # May remove this line
 # grdevices = importr('grDevices')
+forcats = importr('forcats')
 
 rplotly = importr("plotly")
 from IPython.display import display
@@ -21,6 +22,12 @@ R_NULL = robjects.NULL
 
 def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL, sortedBy = "Name", numGroups = 8, maxPoints = R_NULL, xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL, colors = ["Paired"], opacity = "1", pointSize = "8"):
     r_data = dsld_Rpy2_IsRDataframe(data)
+    
+    # print(robjects.r['head'](r_data))
+    robjects.r.assign("r_data", r_data)  
+    robjects.r('r_data <- as.data.frame(lapply(r_data, as_factor))')
+    r_data = robjects.r("r_data")    
+    print(robjects.r['head'](r_data))
 
     if type(sName) == str:
         sName_r = robjects.StrVector([sName])    # Convert variable name to R character vector
@@ -144,4 +151,6 @@ Other Examples:
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, colors = ["salmon"])
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, pointSize = "20")
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, colors = ["yellow", "orange"], maxPoints = "20", ylim = ["50000", "100000"], xlim = ["20", "80"], pointSize = "5")
+    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data)
+    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import pandas as pd;data = pd.read_csv('../../data/pefFixed.csv');dsldPyScatterPlot3D(data)
 '''
