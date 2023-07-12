@@ -29,7 +29,8 @@
 #' @param newData: new test cases to compute Y | X ; REQUIRED when
 #'      interactions = TRUE [dataframe]
 #'
-dsldLinear <- function(data, yName, sName, interactions = FALSE, newData = NULL) {
+dsldLinear <- function(data, yName, sName, interactions = FALSE,
+    newData = NULL) {
     # create final output list to by populated with results #
     dsldModel <- list()
 
@@ -69,7 +70,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE, newData = NULL)
                 list(coef(diffModel)),
                 list(diffData)
             )
-            names(dsldDiffModel) <- c("yName", "sName", "model", "newData", 
+            names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
                 "summary", "coef", "data")
             class(dsldDiffModel) <- "dsldDiffModel"
 
@@ -279,14 +280,14 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
         combinationMatrix <- combn(featureNames, 2)
 
         # remove all columns that do not have sName #
-        matching_columns <- which(apply(combinationMatrix, 2,
+        matchingCols <- which(apply(combinationMatrix, 2,
             function(col) all(grepl(sName, col))))
-        result_final <- combinationMatrix[, matching_columns, drop = FALSE]
+        finalResult <- combinationMatrix[, matchingCols, drop = FALSE]
 
         # loops through each pair #
-        for (j in 1:dim(result_final)[2]) {
+        for (j in 1:dim(finalResult)[2]) {
             # create i-th pair of pairwise combinations #
-            val <- result_final[, j]
+            val <- finalResult[, j]
             a <- val[1]
             b <- val[2]
 
@@ -319,13 +320,13 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
         }
 
         # get names of sName comparisons #
-        sPairs <- combn(levels(data[[sName]]),2)
+        sPairs <- combn(levels(data[[sName]]), 2)
         test <- c()
         for (i in 1:dim(sPairs)[2]) {
             val <- sPairs[,i]
             a <- val[1]
             b <- val[2]
-            indexVal = sprintf("%s - %s", a,b)
+            indexVal <- sprintf("%s - %s", a, b)
             test <- c(test, indexVal)
         }
 
@@ -345,14 +346,15 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
         sNames <- names(dsldLM)
         df <- data.frame()
 
-            # loop through each level of S name to compute estimates and standard
-            # errors #
+        # loop through each level of S name to compute estimates and
+        # standard errors
         for (i in sNames) {
             data <- dsldLM[[i]]$data
             model <- dsldLM[[i]]$model
             xNew <- dsldValidateData(newData, model)
 
-            predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
+            predictions <- predict(model, xNew, type = "response",
+                se.fit = TRUE)
             pred <- predictions$fit
             se <- predictions$se.fit
             tempDF <- data.frame(level = i, row = 1:nrow(xNew),
@@ -360,39 +362,44 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
             df <- rbind(df, tempDF)
         }
 
-        # compute difference in estimates between each pair factor level for each row #
+        # compute difference in estimates between each pair factor level for
+        # each row
         uniqueElements <- sort(unique(df$row))
         pairwiseDF <- data.frame()
 
         for (i in uniqueElements) {
-                rowData <- subset(df, row == i)
-                charVec <- as.character(rowData$level)
-                combinationMatrix <- combn(charVec, 2)
+            rowData <- subset(df, row == i)
+            charVec <- as.character(rowData$level)
+            combinationMatrix <- combn(charVec, 2)
 
-                for (j in 1:dim(combinationMatrix)[2]) {
-                    val <- combinationMatrix[, j]
-                    a <- val[1]
-                    b <- val[2]
-                    aData <- subset(rowData, level == a)
-                    bData <- subset(rowData, level == b)
-                    indexVal <- sprintf("%s - %s", a, b)
-                    estimatedDiff <- aData$prediction - bData$prediction
-                    standardError <- sqrt(((aData$standardError)^2) +
-                        ((bData$standardError)^2))
-                    tempDF <- data.frame(indexVal, i, estimatedDiff,
-                        standardError)
-                    names(tempDF) <- c("Factors Compared", "Row", "Estimates",
-                        "Standard Errors")
-                    pairwiseDF <- rbind(pairwiseDF, tempDF)
-                }
+            for (j in 1:dim(combinationMatrix)[2]) {
+                val <- combinationMatrix[, j]
+                a <- val[1]
+                b <- val[2]
+                aData <- subset(rowData, level == a) # error, needs fix
+                bData <- subset(rowData, level == b)
+                indexVal <- sprintf("%s - %s", a, b)
+                estimatedDiff <- aData$prediction - bData$prediction
+                standardError <- sqrt(((aData$standardError) ^ 2) +
+                    ((bData$standardError) ^ 2))
+                tempDF <- data.frame(indexVal, i, estimatedDiff,
+                    standardError)
+                names(tempDF) <- c("Factors Compared", "Row", "Estimates",
+                    "Standard Errors")
+                pairwiseDF <- rbind(pairwiseDF, tempDF)
+            }
         }
 
         return(pairwiseDF)
     }
 }
 
+
 # ---------------------------- Test runs  -------------------------------------#
-# educ_data <- data.frame(age = c(18,60), educ = c("16",'16'),wkswrkd = c(50,50), occ = c("106","106")) # compare genders across different age // early vs late career 
+# educ_data <- data.frame(age = c(18,60), educ = c("16", "16"),
+#       wkswrkd = c(50, 50), occ = c("106", "106")) # compare genders across
+#                                                   # different age and early
+#                                                   # vs late career
 # dat1 <- dsldDiffS(lin1, educ_data) # run with interactions 
 # View(dat1)
 
@@ -404,68 +411,67 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 #' @brief summary() is a polymorphic method that takes in an object of the 'dsldLinear' 
 #'      class. The function provides m summaries of the model, where m is the number 
 #'      of levels of sName. Additionally, the summary function also report differences 
-#'      across S levels. 
+#'      across S levels.
 #' 
 #' ::: Arguments :::
 #' @param dsld_obj: an instance of the dsldLinearModel s3 object that output summary objects.
-
+#'
 summary.dsldLinear <- function(dsldLM) {
-  
-  diffS <- list() 
-  
-  # get sName and yName from the output of dsldLinear #
-  sName <- dsldLM[[1]]$sName
-  yName <- dsldLM[[1]]$yName
-  
-  if (length(dsldLM) == 1) {
-    
-    data <- dsldGetData(dsldLM)[[1]]
-    summary_output <- summary(dsldLM[[1]]$model)
-    coef <- summary_output$coefficients[,1 ]
-    std_err <- summary_output$coefficients[,2]
-    pValues <- summary_output$coefficients[,4]
-    
-    # Create dataframe
-    df <- data.frame(
-      Covariate = row.names(summary_output$coefficients),
-      Estimate = coef,
-      `Standard Error` = std_err,
-      PValue = pValues,
-      stringsAsFactors = FALSE, 
-      row.names = NULL
-    )
-    
-    diffS[['Summary Coefficients']] <- df
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin2)
-    return(diffS)
-    
-  } else {
-    
-    sNames <- names(dsldLM)
-    newData <- dsldLM[[1]]$newData
-    
-    # loop through each level of S name to compute estimates and standard errors #
-    for (i in sNames) {
-      data = dsldLM[[i]]$data
-      summary_output <- summary(dsldLM[[i]]$model)
-      coef <- summary_output$coefficients[,1 ]
-      std_err <- summary_output$coefficients[,2]
-      pValues <- summary_output$coefficients[,4]
-      
-      df <- data.frame(
-        Covariate = row.names(summary_output$coefficients),
-        Estimate = coef,
-        `Standard Error` = std_err,
-        PValue = pValues,
-        stringsAsFactors = FALSE, 
-        row.names = NULL
-      )
-      
-      diffS[[i]] <- df
+    diffS <- list()
+
+    # get sName and yName from the output of dsldLinear #
+    sName <- dsldLM[[1]]$sName
+    yName <- dsldLM[[1]]$yName
+
+    if (length(dsldLM) == 1) {
+        data <- dsldGetData(dsldLM)[[1]]
+        summary_output <- summary(dsldLM[[1]]$model)
+        coef <- summary_output$coefficients[, 1]
+        std_err <- summary_output$coefficients[, 2]
+        pValues <- summary_output$coefficients[, 4]
+
+        # Create dataframe
+        df <- data.frame(
+            Covariate = row.names(summary_output$coefficients),
+            Estimate = coef,
+            `Standard Error` = std_err,
+            PValue = pValues,
+            stringsAsFactors = FALSE,
+            row.names = NULL
+        )
+
+        diffS[['Summary Coefficients']] <- df
+        diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin2)
+
+        return(diffS)
+    } else {
+        sNames <- names(dsldLM)
+        newData <- dsldLM[[1]]$newData
+
+        # loop through each level of S name to compute estimates and standard
+        # errors
+        for (i in sNames) {
+            data <- dsldLM[[i]]$data
+            summary_output <- summary(dsldLM[[i]]$model)
+            coef <- summary_output$coefficients[, 1]
+            std_err <- summary_output$coefficients[, 2]
+            pValues <- summary_output$coefficients[, 4]
+
+            df <- data.frame(
+                Covariate = row.names(summary_output$coefficients),
+                Estimate = coef,
+                `Standard Error` = std_err,
+                PValue = pValues,
+                stringsAsFactors = FALSE,
+                row.names = NULL
+            )
+
+            diffS[[i]] <- df
+        }
+        diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin1,
+            newData)
+        return(diffS)
     }
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin1, newData)
-    return(diffS)
-  }
 }
 
 # interactions_summary <- summary(lin2); interactions_summary
