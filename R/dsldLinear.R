@@ -26,18 +26,18 @@
 #' @param sName: name of the sensitive column [character]
 #' @param interactions: specifies whether or not to consider interactions;
 #'      Defaults to FALSE [boolean]
-#' @param new_data: new test cases to compute Y | X ; REQUIRED when
+#' @param newData: new test cases to compute Y | X ; REQUIRED when
 #'      interactions = TRUE [dataframe]
 #'
-dsldLinear <- function(data, yName, sName, interactions = FALSE, new_data = NULL) {
+dsldLinear <- function(data, yName, sName, interactions = FALSE, newData = NULL) {
     # create final output list to by populated with results #
     dsldModel <- list()
 
     # user wants interactions #
     if (interactions) {
-        # raise error if user doesn't input new_data #
-        if (is.null(new_data)) {
-            stop(paste("Please enter the new_data input to compare for ",
+        # raise error if user doesn't input newData #
+        if (is.null(newData)) {
+            stop(paste("Please enter the newData input to compare for ",
                 "interactions in summary()"))
         }
 
@@ -64,12 +64,12 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE, new_data = NULL
                 yName,
                 sName,
                 list(diffModel),
-                list(new_data),
+                list(newData),
                 list(summary(diffModel)),
                 list(coef(diffModel)),
                 list(diffData)
             )
-            names(dsldDiffModel) <- c("yName", "sName", "model", "new_data", 
+            names(dsldDiffModel) <- c("yName", "sName", "model", "newData", 
                 "summary", "coef", "data")
             class(dsldDiffModel) <- "dsldDiffModel"
 
@@ -113,8 +113,8 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE, new_data = NULL
 #pef$occ <- as.factor(pef$occ)
 #pef$educ <- as.factor(pef$educ)
 #pef$gender <- as.factor(pef$gender)
-#new_data <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))       # compare genders across different age // early vs late career 
-#lin1 = dsldLinear(pef,'wageinc','gender', interactions = TRUE, new_data); lin1
+#newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))       # compare genders across different age // early vs late career 
+#lin1 = dsldLinear(pef,'wageinc','gender', interactions = TRUE, newData); lin1
 #lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE); lin2
 # -----------------------------------------------------------------------------#
 
@@ -137,9 +137,9 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE, new_data = NULL
 #' ::: Arguments :::
 #' @param dsld_obj: an instance of the dsldLinearModel s3 object.
 #'
-coef.dsldLinear <- function(dsldObj) {
+coef.dsldLinear <- function(dsldLM) {
     # merge & return coefficients #
-    mergedCoef <- lapply(dsldObj, function(x) x$coef)
+    mergedCoef <- lapply(dsldLM, function(x) x$coef)
     return(mergedCoef)
 }
 
@@ -154,11 +154,11 @@ coef.dsldLinear <- function(dsldObj) {
 #'      model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsldObj: an instance of the dsldLinearModel s3 object.
+#' @param dsldLM: an instance of the dsldLinearModel s3 object.
 #'
-dsldGetData <- function(dsldObj) {
+dsldGetData <- function(dsldLM) {
     # merge & return datasets #
-    mergedData <- lapply(dsldObj, function(x) x$data)
+    mergedData <- lapply(dsldLM, function(x) x$data)
     return(mergedData)
 }
 
@@ -170,9 +170,9 @@ dsldGetData <- function(dsldObj) {
 #------------------------- dsldDiffS function ---------------------------------#
 #' ::: Description ::
 #' @brief dsldValidateData() is an indirect helper function for dsldDiffS()
-#'      full-interactions case. The function takes in the new_data argument
+#'      full-interactions case. The function takes in the newData argument
 #'      from dsldDiffS() and validates if the user has entered appropriate
-#'      entries for new_data.
+#'      entries for newData.
 #'
 #' ::: Arguments :::
 #' @param newData: user inputted data for incoming new test cases.
@@ -228,156 +228,167 @@ dsldValidateData <- function(newData, model) {
 #'      There will be one row for each pair of S levels.
 #'
 #' ::: Arguments :::
-#' @param dsldObj: output from dsldLinear() function
-#' @param new_data: new test cases to be provided; required for
+#' @param dsldLM: output from dsldLinear() function
+#' @param newData: new test cases to be provided; required for
 #'      full-interactions case
 #'
-dsldDiffS <- function(dsldObj, new_data = NULL) {
-  # get sName and yName from the output of dsldLinear #
-  sName <- dsldObj[[1]]$sName
-  yName <- dsldObj[[1]]$yName
-  
-  # diffS results when interaction == FALSE in dsldLinear #
-  if (length(dsldObj) == 1) {
-    # extract pairwise combination of [dummy level in glm - factor levels] from summary output #
-    data <- dsldGetData(dsldObj)[[1]]
-    model <- dsldObj[[1]]$model
-    C <- vcov(model); c <- coef(model)
-    
-    # get all values containing sName levels from summary(model) #
-    rows_with_race <- grep(sName, rownames(coef(summary(model))))
-    regularS <- summary(model)$coefficients[rows_with_race, ]
-    
-    # for the case when we have only two levels in S; ex: male/female #
-    if (length(levels(data[[sName]])) == 2) {
-      estimate <- regularS[1]
-      standard_error <- regularS[2]
-      p_val <- regularS[4]
-      sPairs <- combn(levels(data[[sName]]),2)
-      a <- sPairs[1]
-      b <- sPairs[2]
-      index_val = sprintf("%s - %s", b,a)
-      df <- data.frame(index_val, estimate, standard_error, p_val)
-      names(df) <- c("Factors Compared", "Estimates", "Standard Errors","P-Value")
-      return(df)
+dsldDiffS <- function(dsldLM, newData = NULL) {
+    # get sName and yName from the output of dsldLinear #
+    sName <- dsldLM[[1]]$sName
+    yName <- dsldLM[[1]]$yName
+
+    # diffS results when interaction == FALSE in dsldLinear #
+    if (length(dsldLM) == 1) {
+        # extract pairwise combination of [dummy level in glm - factor levels]
+        # from summary output
+        data <- dsldGetData(dsldLM)[[1]]
+        model <- dsldLM[[1]]$model
+        C <- vcov(model)
+        c <- coef(model)
+
+        # get all values containing sName levels from summary(model) #
+        rowsWithRace <- grep(sName, rownames(coef(summary(model))))
+        regularS <- summary(model)$coefficients[rowsWithRace, ]
+
+        # for the case when we have only two levels in S; ex: male/female #
+        if (length(levels(data[[sName]])) == 2) {
+            estimate <- regularS[1]
+            standardError <- regularS[2]
+            pVal <- regularS[4]
+            sPairs <- combn(levels(data[[sName]]), 2)
+            a <- sPairs[1]
+            b <- sPairs[2]
+            indexVal <- sprintf("%s - %s", b, a)
+            df <- data.frame(indexVal, estimate, standardError, pVal)
+            names(df) <- c("Factors Compared", "Estimates", "Standard Errors",
+                "P-Value")
+            return(df)
+        }
+
+        # extract estimates and standard errors #
+        estimates <- regularS[, 1]
+        standardErrors <- regularS[, 2]
+        pVal <- regularS[, 4]
+
+        # create dataframe #
+        df <- data.frame(estimates, standardErrors, pVal)
+        df$estimates <- -df$estimates
+
+        # extract other pairwise combinations of levels (not including dummy) #
+        featureNames <- colnames(vcov(model))
+        combinationMatrix <- combn(featureNames, 2)
+
+        # remove all columns that do not have sName #
+        matching_columns <- which(apply(combinationMatrix, 2,
+            function(col) all(grepl(sName, col))))
+        result_final <- combinationMatrix[, matching_columns, drop = FALSE]
+
+        # loops through each pair #
+        for (j in 1:dim(result_final)[2]) {
+            # create i-th pair of pairwise combinations #
+            val <- result_final[, j]
+            a <- val[1]
+            b <- val[2]
+
+            # create vector of 0's length of coef(z) #
+            vectorLength <- length(c)
+            rt <- rep(0, vectorLength)
+
+            # put 1 on the first element #
+            aIndex <- which(names(c) == a)
+            rt[aIndex] <- 1
+
+            # put -1 on the second element #
+            bIndex <- which(names(c) == b)
+            rt[bIndex] <- -1
+
+            aValue <- c[aIndex]
+            bValue <- c[bIndex]
+
+            # get estimates & standard errors #
+            estimates <- aValue - bValue
+            standardErrors <- sqrt((t(rt) %*% C %*% rt))
+
+            tStatistic <- (estimates) / standardErrors
+            degOfFreedom <- nrow(data) - 1 # degrees of freedom
+            pVal <- 2 * pt(abs(tStatistic), df = degOfFreedom,
+                lower.tail = FALSE)
+
+            tempDF <- data.frame(estimates, standardErrors, pVal)
+            df <- rbind(df, tempDF)
+        }
+
+        # get names of sName comparisons #
+        sPairs <- combn(levels(data[[sName]]),2)
+        test <- c()
+        for (i in 1:dim(sPairs)[2]) {
+            val <- sPairs[,i]
+            a <- val[1]
+            b <- val[2]
+            indexVal = sprintf("%s - %s", a,b)
+            test <- c(test, indexVal)
+        }
+
+        # create final data-frame #
+        df <- cbind(test, df)
+        df <- data.frame(df, row.names = NULL)
+        names(df) <- c("Factors Compared", "Estimates", "Standard Errors",
+            "P-Value")
+        return(df)
+    } else { # with interactions
+        # raise error if the user doesn't input new data #
+        if (is.null(newData)) {
+            stop("Please enter the newData input to compare for interactions")
+        }
+
+        # get vector of all levels in sName #
+        sNames <- names(dsldLM)
+        df <- data.frame()
+
+            # loop through each level of S name to compute estimates and standard
+            # errors #
+        for (i in sNames) {
+            data <- dsldLM[[i]]$data
+            model <- dsldLM[[i]]$model
+            xNew <- dsldValidateData(newData, model)
+
+            predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
+            pred <- predictions$fit
+            se <- predictions$se.fit
+            tempDF <- data.frame(level = i, row = 1:nrow(xNew),
+                prediction = pred, standardError = se)
+            df <- rbind(df, tempDF)
+        }
+
+        # compute difference in estimates between each pair factor level for each row #
+        uniqueElements <- sort(unique(df$row))
+        pairwiseDF <- data.frame()
+
+        for (i in uniqueElements) {
+                rowData <- subset(df, row == i)
+                charVec <- as.character(rowData$level)
+                combinationMatrix <- combn(charVec, 2)
+
+                for (j in 1:dim(combinationMatrix)[2]) {
+                    val <- combinationMatrix[, j]
+                    a <- val[1]
+                    b <- val[2]
+                    aData <- subset(rowData, level == a)
+                    bData <- subset(rowData, level == b)
+                    indexVal <- sprintf("%s - %s", a, b)
+                    estimatedDiff <- aData$prediction - bData$prediction
+                    standardError <- sqrt(((aData$standardError)^2) +
+                        ((bData$standardError)^2))
+                    tempDF <- data.frame(indexVal, i, estimatedDiff,
+                        standardError)
+                    names(tempDF) <- c("Factors Compared", "Row", "Estimates",
+                        "Standard Errors")
+                    pairwiseDF <- rbind(pairwiseDF, tempDF)
+                }
+        }
+
+        return(pairwiseDF)
     }
-    
-    # extract estimates and standard errors #
-    estimates <- regularS[,1]
-    standard_errors <- regularS[,2]
-    p_val <- regularS[,4]
-    
-    # create dataframe #
-    df <- data.frame(estimates, standard_errors, p_val); df$estimates <- -df$estimates
-    
-    # extract other pairwise combinations of levels (not including dummy) #
-    feature_names = colnames(vcov(model))
-    combination_matrix = combn(feature_names, 2) 
-    
-    # remove all columns that do not have sName #
-    matching_columns <- which(apply(combination_matrix, 2, function(col) all(grepl(sName, col))))
-    result_final <- combination_matrix[, matching_columns, drop = FALSE]
-    
-    # loops through each pair #
-    for (j in 1:dim(result_final)[2]) {
-      
-      # create i-th pair of pairwise combinations #
-      val <- result_final[,j]                   
-      a <- val[1]                                 
-      b <- val[2]                                     
-      
-      # create vector of 0's length of coef(z) #
-      vector_length <- length(c)                     
-      rt <- rep(0, vector_length) 
-      
-      # put 1 on the first element #
-      a_index <- which(names(c) == a)                
-      rt[a_index] <- 1
-      
-      # put -1 on the second element #
-      b_index <- which(names(c) == b)                
-      rt[b_index] <- -1
-      
-      value_a <- c[a_index]
-      value_b <- c[b_index]
-      
-      # get estimates & standard errors # 
-      estimates = value_a - value_b
-      standard_errors = sqrt((t(rt) %*% C %*% rt))
-      
-      t_statistic <- (estimates) / standard_errors
-      degrees_of_freedom <- nrow(data) - 1 # degrees of freedom
-      p_val <- 2 * pt(abs(t_statistic), df = degrees_of_freedom, lower.tail = FALSE)
-      
-      temp_df <- data.frame(estimates, standard_errors, p_val)
-      df <- rbind(df, temp_df)
-    }
-    
-    # get names of sName comparisons #
-    sPairs <- combn(levels(data[[sName]]),2)
-    test <- c()
-    for (i in 1:dim(sPairs)[2]) {
-      val <- sPairs[,i]
-      a <- val[1]
-      b <- val[2]
-      index_val = sprintf("%s - %s", a,b)
-      test <- c(test, index_val)
-    }
-    
-    # create final data-frame #
-    df <- cbind(test, df)
-    df <- data.frame(df, row.names = NULL)
-    names(df) <- c("Factors Compared", "Estimates", "Standard Errors", "P-Value")
-    return(df)
-  } 
-  
-  # diffS results when interactions == TRUE in dsldLinear #
-  else {
-    
-    # raise error if the user doesn't input new data #
-    if (is.null(new_data)) {
-      stop("Please enter the new_data input to compare for interactions")
-    }
-    
-    # get vector of all levels in sName #
-    sNames <- names(dsldObj)
-    df <- data.frame()
-    
-    # loop through each level of S name to compute estimates and standard errors #
-    for (i in sNames) {
-      data = dsldObj[[i]]$data
-      model <- dsldObj[[i]]$model
-      X_new <- dsldValidateData(new_data, model)
-      predictions = predict(model, X_new, type="response", se.fit =TRUE)
-      pred <- predictions$fit
-      se <- predictions$se.fit
-      temp_df <- data.frame(level = i, row = 1:nrow(X_new), prediction = pred, standard_error = se)
-      df <- rbind(df, temp_df)
-    }
-    
-    # compute difference in estimates between each pair factor level for each row #
-    unique_elements <- sort(unique(df$row)) 
-    pairwise_df <- data.frame()
-    for (i in unique_elements) {  
-      row_dat <- subset(df, row == i)
-      character_vector <- as.character(row_dat$level)
-      combination_matrix <- combn(character_vector, 2) 
-      for (j in 1:dim(combination_matrix)[2]) {
-        val <- combination_matrix[,j]                   
-        a <- val[1]                                 
-        b <- val[2] 
-        a_dat <- subset(row_dat, level == a)
-        b_dat <- subset(row_dat, level == b)
-        index_val <- sprintf("%s - %s", a,b)
-        estimated_difference <- a_dat$prediction - b_dat$prediction
-        standard_error <- sqrt(((a_dat$standard_error)^2) + ((b_dat$standard_error)^2))
-        temp_df <- data.frame(index_val, i, estimated_difference, standard_error)
-        names(temp_df) <- c("Factors Compared", "Row", "Estimates", "Standard Errors")
-        pairwise_df <- rbind(pairwise_df, temp_df)
-      }
-    }
-    return(pairwise_df)
-  }
 }
 
 # ---------------------------- Test runs  -------------------------------------#
@@ -398,28 +409,28 @@ dsldDiffS <- function(dsldObj, new_data = NULL) {
 #' ::: Arguments :::
 #' @param dsld_obj: an instance of the dsldLinearModel s3 object that output summary objects.
 
-summary.dsldLinear <- function(dsldObj) {
+summary.dsldLinear <- function(dsldLM) {
   
   diffS <- list() 
   
   # get sName and yName from the output of dsldLinear #
-  sName <- dsldObj[[1]]$sName
-  yName <- dsldObj[[1]]$yName
+  sName <- dsldLM[[1]]$sName
+  yName <- dsldLM[[1]]$yName
   
-  if (length(dsldObj) == 1) {
+  if (length(dsldLM) == 1) {
     
-    data <- dsldGetData(dsldObj)[[1]]
-    summary_output <- summary(dsldObj[[1]]$model)
+    data <- dsldGetData(dsldLM)[[1]]
+    summary_output <- summary(dsldLM[[1]]$model)
     coef <- summary_output$coefficients[,1 ]
     std_err <- summary_output$coefficients[,2]
-    p_values <- summary_output$coefficients[,4]
+    pValues <- summary_output$coefficients[,4]
     
     # Create dataframe
     df <- data.frame(
       Covariate = row.names(summary_output$coefficients),
       Estimate = coef,
       `Standard Error` = std_err,
-      PValue = p_values,
+      PValue = pValues,
       stringsAsFactors = FALSE, 
       row.names = NULL
     )
@@ -430,29 +441,29 @@ summary.dsldLinear <- function(dsldObj) {
     
   } else {
     
-    sNames <- names(dsldObj)
-    new_data <- dsldObj[[1]]$new_data
+    sNames <- names(dsldLM)
+    newData <- dsldLM[[1]]$newData
     
     # loop through each level of S name to compute estimates and standard errors #
     for (i in sNames) {
-      data = dsldObj[[i]]$data
-      summary_output <- summary(dsldObj[[i]]$model)
+      data = dsldLM[[i]]$data
+      summary_output <- summary(dsldLM[[i]]$model)
       coef <- summary_output$coefficients[,1 ]
       std_err <- summary_output$coefficients[,2]
-      p_values <- summary_output$coefficients[,4]
+      pValues <- summary_output$coefficients[,4]
       
       df <- data.frame(
         Covariate = row.names(summary_output$coefficients),
         Estimate = coef,
         `Standard Error` = std_err,
-        PValue = p_values,
+        PValue = pValues,
         stringsAsFactors = FALSE, 
         row.names = NULL
       )
       
       diffS[[i]] <- df
     }
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin1, new_data)
+    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin1, newData)
     return(diffS)
   }
 }
