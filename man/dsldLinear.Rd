@@ -57,7 +57,7 @@
     summary(lin2)
 }
 
-\details {
+\details{
     The dsldLinear function fits a linear model to the response variable, yName, using all other available covariates 
     in the user provided dataset. The user may select for full interactions across the sensitive variable, sName, in which 
     case the function will fit m separate models, where m is the number of levels of sName.
