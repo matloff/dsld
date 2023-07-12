@@ -98,7 +98,7 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10.
+    The usage of this function requires Python 3.10, rpy2, plotly, and IPython.
 }    
 
 \note{ 
