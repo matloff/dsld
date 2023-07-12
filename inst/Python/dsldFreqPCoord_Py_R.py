@@ -55,9 +55,9 @@ def dsldPyFreqPCoord(data, m, columns, grpName):
 
     # Graph plot will be saved as a file
     # plot_filename = os.getcwd()+"/freqp_coord.png"
-    plot_filename = "/freqp_coord.png"
+    plot_filename = "freqp_coord.png"
     # print(plot_filename)
-    
+
     # Calling the R function
     dsld.dsldFreqPCoord(r_data, m_r, columns_r, grpName_r, plot_filename)
 
