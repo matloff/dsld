@@ -125,4 +125,3 @@ testing, it does promote the use of confidence intervals in replacement of S.T.
     \link{https://academic.oup.com/ee/article-abstract/20/5/1246/2480617?redirectedFrom=fulltext&login=false}
 }
 
-

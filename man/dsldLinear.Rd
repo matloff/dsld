@@ -33,27 +33,36 @@
 }
 
 \examples{  
-#   The examples provided are done with the pef dataset; the dataset requires some columns to be converted to factors prior to running the function. 
+    # The examples provided are done with the pef dataset; the dataset requires
+    #   some columns to be converted to factors prior to running the function. 
     data(pef) # load updated dataset w/ sName as 'gender'
     pef$occ <- as.factor(pef$occ)  
     pef$gender <- as.factor(pef$gender)
     pef$educ <- as.factor(pef$educ)
 
-#   Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, new_data [dataframe]
-    new_data <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106")) # we can compare wage differences for early in career vs. late in career
+    # Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, 
+    #   new_data [dataframe]
+    new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), 
+        wkswrkd = c(50, 50), occ = c("106", "106")) # we can compare wage differences for early in career vs. late in career
     lin1 = dsldLinear(pef,'wageinc','gender', interactions = TRUE, new_data)
 
-#   Extract individiual regression coefficients AND compare differences in Y | X between each pairs of sName levels:
+    # Extract individual regression coefficients AND compare differences in 
+    #   Y | X between each pairs of sName levels:
     summary(lin1)
 
-#   Users can also make additional comparisons with new data as well using dsldDiffS to compare mean Y|X between each pair of S levels.
-    X_new  <- data.frame(age = c(18,60), educ = c("16",'16'), occ = c("141","141"),wkswrkd = c(40,40)) # Note: educLevel = '16' not educLevel = 'zzzOther'
+    # Users can also make additional comparisons with new data as well using 
+    #   dsldDiffS to compare mean Y|X between each pair of S levels.
+    X_new  <- data.frame(age = c(18, 60), educ = c("16", '16'), 
+        occ = c("141", "141"), wkswrkd = c(40, 40)) # Note: educLevel = '16' 
+                                                    # not educLevel = 'zzzOther'
     dat1 <- dsldDiffS(lin1, X_new)
 
-#   Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; new_data = NULL
-    lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE)
+    # Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; 
+    #   new_data = NULL
+    lin2 = dsldLinear(pef, 'wageinc', 'gender', interactions = FALSE)
 
-#   Extract individiual regression coefficients AND compare differences in regression coefficients between each pairs of S levels:
+    # Extract individiual regression coefficients AND compare differences in 
+    #   regression coefficients between each pairs of S levels:
     summary(lin2)
 }
 
