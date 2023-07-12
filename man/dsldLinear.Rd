@@ -62,8 +62,7 @@
     summary(lin2)
 }
 
-\details {
-        The dsldLinear function fits a linear model to the response variable, yName, using all other available covariates 
+\details {The dsldLinear function fits a linear model to the response variable, yName, using all other available covariates 
         in the user provided dataset. The user may select for full interactions across the sensitive variable, sName, in which 
         case the function will fit m separate models, where m is the number of levels of sName.
 
@@ -103,7 +102,8 @@
  
         The dsldDiffS() function allows user compare mean Y at that X between each pair of S level for additional new data levels using the model fitted from
         dsldLinear. The user can input additional data if they'd like to make new comparisons IN addition to those from output of summary(dsldObj). Note: the output
-        of dsldDiffS is the same dataframe format as summary().
-}
+        of dsldDiffS is the same dataframe format as summary().}
+        
+
 
 
