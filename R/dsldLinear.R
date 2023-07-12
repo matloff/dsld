@@ -468,7 +468,7 @@ summary.dsldLinear <- function(dsldLM) {
 
             diffS[[i]] <- df
         }
-        diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin1,
+        diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldLM,
             newData)
         return(diffS)
     }
