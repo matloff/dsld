@@ -13,7 +13,7 @@
 
     ## s3 polymorphic functionalities for class 'dsldLinear'
     summary(dsldLinear)
-    dsldDiffs(dsldLinear, newData) # compare mean Y | X for additional data in
+    dsldDiffS(dsldLinear, newData) # compare mean Y | X for additional data in
                                    # the full interactions case
 }
 
