@@ -1,6 +1,6 @@
-# import sys
+import sys
 # import os
-# import pandas as pd
+import pandas as pd
 # from PIL import Image
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
@@ -88,6 +88,40 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
 
     # Display the interactive Plotly graph in Python
     display(plot_widget)
+
+
+if __name__ == "__main__":
+    #args = sys.argv
+    #cmd, data, sName, yNames, sGroups, sortedBy, numGroups, maxPoints, xlim, ylim, zlim, main, colors, opacity, pointSize = sys.argv
+    cmd, data = sys.argv
+    csvdata = pd.read_csv(data)
+    print(data)
+    dsldPyScatterPlot3D(csvdata)
+    #dsldPyScatterPlot3D(data, sName, yNames.split(','), sGroups.split(','), sortedBy, int(numGroups), maxPoints, xlim.split(','), ylim.split(','), zlim.split(','), main, colors.split(','), opacity, pointSize)
+    # try:
+    #     file_path = args[INPUT_1]
+
+    #     data = pd.read_csv(file_path)
+
+    #     if len(args) - 1 > MAX_ARGS:
+    #         print("Error: Too many arguments")
+    #         print_takeALookAround_usage()
+    #         exit(1)
+    #     if len(args) - 1 < MAX_ARGS - 2:
+    #         print("ERROR: more arguments are required")
+    #         print_takeALookAround_usage()
+    #         exit(1)
+
+    #     if len(args) != MAX_ARGS:
+    #         print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3]))
+    #     else:
+    #         try:
+    #             print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3], int(args[INPUT_4])))
+    #         except ValueError:
+    #             print("Error: 5th input must be of type int. Entered: ", args[INPUT_4])
+    # except FileNotFoundError:
+    #     print("Error: File not found")
+
 
 '''
 Need to install.packages("plotly") in R
