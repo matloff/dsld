@@ -108,8 +108,8 @@ if __name__ == "__main__":
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    data = robjects.r('pef')
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
     result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     print(result)
 '''
