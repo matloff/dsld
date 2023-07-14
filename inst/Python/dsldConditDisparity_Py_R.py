@@ -15,7 +15,6 @@ from rpy2.robjects import r
 
 dsld = importr("dsld")
 qeML = importr("qeML")
-ggplot2 = importr('ggplot2')  # May remove this line
 grdevices = importr('grDevices')
 
 
@@ -39,21 +38,21 @@ def changeBg(path):
     new_image.save(output_path)
 
 
-# May not be necesarry if R function hanldes input validation.
+# This function checks if dsld function arguments are in proper format for computation
 def validate_input(yName, sName, xName, condits, minS, yLim, useLoess):
-    if type(yName) != list or type(yName) != str:
+    if type(yName) != list and type(yName) != str:
         print('Error: yName must be a list of string. Entered type:', type(yName))
         exit(1)
 
-    if type(sName) != list or type(sName) != str:
+    if type(sName) != list and type(sName) != str:
         print('Error: sName must be a list of string. Entered type:', type(sName))
         exit(1)
 
-    if type(xName) != list or type(xName) != str:
+    if type(xName) != list and type(xName) != str:
         print('Error: xName must be a list of string. Entered type:', type(xName))
         exit(1)
 
-    if type(condits) != list or type(condits) != str:
+    if type(condits) != list and type(condits) != str:
         print('Error: condits must be a list of string. Entered type:', type(condits))
         exit(1)
 
@@ -81,17 +80,17 @@ def validate_input(yName, sName, xName, condits, minS, yLim, useLoess):
 def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", minS=50, yLim=None, useLoess=True):
     r_data = dsld_Rpy2_IsRDataframe(data)
 
-    #validate_input(yName, sName, xName, condits, qeFtn, minS, yLim, useLoess)
+    validate_input(yName, sName, xName, condits, minS, yLim, useLoess)
 
     robjects.r.assign("r_data", r_data)                         # Assign the 'r_data' variable to R
     robjects.r(f"r_data${sName} <- as.factor(r_data${sName})")  # Call as.factor() on the 'sName' column
     r_data = robjects.r("r_data")                               # Assign the modified R dataframe back to Python
 
-    yName_r = robjects.StrVector([yName])  # Convert variable name to R character vector
-    sName_r = robjects.StrVector([sName])  # Convert variable name to R character vector
-    xName_r = robjects.StrVector([xName])  # Convert variable name to R character vector
+    yName_r = robjects.StrVector([yName])                       # Convert variable name to R character vector
+    sName_r = robjects.StrVector([sName])                       # Convert variable name to R character vector
+    xName_r = robjects.StrVector([xName])                       # Convert variable name to R character vector
     condits_r = robjects.StrVector([cond for cond in condits])  # Convert variable name to R character vector
-    minS_r = robjects.IntVector([minS])    # Convert variable name to R;s number type
+    minS_r = robjects.IntVector([minS])                         # Convert variable name to R;s number type
 
     # Checks if the qeFtn function exists in qeML library before calling it
     if hasattr(qeML, qeFtn) and callable(getattr(qeML, qeFtn)):
@@ -104,8 +103,11 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     yLim_r = robjects.NULL
 
     if yLim is not None:
-        yLim_r = robjects.FloatVector([float(x) for x in yLim])
-        print(yLim_r)
+        try:
+            yLim_r = robjects.FloatVector([float(x) for x in yLim])
+        except ValueError:
+            print("Please enter a list of two integers separated by comma")
+            exit(1)
 
     useLoess_r = robjects.BoolVector([useLoess])
 
@@ -121,7 +123,7 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
 
     # Load the image file in Python
     image = Image.open(plot_filename)
-    image.show()                                # Display the plot using the default image viewer
+    image.show()                                                # Display the plot using the default image viewer
 
     # Close the displayed image
     image.close()
@@ -129,46 +131,35 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     os.remove(plot_filename)
 
 
-# The code below is for testing purposes. We'll remove it 
-# once we're done working on the shell command inputs
-# The code uses pef data for testing
-# robjects.r['data']('pef')
-# pef = robjects.r['pef']
-# print(robjects.r['head'](pef))
-
-# dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
-'''
-# Load the dataset 'compas' into R
-robjects.r['data']('compas')
-compas = robjects.r['compas']
-# print(robjects.r['head'](compas))
-# Convert the 'two_year_recid' variable to numeric
-robjects.r('compas$two_year_recid <- as.numeric(as.character(compas$two_year_recid) == "Yes")')
-compas = robjects.r['compas']
-# print(robjects.r['head'](compas))
-
-dsldPyConditDisparity(compas,'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], qeML.qeKNN)
-'''
-
-
-
-'''
-    For testing: 
-'''
-
-
-# We'll do some additional work on the shell command
-# The code below is not currently working properly
-
 if __name__ == "__main__":
-    args = sys.argv
-    file_path = args[1]
+    if len(sys.argv) != 10:
+        print('All 9 arguments are required. Entered: \n', len(sys.argv))
+        exit(1)
 
-    data = pd.read_csv(file_path)
+    _,file_path, yName, sName, xName, condits, qeFtn, minS, yLim, useLoess = sys.argv
 
-    #dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','))
+    minS = int(minS)
 
-    dsldPyConditDisparity(data, args[2], args[3], args[4], sys.argv[5].split(','), qeFtn = args[6])
+    if qeFtn == "-1":
+        qeFtn = "qeKNN"
+
+    if yLim != '-1':
+        yLim = yLim.split(',')
+    else:
+        yLim = None
+
+    if useLoess == "-1" or useLoess == "True":
+        useLoess = True
+    else:
+        useLoess = False
+
+    try:
+        data = pd.read_csv(file_path)
+    except FileNotFoundError:
+        print(f"File not found")
+        exit(1)
+
+    dsldPyConditDisparity(data, yName, sName, xName, condits.split(','), qeFtn=qeFtn, minS=minS, yLim=yLim, useLoess=useLoess)
 
 '''
     # Test cases: Before running, go to /dsld/inst/Python
@@ -187,16 +178,15 @@ if __name__ == "__main__":
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    data = robjects.r('pef')
-    dsldPyConditDisparity(data, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
-'''
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
+    dsldPyConditDisparity(data, "age", "gender", "wageinc", ['age<=60', 'wkswrkd>=25'])
+    
 
-""" 
-PEF Data Example
-python # Open Python shell prompt
-from dsldConditDisparity_Py_R import dsldPyConditDisparity
-robjects.r['data']('pef')
-pef = robjects.r['pef']
-dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
-"""
+    PEF Data Example from qeML
+    python # Open Python shell prompt
+    from dsldConditDisparity_Py_R import dsldPyConditDisparity
+    robjects.r['data']('pef')
+    pef = robjects.r['pef']
+    dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
+'''
