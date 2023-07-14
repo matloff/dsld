@@ -46,7 +46,7 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10.
+    The usage of this function requires Python 3.10 and rpy2.
 }    
 
 \note{ 
@@ -100,8 +100,8 @@
     python # Open Python shell prompt
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    data = robjects.r('pef')
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
     result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     print(result)
 }

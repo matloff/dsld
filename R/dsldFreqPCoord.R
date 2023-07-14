@@ -28,9 +28,9 @@ dsldFreqPCoord <- function(data, m, columns = 1:ncols(data), sName = NULL,
     
     # If no filename argument provided, do not save an image file, just generate the image
     if (is.null(plot_filename)){
-        freqparcoord::freqparcoord(data, m, columns, grpvar = sName, method, 
-                                   faceting, k, klm, keepidxs, plotidxs, 
-                                   randclrs, cls)
+        freqparcoord::freqparcoord(data, m, columns = columns, grpvar = sName, method = method, 
+                                   faceting = faceting, k = k, klm = klm, keepidxs = keepidxs, plotidxs = plotidxs, 
+                                   randclrs = randclrs, cls = cls)
     } else{
         freqparcoord::freqparcoord(data, m, columns, grpvar = sName, method, 
                                    faceting, k, klm, keepidxs, plotidxs, 

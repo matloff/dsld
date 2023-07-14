@@ -39,31 +39,58 @@ dsld = importr("dsld")
 # dsldFreqPCoord function is called inside this function
 # The arguments are passed inside dsldFreqPCoord as r format
 # and the result is a graph handled by R.
-def dsldPyFreqPCoord(data, m, columns, sName):
+
+# method, faceting, k, klm, keepidxs, plotidxs, randclrs, cls
+def dsldPyFreqPCoord(data, m, columns = None, sName, method = "maxdens", faceting = "vert", k = 50, klm = 5*k, keepidxs, plotidxs = False, randclrs = False, clsP):
+    R_NULL = robjects.NULL
+
     # Assuming you have the required arguments in Python variables
     r_data = dsld_Rpy2_IsRDataframe(data) # At this point, data is always intended to be in R dataframe format
+    
+    m_r = robjects.IntVector([m])  
 
     # Columns can be entered in shell as all strings or all ints
-    if all(column.isdigit() for column in columns):
-        columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
+    if columns = None:
+        robjects.r.assign("r_data", r_data)  
+        robjects.r('columns_r <- 1:ncols(r_data)')
+        columns_r = robjects.r("columns_r")
     else:
-        columns_r = robjects.StrVector(columns)
-    m_r = robjects.IntVector([m])                              # Convert variable name to R character vector
-    sName_r = robjects.StrVector([sName])
+        if all(column.isdigit() for column in columns):
+            columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
+        else:
+            columns_r = robjects.StrVector(columns)
+
+    if sName == R_NULL:
+        sName_r = sName
+    else:
+        sName_r = robjects.StrVector([sName])
+
+    method_r = robjects.StrVector([method])
+    faceting_r = robjects.StrVector([faceting])
+    k_r = robjects.IntVector([k])
+    klm_r = robjects.IntVector([klm])
+
+    if keepidxs == R_NULL
+        keepidxs_r = keepidxs
+    else:
+        keepidxs_r = robjects.IntVector([keepidxs])
+    
+    plotidxs_r = robjects.BoolVector([plotidxs])
+    randclrs_r = robjects.BoolVector([randclrs])
+
+    if clsP == R_NULL
+        cls_r = clsP
+    else:
+        cls_r = robjects.StrVector(clsP) # TODO
 
     # All necessary arguments are in R format at this point
 
     # Graph plot will be saved as a file
-    # plot_filename = os.getcwd()+"/freqp_coord.png"
     plot_filename = "freqp_coord.png"
-    # print(plot_filename)
 
     # Calling the R function
     dsld.dsldFreqPCoord(r_data, m_r, columns_r, sName_r, plot_filename)
 
-    # Current image file permissions: -rw-r--r-- (Owner can read/write, Group can read, Others can read)
-    # os.chmod(plot_filename, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH | stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH)
-    
     # Load and display the saved image in Python
     image = Image.open(plot_filename)
     image.show()
