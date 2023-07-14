@@ -110,13 +110,13 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 
 # -------------------- Test Run dsldLinear ------------------------------------#
 #library(qeML)
-#pef <- read.csv("~/Desktop/Dsld_Package/pef.csv")
-#pef$occ <- as.factor(pef$occ)
-#pef$educ <- as.factor(pef$educ)
-#pef$gender <- as.factor(pef$gender)
+#svcensus <- read.csv("~/Desktop/Dsld_Package/svcensus.csv")
+#svcensus$occ <- as.factor(svcensus$occ)
+#svcensus$educ <- as.factor(svcensus$educ)
+#svcensus$gender <- as.factor(svcensus$gender)
 #newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))       # compare genders across different age // early vs late career 
-#lin1 = dsldLinear(pef,'wageinc','gender', interactions = TRUE, newData); lin1
-#lin2 = dsldLinear(pef,'wageinc','gender', interactions = FALSE); lin2
+#lin1 = dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1
+#lin2 = dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
 # -----------------------------------------------------------------------------#
 
 # ------------------- Test Run dsldLinear -------------------------------------#
