@@ -441,7 +441,7 @@ summary.dsldLinear <- function(dsldLM) {
         )
 
         diffS[['Summary Coefficients']] <- df
-        diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(lin2)
+        diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldLM)
 
         return(diffS)
     } else {
