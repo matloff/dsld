@@ -78,8 +78,6 @@ http://proceedings.mlr.press/v80/komiyama18a/komiyama18a.pdf~
 Marco Scutari
 }
 
-
-
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
