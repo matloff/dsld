@@ -93,6 +93,7 @@ def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxden
 
 
 #************************** OS SHELL FUNCTIONALITY *************************************
+# TODO: OS Shell functionality is INCOMPLETE; Need to reimplement columns parsing (see git 7/15/23)
 if __name__ == "__main__":
     args = sys.argv
 
