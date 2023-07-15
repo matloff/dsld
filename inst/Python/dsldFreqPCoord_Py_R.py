@@ -3,27 +3,15 @@
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
+from Utils import dsld_Rpy2_IsRDataframe
 import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
-from rpy2.robjects import pandas2ri
-from Utils import dsld_Rpy2_IsRDataframe
-
-# For displaying the graph
-import os
-import stat
-from PIL import Image
-# ggplot2 = importr('ggplot2')
-
-# Column vector input
 from rpy2.robjects import r
-
-# Cmd line args
-import sys
-
-# Displaying the graph: User must have the following installed in R env: Ggally, ggplo2, and graphics
-#base = importr('base')
-#graphics = importr('graphics')
+from rpy2.robjects import pandas2ri
+import os # Image removal
+from PIL import Image # For displaying the graph
+import sys # Cmd line args
 
 # Installing DSLD: must install devtools first since that's how we access dsld during development
 # devtools = importr("devtools")
@@ -42,10 +30,9 @@ R_NULL = robjects.NULL
 # dsldFreqPCoord function is called inside this function
 # The arguments are passed inside dsldFreqPCoord as r format
 # and the result is a graph handled by R.
-def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxdens", faceting = "vert", k = 50, klm = R_NULL, keepidxs = R_NULL, plotidxs = False, randclrs = False, clsP = R_NULL):
-    # Assuming you have the required arguments in Python variables
+def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxdens", faceting = "vert", k = 50, klm = R_NULL, keepidxs = R_NULL, plotidxs = False, randclrs = False):
+    #************************** ARGUMENTS *******************************************
     r_data = dsld_Rpy2_IsRDataframe(data) # At this point, data is always intended to be in R dataframe format
-    
     m_r = robjects.IntVector([m])  
 
     # Columns can be entered in shell as all strings or all ints
@@ -54,15 +41,19 @@ def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxden
         robjects.r('columns_r <- 1:ncols(r_data)')
         columns_r = robjects.r("columns_r")
     else:
-        if all(column.isdigit() for column in columns):
-            columns_r = robjects.IntVector([int(x) for x in columns])  # Convert 'columns' to an R integer vector
-        else:
+        if all(isinstance(column, str) for column in columns):
             columns_r = robjects.StrVector(columns)
+        elif all(isinstance(column, int) for column in columns):
+            columns_r = robjects.IntVector(columns)
+        else:
+            print("ERROR: Columns should be either all integers or all strings")
 
     if sName == R_NULL:
         sName_r = sName
-    else:
+    elif isinstance(sName, str):
         sName_r = robjects.StrVector([sName])
+    elif isinstance(sName, int):
+        sName_r = robjects.IntVector([sName])
 
     method_r = robjects.StrVector([method])
     faceting_r = robjects.StrVector([faceting])
@@ -80,13 +71,10 @@ def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxden
     plotidxs_r = robjects.BoolVector([plotidxs])
     randclrs_r = robjects.BoolVector([randclrs])
 
-    if clsP == R_NULL:
-        cls_r = clsP
-    else:
-        cls_r = robjects.StrVector(clsP) # TODO: what type is this?
-
     # All necessary arguments are in R format at this point
+    #************************** END ARGUMENTS *******************************************
 
+    #************************** RETURN VALUE *******************************************
     # Graph plot will be saved as a file
     plot_filename = "freqp_coord.png"
 
@@ -101,10 +89,10 @@ def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxden
     image.close()
     # Delete the image file
     os.remove(plot_filename)
+    #************************** END FUNCTION *******************************************
 
 
-# Code to allow users to run this file from the shell
-# Use sys to import and handle command line args
+#************************** OS SHELL FUNCTIONALITY *************************************
 if __name__ == "__main__":
     args = sys.argv
 
@@ -115,6 +103,7 @@ if __name__ == "__main__":
     # split() attempts to comvert Cmd Line string list input into array
     # example: "1,3,5" becomes ['1','3','5']
     dsldPyFreqPCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
+#************************** END OS SHELL *******************************************
 
 '''
     # Test cases: Before running, go to /dsld/inst/Python
