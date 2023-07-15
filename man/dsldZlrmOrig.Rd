@@ -1,10 +1,11 @@
-\name{dsldZlrm}
-\alias{dsldZlrm}
-\title{zlrm in dsld}
-\description{Linear and logistic regression models enforcing fairness by bounding the covariance between sensitive attributes and predictors.
+\name{dsldZlmrOrig}
+\alias{dsldZlmrOrig}
+\title{ZlmrOrig in dsld}
+\description{
+Linear and logistic regression models enforcing fairness by bounding the covariance between sensitive attributes and predictors.
 }
 \usage{
-dsldZlrm(response, predictors, sensitive, unfairness)
+dsldZlrmOrig(response, predictors sensitive, max.abs.cov)
 }
 \arguments{
   \item{response}{
@@ -41,30 +42,5 @@ https://www.jmlr.org/papers/volume20/18-262/18-262.pdf~
 Marco Scutari
 }
 \examples{
-# Example 1
-data(adult)
-# short-hand variable names.
-r = adult[, "income"]
-s = adult[, c("sex", "race")]
-p = adult[, setdiff(names(adult), c("income", "sex", "race"))]
-## Not run:
-m = dsldZlrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
-summary(m)
-
-#Error: ‘there is no package called ‘CVXR’’
-#solution: Install 'CVXR' through CRAN
-#Error: Does not halt
-#After force quitting: 'Warning message: glm.fit: fitted probabilities numerically 0 or 1 occurred'
-
-# Example 2
-data(bank)
-# remove loans with unknown status, the corresponding coefficient is NA in glm().
-bank = bank[bank$loan != "unknown", ]
-# short-hand variable names.
-r = bank[, "subscribed"]
-s = bank[, c("age")]
-p = bank[, setdiff(names(bank), c("subscribed", "age"))]
-m = dsldZlrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
-summary(m)
+# ADD EXAMPLES
 }
-
