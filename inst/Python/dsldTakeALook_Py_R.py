@@ -24,6 +24,22 @@ dsld = importr("dsld")
 # For handling null arguments
 R_NULL = robjects.NULL
 
+# This function checks if dsld function arguments are in proper format for computation
+# Returns an Error if valid input is not provided
+def validate_input(yName, sName, maxFeatureSetSize):
+    if type(yName) != list and type(yName) != str:
+        print('Error: yName must be a list of string. Entered type:', type(yName))
+        exit(1)
+
+    if type(sName) != list and type(sName) != str:
+        print('Error: sName must be a list of string. Entered type:', type(sName))
+        exit(1)
+
+    if maxFeatureSetSize is not R_NULL and type(maxFeatureSetSize) != int:
+        print('Error: maxFeatureSetSize must be an integer. Entered type:', type(maxFeatureSetSize))
+        exit(1)
+#************************** END FUNCTION *******************************************
+
 # dsldTakeALookAround function is called inside this function
 # The default value of the maxFeatureSetSize is set to None
 # If No input was received from the user for that argument,
@@ -31,11 +47,14 @@ R_NULL = robjects.NULL
 # we precise the parameter in the dsldTakeALookAround function.
 # The arguments are passed inside dsldTakeALookAround as r format
 # and the result is returned as Python's pandas data frame.
-def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=R_NULL):
+def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize = R_NULL):
     # Assuming you have the required arguments in Python variables
     r_data = dsld_Rpy2_IsRDataframe(data)
 
     robjects.r.assign("r_data", r_data)                                 # Assign the 'r_data' variable to R
+
+    # Calls the function validate_input() to check if all the inputs are valid
+    validate_input(yName, sName, maxFeatureSetSize)
 
     # sName must be numeric. If column values are not numeric then
     # the if block below takes care of the conversion
@@ -78,6 +97,8 @@ if __name__ == "__main__":
         file_path = args[1]
 
         data = pd.read_csv(file_path)
+
+        MAX_ARGS = 5
 
         if len(args) - 1 > MAX_ARGS:
             print("Error: Too many arguments")
