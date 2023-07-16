@@ -13,12 +13,6 @@ import sys # Cmd line args
 # Installing DSLD: must install devtools first since that's how we access dsld during development
 # devtools = importr("devtools")
 
-INPUT_1 = 1
-INPUT_2 = 2
-INPUT_3 = 3
-INPUT_4 = 4
-MAX_ARGS = 5
-
 # This below line may need to be commented
 # Would have to use utils package in order to install dsld from CRAN
 # We used the commented code below to install dsld from our local computer
