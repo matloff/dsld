@@ -81,7 +81,7 @@ if __name__ == "__main__":
     args = sys.argv
 
     try:
-        file_path = args[INPUT_1]
+        file_path = args[1]
 
         data = pd.read_csv(file_path)
 
@@ -95,12 +95,12 @@ if __name__ == "__main__":
             exit(1)
 
         if len(args) != MAX_ARGS:
-            print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3]))
+            print(dsldPyTakeALookAround(data, args[2], args[3]))
         else:
             try:
-                print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3], int(args[INPUT_4])))
+                print(dsldPyTakeALookAround(data, args[2], args[3], int(args[4])))
             except ValueError:
-                print("Error: 5th input must be of type int. Entered: ", args[INPUT_4])
+                print("Error: 5th input must be of type int. Entered: ", args[4])
     except FileNotFoundError:
         print("Error: File not found")
 #************************** END OS SHELL *******************************************
