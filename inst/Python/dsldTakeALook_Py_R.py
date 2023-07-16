@@ -3,12 +3,15 @@
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
-import sys
+from Utils import dsld_Rpy2_IsRDataframe, print_takeALookAround_usage
 import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import pandas2ri
-from Utils import dsld_Rpy2_IsRDataframe, print_takeALookAround_usage
+import sys # Cmd line args
+
+# Installing DSLD: must install devtools first since that's how we access dsld during development
+# devtools = importr("devtools")
 
 INPUT_1 = 1
 INPUT_2 = 2
@@ -24,6 +27,9 @@ MAX_ARGS = 5
 # dsld package instance. It allows us to call dsld functions inside Python code
 dsld = importr("dsld")
 
+# For handling null arguments
+R_NULL = robjects.NULL
+
 # dsldTakeALookAround function is called inside this function
 # The default value of the maxFeatureSetSize is set to None
 # If No input was received from the user for that argument,
@@ -31,7 +37,7 @@ dsld = importr("dsld")
 # we precise the parameter in the dsldTakeALookAround function.
 # The arguments are passed inside dsldTakeALookAround as r format
 # and the result is returned as Python's pandas data frame.
-def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
+def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=R_NULL):
     # Assuming you have the required arguments in Python variables
     r_data = dsld_Rpy2_IsRDataframe(data)
 
@@ -48,21 +54,29 @@ def dsldPyTakeALookAround(data, yName, sName, maxFeatureSetSize=None):
 
     dsldTakeALookAround = dsld.dsldTakeALookAround
 
-    if maxFeatureSetSize is None:
-        df_r = dsldTakeALookAround(r_data, yName_r, sName_r)
+    if maxFeatureSetSize == R_NULL:
+        maxFeatureSetSize_r = robjects.r.ncol(r_data)[0] - 2
     else:
         maxFeatureSetSize_r = robjects.IntVector([maxFeatureSetSize])    # Convert number to R integer vector
-        df_r = dsldTakeALookAround(r_data, yName_r, sName_r, maxFeatureSetSize_r)
+       
+    # All necessary arguments are in R format at this point
+    #************************** END ARGUMENTS *******************************************
 
-    #Result stored in a python pandas' dataframe
+    #************************** RETURN VALUE *******************************************
+    # Calling the R function which returns a r dataframe
+    df_r = dsldTakeALookAround(r_data, yName_r, sName_r, maxFeatureSetSize_r)
+
+    # Result stored in a python pandas' dataframe
     df_py = pandas2ri.rpy2py_dataframe(df_r)
 
     return df_py
+    #************************** END FUNCTION *******************************************
 
 '''
     For testing: Make sure to print the return value of the function
 '''
 
+#************************** OS SHELL FUNCTIONALITY *************************************
 if __name__ == "__main__":
     args = sys.argv
 
@@ -89,11 +103,12 @@ if __name__ == "__main__":
                 print("Error: 5th input must be of type int. Entered: ", args[INPUT_4])
     except FileNotFoundError:
         print("Error: File not found")
+#************************** END OS SHELL *******************************************
 
 '''
     # Test Cases: Before running, go to /dsld/inst/Python
 
-    # Running from the OS Shell - CSV input
+    # Running from the OS Shell (Before running, go to /dsld/inst/Python)
     python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
 
     # Running from the Python Shell Prompt - CSV input
@@ -106,7 +121,7 @@ if __name__ == "__main__":
 
     # Running from the Python Shell Prompt - Rdata input
     python # Open Python shell prompt
-    from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
+    from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import rpy2.robjects as robjects
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
