@@ -33,24 +33,25 @@
         holds your data or R dataframe that holds your data
     }
     \item{yName}{
-        the name of the column of the response variable 
+        The name of the column of the response variable 
     }
     \item{sName}{
-        the name of the column of the sensitive variable, an R factor
+        The name of the column of the sensitive variable, an R factor
 
         This should be numeric -- if it is not numeric, the code will convert 
         the column to numeric values.
     }
     \item{maxFeatureSetSize}{
-        maximum number of combinations of features to be included in the 
+        Maximum number of combinations of features to be included in the 
         dataframe
         
-        default argument set as: maxFeatureSetSize = (ncol(data) - 2)
+        Default argument set as: maxFeatureSetSize = (ncol(data) - 2)
     }
 }
 
 \note{
-    The usage of this function requires Python 3.10 and rpy2.
+    The usage of this function requires Python 3.10 and rpy2. It does not work on
+    linux machines.
 }    
 
 \note{ 
