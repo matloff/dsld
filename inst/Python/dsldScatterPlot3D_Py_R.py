@@ -1,25 +1,55 @@
-import sys
-# import os
-import pandas as pd
-# from PIL import Image
-import rpy2.robjects as robjects
-from rpy2.robjects.packages import importr
-from Utils import dsld_Rpy2_IsRDataframe
-# from rpy2.robjects import r
-
-dsld = importr("dsld")
-# qeML = importr("qeML")
-# ggplot2 = importr('ggplot2')  # May remove this line
-# grdevices = importr('grDevices')
-forcats = importr('forcats')
-
-rplotly = importr("plotly")
-from IPython.display import display
-R_NULL = robjects.NULL
-
 #TODO:
 #Implement the yNames to take in both strings and numbers in the vector input
+#Finish validateInputSP3D, testing, documentation
+#Suggestion: In error messages, give users examples of input and if the argument can be left empty
 
+
+
+'''
+dsldScatterPlot3D_Py_R.py is the python interface for dsldScatterPlot3D in the dsld R package.
+Utils contains helper functions which are used in multiple files
+rpy2 is used handle dsld function calls from R
+pandas processes dataset into a panda's data frame before performing any computation
+Ipython.display is used to display the interactive scatter plot
+sys is used for OS shell
+'''
+
+from Utils import dsld_Rpy2_IsRDataframe, R_NULL, ERROR
+from rpy2.robjects.packages import importr
+from IPython.display import display
+import rpy2.robjects as robjects
+import pandas as pd
+import sys #remove this if we aren't doing shell?
+
+'''
+Importing r packages {dsld, qeML, forcats, plotly} into Python through rpy2
+dsld contains this file's main R function, dsldScatterPlot3D and the dataset svcensus.rData
+qeML contains the dataset mlb, mlb1, and more
+forcats is used for reordering factor levels
+rplotly is used to create a plotly widget to aid in displaying graph
+'''
+dsld    = importr("dsld")
+qeML    = importr("qeML")
+forcats = importr('forcats') #Where is this used?
+rplotly = importr("plotly")
+
+def validateInputSP3D(sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
+                      sortedBy = "Name", numGroups = 8, maxPoints = R_NULL,
+                      xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL,
+                      colors = ["Paired"], opacity = "1", pointSize = "8"):
+    if type(sName) != str and sName != R_NULL and (type(sName) == list and not all(isinstance(s, str) for s in sName)):
+        print('Error: sName must be a list of string. Entered type: ', type(sName))
+        exit(ERROR)
+    if type(yNames) != str and yNames != R_NULL and (type(yNames) == list and not all(isinstance(y, str) for y in yNames)):
+        print('Error: yNames must be a list of string. Entered type: ', type(yNames))
+        exit(ERROR)
+    if type(sGroups) != str and sGroups != R_NULL and (type(sGroups) == list and not all(isinstance(s,str) for s in sGroups)):
+        print('Error: sGroups must be a list of strings. Entered type: ', type(sGroups)) 
+    
+    
+    
+    
+    
 def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL, sortedBy = "Name", numGroups = 8, maxPoints = R_NULL, xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL, colors = ["Paired"], opacity = "1", pointSize = "8"):
     r_data = dsld_Rpy2_IsRDataframe(data)
     
@@ -96,7 +126,6 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
 
     # Convert the plot to a Plotly widget
-    #plot_widget = rplotly.toWidget(scatter_plot)
     plot_widget = rplotly.as_widget(scatter_plot)
 
     # Display the interactive Plotly graph in Python
