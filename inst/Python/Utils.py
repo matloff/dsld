@@ -5,6 +5,8 @@ from rpy2.robjects import pandas2ri
 
 # For handling null arguments
 R_NULL = robjects.NULL
+
+# Use as exit status for errors
 ERROR = 1
 
 # This function converts a pandas data frame into an R data frame
