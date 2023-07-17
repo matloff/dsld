@@ -1,6 +1,6 @@
 # Name pending
 
-dsldConfounders <- function(data, yName=NULL, sName=NULL) {
+dsldConfounders <- function(data, yName=NULL, sName=NULL, fill=FALSE) {
   
   if (is.null(sName)) sName <- makeSName(data)
   else if (!class(data[,sName]) %in% c("factor", "character")) 
@@ -21,12 +21,22 @@ dsldConfounders <- function(data, yName=NULL, sName=NULL) {
   
   sGroups <- levels(unique(data[,sName]))
   
-  plot(density(data[data[,sName] == sGroups[1],][,yName]))
-  for (i in 2:length(sGroups)) {
-    lines(density(data[data[,sName] == sGroups[i],][,yName]), col = i)
+  yNameStr <- names(data[yName])
+  sNameStr <- names(data[sName])
+  
+  for (i in 1:length(sGroups)) {
+    den <- density(data[data[,sName] == sGroups[i],][,yName])
+    
+    if (i == 1) plot(den, col = i, 
+                     xlab = yNameStr,
+                     main = paste("Density of", yNameStr, "vs.", sNameStr))
+    else lines(den, col = i)
+    
+    if (fill) polygon(den, col = i)
   }
   
-  legend("topright", legend = sGroups, col = 1:length(sGroups), lty = 1)
+  legend("topright", title = sNameStr, 
+         legend = sGroups, col = 1:length(sGroups), lty = 1)
 }
 
 makeSName <- function(data) {
