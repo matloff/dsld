@@ -41,15 +41,13 @@
     }
     \item{columns}{
         Numbers of the columns of x to be displayed. 
-        These columns can be numbers or names of the columns, but in both cases, 
-        this must be in string format.
+        These columns can be column numbers or column names.
         
-        If running from the OS Shell, enter the columns normally, separated by 
-        columns, without spaces.
+        If running from the OS Shell, enter the columns names separated by 
+        commas, without spaces.
         
         If running from the Python Shell prompt, enter the columns as an array 
-        of strings, meaning you surround either the number or name with 
-        quotes ''.
+        of strings (uses '' quotes) or an array of ints.
         
         See the examples section for differences in entering the condits
         for OS Shell vs Python Shell prompt.
@@ -99,27 +97,15 @@
     % Due to an error in conversion from Rdata to csv using write.csv, we had to 
     % modify the csv file to remove an extra column
 
-    # Example 1a: Using Column Numbers (OS Shell Prompt)
-    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 1,4,5 gender
+    # Example 1: OS Shell Prompt
+    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 age,wageinc,wkswrkd gender maxdens vert 50 250 -1 False
 
-    # Example 1b: Using Column Numbers (Python Shell Prompt)
+    # Example 2a: Using Column Numbers (Python Shell Prompt)
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import pandas as pd
     data = pd.read_csv('../../data/svcensusFixed.csv')
-    # Note that you can input column numbers, but they still have to be in 
-    # string format. See example 2b for inputting column names
-    dsldPyFreqPCoord(data, 10, ['1','4','5'], 'gender')
-
-    # ********************************************************
-    # Here are 2 more examples (a and b) on how you can call the function with 
-    # the same columns, just with column names instead of column numbers. 
-    # These below 2 examples should produce the SAME GRAPHS as above examples 1a 
-    # and 1b.
-    # ********************************************************
-
-    # Example 2a: Using Column Names (OS Shell Prompt)
-    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 age,wageinc,wkswrkd gender
+    dsldPyFreqPCoord(data, 10, [1,4,5], 'gender')
 
     # Example 2b: Using Column Names (Python Shell Prompt)
     python # Open Python shell prompt
@@ -128,13 +114,12 @@
     data = pd.read_csv('../../data/svcensusFixed.csv')
     dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')   
 
-
     # Example 3: Using Rdata input data instead of CSV input data
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    data = robjects.r('pef')
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
     dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')
 }
 
