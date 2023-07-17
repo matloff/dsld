@@ -23,7 +23,9 @@
 }
 
 \usage{
-    dsldPyFreqPCoord(data, m, columns, sName)
+    dsldPyFreqPCoord(data,m,columns=1:ncol(data),sName=robjects.NULL,
+          method="maxdens",faceting="vert",k=50,klm=5*k,
+                keepidxs=robjects.NULL,plotidxs=False)
 }
 
 \arguments{
@@ -55,6 +57,35 @@
     \item{sName}{
         Column number for the grouping variable, if any (if none, all the data 
         is treated as a single group); vector or factor.
+    }
+    \item{method}{
+        What to display: "maxdens" for plotting the most
+        (or least) typical lines, "locmax" for cluster hunting, or 
+        "randsamp" for plotting a random sample of lines.
+    }
+    \item{faceting}{
+        How to display groups, if present.  Use "vert" for
+        vertical stacking of group plots, "horiz" for horizontal ones, or
+        "none" to draw all lines in one plot, color-coding by group.
+    }
+    \item{k}{
+        Number of nearest neighbors to use for density estimation.
+    }
+    \item{klm}{
+        If method is "locmax", number of nearest neighbors to 
+        use for finding local maxima for cluster hunting. Generally needs
+        to be much larger than \code{k}, to avoid "noise fitting."
+    }
+    \item{keepidxs}{
+        If not NULL, the indices of the rows of \code{x} that 
+        are plotted will be stored in a component \code{idxs} of the
+        return value.  The rows themselves will be in a component
+        \code{xdisp}, ordered by \code{x[,dispcols[1]}.]
+    }
+    \item{plotidxs}{
+        If TRUE, lines in the display will be annotated 
+        with their case numbers, i.e. their row numbers within \code{x}.  
+        Use only with small values of \code{m}, as overplotting may occur.
     }
 }
 
@@ -118,6 +149,7 @@
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import rpy2.robjects as robjects
+    # Must import dsld library in R env
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
     dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')
