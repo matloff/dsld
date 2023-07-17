@@ -22,42 +22,54 @@ def validate_input(m, columns, sName, method, faceting, k, klm, keepidxs, plotid
         print('Error: m must be an int type. Entered type:', type(m))
         exit(1)
 
-    if columns != R_NULL and 
-        not all(isinstance(column, str) for column in columns) and
-        not all(isinstance(column, int) for column in columns):
+    if (
+            columns is not R_NULL and 
+            not all(isinstance(column, str) for column in columns) and
+            not all(isinstance(column, int) for column in columns)
+        ):
         print('Error: columns must be a list of strings or ints. Entered type:', type(columns))
         exit(1)
 
-    if type(sName) != list and type(sName) != str:
-        print('Error: sName must be a list of string. Entered type:', type(sName))
+    if sName != R_NULL and type(sName) != str and type(sName) != int:
+        print('Error: sName must be a string or intg. Entered type:', type(sName))
         exit(1)
 
-    if type(xName) != list and type(xName) != str:
-        print('Error: xName must be a list of string. Entered type:', type(xName))
+    if type(method) != str:
+        print('Error: method must be a string type. Entered type:', type(method))
         exit(1)
 
-    if type(condits) != list and type(condits) != str:
-        print('Error: condits must be a list of string. Entered type:', type(condits))
+    if type(faceting) != str:
+        print('Error: faceting must be a string type. Entered type:', type(faceting))
         exit(1)
 
-    if type(useLoess) != bool:
-        print('Error: useLoess must be boolean type. Entered:', type(useLoess))
+    if type(k) != int:
+        print('Error: k must be an int type. Entered type:', type(k))
         exit(1)
 
-    if yLim is not None and type(yLim) != list:
-        print('Error: yLim must be a list of integers. Entered type:', type(yLim))
+    if klm != R_NULL and type(klm) != int:
+        print('Error: klm must be an int type. Entered type:', type(klm))
         exit(1)
-    
-    if yLim is not None and len(yLim) != 2:
-        print('Error: yLim must be a list of 2 integers(lower and upper bound). Size Entered:', len(yLim))
+
+    if keepidxs != R_NULL and type(keepidxs) != int:
+        print('Error: keepidxs must be an int type. Entered type:', type(keepidxs))
         exit(1)
+
+    if type(plotidxs) != bool:
+        print('Error: plotidxs must be an bool type. Entered type:', type(plotidxs))
+        exit(1) 
 
 # dsldFreqPCoord function is called inside this function
 # The arguments are passed inside dsldFreqPCoord as r format
 # and the result is a graph handled by R.
 def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxdens", faceting = "vert", k = 50, klm = R_NULL, keepidxs = R_NULL, plotidxs = False):
-    #************************** ARGUMENTS *******************************************
+    # ************************** ARGUMENTS *******************************************
+    
+    # Type validation of everything except for data
+    validate_input(m,columns,sName,method,faceting,k,klm,keepidxs,plotidxs)
+
+    # Data conversion handled by Utils function
     r_data = dsld_Rpy2_IsRDataframe(data) # At this point, data is always intended to be in R dataframe format
+    
     m_r = robjects.IntVector([m])
 
     if columns == R_NULL:
@@ -70,6 +82,7 @@ def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxden
         elif all(isinstance(column, int) for column in columns):
             columns_r = robjects.IntVector(columns)
 
+    # sName can be either an int (col number) or str (col name)
     if sName == R_NULL:
         sName_r = sName
     elif isinstance(sName, str):
@@ -93,14 +106,14 @@ def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxden
     plotidxs_r = robjects.BoolVector([plotidxs])
 
     # All necessary arguments are in R format at this point
-    #************************** END ARGUMENTS *******************************************
+    # ************************** END ARGUMENTS *******************************************
 
-    #************************** RETURN VALUE *******************************************
+    # ************************** RETURN VALUE *******************************************
     # Graph plot will be saved as a file
     plot_filename = "freqp_coord.png"
 
     # Calling the R function
-    dsld.dsldFreqPCoord(r_data, m_r, columns_r, sName_r, method_r, faceting_r, k_r, klm_r, keepidxs_r, plotidxs_r, plot_filename)
+    dsld.dsldFreqPCoord(r_data, m_r, columns_r, sName_r, method_r, faceting_r, k_r, klm_r, keepidxs_r, plotidxs_r, R_NULL, plot_filename)
 
     # Load and display the saved image in Python
     image = Image.open(plot_filename)
@@ -110,28 +123,40 @@ def dsldPyFreqPCoord(data, m, columns = R_NULL, sName = R_NULL, method = "maxden
     image.close()
     # Delete the image file
     os.remove(plot_filename)
-    #************************** END FUNCTION *******************************************
+    # ************************** END FUNCTION *******************************************
 
 
 #************************** OS SHELL FUNCTIONALITY *************************************
-# TODO: OS Shell functionality is INCOMPLETE; Need to reimplement columns parsing (see git 7/15/23)
+# TODO: OS Shell functionality is INCOMPLETE; Need to implement NULL values
+# OS Shell currently assumes that all args are entered by user and that sName and Columns are strings
 if __name__ == "__main__":
     args = sys.argv
 
     file_path = args[1]
-
     data = pd.read_csv(file_path)
     
     # split() attempts to comvert Cmd Line string list input into array
     # example: "1,3,5" becomes ['1','3','5']
-    dsldPyFreqPCoord(data, int(args[2]), sys.argv[3].split(','), args[4])
+
+    # -1 is an int null value
+    if int(args[9]) == -1:
+        dsldPyFreqPCoord(
+            data, int(args[2]), sys.argv[3].split(','), args[4], args[5], args[6], 
+            int(args[7]), int(args[8]), R_NULL, bool(args[10])
+        )
+    else:
+        dsldPyFreqPCoord(
+            data, int(args[2]), sys.argv[3].split(','), args[4], args[5], args[6], 
+            int(args[7]), int(args[8]), int(args[9]), bool(args[10])
+        )
+    
 #************************** END OS SHELL *******************************************
 
 '''
     # Test cases: Before running, go to /dsld/inst/Python
 
     # Running from the OS Shell
-    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 1,4,5 gender
+    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 age,wageinc,wkswrkd gender maxdens vert 50 250 -1 False
 
     # Running from the Python Shell Prompt - CSV input
     python # Open Python shell prompt

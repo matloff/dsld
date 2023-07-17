@@ -23,7 +23,9 @@
 }
 
 \usage{
-    dsldPyFreqPCoord(data, m, columns, sName)
+    dsldPyFreqPCoord(data,m,columns=1:ncol(data),sName=robjects.NULL,
+          method="maxdens",faceting="vert",k=50,klm=5*k,
+                keepidxs=robjects.NULL,plotidxs=False)
 }
 
 \arguments{
@@ -41,15 +43,13 @@
     }
     \item{columns}{
         Numbers of the columns of x to be displayed. 
-        These columns can be numbers or names of the columns, but in both cases, 
-        this must be in string format.
+        These columns can be column numbers or column names.
         
-        If running from the OS Shell, enter the columns normally, separated by 
-        columns, without spaces.
+        If running from the OS Shell, enter the columns names separated by 
+        commas, without spaces.
         
         If running from the Python Shell prompt, enter the columns as an array 
-        of strings, meaning you surround either the number or name with 
-        quotes ''.
+        of strings (uses '' quotes) or an array of ints.
         
         See the examples section for differences in entering the condits
         for OS Shell vs Python Shell prompt.
@@ -58,10 +58,40 @@
         Column number for the grouping variable, if any (if none, all the data 
         is treated as a single group); vector or factor.
     }
+    \item{method}{
+        What to display: "maxdens" for plotting the most
+        (or least) typical lines, "locmax" for cluster hunting, or 
+        "randsamp" for plotting a random sample of lines.
+    }
+    \item{faceting}{
+        How to display groups, if present.  Use "vert" for
+        vertical stacking of group plots, "horiz" for horizontal ones, or
+        "none" to draw all lines in one plot, color-coding by group.
+    }
+    \item{k}{
+        Number of nearest neighbors to use for density estimation.
+    }
+    \item{klm}{
+        If method is "locmax", number of nearest neighbors to 
+        use for finding local maxima for cluster hunting. Generally needs
+        to be much larger than \code{k}, to avoid "noise fitting."
+    }
+    \item{keepidxs}{
+        If not NULL, the indices of the rows of \code{x} that 
+        are plotted will be stored in a component \code{idxs} of the
+        return value.  The rows themselves will be in a component
+        \code{xdisp}, ordered by \code{x[,dispcols[1]}.]
+    }
+    \item{plotidxs}{
+        If TRUE, lines in the display will be annotated 
+        with their case numbers, i.e. their row numbers within \code{x}.  
+        Use only with small values of \code{m}, as overplotting may occur.
+    }
 }
 
 \note{
-    The usage of this function requires Python 3.10.
+    The usage of this function requires Python 3.10. It does not work on linux
+    machines.
 }    
 
 \note{ 
@@ -86,8 +116,6 @@
 }
 
 \examples{    
-    % TODO: These examples use 'sex', but pef should be updated to use 'gender'. 
-    % We seem to be using an outdated pef dataset.
     # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python
 
     # IMPORTANT: It is better to run through the Python Shell Prompt (see 
@@ -99,27 +127,15 @@
     % Due to an error in conversion from Rdata to csv using write.csv, we had to 
     % modify the csv file to remove an extra column
 
-    # Example 1a: Using Column Numbers (OS Shell Prompt)
-    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 1,4,5 gender
+    # Example 1: OS Shell Prompt
+    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 age,wageinc,wkswrkd gender maxdens vert 50 250 -1 False
 
-    # Example 1b: Using Column Numbers (Python Shell Prompt)
+    # Example 2a: Using Column Numbers (Python Shell Prompt)
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import pandas as pd
     data = pd.read_csv('../../data/svcensusFixed.csv')
-    # Note that you can input column numbers, but they still have to be in 
-    # string format. See example 2b for inputting column names
-    dsldPyFreqPCoord(data, 10, ['1','4','5'], 'gender')
-
-    # ********************************************************
-    # Here are 2 more examples (a and b) on how you can call the function with 
-    # the same columns, just with column names instead of column numbers. 
-    # These below 2 examples should produce the SAME GRAPHS as above examples 1a 
-    # and 1b.
-    # ********************************************************
-
-    # Example 2a: Using Column Names (OS Shell Prompt)
-    python dsldFreqPCoord_Py_R.py ../../data/svcensusFixed.csv 10 age,wageinc,wkswrkd gender
+    dsldPyFreqPCoord(data, 10, [1,4,5], 'gender')
 
     # Example 2b: Using Column Names (Python Shell Prompt)
     python # Open Python shell prompt
@@ -128,13 +144,13 @@
     data = pd.read_csv('../../data/svcensusFixed.csv')
     dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')   
 
-
     # Example 3: Using Rdata input data instead of CSV input data
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    data = robjects.r('pef')
+    # Must import dsld library in R env
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
     dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')
 }
 

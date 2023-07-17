@@ -6,7 +6,9 @@
     This is a wrapper for the freqparcoord function from the freqparcoord package (link in references).
 }
 \usage{
-    dsldFreqPCoord <- function(data, m, columns, sName, plot_filename = NULL)
+    dsldFreqPCoord(data,m,columns=1:ncol(data),sName=NULL,
+          method="maxdens",faceting="vert",k=50,klm=5*k,
+                keepidxs=NULL,plotidxs=FALSE,cls=NULL,plot_filename = NULL)
 }
 
 \arguments{
@@ -14,31 +16,71 @@
         The data, in data frame or matrix form.
     }
     \item{m}{
-        Number of lines to plot for each group. A negative value in conjunction with
-        method being "maxdens" indicates that the lowest-density lines are to be plotted.
+        Number of lines to plot for each group. A negative value in conjunction 
+        with method being "maxdens" indicates that the lowest-density lines are 
+        to be plotted.
         If method is "locmax", m is forced to 1.
     }
     \item{columns}{
-        Numbers of the columns of x to be displayed. This can be entered as either a string or integers of the 
-        columns separated by commas but not a mixture of both.
+        The columns of data to be displayed. This can be entered as either
+        strings or integers, but not a mix.
     }
     \item{sName}{
         Column number for the grouping variable, if any (if none, all the data is treated
         as a single group); vector or factor.
     }
+    \item{method}{
+        What to display: "maxdens" for plotting the most
+        (or least) typical lines, "locmax" for cluster hunting, or 
+        "randsamp" for plotting a random sample of lines.
+    }
+    \item{faceting}{
+        How to display groups, if present.  Use "vert" for
+        vertical stacking of group plots, "horiz" for horizontal ones, or
+        "none" to draw all lines in one plot, color-coding by group.
+    }
+    \item{k}{
+        Number of nearest neighbors to use for density estimation.
+    }
+    \item{klm}{
+        If method is "locmax", number of nearest neighbors to 
+        use for finding local maxima for cluster hunting. Generally needs
+        to be much larger than \code{k}, to avoid "noise fitting."
+    }
+    \item{keepidxs}{
+        If not NULL, the indices of the rows of \code{x} that 
+        are plotted will be stored in a component \code{idxs} of the
+        return value.  The rows themselves will be in a component
+        \code{xdisp}, ordered by \code{x[,dispcols[1]}.]
+    }
+    \item{plotidxs}{
+        If TRUE, lines in the display will be annotated 
+        with their case numbers, i.e. their row numbers within \code{x}.  
+        Use only with small values of \code{m}, as overplotting may occur.
+    }
+    \item{cls}{
+        Cluster, if any (see the \code{parallel} package) for
+        parallel computation.
+    }
     \item{plot_filename}{
         Name of the file that will hold the saved graph image. 
-        If null, the graph will not be saved as an image -- it will be generated and displayed without being saved.
-        If a filename is provided, the graph will not be displayed, only saved to a file with this filename.
+        
+        If null, the graph will not be saved as an image -- it will be generated
+        and displayed without being saved.
+        
+        If a filename is provided, the graph will not be displayed, only saved 
+        to a file with this filename.
     }
   }
 \details{
-    dsldFreqPCoord is a wrapper function of the function freqparcoord package in which,
-    freqparcoord creates a parallel coordinate graph.
-    The y-axis represents the distance from the mean of the column variable
+    dsldFreqPCoord is a wrapper function of the function freqparcoord package in 
+    which freqparcoord creates a parallel coordinate graph.
+    The y-axis represents the distance from the mean of the column variable.
 }
 \value{
-    The distance from the mean in terms of standard deviation
+    Object of type "gg" (\pkg{ggplot2} object), with components \code{idxs}
+    and \code{xdisp} added if \code{keepidxs} is not NULL (see argument
+    \code{keepidxs} above).
 }
 \references{
     https://cran.r-project.org/web/packages/freqparcoord/index.html
@@ -48,14 +90,15 @@
 }
 
 \examples{
-    % Need to fix the "run examples link". The error: "/Example/dsld not found"   appears
+    % Need to fix the "run examples link". Error: "/Example/dsld not found"
     # Example 1
-    data(prgeng)
-    pe <- prgeng[,c(1,3,5,7:9)]
-    pe25 <- pe[pe$wageinc < 250000,]
-    dsldFreqPCoord(pe25,10,c(1,5,6),'sex') # sample call to plot the graph
+    library(dsld)
+    data(svcensus)
+    dsldFreqPCoord(svcensus,10,c(1,4,5),'gender')
+    
     # Example 2
+    library(qeML)
     data(mlb)
-    dsldFreqPCoord(mlb,5,4:6,7) # sample call to plot the graph
+    dsldFreqPCoord(mlb,5,4:6,7)
 }
 
