@@ -85,13 +85,13 @@
     % modify the csv file to remove an extra column
 
     # Example 1a: Running from the OS shell prompt
-    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
+    python dsldTakeALook_Py_R.py ../../data/svcensusFixed.csv wageinc gender
 
     # Example 1b: Running from the Python shell prompt
     python # Open Python shell prompt
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import pandas as pd
-    data = pd.read_csv('../../data/pefFixed.csv')
+    data = pd.read_csv('../../data/svcensusFixed.csv')
     result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     print(result)
 

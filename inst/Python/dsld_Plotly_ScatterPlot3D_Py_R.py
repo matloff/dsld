@@ -15,8 +15,8 @@
 
 #FINISHED TODO:
 #   Remove hardcoded example (pef) in dsldScatterPlot to accept any dataset  || I think finished this - Shubhada
-#   Edit the getFileExt() so that it can take in the example path: "../../data/pefFixed.csv" || Done
-#       * Basically get this working: dsldScatterPlot("../../data/pefFixed.csv", "age", "wageinc", "wkswrkd")
+#   Edit the getFileExt() so that it can take in the example path: "../../data/svcensusFixed.csv" || Done
+#       * Basically get this working: dsldScatterPlot("../../data/svcensusFixed.csv", "age", "wageinc", "wkswrkd")
 
 import pyreadr #convert .rData to panda's data frame
 import pandas as pd #Convert .csv to panda's data frame
@@ -80,7 +80,7 @@ fig.show()
 ___________________________________________________________________________________________________________________________
 NEWEXAMPLE 2: Copy paste this outside of the comment box with the right file path and press the run button:
 .csv:
-dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/pefFixed.csv", "age", "wageinc", "wkswrkd")
+dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/svcensusFixed.csv", "age", "wageinc", "wkswrkd")
 
 .rData:
 dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/pef.rData", "age", "wageinc", "wkswrkd")
@@ -88,7 +88,7 @@ dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/pef.rData", "a
 
 OLDEXAMPLE 2: Use either example to test dsldScatterPlot
 
-dsldScatterPlot("C:/Users/Brandon/Documents/dsld/data/pefFixed.csv")
+dsldScatterPlot("C:/Users/Brandon/Documents/dsld/data/svcensusFixed.csv")
 dsldScatterPlot("C:/Users/Brandon/Documents/dsld/data/pef.rData")
 
 ___________________________________________________________________________________________________________________________
@@ -102,10 +102,10 @@ Inside the python prompt type the following:
 import pandas as pd
 import plotly.express as px
 from dsldScatterPlot3D import dsldScatterPlot
-dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/pefFixed.csv", "age", "wageinc", "wkswrkd")
+dsldScatterPlot("/Users/shubhadamartha/Documents/GitHub/dsld/data/svcensusFixed.csv", "age", "wageinc", "wkswrkd")
 
 ___________________________________________________________________________________________________________________________
 RUNNING THROUGH THE OS SHELL: || NEED TO IMPLEMENT THIS
-python dsldScatterPlot3D.py ../../data/pefFixed.csv wageinc gender
+python dsldScatterPlot3D.py ../../data/svcensusFixed.csv wageinc gender
 
 '''
