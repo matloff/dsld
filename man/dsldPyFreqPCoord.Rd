@@ -116,8 +116,6 @@
 }
 
 \examples{    
-    % TODO: These examples use 'sex', but pef should be updated to use 'gender'. 
-    % We seem to be using an outdated pef dataset.
     # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python
 
     # IMPORTANT: It is better to run through the Python Shell Prompt (see 
