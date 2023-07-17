@@ -3,7 +3,7 @@
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
-from Utils import dsld_Rpy2_IsRDataframe, changeBg
+from Utils import dsld_Rpy2_IsRDataframe, changeBg, R_NULL, ERROR
 import sys
 import os
 import pandas as pd
@@ -12,52 +12,59 @@ import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 from rpy2.robjects import r
 
+''' 
+    Importing instance of dsld package to allow dsld function calls.
+    Importing qeML for qeML function assignments to dsldConditDisparity
+    function qeFtn argument.
+    Importing grDevices to allow plot saving for display to user.
+'''
 dsld = importr("dsld")
 qeML = importr("qeML")
 grdevices = importr('grDevices')
 
 # This function checks if dsld function arguments are in proper format for computation
 def validate_input(yName, sName, xName, condits, minS, yLim, useLoess):
-    if type(yName) != list and type(yName) != str:
+    if type(yName) != str and (type(yName) == list and not all(isinstance(y, str) for y in yName)):
         print('Error: yName must be a list of string. Entered type:', type(yName))
-        exit(1)
+        exit(ERROR)
 
-    if type(sName) != list and type(sName) != str:
+    if type(sName) != str and (type(sName) == list and not all(isinstance(s, str) for s in sName)):
         print('Error: sName must be a list of string. Entered type:', type(sName))
-        exit(1)
+        exit(ERROR)
 
-    if type(xName) != list and type(xName) != str:
+    if type(xName) != str and (type(xName) == list and not all(isinstance(x, str) for x in xName)):
         print('Error: xName must be a list of string. Entered type:', type(xName))
-        exit(1)
+        exit(ERROR)
 
-    if type(condits) != list and type(condits) != str:
+    if type(condits) != str and (type(condits) == list and not all(isinstance(c, str) for c in condits)):
         print('Error: condits must be a list of string. Entered type:', type(condits))
-        exit(1)
+        exit(ERROR)
 
     if type(minS) != int:
         print('Error: minS must be an int type. Entered type:', type(minS))
-        exit(1)
+        exit(ERROR)
 
     if type(useLoess) != bool:
         print('Error: useLoess must be boolean type. Entered:', type(useLoess))
-        exit(1)
+        exit(ERROR)
 
-
-    if yLim is not None and type(yLim) != list:
+    if yLim is not R_NULL and type(yLim) != list:
         print('Error: yLim must be a list of integers. Entered type:', type(yLim))
-        exit(1)
+        exit(ERROR)
     
-    if yLim is not None and len(yLim) != 2:
+    if yLim is not R_NULL and len(yLim) != 2:
         print('Error: yLim must be a list of 2 integers(lower and upper bound). Size Entered:', len(yLim))
-        exit(1)
+        exit(ERROR)
 
     
 # This is the interface function for R's dsldConditDisparity function
 # The arguments are converted into R data type before calling dsldConditDisparity function
 # This function uses qeML's qeKNN function as default argument for qeFtn
-def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", minS=50, yLim=None, useLoess=True):
-    r_data = dsld_Rpy2_IsRDataframe(data)
+def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", minS=50, yLim=R_NULL, useLoess=True):
+    # ************************** ARGUMENTS *******************************************
+    r_data = dsld_Rpy2_IsRDataframe(data)                       # Convert the data to R format if not already
 
+    # Validate the input to make sure that they ready to be converted to R format
     validate_input(yName, sName, xName, condits, minS, yLim, useLoess)
 
     robjects.r.assign("r_data", r_data)                         # Assign the 'r_data' variable to R
@@ -70,7 +77,7 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     condits_r = robjects.StrVector([cond for cond in condits])  # Convert variable name to R character vector
     minS_r = robjects.IntVector([minS])                         # Convert variable name to R;s number type
 
-    # Checks if the qeFtn function exists in qeML library before calling it
+    # Checks if the qeFtn function exists in qeML package before calling it
     if hasattr(qeML, qeFtn) and callable(getattr(qeML, qeFtn)):
         # Call the function
         qeFtn_r = getattr(qeML, qeFtn)
@@ -78,20 +85,26 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
         print(f"ERROR: qeML do not have function name: '{qeFtn}'\n")
         return
 
-    yLim_r = robjects.NULL
+    yLim_r = R_NULL
 
-    if yLim is not None:
+    # If yLim is not of value NULL converts the elements to float
+    if yLim is not R_NULL:
         try:
             yLim_r = robjects.FloatVector([float(x) for x in yLim])
         except ValueError:
-            print("Please enter a list of two integers separated by comma")
-            exit(1)
+            print("ERROR: Please enter a list of two integers separated by comma\n")
+            exit(ERROR)
 
-    useLoess_r = robjects.BoolVector([useLoess])
+    useLoess_r = robjects.BoolVector([useLoess])                # Convert variable name to R boolean type
 
+    # All necessary arguments are in R format at this point
+    # ************************** END ARGUMENTS *******************************************
+    
+
+    # ************************** RETURN VALUE *******************************************
     dsld.dsldConditDisparity(r_data, yName_r, sName_r, xName_r, condits_r, qeFtn_r, minS_r, yLim_r, useLoess_r)
 
-    # Copy and saves the image as plot.png
+    # Copy and saves the image as condits_disparity_plot.png
     plot_filename = "condits_disparity_plot.png"
     grdevices.dev_copy(device=r.png, filename=plot_filename)
     grdevices.dev_off()
@@ -107,26 +120,34 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     image.close()
     # Delete the image file
     os.remove(plot_filename)
+    # ************************** END OF FUNCTION *******************************************
 
 
+# ************************** OS SHELL FUNCTIONALITY *************************************
 if __name__ == "__main__":
+    # Checks if user entered correct number of arguments
     if len(sys.argv) != 10:
         print('All 9 arguments are required. Entered: \n', len(sys.argv))
-        exit(1)
+        exit(ERROR)
 
+    # Get all required argumets from the command line
     _,file_path, yName, sName, xName, condits, qeFtn, minS, yLim, useLoess = sys.argv
 
-    minS = int(minS)
+    # ******************** Convert data to right data type ********************
+    if minS == '-1':
+        minS = 50
+    else:
+        minS = int(minS)
 
-    if qeFtn == "-1":
+    if qeFtn == '-1':
         qeFtn = "qeKNN"
 
     if yLim != '-1':
         yLim = yLim.split(',')
     else:
-        yLim = None
+        yLim = R_NULL
 
-    if useLoess == "-1" or useLoess == "True":
+    if useLoess == '-1' or useLoess == 'True':
         useLoess = True
     else:
         useLoess = False
@@ -134,16 +155,19 @@ if __name__ == "__main__":
     try:
         data = pd.read_csv(file_path)
     except FileNotFoundError:
-        print(f"File not found")
-        exit(1)
+        print(f"ERROR: File not found")
+        exit(ERROR)
+    # ******************** End of data type conversion ********************
 
     dsldPyConditDisparity(data, yName, sName, xName, condits.split(','), qeFtn=qeFtn, minS=minS, yLim=yLim, useLoess=useLoess)
+# ************************** END OS SHELL *******************************************
 
 '''
     # Test cases: Before running, go to /dsld/inst/Python
 
     # Running from the OS Shell
-    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost
+    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv
+    two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost 50 -1 -1
 
     # Running from the Python Shell Prompt
     python # Open Python shell prompt
@@ -164,6 +188,7 @@ if __name__ == "__main__":
     PEF Data Example from qeML
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
+    import rpy2.robjects as robjects
     robjects.r['data']('pef')
     pef = robjects.r['pef']
     dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
