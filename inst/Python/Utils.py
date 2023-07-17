@@ -1,6 +1,10 @@
 import pandas as pd
+from PIL import Image
 import rpy2.robjects as robjects
 from rpy2.robjects import pandas2ri
+
+# For handling null arguments
+R_NULL = robjects.NULL
 
 # This function converts a pandas data frame into an R data frame
 def dsld_Rpy2_PandasToRDataframe(pandas_df):
@@ -39,3 +43,22 @@ def print_takeALookAround_usage():
             pandas.DataFrame: The function returns a pandas data frame from the R data frame from the R environment. 
         """
     print(msg)
+
+# When saving our plot from R, it comes up with a transparent background.
+# This function is designed to set the background of the saved image to
+# a white background. 
+def changeBg(path):
+    # Open the image
+    image_path = path
+    image = Image.open(image_path)
+    image = image.convert("RGBA")  # Convert to RGBA mode
+
+    # Create a new image with a white background
+    new_image = Image.new("RGB", image.size, "white")
+
+    # Paste the original image onto the new image with alpha blending
+    new_image.paste(image, (0, 0), image)
+
+    # Save the modified image
+    output_path = path
+    new_image.save(output_path)
