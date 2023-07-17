@@ -32,12 +32,12 @@
 }
 
 \examples{  
-    # The examples provided are done with the pef dataset; the dataset requires
+    # The examples provided are done with the svcensus dataset; the dataset requires
     #   some columns to be converted to factors prior to running the function. 
-    data(pef) # load updated dataset w/ sName as 'gender'
-    pef$occ <- as.factor(pef$occ)  
-    pef$gender <- as.factor(pef$gender)
-    pef$educ <- as.factor(pef$educ)
+    data(svcensus) # load updated dataset w/ sName as 'gender'
+    svcensus$occ <- as.factor(svcensus$occ)  
+    svcensus$gender <- as.factor(svcensus$gender)
+    svcensus$educ <- as.factor(svcensus$educ)
 
     # Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, 
     #   new_data [dataframe]
@@ -45,7 +45,7 @@
     # compare early vs late career
     new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), 
         wkswrkd = c(50, 50), occ = c("106", "106"))
-    lin1 <- dsldLinear(pef,'wageinc','gender', interactions = TRUE, new_data)
+    lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, new_data)
 
     # Extract individual regression coefficients AND compare differences in 
     #   Y | X between each pairs of sName levels:
@@ -60,7 +60,7 @@
 
     # Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; 
     #   new_data = NULL
-    lin2 <- dsldLinear(pef, 'wageinc', 'gender', interactions = FALSE)
+    lin2 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = FALSE)
 
     # Extract individiual regression coefficients AND compare differences in 
     #   regression coefficients between each pairs of S levels:
