@@ -90,7 +90,8 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10.
+    The usage of this function requires Python 3.10. It does not work on linux
+    machines.
 }    
 
 \note{ 
