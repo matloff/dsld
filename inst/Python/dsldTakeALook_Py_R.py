@@ -3,7 +3,7 @@
     The code uses rpy2 to handle dsld functions call from R and pandas library to check if
     users data input is in pandas data frame before doing any computation
 '''
-from Utils import dsld_Rpy2_IsRDataframe, print_takeALookAround_usage
+from Utils import dsld_Rpy2_IsRDataframe, print_takeALookAround_usage, R_NULL
 import pandas as pd
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
@@ -21,9 +21,6 @@ import sys # Cmd line args
 # dsld package instance. It allows us to call dsld functions inside Python code
 dsld = importr("dsld")
 
-# For handling null arguments
-R_NULL = robjects.NULL
-
 # This function checks if dsld function arguments are in proper format for computation
 # Returns an Error if valid input is not provided
 def validate_input(yName, sName, maxFeatureSetSize):
@@ -38,7 +35,6 @@ def validate_input(yName, sName, maxFeatureSetSize):
     if maxFeatureSetSize is not R_NULL and type(maxFeatureSetSize) != int:
         print('Error: maxFeatureSetSize must be an integer. Entered type:', type(maxFeatureSetSize))
         exit(1)
-#************************** END FUNCTION *******************************************
 
 # dsldTakeALookAround function is called inside this function
 # The default value of the maxFeatureSetSize is set to None
