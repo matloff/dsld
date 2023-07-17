@@ -158,5 +158,5 @@ Other Examples:
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, pointSize = "20")
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, colors = ["yellow", "orange"], maxPoints = "20", ylim = ["50000", "100000"], xlim = ["20", "80"], pointSize = "5")
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data)
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import pandas as pd;data = pd.read_csv('../../data/pefFixed.csv');dsldPyScatterPlot3D(data)
+    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import pandas as pd;data = pd.read_csv('../../data/svcensusFixed.csv');dsldPyScatterPlot3D(data)
 '''

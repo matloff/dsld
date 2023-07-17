@@ -124,13 +124,13 @@ if __name__ == "__main__":
     # Test Cases: Before running, go to /dsld/inst/Python
 
     # Running from the OS Shell (Before running, go to /dsld/inst/Python)
-    python dsldTakeALook_Py_R.py ../../data/pefFixed.csv wageinc gender
+    python dsldTakeALook_Py_R.py ../../data/svcensusFixed.csv wageinc gender
 
     # Running from the Python Shell Prompt - CSV input
     python # Open python prompt
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import pandas as pd
-    data = pd.read_csv('../../data/pefFixed.csv')
+    data = pd.read_csv('../../data/svcensusFixed.csv')
     result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     print(result)
 
