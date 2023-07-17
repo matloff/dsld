@@ -97,7 +97,10 @@
 \note{
     It is better to run through the Python Shell Prompt. If you run through the 
     OS Shell Prompt instead, you have to enter the arguments in their proper 
-    order -- in the Python Shell Prompt, this is not required, as you can 
+    order. To omit an optional arguments please enter the value -1. See example 
+    below of OS shell for more clarification. 
+    
+    In the Python Shell Prompt, this is not required, as you can 
     instead use the convention argName=argValue. In OS Shell Prompt, you cannot 
     specify the argName, only the argValue, so the order must be correct.
 }
@@ -115,7 +118,7 @@
     # information.
 
     # Example 1: Running from the OS shell
-    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost
+    python dsldConditDisparity_Py_R.py ../../data/compasNumericFixed.csv two_year_recid race age 'priors_count<=4','decile_score>=6' qeGBoost -1 -1 -1
 
     # Example 2a: Running from the Python shell prompt
     python # Open Python shell prompt
@@ -128,8 +131,8 @@
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    data = robjects.r('pef')
-    dsldPyConditDisparity(data, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
+    dsldPyConditDisparity(data, "age", "gender", "wageinc", ['age<=60', 'wkswrkd>=25'])
 }
 
