@@ -5,6 +5,7 @@ from rpy2.robjects import pandas2ri
 
 # For handling null arguments
 R_NULL = robjects.NULL
+ERROR = 1
 
 # This function converts a pandas data frame into an R data frame
 def dsld_Rpy2_PandasToRDataframe(pandas_df):
