@@ -1,5 +1,8 @@
 from setuptools import setup
 
+# Note: Would have to change folder name containing Python functions or create
+#       new folder to match the library name
+
 setup(
     name='dsld',
     version='1.0.0',
