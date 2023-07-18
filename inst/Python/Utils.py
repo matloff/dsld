@@ -1,6 +1,8 @@
 import pandas as pd
+import numpy as np
 from PIL import Image
 import rpy2.robjects as robjects
+from rpy2.robjects import StrVector, FloatVector, ListVector
 from rpy2.robjects import pandas2ri
 
 # For handling null arguments
@@ -8,6 +10,41 @@ R_NULL = robjects.NULL
 
 # Use as exit status for errors
 ERROR = 1
+
+""" ***************************DSLD Class section*************************** """
+# Python dsldDiffModel Class to hold R equivalent class
+class DsldDiffModel:
+    def __init__(self, listVector):
+        self.yName = ""
+        self.sName = "" 
+        self.model = None
+        self.newData = None
+        self.summary = None
+        self.coef = None
+        self.data = None
+
+        index = 0
+        for key in self.__dict__:
+            if isinstance(listVector[index], StrVector):
+                self.__dict__[key] = listVector[index][0]
+            elif isinstance(listVector[index], FloatVector):
+                self.__dict__[key] = list(listVector[index])
+            elif isinstance(listVector[index], ListVector):
+                self.__dict__[key] = {nested_key: np.asarray(nested_value, dtype='object') for nested_key, nested_value in listVector[index].items()}
+            index = index + 1
+
+# Python dsldLinear Class to hold R equivalent class
+class DsldLinear:
+    def __init__(self, r_object):
+        self.dsldModel = {}
+
+        index = 0
+        for key in r_object.names:
+            diffModelObj = DsldDiffModel(r_object[index])
+            self.dsldModel[key] = diffModelObj
+            index = index + 1
+
+""" *********************** END OF DSLD Class section*********************** """
 
 # This function converts a pandas data frame into an R data frame
 def dsld_Rpy2_PandasToRDataframe(pandas_df):
