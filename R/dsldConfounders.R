@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-dsldDensityByS <-
+dsldConfounders <-
   function(data,
            yName = NULL,
            sName = NULL,
@@ -48,7 +48,7 @@ dsldDensityByS <-
           den,
           col = i,
           xlab = yNameStr,
-          main = paste("Density of", yNameStr, "by", sNameStr)
+          main = paste("Density of", yNameStr, "vs.", sNameStr)
         )
       else
         lines(den, col = i)
