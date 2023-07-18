@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-dsldConfounders <-
+dsldDensityByS <-
   function(data,
            yName = NULL,
            sName = NULL,
