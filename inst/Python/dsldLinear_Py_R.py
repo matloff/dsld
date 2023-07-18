@@ -16,7 +16,7 @@ from rpy2.robjects.packages import importr
 dsld = importr('dsld')
 
 
-def dsldLinear_Py_R(data, yName, sName, interactions = False, newData = R_NULL):
+def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL):
     r_data = dsld_Rpy2_IsRDataframe(data)
 
     yName = robjects.StrVector([yName])                       # Convert variable name to R character vector
@@ -29,13 +29,29 @@ def dsldLinear_Py_R(data, yName, sName, interactions = False, newData = R_NULL):
     dsldLinearObj = dsld.dsldLinear(data, yName, sName, interactions, newData)
 
     return dsldLinearObj
+
+def dsldPyDiffS(dsldLinear, newData = R_NULL):
+    if newData != R_NULL:
+        newData = dsld_Rpy2_IsRDataframe(newData)
+
+    result = dsld.dsldDiffS(dsldLinear, newData)
+
+    return result
+    # return pandas2ri.rpy2py_dataframe(result)
+
+def summary(dsldLinear): # TODO: function name
+    robjects.r.assign("dsldLinear", dsldLinear)
+    result = robjects.r('summary(dsldLinear)')
+
+    print(result)
+
+    return result
     
 
 
 robjects.r['data']('svcensus')
 data = robjects.r('svcensus')
 
-#robjects.r.assign('data', data)
 
 robjects.r('svcensus$occ <- as.factor(svcensus$occ)')
 robjects.r('svcensus$gender <- as.factor(svcensus$gender)')
@@ -46,8 +62,8 @@ robjects.r('new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", "zzzOth
 data = robjects.r['svcensus'] 
 new_data = robjects.r('new_data')
 
-dsldLinearObject = dsldLinear_Py_R(data, 'wageinc', 'gender', interactions=True, newData=new_data)
+dsldLinearObject = dsldPyLinear(data, 'wageinc', 'gender', interactions=True, newData=new_data)
 
-print(dsldLinearObject)
+summary(dsldLinearObject)
 
 
