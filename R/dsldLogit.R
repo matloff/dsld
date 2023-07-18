@@ -28,9 +28,9 @@
 #'      Defaults to FALSE [boolean]
 #' @param newData: new test cases to compute Y | X ; REQUIRED when
 #'      interactions = TRUE [dataframe]
+#'
 
-dsldLinear <- function(data, yName, sName, interactions = FALSE,
-                       newData = NULL) {
+dsldLogit <- function(data, yName, sName, interactions = FALSE,newData = NULL) {
   # create final output list to by populated with results #
   dsldModel <- list()
   
@@ -58,7 +58,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       
       # create the model #
       diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
-                       family = "gaussian", data = diffData)
+                       family = "binomial", data = diffData)
       
       # setup individual instance of dsldDiffModel #
       dsldDiffModel <- c(dsldDiffModel,
@@ -85,7 +85,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     
     # create model #
     diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
-                     family = "gaussian", data = data)
+                     family = "binomial", data = data)
     
     # setup instance of dsldDiffModel #
     dsldDiffModel <- c(dsldDiffModel,
@@ -104,28 +104,19 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
   }
   
   # finalize dsldModel #
-  class(dsldModel) <- "dsldLinear"
+  class(dsldModel) <- "dsldLogit"
   return(dsldModel)
 }
 
-# -------------------- Test Run dsldLinear ------------------------------------#
-#svcensus <- read.csv("~/Desktop/Dsld_Package/pef.csv")
-#svcensus$occ <- as.factor(svcensus$occ)
-#svcensus$educ <- as.factor(svcensus$educ)
-#svcensus$gender <- as.factor(svcensus$gender)
-#newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))   
-#lin1 = dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1                                 # we are predicting wageinc
-#lin2 = dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
-# -----------------------------------------------------------------------------#
-
-# ------------------- Test Run dsldLinear (law schools admissions) -------------------------------------#
-#load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw2/law.school.admissions.rda')                        
-#drop <- c('fulltime', 'bar','cluster')
-#law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
-#newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(5,1), ugpa = c(3.5, 3.5), race1 = c('asian', 'asian')) 
-#lin_1 <- dsldLinear(law.school.admissions,'lsat','gender', interactions = TRUE, newData); lin_1                   # we are predicting lsat score                         
-#lin_2 <- dsldLinear(law.school.admissions,'lsat','gender', interactions = FALSE); lin_2
-# -----------------------------------------------------------------------------#
+# ------------------------------------- Test Run dsldLogit ----------------------------------------------------
+# load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw2/law.school.admissions.rda')                        
+# drop <- c('fulltime','cluster')
+# law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
+# law.school.admissions$bar <- as.integer(as.logical(law.school.admissions$bar))
+# newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), lsat = c(44,44), fam_inc = c(3,3), ugpa = c(3.5, 3.5), race1 = c('asian', 'black')) 
+# log1 <- dsldLogit(law.school.admissions,'bar','gender', interactions = TRUE, newData); log1 # we are predicting lsat score                         
+# log2 <- dsldLogit(law.school.admissions,'bar','gender', interactions = FALSE); log2
+# ------------------------------------------------------------------------------------------------------------
 
 # ----------------------- Auxiliary Functions ---------------------------------#
 
@@ -137,26 +128,24 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 #' ::: Arguments :::
 #' @param dsld_obj: an instance of the dsldLinearModel s3 object.
 #'
-coef.dsldLinear <- function(dsldLM) {
+coef.dsldLogit <- function(dsldLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldLM, function(x) x$coef)
   return(mergedCoef)
 }
 
-
-# coef(lin1) # test run
-# coef(lin2)
+# coef(log1) 
+# coef(log2)
 
 # added vcov generic
-vcov.dsldLinear <- function(dsldLM) {
+vcov.dsldLogit <- function(dsldLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldLM, function(x) vcov(x$model))
   return(mergedCoef)
 }
 
-# vcov(lin1)
-# vcov(lin2)
-
+# vcov(log1)
+# vcov(log2)
 
 #' ::: Description ::
 #' @brief the dsldGetData() function takes in an object of the 'dsldLinear'
@@ -166,15 +155,15 @@ vcov.dsldLinear <- function(dsldLM) {
 #' ::: Arguments :::
 #' @param dsldLM: an instance of the dsldLinearModel s3 object.
 #'
+
 dsldGetData <- function(dsldLM) {
   # merge & return datasets #
   mergedData <- lapply(dsldLM, function(x) x$data)
   return(mergedData)
 }
 
-
-# dsldGetData(lin1)
-# dsldGetData(lin2)
+# dsldGetData(log1)
+# dsldGetData(log2)
 
 #------------------------- dsldDiffS function ---------------------------------#
 #' ::: Description ::
@@ -212,7 +201,7 @@ dsldValidateData <- function(newData, model) {
   return(newData)
 }
 
-
+                       
 #' ::: Description ::
 #' @brief The dsldDiffS() function helps users quantify possible evidence of
 #'      discrimination between S levels. For the no-interactions case,
@@ -241,7 +230,6 @@ dsldValidateData <- function(newData, model) {
 #' @param newData: new test cases to be provided; required for
 #'      full-interactions case
 #'
-
 dsldDiffS <- function(dsldLM, newData = NULL) {
   # get sName and yName from the output of dsldLinear #
   sName <- dsldLM[[1]]$sName
@@ -404,13 +392,9 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 }
 
 # ---------------------------- Test runs  -------------------------------------#
-# educ_data <- data.frame(age = c(18,60), educ = c("14", "14"), wkswrkd = c(50, 50), occ = c("106", "106")) 
-# dat1 <- dsldDiffS(lin1, educ_data) # run with interactions 
+# newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), lsat = c(25,25), fam_inc = c(3,3), ugpa = c(3.5, 3.5), race1 = c('asian', 'black')) 
+# dat1 <- dsldDiffS(log1, newData) # run with interactions 
 # View(dat1)
-
-# fam_data <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(5,1), ugpa = c(2.0, 2.0), race1 = c('asian', 'asian')) 
-# dat2 <- dsldDiffS(lin_1, fam_data)
-# View(dat2)
 # -----------------------------------------------------------------------------#
 
 #' ::: Description ::
@@ -422,8 +406,7 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 #' ::: Arguments :::
 #' @param dsld_obj: an instance of the dsldLinearModel s3 object that output summary objects.
 #'
-
-summary.dsldLinear <- function(dsldLM) {
+summary.dsldLogit <- function(dsldLM) {
   diffS <- list()
   
   # get sName and yName from the output of dsldLinear #
@@ -481,9 +464,6 @@ summary.dsldLinear <- function(dsldLM) {
   }
 }
 
-# Test runs --------------------------------------------------------------------
-# interactions_summary <- summary(lin1); interactions_summary
-# no_interactions_summary <- summary(lin2); no_interactions_summary
-
-# interactions_summary_2 <- summary(lin_1); interactions_summary_2
-# no_interactions_summary_2 <- summary(lin_2); no_interactions_summary_2
+# ------------------------- Test run -----------------------------
+# interactions_summary <- summary(log1); interactions_summary
+# no_interactions_summary <- summary(log2); no_interactions_summary

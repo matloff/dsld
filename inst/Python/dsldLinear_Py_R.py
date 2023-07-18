@@ -43,7 +43,6 @@ def dsldPyDiffS(dsldLinear, newData = R_NULL):
 
     return result
     # return pandas2ri.rpy2py_dataframe(result)
-# ************************** END OF FUNCTION *******************************************
 
 
 def summary(dsldLinear): # TODO: function name
@@ -53,7 +52,6 @@ def summary(dsldLinear): # TODO: function name
     print(result)
 
     return result
-# ************************** END OF FUNCTION *******************************************
     
 
 # Test cases: Before running, go to /dsld/inst/Python

@@ -1,7 +1,12 @@
 S3method(summary,dsldLinear)
 S3method(coef,dsldLinear)
+S3method(vcov,dsldLinear)
+
+S3method(summary,dsldLogit)
+S3method(coef,dsldLogit)
+S3method(vcov,dsldLogit)
 
 export(
-   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS
+   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS
 )
 
