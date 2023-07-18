@@ -1,76 +1,59 @@
 import rpy2.robjects as robjects
+from rpy2.robjects import StrVector, FloatVector, ListVector
 import pandas as pd
+import numpy as np
+from dsldLinear_Py_R import dsldPyLinear
+
+class DsldDiffModel:
+    def __init__(self, listVector):
+        self.yName = ""
+        self.sName = "" 
+        self.model = None
+        self.newData = None
+        self.summary = None
+        self.coef = None
+        self.data = None
+
+        index = 0
+
+        for key in self.__dict__:
+            if isinstance(listVector[index], StrVector):
+                self.__dict__[key] = listVector[index][0]
+            elif isinstance(listVector[index], FloatVector):
+                self.__dict__[key] = list(listVector[index])
+            elif isinstance(listVector[index], ListVector):
+                self.__dict__[key] = {nested_key: np.asarray(nested_value, dtype='object') for nested_key, nested_value in listVector[index].items()}
+            index = index + 1
+
+        for key in self.__dict__:
+            if (type(self.__dict__[key])) == dict:
+                print(self.__dict__[key])
+
+class DsldLinear:
+    def __init__(self, r_object):
+        self.dsldModel = {}
+
+        index = 0
+        for key in r_object.names:
+            diffModelObj = DsldDiffModel(r_object[index])
+            self.dsldModel[key] = diffModelObj
+            index = index + 1
 
 
-# This function converts python data type into R data type
-def convertToR(objType, data):
-    if objType == int:
-        return robjects.IntVector([data])
-    elif objType == str:
-        return robjects.StrVector([data])
-    elif objType == bool:
-        return robjects.BoolVector([data])
-    elif objType == float:
-        return robjects.FloatVector([data])
+# Test cases: Before running, go to /dsld/inst/Python
+robjects.r['data']('svcensus')
+data = robjects.r('svcensus')
 
 
-# This function converts a python list into an R vector
-def convertToRVector(objType, list):
-    if objType == int:
-        return robjects.IntVector(list)
-    elif objType == str:
-        return robjects.StrVector(list)
-    elif objType == bool:
-        return robjects.BoolVector(list)
-    elif objType == float:
-        return robjects.FloatVector(list)
+robjects.r('svcensus$occ <- as.factor(svcensus$occ)')
+robjects.r('svcensus$gender <- as.factor(svcensus$gender)')
+robjects.r('svcensus$educ <- as.factor(svcensus$educ)')
 
+robjects.r('new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50), occ = c("106", "106"))')
 
-def py2riObj(object):
-    attributes = object.__dict__
-    rFieldList = ""
-    objArgs = ""
+data = robjects.r['svcensus'] 
+new_data = robjects.r('new_data')
 
-    for key in attributes:
-        if type(attributes[key]) == list:
-            robjects.r.assign(key, convertToRVector(type(attributes[key][0]), attributes[key]))
-        else:
-            robjects.r.assign(key, convertToR(type(attributes[key]), attributes[key]))
+dsldLinearObject = dsldPyLinear(data, 'wageinc', 'gender', interactions=True, newData=new_data)
 
-        rFieldList = rFieldList + f'{key} = "{robjects.r["class"](robjects.r[key])[0]}",'
-        objArgs = objArgs + f'{key} = {key},'
-
-    rFieldList = rFieldList[: -1]
-    objArgs = objArgs[:-1]
-
-
-    # The two commented section below returns the object as a data frame
-    # robjects.r(f'myDf <- data.frame({objArgs})')
-    # return robjects.r['myDf']
-
-    rCode = f'MyObject <- setRefClass("MyObject", fields = list({rFieldList}))'
-    robjects.r(rCode)
-    robjects.r(f'obj <- MyObject$new({objArgs})')
-
-    return robjects.r['obj']
-
-
-# For testing in python prompt please enter the following:
-"""
-python3 # To start python prompt
-
-from py2RObjConversion import py2riObj
-
-class Dog:
-    def __init__(self):
-        self.name = "Kratos"
-        self.color = "black"
-        self.age = 5
-        self.puppies = [1, 2, 3]
-        self.letters = ['k', 'r', 'a', 't', 'o', 's']
-
-
-dog = Dog()
-r_class = py2riObj(dog)
-print(r_class)
-"""
+obj = DsldLinear(dsldLinearObject)
