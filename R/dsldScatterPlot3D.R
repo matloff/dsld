@@ -1,152 +1,151 @@
 # TODO
 # make sName work with numeric (use a heat map)
-# make circles hollow
 
-# ---- plotly ----
-
-dsldScatterPlot3D <- function(data, yNames=NULL, sName=NULL, sGroups=NULL, 
-                              sortedBy="Name", numGroups=8, maxPoints=NULL,
-                              xlim=NULL, ylim=NULL, zlim=NULL,
-                              main=NULL, colors="Paired", opacity=1, 
-                              pointSize=8) {
-  dsld::getSuggestedLib("plotly")
-  
-  # Limit amount of data points
-  if (!is.null(maxPoints))
-    data <- data[1:maxPoints,]
-  
-  # sName <- an int/string of the col of the grouping variable.
-  # the variable the determines the colors of the dots. user can specify or
-  # sName will be the col with the lowest amount of unique values
-  if (is.null(sName)) sName <- makeSName(data)
-  else if (!class(data[,sName]) %in% c("factor", "character")) 
-    stop("sName should be of factor or character data type. Consider setting this as an axiscol instead")
-  
-  # for now, if theres no sName, this makes one so the function doesnt break
-  if (is.null(sName)) {
-    Group <- as.factor(rep(1,length(data[,1])))
-    data <- cbind(data, Group)
-    sName <- length(data)
-  }
-
-  # yNames <- a vector of 3 ints/strings that correspond to the columns to be used for
-  # the 3 axis on the graph. The user can specify the cols or
-  # yNames will be the first 3 columns that are of numeric or integer data type
-  if (is.null(yNames)) 
-    yNames <- makeYNames(data, 3)
-  else if (length(yNames) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
-  
-  # sGroups <- a vector of the individual group names in the 'data'.
-  # the user can supply sGroups as an vector of names they want to look at
-  if (is.null(sGroups) && !is.null(sName)) 
-    sGroups <- makeSGroups(data, sName, numGroups, sortedBy)
-  
-  # limits dataset to include only those with a group in groupNames
-  data <- data[data[,sName] %in% sGroups,]
-  data <- droplevels(data)
-  
-  # Limit values of data points
-  if (!is.null(xlim) | !is.null(ylim) | !is.null(zlim)) 
-    data <- limitRange(data, yNames, xlim, ylim, zlim)
-  
-  # Creates a title
-  if (is.null(main) && !is.null(sName)) {
-    main <- paste(names(data[sName]), " vs. ")
-    for (yName in names(data[yNames]))
-      main <- paste(main, yName)
-  }
-  
-  # save this to print to the text of each point
-  original <- data
-  # numeric for a cleaner looking graph if the axis is factor type
-  data[,yNames] <- sapply(data[,yNames], as.numeric)
-  # info card for each data point
-  text <- paste("<extra></extra>", sep="")
-  for (i in 1:length(data)) 
-    text <- paste(text, names(data[i]), ": ", original[,i], "<br>", sep="")
-   
-  
-  fig <- plotly::plot_ly(data, 
-                         x = data[,yNames[1]], 
-                         y = data[,yNames[2]], 
-                         z = data[,yNames[3]], 
-                         color = data[,sName], 
-                         colors = colors,
-                         hovertemplate = text,
-                         marker = list(
-                           size = pointSize,
-                           opacity = opacity))
-  fig <- plotly::add_markers(fig)
-  fig <- plotly::layout(fig, 
-                        title = main,
-                        scene = list(xaxis = list(title = paste(names(data[yNames[1]]), "(X)")),
-                                     yaxis = list(title = paste(names(data[yNames[2]]), "(Y)")),
-                                     zaxis = list(title = paste(names(data[yNames[3]]), "(Z)")),
-                        legend = list(title = list(text = names(data[sName])))))
-  
-  fig
-}
-
-makeSName <- function(data) {
-  data_types <- sapply(data, class) # the datatypes of each column in data
-  
-  num_uniques <- sort(sapply(sapply(data, unique), length))
-  sName <- NULL
-  # how many distinct values for each column, sorted by least unique values
-  for (i in 1:length(data_types)) {
-    col <- data_types[names(num_uniques[i])]
-    if (col %in% c("factor", "character")){
-      sName <- names(col)
-      break
+#' 3D scatter plot for sensitive variables
+#'
+#' @param data A dataframe with at least 3 columns as response variables to be
+#' graphed on the 3 axes. An additional columm may be used as a sensitive variable.
+#' @param yNames A vector of the indices or names of the columns of the dataframe
+#' to be graphed on the 3 axes. If not supplied, the function will use the
+#' first 3 numeric columns in the dataframe.
+#' @param sName The index or name of the column that contains the groups
+#' for which the data will be grouped by. This will affect the colors of the
+#' points of the graph. This column must not be numeric. If not supplied, the
+#' function will use a non-logical column with the least number of unique values.
+#' @param sGroups A vector of the names of the groups for which the data will be grouped by.
+#' Every value in the vector must exist in the sName column of the dataframe.
+#' If not supplied or is NULL, the function will create this automatically
+#' according to the sortedby and numgrps parameters.
+#' By default, the function uses the 8 alphabetically first distinct groups
+#' in the sName column.
+#' @param sortedBy Controls how sGroups is created automatically. If sGroups is suppled, this
+#' does nothing. One of three values: "Name", "Frequency", "Frequency-Descending".
+#' "Name" gets the first values alphabetically.
+#' "Frequency" gets the most frequently occuring values.
+#' "Frequency-Descending" gets the least frequently occuring values.
+#' @param numGroups How many groups will be automatically generated by the function.
+#' If grpnames is supplied, this does nothing.
+#' @param maxPoints A limit to how many points may be displayed on the graph.
+#' There is no limit by default.
+#' @param xlim A vector, (min, max) to limit the x-axis
+#' @param ylim A vector, (min, max) to limit the y-axis
+#' @param zlim A vector, (min, max) to limit the z-axis
+#' @param main The title of the graph. By default, its the name of the sName "vs. " the yNames
+#' @param colors Either a colorbrewer2.org palette name (e.g. "YlOrRd" or "Blues"),
+#' or a vector of colors to interpolate in hexadecimal   "#RRGGBB" format,
+#' or a color interpolation function like colorRamp().
+#' @param opacity A value between 0 and 1.
+#' @param pointSize A value above 1.
+#'
+#' @export
+#'
+#' @examples
+#' library(fairml)
+#' data("law.school.admissions")
+#' dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1",
+#'   yNames=c("ugpa", "lsat","age"), xlim=c(2,4), main = "Example 2")
+dsldScatterPlot3D <-
+  function(data,
+           yNames = NULL,
+           sName = NULL,
+           sGroups = NULL,
+           sortedBy = "Name",
+           numGroups = 8,
+           maxPoints = NULL,
+           xlim = NULL,
+           ylim = NULL,
+           zlim = NULL,
+           main = NULL,
+           colors = "Paired",
+           opacity = 1,
+           pointSize = 8) {
+    getSuggestedLib("plotly")
+    
+    # Limit amount of data points
+    if (!is.null(maxPoints))
+      data <- data[1:maxPoints, ]
+    
+    # sName <- an int/string of the col of the grouping variable.
+    # the variable the determines the colors of the dots. user can specify or
+    # sName will be the col with the lowest amount of unique values
+    if (is.null(sName))
+      sName <- makeSName(data)
+    else if (!class(data[, sName]) %in% c("factor", "character"))
+      stop(
+        "sName should be of factor or character data type. Consider setting this as an axiscol instead"
+      )
+    
+    # for now, if theres no sName, this makes one so the function doesnt break
+    if (is.null(sName)) {
+      Group <- as.factor(rep(1, length(data[, 1])))
+      data <- cbind(data, Group)
+      sName <- length(data)
     }
-  }
-  return(sName)
-}
-
-makeYNames <- function(data, count) {
-  data_types <- sapply(data, class)
-  yNames <- vector()
-  for (i in 1:length(data_types)) {
-    if (data_types[i] %in% c("integer", "numeric")) {
-      yNames <- c(yNames, i)
+    
+    # yNames <- a vector of 3 ints/strings that correspond to the columns to be used for
+    # the 3 axis on the graph. The user can specify the cols or
+    # yNames will be the first 3 columns that are of numeric or integer data type
+    if (is.null(yNames))
+      yNames <- makeYNames(data, 3)
+    else if (length(yNames) != 3)
+      stop("ScatterPlot3d requires 3 variables for the 3 axis")
+    
+    # sGroups <- a vector of the individual group names in the 'data'.
+    # the user can supply sGroups as an vector of names they want to look at
+    if (is.null(sGroups) && !is.null(sName))
+      sGroups <- makeSGroups(data, sName, numGroups, sortedBy)
+    
+    # limits dataset to include only those with a group in groupNames
+    data <- data[data[, sName] %in% sGroups, ]
+    data <- droplevels(data)
+    
+    # Limit values of data points
+    if (!is.null(xlim) | !is.null(ylim) | !is.null(zlim))
+      data <- limitRange(data, yNames, xlim, ylim, zlim)
+    
+    # Creates a title
+    if (is.null(main) && !is.null(sName)) {
+      main <- paste(names(data[sName]), " vs. ")
+      for (yName in names(data[yNames]))
+        main <- paste(main, yName)
     }
-    if (length(yNames) == count) break
+    
+    # save this to print to the text of each point
+    original <- data
+    # numeric for a cleaner looking graph if the axis is factor type
+    data[, yNames] <- sapply(data[, yNames], as.numeric)
+    # info card for each data point
+    text <- paste("<extra></extra>", sep = "")
+    for (i in 1:length(data))
+      text <-
+      paste(text, names(data[i]), ": ", original[, i], "<br>", sep = "")
+    
+    
+    fig <- plotly::plot_ly(
+      data,
+      x = data[, yNames[1]],
+      y = data[, yNames[2]],
+      z = data[, yNames[3]],
+      color = data[, sName],
+      colors = colors,
+      hovertemplate = text,
+      marker = list(size = pointSize,
+                    opacity = opacity)
+    )
+    fig <- plotly::add_markers(fig)
+    fig <- plotly::layout(
+      fig,
+      title = main,
+      scene = list(
+        xaxis = list(title = paste(names(data[yNames[1]]), "(X)")),
+        yaxis = list(title = paste(names(data[yNames[2]]), "(Y)")),
+        zaxis = list(title = paste(names(data[yNames[3]]), "(Z)")),
+        legend = list(title = list(text = names(data[sName])))
+      )
+    )
+    
+    fig
   }
-  # if no more numeric columns have been found, use the first other
-  i <- 1
-  while (length(yNames) < count) {
-    if (!i %in% yNames) yNames <- c(yNames, i)
-    i <- i + 1
-  }
-  return(yNames)
-}
-
-makeSGroups <- function(data, sName, numGroups, sortedBy) {
-  # If there are 8 possible types the group variable can be, the vector is 8 long.
-  # Sorted according to user
-  sGroups <- NULL
-  switch(
-    sortedBy,
-    "Name" = sGroups <- levels(unique(data[,sName])),
-    "Frequency" = sGroups <- names(sort(table(data[,sName]),decreasing=T)),
-    "Frequency-Descending" = sGroups <- names(sort(table(data[,sName]),decreasing=F))
-  )
-  # otherwise the vector is cut off to only have numGroups number of sGroups
-  if (length(sGroups) > numGroups) sGroups <- sGroups[1:numGroups]
-  return(sGroups)
-}
-
-
-limitRange <- function(data, yNames, xlim=NULL, ylim=NULL, zlim=NULL){
-  # in case the user only gives lim as a single number
-  xlim <- rep(xlim, 2)
-  ylim <- rep(ylim, 2)
-  zlim <- rep(zlim, 2)
-  if(!is.null(xlim)) data <- data[data[,yNames[1]] >= xlim[1] & data[,yNames[1]] <= xlim[2],]
-  if(!is.null(ylim)) data <- data[data[,yNames[2]] >= ylim[1] & data[,yNames[2]] <= ylim[2],]
-  if(!is.null(zlim)) data <- data[data[,yNames[3]] >= zlim[1] & data[,yNames[3]] <= zlim[2],]
-  return(data)
-}
 
 # ---- Test Cases ----
 # library(dsld)
@@ -156,4 +155,3 @@ limitRange <- function(data, yNames, xlim=NULL, ylim=NULL, zlim=NULL){
 # library(qeML)
 # data(mlb)
 # dsldScatterPlot3D(mlb)
-

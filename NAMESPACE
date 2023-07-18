@@ -2,6 +2,6 @@ S3method(summary,dsldLinear)
 S3method(coef,dsldLinear)
 
 export(
-   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS
+   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldConfounders
 )
 
