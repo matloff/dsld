@@ -33,7 +33,7 @@ dsldScatterPlot3D <- function(data, yNames=NULL, sName=NULL, sGroups=NULL,
   # the 3 axis on the graph. The user can specify the cols or
   # yNames will be the first 3 columns that are of numeric or integer data type
   if (is.null(yNames)) 
-    yNames <- makeYNames(data)
+    yNames <- makeYNames(data, 3)
   else if (length(yNames) != 3) stop("ScatterPlot3d requires 3 variables for the 3 axis")
   
   # sGroups <- a vector of the individual group names in the 'data'.
@@ -103,18 +103,18 @@ makeSName <- function(data) {
   return(sName)
 }
 
-makeYNames <- function(data) {
+makeYNames <- function(data, count) {
   data_types <- sapply(data, class)
   yNames <- vector()
   for (i in 1:length(data_types)) {
     if (data_types[i] %in% c("integer", "numeric")) {
       yNames <- c(yNames, i)
     }
-    if (length(yNames) == 3) break
+    if (length(yNames) == count) break
   }
   # if no more numeric columns have been found, use the first other
   i <- 1
-  while (length(yNames) < 3) {
+  while (length(yNames) < count) {
     if (!i %in% yNames) yNames <- c(yNames, i)
     i <- i + 1
   }

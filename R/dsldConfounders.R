@@ -39,36 +39,3 @@ dsldConfounders <- function(data, yName=NULL, sName=NULL, fill=FALSE) {
          legend = sGroups, col = 1:length(sGroups), lty = 1)
 }
 
-makeSName <- function(data) {
-  data_types <- sapply(data, class) # the datatypes of each column in data
-  
-  num_uniques <- sort(sapply(sapply(data, unique), length))
-  sName <- NULL
-  # how many distinct values for each column, sorted by least unique values
-  for (i in 1:length(data_types)) {
-    col <- data_types[names(num_uniques[i])]
-    if (col %in% c("factor", "character")){
-      sName <- names(col)
-      break
-    }
-  }
-  return(sName)
-}
-
-makeYNames <- function(data, count) {
-  data_types <- sapply(data, class)
-  yNames <- vector()
-  for (i in 1:length(data_types)) {
-    if (data_types[i] %in% c("integer", "numeric")) {
-      yNames <- c(yNames, i)
-    }
-    if (length(yNames) == count) break
-  }
-  # if no more numeric columns have been found, use the first other
-  i <- 1
-  while (length(yNames) < count) {
-    if (!i %in% yNames) yNames <- c(yNames, i)
-    i <- i + 1
-  }
-  return(yNames)
-}
