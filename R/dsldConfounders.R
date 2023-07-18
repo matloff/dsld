@@ -4,7 +4,7 @@
 #'
 #' @param data A dataframe with 1 numerical column and a factor column
 #' @param yName A name or index of the numerical column
-#' @param sName A name of index of the factor column
+#' @param sName A name or index of the factor column
 #' @param fill A logical value determining if the graphed curve should be filled in
 #'
 #' @export
