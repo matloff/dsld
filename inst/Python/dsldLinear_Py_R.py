@@ -17,6 +17,7 @@ dsld = importr('dsld')
 
 
 def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL):
+    # ************************** ARGUMENTS *******************************************
     r_data = dsld_Rpy2_IsRDataframe(data)
 
     yName = robjects.StrVector([yName])                       # Convert variable name to R character vector
@@ -25,10 +26,14 @@ def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL):
 
     if newData != R_NULL:
         newData = dsld_Rpy2_IsRDataframe(newData)
-
+    # ************************** END ARGUMENTS *****************************************
+    
+    # ************************** RETURN VALUE ******************************************
     dsldLinearObj = dsld.dsldLinear(data, yName, sName, interactions, newData)
 
     return dsldLinearObj
+# ************************** END OF FUNCTION *******************************************
+
 
 def dsldPyDiffS(dsldLinear, newData = R_NULL):
     if newData != R_NULL:
@@ -38,6 +43,8 @@ def dsldPyDiffS(dsldLinear, newData = R_NULL):
 
     return result
     # return pandas2ri.rpy2py_dataframe(result)
+# ************************** END OF FUNCTION *******************************************
+
 
 def summary(dsldLinear): # TODO: function name
     robjects.r.assign("dsldLinear", dsldLinear)
@@ -46,9 +53,10 @@ def summary(dsldLinear): # TODO: function name
     print(result)
 
     return result
+# ************************** END OF FUNCTION *******************************************
     
 
-
+# Test cases: Before running, go to /dsld/inst/Python
 robjects.r['data']('svcensus')
 data = robjects.r('svcensus')
 
