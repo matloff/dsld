@@ -71,7 +71,7 @@
         If a filename is provided, the graph will not be displayed, only saved 
         to a file with this filename.
     }
-  }
+}
 \details{
     dsldFreqPCoord is a wrapper function of the function freqparcoord package in 
     which freqparcoord creates a parallel coordinate graph.
