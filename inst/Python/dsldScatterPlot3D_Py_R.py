@@ -1,6 +1,6 @@
 #TODO:
 #Implement the yNames to take in both strings and numbers in the vector input
-#Finish validateInputSP3D, testing, documentation
+#Test validateInputSP3D, testing, documentation
 #Suggestion: In error messages, give users examples of input and if the argument can be left empty
 
 
@@ -37,16 +37,44 @@ def validateInputSP3D(sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
                       sortedBy = "Name", numGroups = 8, maxPoints = R_NULL,
                       xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL,
                       colors = ["Paired"], opacity = "1", pointSize = "8"):
-    if type(sName) != str and sName != R_NULL and (type(sName) == list and not all(isinstance(s, str) for s in sName)):
+    if type(sName) != str and (type(sName) == list and not all(isinstance(s, str) for s in sName)):
         print('Error: sName must be a list of string. Entered type: ', type(sName))
         exit(ERROR)
-    if type(yNames) != str and yNames != R_NULL and (type(yNames) == list and not all(isinstance(y, str) for y in yNames)):
+    if type(yNames) != str and (type(yNames) == list and not all(isinstance(y, str) for y in yNames)):
         print('Error: yNames must be a list of string. Entered type: ', type(yNames))
         exit(ERROR)
-    if type(sGroups) != str and sGroups != R_NULL and (type(sGroups) == list and not all(isinstance(s,str) for s in sGroups)):
-        print('Error: sGroups must be a list of strings. Entered type: ', type(sGroups)) 
-    
-    
+    if type(sGroups) != str and (type(sGroups) == list and not all(isinstance(s,str) for s in sGroups)):
+        print('Error: sGroups must be a list of strings. Entered type: ', type(sGroups))
+    if type(sortedBy) != str and sortedBy != "Name" or sortedBy != "Frequency" or sortedBy != "Frequency-Descending":
+        print('ERROR: sortedBy must be "Name", "Frequency", or "Frequency-Descending"')
+        exit(ERROR)
+    if type(numGroups) != int:
+        print('Error: numGroups must be an int type. Entered type:', type(numGroups))
+        exit(ERROR)
+    if type(maxPoints) != int:
+        print('Error: maxPoints must be an int type. Entered type:', type(maxPoints))
+        exit(ERROR)
+    if type(xlim) != str and (type(xlim) == list and not all (isinstance(x, str) for x in xlim)):
+        print('ERROR: xlim must be a list of strings. Entered type: ', type(xlim))
+        exit(ERROR)
+    if type(ylim) != str and (type(ylim) == list and not all (isinstance(x, str) for x in ylim)):
+        print('ERROR: ylim must be a list of strings. Entered type: ', type(ylim))
+        exit(ERROR)
+    if type(zlim) != str and (type(zlim) == list and not all (isinstance(x, str) for x in zlim)):
+        print('ERROR: zlim must be a list of strings. Entered type: ', type(zlim))
+        exit(ERROR)
+    if type(main) != str and (type(main) == list and not all(isinstance(y, str) for y in main)):
+        print('Error: main must be a list of string. Entered type:', type(main))
+        exit(ERROR)
+    if type(colors) != str and (type(colors) == list and not all(isinstance(y, str) for y in colors)):
+        print('Error: colors must be a list of string. Entered type: ', type(colors))
+        exit(ERROR)
+    if type(opacity) != int:
+        print('Error: opacity must be an int type. Entered type:', type(opacity))
+        exit(ERROR)
+    if type(pointSize) != int:
+        print('Error: opacity must be an int type. Entered type:', type(opacity))
+        exit(ERROR)
     
     
     
@@ -62,8 +90,6 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     robjects.r('r_data[string_cols] <- lapply(r_data[string_cols], as.factor)')
 
     r_data = robjects.r("r_data")    
-
-    # print(robjects.r['head'](r_data))
 
     if type(sName) == str:
         sName_r = robjects.StrVector([sName])    # Convert variable name to R character vector
@@ -118,17 +144,12 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
         main_r = robjects.StrVector([main])    # Convert variable name to R character vector
 
     colors_r = robjects.StrVector(colors)
-
     opacity_r = robjects.StrVector([opacity])
-
     pointSize_r = robjects.StrVector([pointSize])
-
     scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
 
-    # Convert the plot to a Plotly widget
+    # Convert the plot to a Plotly widget and display it
     plot_widget = rplotly.as_widget(scatter_plot)
-
-    # Display the interactive Plotly graph in Python
     display(plot_widget)
 
 
