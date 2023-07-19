@@ -45,6 +45,7 @@ def dsldPyDiffS(dsldLinear, newData = R_NULL, returnType = 0):
 
     dsldDiffObj = dsld.dsldDiffS(dsldLinear, newData)
 
+    # TODO: make returnType a char arg
     if returnType == 1:
         return DsldDiffModel(dsldDiffObj)
     else:

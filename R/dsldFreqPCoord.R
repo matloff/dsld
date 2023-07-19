@@ -11,6 +11,8 @@ dsldFreqPCoord <- function(data, m, columns = 1:ncols(data), sName = NULL,
                            klm = 5*k, keepidxs = NULL, plotidxs = FALSE, 
                            cls = NULL, plot_filename = NULL) 
 {
+    # TODO: Implement plotly features
+
     # May need to delete these 3 library() lines
     if (!require('freqparcoord')) install.packages('freqparcoord')
     library('freqparcoord')
