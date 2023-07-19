@@ -6,7 +6,7 @@
 #'      variable, sName, in which case the function will fit m separate models,
 #'      where m is the number of levels of sName.
 #'
-#'      The function produces an instance of the `dsldLogistic` class (an S3
+#'      The function produces an instance of the `dsldLM` class (an S3
 #'      object).
 #'
 #'      The output of dsldLogistic will store a list of useful traits pertaining
@@ -29,7 +29,6 @@
 #' @param newData: new test cases to compute Y | X ; REQUIRED when
 #'      interactions = TRUE [dataframe]
 #'
-
 dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
   # create final output list to by populated with results #
   dsldModel <- list()

@@ -1,4 +1,4 @@
-# -------------------------- dsldLinear ---------------------------------------#
+# -------------------------- dsldLinear -------------------------- #
 #' ::: Descripton :::
 #' @brief The dsldLinear function fits a linear model to the response variable,
 #'      yName, using all other available covariates in the user provided
@@ -28,7 +28,6 @@
 #'      Defaults to FALSE [boolean]
 #' @param newData: new test cases to compute Y | X ; REQUIRED when
 #'      interactions = TRUE [dataframe]
-
 dsldLinear <- function(data, yName, sName, interactions = FALSE,
                        newData = NULL) {
   # create final output list to by populated with results #
