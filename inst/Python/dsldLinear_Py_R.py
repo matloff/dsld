@@ -54,22 +54,24 @@ def summary(dsldLinear): # TODO: function name
     return result
     
 
+'''
 # Test cases: Before running, go to /dsld/inst/Python
-robjects.r['data']('svcensus')
-data = robjects.r('svcensus')
+    import rpy2.robjects as robjects
+    from dsldLinear_Py_R import dsldPyLinear
 
+    robjects.r['data']('svcensus')
+    robjects.r('svcensus$occ <- as.factor(svcensus$occ)')
+    robjects.r('svcensus$gender <- as.factor(svcensus$gender)')
+    robjects.r('svcensus$educ <- as.factor(svcensus$educ)')
 
-robjects.r('svcensus$occ <- as.factor(svcensus$occ)')
-robjects.r('svcensus$gender <- as.factor(svcensus$gender)')
-robjects.r('svcensus$educ <- as.factor(svcensus$educ)')
+    robjects.r('new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50), occ = c("106", "106"))')
 
-robjects.r('new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50), occ = c("106", "106"))')
+    data = robjects.r['svcensus'] 
+    new_data = robjects.r('new_data')
 
-data = robjects.r['svcensus'] 
-new_data = robjects.r('new_data')
+    dsldLinearObject = dsldPyLinear(data, 'wageinc', 'gender', interactions=True, newData=new_data)
 
-dsldLinearObject = dsldPyLinear(data, 'wageinc', 'gender', interactions=True, newData=new_data)
-
-summary(dsldLinearObject)
+    summary(dsldLinearObject)
+'''
 
 
