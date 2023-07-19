@@ -135,7 +135,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 #'      of the model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsld_obj: an instance of the dsldLinearModel s3 object.
+#' @param dsldLM: an instance of the dsldLinearModel s3 object.
 #'
 coef.dsldLinear <- function(dsldLM) {
   # merge & return coefficients #
@@ -420,7 +420,7 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 #'      across S levels.
 #' 
 #' ::: Arguments :::
-#' @param dsld_obj: an instance of the dsldLinearModel s3 object that output summary objects.
+#' @param dsldLM: an instance of the dsldLinearModel s3 object that output summary objects.
 #'
 
 summary.dsldLinear <- function(dsldLM) {
@@ -432,14 +432,14 @@ summary.dsldLinear <- function(dsldLM) {
   
   if (length(dsldLM) == 1) {
     data <- dsldGetData(dsldLM)[[1]]
-    summary_output <- summary(dsldLM[[1]]$model)
-    coef <- summary_output$coefficients[, 1]
-    std_err <- summary_output$coefficients[, 2]
-    pValues <- summary_output$coefficients[, 4]
+    summaryOutput <- summary(dsldLM[[1]]$model)
+    coef <- summaryOutput$coefficients[, 1]
+    std_err <- summaryOutput$coefficients[, 2]
+    pValues <- summaryOutput$coefficients[, 4]
     
     # Create dataframe
     df <- data.frame(
-      Covariate = row.names(summary_output$coefficients),
+      Covariate = row.names(summaryOutput$coefficients),
       Estimate = coef,
       `Standard Error` = std_err,
       PValue = pValues,
@@ -459,13 +459,13 @@ summary.dsldLinear <- function(dsldLM) {
     # errors
     for (i in sNames) {
       data <- dsldLM[[i]]$data
-      summary_output <- summary(dsldLM[[i]]$model)
-      coef <- summary_output$coefficients[, 1]
-      std_err <- summary_output$coefficients[, 2]
-      pValues <- summary_output$coefficients[, 4]
+      summaryOutput <- summary(dsldLM[[i]]$model)
+      coef <- summaryOutput$coefficients[, 1]
+      std_err <- summaryOutput$coefficients[, 2]
+      pValues <- summaryOutput$coefficients[, 4]
       
       df <- data.frame(
-        Covariate = row.names(summary_output$coefficients),
+        Covariate = row.names(summaryOutput$coefficients),
         Estimate = coef,
         `Standard Error` = std_err,
         PValue = pValues,
