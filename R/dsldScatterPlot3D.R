@@ -72,7 +72,7 @@ dsldScatterPlot3D <-
       sName <- makeSName(data)
     else if (!class(data[, sName]) %in% c("factor", "character"))
       stop(
-        "sName should be of factor or character data type. Consider setting this as an axiscol instead"
+        "sName should be of factor or character data type. Consider setting this as yName instead"
       )
     
     # for now, if theres no sName, this makes one so the function doesnt break

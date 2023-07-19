@@ -1,4 +1,5 @@
-# Name pending
+# TODO
+# change whole setup to using plotly
 
 #' Graphs densities of a response variable, grouped by a sensitive variable
 #'
@@ -19,7 +20,7 @@ dsldDensityByS <-
       sName <- makeSName(data)
     else if (!class(data[, sName]) %in% c("factor", "character"))
       stop(
-        "sName should be of factor or character data type. Consider setting this as an axiscol instead"
+        "sName should be of factor or character data type. Consider setting this as a yName instead"
       )
     
     # for now, if theres no sName, this makes one so the function doesnt break
