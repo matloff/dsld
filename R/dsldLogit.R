@@ -62,14 +62,15 @@ dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
 					   family = "binomial", data = diffData)
 	  
 	  # setup individual instance of dsldDiffModel #
-	  dsldDiffModel <- c(dsldDiffModel,
-						 yName,
-						 sName,
-						 list(diffModel),
-						 list(newData),
-						 list(summary(diffModel)),
-						 list(coef(diffModel)),
-						 list(diffData)
+	  dsldDiffModel <- c(
+		dsldDiffModel,
+		yName,
+		sName,
+		list(diffModel),
+		list(newData),
+		list(summary(diffModel)),
+		list(coef(diffModel)),
+		list(diffData)
 	  )
 	  names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
 								"summary", "coef", "data")
@@ -124,11 +125,11 @@ dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
 
 #' ::: Description ::
 #' @brief coef() is a polymorphic method that takes in an object of the
-#'      'dsldLogistic' class. The function provides m regression coefficients
+#'      'dsldGLM' class. The function provides m regression coefficients
 #'      of the model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsldGLM: an instance of the dsldLogisticModel s3 object.
+#' @param dsldGLM: an instance of the dsldGLM s3 object.
 #'
 coef.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
@@ -139,25 +140,34 @@ coef.dsldGLM <- function(dsldGLM) {
 # coef(log1) 
 # coef(log2)
 
-# added vcov generic
+
+#' ::: Description ::
+#' @brief vcov() is a polymorphic method that takes in an object of the
+#'      'dsldLM' class. The function provides m variance-covariance coeffs
+#'      of the model, where m is the number of levels of sName.
+#'
+#' ::: Arguments :::
+#' @param dsldGLM: an instance of the dsldGLM s3 object.
+#'
 vcov.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldGLM, function(x) vcov(x$model))
   return(mergedCoef)
 }
 
+
 # vcov(log1)
 # vcov(log2)
 
+
 #' ::: Description ::
-#' @brief the dsldGetData() function takes in an object of the 'dsldLogistic'
+#' @brief the dsldGetData() function takes in an object of the 'dsldGLM'
 #'      class. The function provides m dataset(s) used to train the Logistic
 #'      model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsldGLM: an instance of the dsldLogisticModel s3 object.
+#' @param dsldGLM: an instance of the dsldGLM s3 object.
 #'
-
 dsldGetData <- function(dsldGLM) {
   # merge & return datasets #
   mergedData <- lapply(dsldGLM, function(x) x$data)
@@ -400,13 +410,13 @@ dsldDiffS <- function(dsldGLM, newData = NULL) {
 # -----------------------------------------------------------------------------#
 
 #' ::: Description ::
-#' @brief summary() is a polymorphic method that takes in an object of the 'dsldLogistic' 
+#' @brief summary() is a polymorphic method that takes in an object of the 'dsldGLM' 
 #'      class. The function provides m summaries of the model, where m is the number 
 #'      of levels of sName. Additionally, the summary function also report differences 
 #'      across S levels.
 #' 
 #' ::: Arguments :::
-#' @param dsldGLM: an instance of the dsldLogisticModel s3 object that output summary objects.
+#' @param dsldGLM: an instance of the dsldGLM s3 object that output summary objects.
 #'
 summary.dsldGLM <- function(dsldGLM) {
   diffS <- list()
