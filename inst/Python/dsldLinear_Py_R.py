@@ -5,6 +5,7 @@
 '''
 
 from Utils import dsld_Rpy2_IsRDataframe, R_NULL, ERROR
+from dsldS3ToPyTest import DsldLinear, DsldDiffModel
 import sys
 import pandas as pd
 import rpy2.robjects as robjects
@@ -16,7 +17,7 @@ from rpy2.robjects.packages import importr
 dsld = importr('dsld')
 
 
-def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL):
+def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL, returnType = 0):
     # ************************** ARGUMENTS *******************************************
     r_data = dsld_Rpy2_IsRDataframe(data)
 
@@ -31,21 +32,26 @@ def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL):
     # ************************** RETURN VALUE ******************************************
     dsldLinearObj = dsld.dsldLinear(data, yName, sName, interactions, newData)
 
-    return dsldLinearObj
+    if returnType == 1:
+        return DsldLinear(dsldLinearObj)
+    else:
+        return dsldLinearObj
 # ************************** END OF FUNCTION *******************************************
 
 
-def dsldPyDiffS(dsldLinear, newData = R_NULL):
+def dsldPyDiffS(dsldLinear, newData = R_NULL, returnType = 0):
     if newData != R_NULL:
         newData = dsld_Rpy2_IsRDataframe(newData)
 
-    result = dsld.dsldDiffS(dsldLinear, newData)
+    dsldDiffObj = dsld.dsldDiffS(dsldLinear, newData)
 
-    return result
-    # return pandas2ri.rpy2py_dataframe(result)
+    if returnType == 1:
+        return DsldDiffModel(dsldDiffObj)
+    else:
+        return dsldDiffObj
 
 
-def summary(dsldLinear): # TODO: function name
+def dsldPyLinearSummary(dsldLinear): # TODO: function name
     robjects.r.assign("dsldLinear", dsldLinear)
     result = robjects.r('summary(dsldLinear)')
 
@@ -57,7 +63,7 @@ def summary(dsldLinear): # TODO: function name
 '''
 # Test cases: Before running, go to /dsld/inst/Python
     import rpy2.robjects as robjects
-    from dsldLinear_Py_R import dsldPyLinear
+    from dsldLinear_Py_R import dsldPyLinear, dsldPyDiffS, dsldPyLinearSummary
 
     robjects.r['data']('svcensus')
     robjects.r('svcensus$occ <- as.factor(svcensus$occ)')
@@ -65,13 +71,20 @@ def summary(dsldLinear): # TODO: function name
     robjects.r('svcensus$educ <- as.factor(svcensus$educ)')
 
     robjects.r('new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50), occ = c("106", "106"))')
+    robjects.r('X_new <- data.frame(age = c(18, 60), educ = c("16", "16"), occ = c("106", "106"), wkswrkd = c(50, 50))')
 
     data = robjects.r['svcensus'] 
     new_data = robjects.r('new_data')
+    X_new = robjects.r('X_new')
 
-    dsldLinearObject = dsldPyLinear(data, 'wageinc', 'gender', interactions=True, newData=new_data)
+    dsldLinRObject = dsldPyLinear(data, 'wageinc', 'gender', True, new_data)
+    dsldPyLinearSummary(dsldLinRObject)
 
-    summary(dsldLinearObject)
+    dsldLinPyObject = dsldPyLinear(data, 'wageinc', 'gender', True, new_data, 1)
+
+    dsldDiffRObject = dsldPyDiffS(dsldLinRObject, X_new)
+    print(dsldDiffRObject)
+    dsldDiffPyObject = dsldPyDiffS(dsldLinRObject, X_new, 1) # Doesn't work yet
 '''
 
 

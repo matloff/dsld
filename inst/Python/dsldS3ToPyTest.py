@@ -2,7 +2,6 @@ import rpy2.robjects as robjects
 from rpy2.robjects import StrVector, FloatVector, ListVector
 import pandas as pd
 import numpy as np
-from dsldLinear_Py_R import dsldPyLinear
 
 class DsldDiffModel:
     def __init__(self, listVector):
@@ -38,25 +37,3 @@ class DsldLinear:
             diffModelObj = DsldDiffModel(r_object[index])
             self.dsldModel[key] = diffModelObj
             index = index + 1
-
-'''
-# Test cases: Before running, go to /dsld/inst/Python
-    import rpy2.robjects as robjects
-    from dsldLinear_Py_R import dsldPyLinear
-    from dsldS3ToPyTest import DsldLinear
-
-    robjects.r['data']('svcensus')
-    robjects.r('svcensus$occ <- as.factor(svcensus$occ)')
-    robjects.r('svcensus$gender <- as.factor(svcensus$gender)')
-    robjects.r('svcensus$educ <- as.factor(svcensus$educ)')
-
-    robjects.r('new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50), occ = c("106", "106"))')
-
-    data = robjects.r['svcensus'] 
-    new_data = robjects.r('new_data')
-
-    dsldLinearObject = dsldPyLinear(data, 'wageinc', 'gender', interactions=True, newData=new_data)
-
-    obj = DsldLinear(dsldLinearObject)
-    print(obj)
-'''
