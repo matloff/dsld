@@ -10,7 +10,10 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examples 
+#' library(dsld)
+#' data(svcensus)
+#' dsldDensityByS(svcensus)
 dsldDensityByS <-
   function(data,
            yName = NULL,
@@ -49,7 +52,7 @@ dsldDensityByS <-
           den,
           col = i,
           xlab = yNameStr,
-          main = paste("Density of", yNameStr, "vs.", sNameStr)
+          main = paste("Density of", yNameStr, "by", sNameStr)
         )
       else
         lines(den, col = i)
