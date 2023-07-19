@@ -79,11 +79,15 @@ def validateInputSP3D(sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     
     
 def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL, sortedBy = "Name", numGroups = 8, maxPoints = R_NULL, xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL, colors = ["Paired"], opacity = "1", pointSize = "8"):
-    r_data = dsld_Rpy2_IsRDataframe(data)
+    # ************************** ARGUMENTS *******************************************
     
+    # Type validation of everything except for data
+    validateInputSP3D(sName,yNames,sGroups,sortedBy,numGroups,maxPoints,xlim,ylim,zlim,main,colors,opacity,pointSize)
+
+    # Data conversion handled by Utils function
+    r_data = dsld_Rpy2_IsRDataframe(data)
     robjects.r.assign("r_data", r_data)  
 
-    # robjects.r('r_data <- as.data.frame(lapply(r_data, as_factor))')
     # Identify columns with string data
     robjects.r('string_cols <- sapply(r_data, is.character)')
     # Convert selected columns to factors
@@ -147,12 +151,18 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     opacity_r = robjects.StrVector([opacity])
     pointSize_r = robjects.StrVector([pointSize])
     scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
-
+    
+    # All necessary arguments are in R format at this point
+    # ************************** END ARGUMENTS *******************************************
+    
+    # ************************** RETURN VALUE *******************************************
     # Convert the plot to a Plotly widget and display it
     plot_widget = rplotly.as_widget(scatter_plot)
     display(plot_widget)
+    # ************************** END FUNCTION *******************************************
 
-
+#************************** OS SHELL FUNCTIONALITY *************************************
+# TODO: OS Shell functionality is INCOMPLETE
 if __name__ == "__main__":
     #args = sys.argv
     cmd, data, sName, yNames, sGroups, sortedBy, numGroups, maxPoints, xlim, ylim, zlim, main, colors, opacity, pointSize = sys.argv
@@ -161,30 +171,7 @@ if __name__ == "__main__":
     # print(data)
     # dsldPyScatterPlot3D(data)
     dsldPyScatterPlot3D(data, sName, yNames.split(','), sGroups.split(','), sortedBy, int(numGroups), maxPoints, xlim.split(','), ylim.split(','), zlim.split(','), main, colors.split(','), opacity, pointSize)
-    # try:
-    #     file_path = args[INPUT_1]
-
-    #     data = pd.read_csv(file_path)
-
-    #     if len(args) - 1 > MAX_ARGS:
-    #         print("Error: Too many arguments")
-    #         print_takeALookAround_usage()
-    #         exit(1)
-    #     if len(args) - 1 < MAX_ARGS - 2:
-    #         print("ERROR: more arguments are required")
-    #         print_takeALookAround_usage()
-    #         exit(1)
-
-    #     if len(args) != MAX_ARGS:
-    #         print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3]))
-    #     else:
-    #         try:
-    #             print(dsldPyTakeALookAround(data, args[INPUT_2], args[INPUT_3], int(args[INPUT_4])))
-    #         except ValueError:
-    #             print("Error: 5th input must be of type int. Entered: ", args[INPUT_4])
-    # except FileNotFoundError:
-    #     print("Error: File not found")
-
+#************************** END OS SHELL *******************************************
 
 '''
 Need to install.packages("plotly") in R

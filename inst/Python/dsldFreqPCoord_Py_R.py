@@ -148,8 +148,7 @@ if __name__ == "__main__":
         dsldPyFreqPCoord(
             data, int(args[2]), sys.argv[3].split(','), args[4], args[5], args[6], 
             int(args[7]), int(args[8]), int(args[9]), bool(args[10])
-        )
-    
+        )   
 #************************** END OS SHELL *******************************************
 
 '''
