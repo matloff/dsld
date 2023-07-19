@@ -89,13 +89,14 @@ dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
 					 family = "binomial", data = data)
 	
 	# setup instance of dsldDiffModel #
-	dsldDiffModel <- c(dsldDiffModel,
-					   yName,
-					   sName,
-					   list(diffModel),
-					   list(summary(diffModel)),
-					   list(coef(diffModel)),
-					   list(data)
+	dsldDiffModel <- c(
+		dsldDiffModel,
+		yName,
+		sName,
+		list(diffModel),
+		list(summary(diffModel)),
+		list(coef(diffModel)),
+		list(data)
 	)
 	names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
 							  "coef", "data")
@@ -105,7 +106,7 @@ dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
   }
   
   # finalize dsldModel #
-  class(dsldModel) <- "dsldLogit"
+  class(dsldModel) <- "dsldGLM"
   return(dsldModel)
 }
 
@@ -127,11 +128,11 @@ dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
 #'      of the model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsld_obj: an instance of the dsldLogisticModel s3 object.
+#' @param dsldGLM: an instance of the dsldLogisticModel s3 object.
 #'
-coef.dsldLogit <- function(dsldLM) {
+coef.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
-  mergedCoef <- lapply(dsldLM, function(x) x$coef)
+  mergedCoef <- lapply(dsldGLM, function(x) x$coef)
   return(mergedCoef)
 }
 
@@ -139,9 +140,9 @@ coef.dsldLogit <- function(dsldLM) {
 # coef(log2)
 
 # added vcov generic
-vcov.dsldLogit <- function(dsldLM) {
+vcov.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
-  mergedCoef <- lapply(dsldLM, function(x) vcov(x$model))
+  mergedCoef <- lapply(dsldGLM, function(x) vcov(x$model))
   return(mergedCoef)
 }
 
@@ -154,12 +155,12 @@ vcov.dsldLogit <- function(dsldLM) {
 #'      model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsldLM: an instance of the dsldLogisticModel s3 object.
+#' @param dsldGLM: an instance of the dsldLogisticModel s3 object.
 #'
 
-dsldGetData <- function(dsldLM) {
+dsldGetData <- function(dsldGLM) {
   # merge & return datasets #
-  mergedData <- lapply(dsldLM, function(x) x$data)
+  mergedData <- lapply(dsldGLM, function(x) x$data)
   return(mergedData)
 }
 
@@ -227,21 +228,21 @@ dsldValidateData <- function(newData, model) {
 #'      There will be one row for each pair of S levels.
 #'
 #' ::: Arguments :::
-#' @param dsldLM: output from dsldLogistic() function
+#' @param dsldGLM: output from dsldLogistic() function
 #' @param newData: new test cases to be provided; required for
 #'      full-interactions case
 #'
-dsldDiffS <- function(dsldLM, newData = NULL) {
+dsldDiffS <- function(dsldGLM, newData = NULL) {
   # get sName and yName from the output of dsldLogistic #
-  sName <- dsldLM[[1]]$sName
-  yName <- dsldLM[[1]]$yName
+  sName <- dsldGLM[[1]]$sName
+  yName <- dsldGLM[[1]]$yName
   
   # diffS results when interaction == FALSE in dsldLogistic #
-  if (length(dsldLM) == 1) {
+  if (length(dsldGLM) == 1) {
 	# extract pairwise combination of [dummy level in glm - factor levels]
 	# from summary output
-	data <- dsldGetData(dsldLM)[[1]]
-	model <- dsldLM[[1]]$model
+	data <- dsldGetData(dsldGLM)[[1]]
+	model <- dsldGLM[[1]]$model
 	C <- vcov(model)
 	c <- coef(model)
 	
@@ -341,14 +342,14 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 	}
 	
 	# get vector of all levels in sName #
-	sNames <- names(dsldLM)
+	sNames <- names(dsldGLM)
 	df <- data.frame()
 	
 	# loop through each level of S name to compute estimates and
 	# standard errors
 	for (i in sNames) {
-	  data <- dsldLM[[i]]$data
-	  model <- dsldLM[[i]]$model
+	  data <- dsldGLM[[i]]$data
+	  model <- dsldGLM[[i]]$model
 	  xNew <- dsldValidateData(newData, model)
 	  
 	  predictions <- predict(model, xNew, type = "response",
@@ -405,53 +406,53 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 #'      across S levels.
 #' 
 #' ::: Arguments :::
-#' @param dsld_obj: an instance of the dsldLogisticModel s3 object that output summary objects.
+#' @param dsldGLM: an instance of the dsldLogisticModel s3 object that output summary objects.
 #'
-summary.dsldLogit <- function(dsldLM) {
+summary.dsldGLM <- function(dsldGLM) {
   diffS <- list()
   
   # get sName and yName from the output of dsldLogistic #
-  sName <- dsldLM[[1]]$sName
-  yName <- dsldLM[[1]]$yName
+  sName <- dsldGLM[[1]]$sName
+  yName <- dsldGLM[[1]]$yName
   
-  if (length(dsldLM) == 1) {
-	data <- dsldGetData(dsldLM)[[1]]
-	summary_output <- summary(dsldLM[[1]]$model)
-	coef <- summary_output$coefficients[, 1]
-	std_err <- summary_output$coefficients[, 2]
-	pValues <- summary_output$coefficients[, 4]
+  if (length(dsldGLM) == 1) {
+	data <- dsldGetData(dsldGLM)[[1]]
+	summaryOutput <- summary(dsldGLM[[1]]$model)
+	coef <- summaryOutput$coefficients[, 1]
+	stdErr <- summaryOutput$coefficients[, 2]
+	pValues <- summaryOutput$coefficients[, 4]
 	
 	# Create dataframe
 	df <- data.frame(
-	  Covariate = row.names(summary_output$coefficients),
+	  Covariate = row.names(summaryOutput$coefficients),
 	  Estimate = coef,
-	  `Standard Error` = std_err,
+	  `Standard Error` = stdErr,
 	  PValue = pValues,
 	  stringsAsFactors = FALSE,
 	  row.names = NULL
 	)
 	
 	diffS[['Summary Coefficients']] <- df
-	diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldLM)
+	diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldGLM)
 	
 	return(diffS)
   } else {
-	sNames <- names(dsldLM)
-	newData <- dsldLM[[1]]$newData
+	sNames <- names(dsldGLM)
+	newData <- dsldGLM[[1]]$newData
 	
 	# loop through each level of S name to compute estimates and standard
 	# errors
 	for (i in sNames) {
-	  data <- dsldLM[[i]]$data
-	  summary_output <- summary(dsldLM[[i]]$model)
-	  coef <- summary_output$coefficients[, 1]
-	  std_err <- summary_output$coefficients[, 2]
-	  pValues <- summary_output$coefficients[, 4]
+	  data <- dsldGLM[[i]]$data
+	  summaryOutput <- summary(dsldGLM[[i]]$model)
+	  coef <- summaryOutput$coefficients[, 1]
+	  stdErr <- summaryOutput$coefficients[, 2]
+	  pValues <- summaryOutput$coefficients[, 4]
 	  
 	  df <- data.frame(
-		Covariate = row.names(summary_output$coefficients),
+		Covariate = row.names(summaryOutput$coefficients),
 		Estimate = coef,
-		`Standard Error` = std_err,
+		`Standard Error` = stdErr,
 		PValue = pValues,
 		stringsAsFactors = FALSE,
 		row.names = NULL
@@ -459,7 +460,7 @@ summary.dsldLogit <- function(dsldLM) {
 	  
 	  diffS[[i]] <- df
 	}
-	diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldLM,
+	diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldGLM,
 															   newData)
 	return(diffS)
   }

@@ -6,7 +6,7 @@
 #'      variable, sName, in which case the function will fit m separate models,
 #'      where m is the number of levels of sName.
 #'
-#'      The function produces an instance of the `dsldLinear` class (an S3
+#'      The function produces an instance of the `dsldLM` class (an S3
 #'      object).
 #'
 #'      The output of dsldLinear will store a list of useful traits pertaining
@@ -104,7 +104,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
   }
   
   # finalize dsldModel #
-  class(dsldModel) <- "dsldLinear"
+  class(dsldModel) <- "dsldLM"
   return(dsldModel)
 }
 
@@ -131,13 +131,13 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 
 #' ::: Description ::
 #' @brief coef() is a polymorphic method that takes in an object of the
-#'      'dsldLinear' class. The function provides m regression coefficients
+#'      'dsldLM' class. The function provides m regression coefficients
 #'      of the model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsldLM: an instance of the dsldLinearModel s3 object.
+#' @param dsldLM: an instance of the dsldLM s3 object.
 #'
-coef.dsldLinear <- function(dsldLM) {
+coef.dsldLM <- function(dsldLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldLM, function(x) x$coef)
   return(mergedCoef)
@@ -148,7 +148,7 @@ coef.dsldLinear <- function(dsldLM) {
 # coef(lin2)
 
 # added vcov generic
-vcov.dsldLinear <- function(dsldLM) {
+vcov.dsldLM <- function(dsldLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldLM, function(x) vcov(x$model))
   return(mergedCoef)
@@ -159,12 +159,12 @@ vcov.dsldLinear <- function(dsldLM) {
 
 
 #' ::: Description ::
-#' @brief the dsldGetData() function takes in an object of the 'dsldLinear'
+#' @brief the dsldGetData() function takes in an object of the 'dsldLM'
 #'      class. The function provides m dataset(s) used to train the linear
 #'      model, where m is the number of levels of sName.
 #'
 #' ::: Arguments :::
-#' @param dsldLM: an instance of the dsldLinearModel s3 object.
+#' @param dsldLM: an instance of the dsldLM s3 object.
 #'
 dsldGetData <- function(dsldLM) {
   # merge & return datasets #
@@ -414,16 +414,16 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 # -----------------------------------------------------------------------------#
 
 #' ::: Description ::
-#' @brief summary() is a polymorphic method that takes in an object of the 'dsldLinear' 
+#' @brief summary() is a polymorphic method that takes in an object of the 'dsldLM' 
 #'      class. The function provides m summaries of the model, where m is the number 
 #'      of levels of sName. Additionally, the summary function also report differences 
 #'      across S levels.
 #' 
 #' ::: Arguments :::
-#' @param dsldLM: an instance of the dsldLinearModel s3 object that output summary objects.
+#' @param dsldLM: an instance of the dsldLM s3 object that output summary objects.
 #'
 
-summary.dsldLinear <- function(dsldLM) {
+summary.dsldLM <- function(dsldLM) {
   diffS <- list()
   
   # get sName and yName from the output of dsldLinear #
@@ -434,14 +434,14 @@ summary.dsldLinear <- function(dsldLM) {
     data <- dsldGetData(dsldLM)[[1]]
     summaryOutput <- summary(dsldLM[[1]]$model)
     coef <- summaryOutput$coefficients[, 1]
-    std_err <- summaryOutput$coefficients[, 2]
+    stdErr <- summaryOutput$coefficients[, 2]
     pValues <- summaryOutput$coefficients[, 4]
     
     # Create dataframe
     df <- data.frame(
       Covariate = row.names(summaryOutput$coefficients),
       Estimate = coef,
-      `Standard Error` = std_err,
+      `Standard Error` = stdErr,
       PValue = pValues,
       stringsAsFactors = FALSE,
       row.names = NULL
@@ -461,13 +461,13 @@ summary.dsldLinear <- function(dsldLM) {
       data <- dsldLM[[i]]$data
       summaryOutput <- summary(dsldLM[[i]]$model)
       coef <- summaryOutput$coefficients[, 1]
-      std_err <- summaryOutput$coefficients[, 2]
+      stdErr <- summaryOutput$coefficients[, 2]
       pValues <- summaryOutput$coefficients[, 4]
       
       df <- data.frame(
         Covariate = row.names(summaryOutput$coefficients),
         Estimate = coef,
-        `Standard Error` = std_err,
+        `Standard Error` = stdErr,
         PValue = pValues,
         stringsAsFactors = FALSE,
         row.names = NULL
