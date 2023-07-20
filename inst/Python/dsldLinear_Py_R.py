@@ -58,7 +58,7 @@ def dsldPyLinearSummary(dsldLinear): # TODO: function name
     
 
 '''
-# Test case: Before running, go to /dsld/inst/Python
+    # Test case: Before running, go to /dsld/inst/Python
     import rpy2.robjects as robjects
     from dsldLinear_Py_R import dsldPyLinear, dsldPyDiffS, dsldPyLinearSummary
 

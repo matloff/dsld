@@ -12,7 +12,7 @@
     arguments that are then passed into the R function. This way, the Python 
     user can call the function similar to how an R user would call the function. 
     
-    The R function, dsldConditDisparity(), generates a graph. In the python 
+    The R function, dsldFreqPCoord(), generates a graph. In the python 
     environment, an image of this graph is generated, saved, and automatically 
     opened in an image viewer. The image is automatically removed shortly after 
     being saved (so as not to take up space), but the user can view the graph as 
