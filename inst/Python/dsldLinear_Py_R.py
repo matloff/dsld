@@ -17,7 +17,7 @@ from rpy2.robjects.packages import importr
 dsld = importr('dsld')
 
 
-def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL, returnType = 0):
+def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL, returnType = "R"):
     # ************************** ARGUMENTS *******************************************
     r_data = dsld_Rpy2_IsRDataframe(data)
 
@@ -32,21 +32,20 @@ def dsldPyLinear(data, yName, sName, interactions = False, newData = R_NULL, ret
     # ************************** RETURN VALUE ******************************************
     dsldLinearObj = dsld.dsldLinear(data, yName, sName, interactions, newData)
 
-    if returnType == 1:
+    if returnType.lower() == "python" or returnType.lower() == "py":
         return DsldLinear(dsldLinearObj)
     else:
         return dsldLinearObj
 # ************************** END OF FUNCTION *******************************************
 
 
-def dsldPyDiffS(dsldLinear, newData = R_NULL, returnType = 0):
+def dsldPyDiffS(dsldLinear, newData = R_NULL, returnType = "R"):
     if newData != R_NULL:
         newData = dsld_Rpy2_IsRDataframe(newData)
 
     dsldDiffObj = dsld.dsldDiffS(dsldLinear, newData)
 
-    # TODO: make returnType a char arg
-    if returnType == 1:
+    if returnType.lower() == "python" or returnType.lower() == "py":
         return DsldDiffModel(dsldDiffObj)
     else:
         return dsldDiffObj
@@ -81,11 +80,11 @@ def dsldPyLinearSummary(dsldLinear): # TODO: function name
     dsldLinRObject = dsldPyLinear(data, 'wageinc', 'gender', True, new_data)
     dsldPyLinearSummary(dsldLinRObject)
 
-    dsldLinPyObject = dsldPyLinear(data, 'wageinc', 'gender', True, new_data, 1)
+    dsldLinPyObject = dsldPyLinear(data, 'wageinc', 'gender', True, new_data, "Python")
 
     dsldDiffRObject = dsldPyDiffS(dsldLinRObject, X_new)
     print(dsldDiffRObject)
-    dsldDiffPyObject = dsldPyDiffS(dsldLinRObject, X_new, 1) # Doesn't work yet
+    dsldDiffPyObject = dsldPyDiffS(dsldLinRObject, X_new, "Python") # Doesn't work yet
 '''
 
 
