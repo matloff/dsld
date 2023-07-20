@@ -4,8 +4,7 @@
     users data input is in pandas data frame before doing any computation
 '''
 
-from Utils import dsld_Rpy2_IsRDataframe, R_NULL, ERROR
-from dsldS3ToPyTest import DsldLinear, DsldDiffModel
+from Utils import dsld_Rpy2_IsRDataframe, R_NULL, ERROR, DsldLinear, DsldDiffModel
 import sys
 import pandas as pd
 import rpy2.robjects as robjects

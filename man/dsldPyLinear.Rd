@@ -1,7 +1,7 @@
 \name{dsldPyLinear}
 \alias{dsldPyLinear}
 
-\title{dsldPyLinear}
+\title{DSLDPyLinear}
 
 \description{
     This function, meant for Python users, uses the rpy2 library to call the R 
@@ -18,17 +18,19 @@
 
 \usage{
     ## Fit linear model
-    dsldLinear(data, yName, sName, interactions = FALSE, new_data = NULL)
+    dsldPyLinear(data, yName, sName, interactions = FALSE, new_data = R_NULL, 
+                       returnType = "R")
 
     ## s3 polymorphic functionalities for class 'dsldLinear'
-    summary(dsldLinear)
-    dsldDiffS(dsldLinear, newData) # compare mean Y | X for additional data in
-                                   # the full interactions case
+    dsldPyLinearSummary(dsldLinear)
+    # compare mean Y | X for additional data in the full interactions case
+    dsldPyDiffS(dsldLinear, newData = R_NULL, returnType = "R") 
 }
 
 \arguments{
     \item{data}{
-        data frame used to train the linear model; will be split according to each level of sName in output if interactions = TRUE [dataframe]
+        data frame used to train the linear model; will be split according to 
+        each level of sName in output if interactions = TRUE [dataframe]
     }
     \item{yName}{
         a string, the response variable [character]
@@ -37,13 +39,27 @@
         a string, the sensitive variable (an R factor) [character]
     }
     \item{interactions}{
-        a logical value indicating whether or not to fit interactions with the sensitive variable. Defaults to FALSE [logical]
+        a logical value indicating whether or not to fit interactions with the 
+        sensitive variable. Defaults to FALSE [logical]
     }
     \item{new_data}{
-        dataframe of new cases for which mean Y | X will be compared between each pairs of S levels. Defaults to NULL for the no-interactions case [dataframe]
+        dataframe of new cases for which mean Y | X will be compared between 
+        each pairs of S levels. Defaults to NULL for the no-interactions 
+        case [dataframe]
     }
-    \item{dsldObj}{
+    \item{dsldLinear}{
         output of dsldLinear, an s3 object of class 'dsldLinear' [list]
+        
+        This must be an R object, not a Python object
+    }
+    \item{returnType}{
+        A string argument that determines whether the user receieves an R result 
+        (indicated by the string "R" or "r") or a Python result 
+        (indicated by the string "Py", "py", "Python" or "python").
+        
+        For dsldPyLinear, this result is an R object or a Python object 
+        (an instance of the Python DsldLinear class).
+        For dsldPyDiffS, this result is an R dataframe or a Pandas dataframe.
     }
 }
 
