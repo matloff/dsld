@@ -2,8 +2,10 @@
 \alias{dsldFreqPCoord}
 
 \title{dsldFreqPCoord}
+
 \description{
-    This is a wrapper for the freqparcoord function from the freqparcoord package (link in references).
+    This is a wrapper for the freqparcoord function from the freqparcoord 
+    package (link in references).
 }
 \usage{
     dsldFreqPCoord(data,m,columns=1:ncol(data),sName=NULL,
@@ -26,8 +28,9 @@
         strings or integers, but not a mix.
     }
     \item{sName}{
-        Column number for the grouping variable, if any (if none, all the data is treated
-        as a single group); vector or factor.
+        Column number for the grouping variable, if any (if none, all the data 
+        is treated as a single group); vector or factor. Must not be in 
+        dispcols. If method is "locmax", grpvar is forced to NULL
     }
     \item{method}{
         What to display: "maxdens" for plotting the most
@@ -48,14 +51,14 @@
         to be much larger than \code{k}, to avoid "noise fitting."
     }
     \item{keepidxs}{
-        If not NULL, the indices of the rows of \code{x} that 
+        If not NULL, the indices of the rows of \code{data} that 
         are plotted will be stored in a component \code{idxs} of the
         return value.  The rows themselves will be in a component
-        \code{xdisp}, ordered by \code{x[,dispcols[1]}.]
+        \code{xdisp}, ordered by \code{data[,dispcols[1]}.]
     }
     \item{plotidxs}{
         If TRUE, lines in the display will be annotated 
-        with their case numbers, i.e. their row numbers within \code{x}.  
+        with their case numbers, i.e. their row numbers within \code{data}.  
         Use only with small values of \code{m}, as overplotting may occur.
     }
     \item{cls}{
@@ -72,9 +75,16 @@
         to a file with this filename.
     }
 }
+
 \details{
-    dsldFreqPCoord is a wrapper function of the function freqparcoord package in 
-    which freqparcoord creates a parallel coordinate graph.
+    dsldFreqPCoord serves as a function wrapper for freqparcoord, which uses a 
+    frequency-based parallel coordinates method to vizualize multiple variables 
+    simultaneously in graph form.
+    
+    This is done by plotting either the "most typical" or "least typical"
+    (i.e. highest or lowest estimated multivariate density values respectively)
+    cases to discern relations between variables (Matloff, Xie).
+    
     The y-axis represents the distance from the mean of the column variable.
 }
 \value{

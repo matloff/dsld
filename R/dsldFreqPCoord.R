@@ -1,11 +1,34 @@
 #' This file stores wrappers for the functions in the freqparcoord pkg
-
-
+#'
 #' dsldFreqPCoord is a function that plots points in parallel coordinates
+#' ::: Arguments :::
 #' @param data The data we want to look at
 #' @param m The number of lines to plot for each group
-#' @param sName What to group the data by
-#' @return a plot (in parallel coordinates) with freqparcoord()
+#' @param sName What to group the data by (use interaction() to combine several)
+#' @param method "maxdens", "locmax" or "randsamp"
+#' @param faceting "vert", "horiz" or "none"
+#' @param k Number of nearest neighbors to use for density estimation
+#' @param klm If method is "locmax", number of nearest neighbors to use for 
+#'            finding local maxima for cluster hunting. Generally larger than k
+#' @param keepidxs If not NULL, the indices of the rows of x that are plotted 
+#'                 will be stored in a component idxs of the return value
+#' @param plotidxs If TRUE, lines in the display will be annotated with their 
+#'                 case numbers
+#' @param cls Cluster, if any
+#' @param plot_filename Name of the file that will hold the saved graph image
+#' 
+#' @return A plot (in parallel coordinates) with freqparcoord()
+#' 
+#' @examples
+#' Example 1
+#' library(dsld)
+#' data(svcensus)
+#' dsldFreqPCoord(svcensus,10,c(1,4,5),'gender')
+#' 
+#' Example 2
+#' library(qeML)
+#' data(mlb)
+#' dsldFreqPCoord(mlb,5,4:6,7)
 dsldFreqPCoord <- function(data, m, columns = 1:ncols(data), sName = NULL, 
                            method = "maxdens", faceting = "vert", k = 50, 
                            klm = 5*k, keepidxs = NULL, plotidxs = FALSE, 
@@ -44,19 +67,4 @@ dsldFreqPCoord <- function(data, m, columns = 1:ncols(data), sName = NULL,
     }
 }
 
-# sample data modification using the Gender Pay dataset
-# data(prgeng)
-# pe <- prgeng[,c(1,3,5,7:9)]
-# pe25 <- pe[pe$wageinc < 250000,]
 
-# pe25 <- makeFactor(pe25,c('educ','occ','sex'))
-# pe25disc <- discretize(pe25,nlevels=5)
-# 
-# dsldFreqPCoord(pe25,10,c(1,5,6),'sex') # sample call to plot the graph
-# 
-# data(pef)
-# dsldFreqPCoord(pef,10,c(1,5,6),'sex') # sample call to plot the graph
-# dsldFreqPCoord(pef,10,c(1,5,6),'sex','pr2fileTest.png')
-# data(mlb)
-# dsldFreqPCoord(mlb,5,4:6,7) # sample call to plot the graph
-# dsldFreqPCoord(mlb,5,6,'PosCategory') # 1 col call
