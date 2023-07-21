@@ -19,6 +19,8 @@ dsldDensityByS <-
            yName = NULL,
            sName = NULL,
            fill = FALSE) {
+    getSuggestedLib("plotly")
+    
     if (is.null(sName))
       sName <- makeSName(data)
     else if (!class(data[, sName]) %in% c("factor", "character"))
