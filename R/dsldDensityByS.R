@@ -14,19 +14,15 @@
 #' library(dsld)
 #' data(svcensus)
 #' dsldDensityByS(svcensus)
-dsldDensityByS <-
-  function(data,
-           yName = NULL,
-           sName = NULL,
-           fill = FALSE) {
+dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
     getSuggestedLib("plotly")
-    
-    if (is.null(sName))
+    if (is.null(sName)) {
       sName <- makeSName(data)
-    else if (!class(data[, sName]) %in% c("factor", "character"))
+    } else if (!class(data[, sName]) %in% c("factor", "character")) {
       stop(
         "sName should be of factor or character data type. Consider setting this as a yName instead"
       )
+    }
     
     # for now, if theres no sName, this makes one so the function doesnt break
     if (is.null(sName)) {
@@ -38,9 +34,9 @@ dsldDensityByS <-
     # yNames <- a vector of 2 ints/strings that correspond to the columns to be used for
     # the 2 axis on the graph. The user can specify the cols or
     # yNames will be the first 2 columns that are of numeric or integer data type
-    if (is.null(yName))
+    if (is.null(yName)){
       yName <- makeYNames(data, 1)
-    
+    }
     sGroups <- levels(unique(data[, sName]))
     
     yNameStr <- names(data[yName])
