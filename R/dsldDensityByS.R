@@ -10,7 +10,7 @@
 #'
 #' @export
 #'
-#' @examples 
+#' @examples
 #' library(dsld)
 #' data(svcensus)
 #' dsldDensityByS(svcensus)
@@ -44,28 +44,41 @@ dsldDensityByS <-
     yNameStr <- names(data[yName])
     sNameStr <- names(data[sName])
     
+    filltype = 'none'
+    if (fill) filltype = 'tozeroy'
+    
     for (i in 1:length(sGroups)) {
-      den <- density(data[data[, sName] == sGroups[i], ][, yName])
+      den <- density(data[data[, sName] == sGroups[i],][, yName])
       
       if (i == 1)
-        plot(
-          den,
-          col = i,
-          xlab = yNameStr,
-          main = paste("Density of", yNameStr, "by", sNameStr)
-        )
+        fig <-
+          plotly::plot_ly(
+            x = den$x,
+            y = den$y,
+            type = 'scatter',
+            mode = 'lines',
+            name = sGroups[i],
+            fill = filltype
+          )
       else
-        lines(den, col = i)
-      
-      if (fill)
-        polygon(den, col = i)
+        fig <-
+          plotly::add_trace(
+            fig,
+            x = den$x,
+            y = den$y,
+            mode = 'lines',
+            name = sGroups[i]
+          )
     }
     
-    legend(
-      "topright",
-      title = sNameStr,
-      legend = sGroups,
-      col = 1:length(sGroups),
-      lty = 1
+    fig <- plotly::layout(
+      fig,
+      title = paste("Density of", yNameStr, "by", sNameStr),
+      xaxis = list(title = yNameStr),
+      yaxis = list(title = "Density"),
+      legend = list(title = list(text = sNameStr))
     )
+    
+    fig
+    
   }
