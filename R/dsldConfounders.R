@@ -3,7 +3,6 @@
 #' data(svcensus)
 #' dsldConfounders(svcensus)
 dsldConfounders <- function(data, fill = FALSE) {
-    library(dsld)
     for (i in 1:ncol(data)) {
         if (is.factor(data[,i])) {
             print("categorical")
@@ -19,6 +18,3 @@ dsldConfounders <- function(data, fill = FALSE) {
         }
     }
 }
-library(dsld)
-data(svcencus)
-dsldConfounders(svcensus)
