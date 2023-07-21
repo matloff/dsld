@@ -60,28 +60,24 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
     filltype = 'none'
     if (fill) filltype = 'tozeroy'
     
+    fig <-
+      plotly::plot_ly(
+        type = 'scatter',
+        mode = 'lines',
+        fill = filltype
+      )
+    
     for (i in 1:length(sGroups)) {
         den <- density(data[data[, sName] == sGroups[i],][, yName])
-        
-        if (i == 1)
-            fig <-
-                plotly::plot_ly(
-                    x = den$x,
-                    y = den$y,
-                    type = 'scatter',
-                    mode = 'lines',
-                    name = sGroups[i],
-                    fill = filltype
-                )
-        else
-            fig <-
-                plotly::add_trace(
-                    fig,
-                    x = den$x,
-                    y = den$y,
-                    mode = 'lines',
-                    name = sGroups[i]
-                )
+    
+        fig <-
+            plotly::add_trace(
+                fig,
+                x = den$x,
+                y = den$y,
+                mode = 'lines',
+                name = sGroups[i]
+            )
     }
     
     fig <- plotly::layout(
