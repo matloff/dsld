@@ -7,6 +7,6 @@ S3method(coef,dsldLogit)
 S3method(vcov,dsldLogit)
 
 export(
-   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS
+   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS, dsldConfounders
 )
 
