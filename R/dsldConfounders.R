@@ -19,10 +19,10 @@ dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
     for (i in 1:ncol(data)) {
         # if categorical
         if (is.factor(data[, i])) {
-            print(dsldFrequencyByS(data,colnames(data)[i],sName))
+            print(dsldFrequencyByS(data, colnames(data)[i], sName))
         # if numeric
-        } else if (is.numeric(data[,i])) {
-            print(dsldDensityByS(data,colnames(data)[i],sName,fill))
+        } else if (is.numeric(data[, i])) {
+            print(dsldDensityByS(data, colnames(data)[i], sName, fill))
         # throw error
         } else {
             stop("Neither categorical or numeric column, check dataframe")
@@ -120,20 +120,21 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
 #'
 #' ::: Arguments :::
 #' @param data A dataframe with 1 numerical column and a factor column
-#' @param yName A name or index of the numerical column
+#' @param yName A name or index of the categorical column
 #' @param sName A name or index of the factor column
-#' @param fill A logical value determining if the graphed curve should be filled in
 #'
 #' @export
 #'
-dsldFrequencyByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
-    if (is.null(sName))
+dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
+    # force sensitive var
+    if (is.null(sName)) {
         sName <- makeSName(data)
-    else if (!class(data[, sName]) %in% c("factor", "character"))
+    } else if (!class(data[, sName]) %in% c("factor", "character")) {
         stop(
             "sName should be of factor or character data type. Consider setting this as a yName instead"
         )
-    
+    }
+
     # for now, if theres no sName, this makes one so the function doesnt break
     if (is.null(sName)) {
         Group <- as.factor(rep(1, length(data[, 1])))
@@ -152,37 +153,8 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
     yNameStr <- names(data[yName])
     sNameStr <- names(data[sName])
     
-    filltype = 'none'
-    if (fill) filltype = 'tozeroy'
-    
-    fig <-
-      plotly::plot_ly(
-        type = 'scatter',
-        mode = 'lines',
-        fill = filltype
-      )
-    
     for (i in 1:length(sGroups)) {
         den <- density(data[data[, sName] == sGroups[i],][, yName])
-    
-        fig <-
-            plotly::add_trace(
-                fig,
-                x = den$x,
-                y = den$y,
-                mode = 'lines',
-                name = sGroups[i]
-            )
-    }
-    
-    fig <- plotly::layout(
-        fig,
-        title = paste("Density of", yNameStr, "by", sNameStr),
-        xaxis = list(title = yNameStr),
-        yaxis = list(title = "Density"),
-        legend = list(title = list(text = sNameStr))
-    )
-    
-    fig       
+    }    
 }
 
