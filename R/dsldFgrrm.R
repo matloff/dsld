@@ -4,12 +4,12 @@
 #               definition = "sp-komiyama", family = "binomial", lambda = 0,
 #               save.auxiliary = FALSE)
 
-dsldFgrrm <- function(response, predictors, sensitive, unfairness,
+dsldFgrrm <- function(yName, xName, sName, unfairness,
                       definition = "sp-komiyama", family = "binomial", 
                       lambda = 0, save.auxiliary = FALSE)
 {
-  fairml::fgrrm(response = response, predictors = predictors, 
-                sensitive = sensitive, unfairness = unfairness,
+  fairml::fgrrm(response = yName, predictors = xName, 
+                sensitive = sName, unfairness = unfairness,
                 definition = definition, family = family, 
                 lambda = lambda, save.auxiliary = save.auxiliary)
 }
