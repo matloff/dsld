@@ -3,12 +3,12 @@
 #fairml::frrm(response, predictors, sensitive, unfairness,
 #     definition = "sp-komiyama", lambda = 0, save.auxiliary = FALSE)
 
-dsldFrrm <- function(response, predictors, sensitive, unfairness,
+dsldFrrm <- function(yName, xName, sName, unfairness,
                      definition = "sp-komiyama", lambda = 0, 
                      save.auxiliary = FALSE) 
 {
-  fairml::frrm(response = response, predictors = predictors, 
-               sensitive = sensitive, unfairness = unfairness, 
+  fairml::frrm(response = yName, predictors = xName, 
+               sensitive = sName, unfairness = unfairness, 
                definition = definition, lambda = lambda, 
                save.auxiliary = save.auxiliary)
 }
