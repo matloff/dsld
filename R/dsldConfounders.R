@@ -10,19 +10,16 @@
 #'
 #' ::: Arguments :::
 #' @param data: dataset, an R dataframe
-#' @param yName: response variable
 #' @param sName: name of the sensitive variable, an R factor
 #' @param fill: whether or not to fill curve space, an R logical; defaults to
 #'      FALSE, not applicable to categorical data
 #' 
-dsldConfounders <- function(data, yName, sName = NULL, fill = FALSE) {
+dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
     # dispatch to appropriate auxiliary method
     for (i in 1:ncol(data)) {
         # if categorical
         if (is.factor(data[, i])) {
-            print("categorical")
-            print(colnames(data)[i])
-            # call tabular function here
+            print(dsldFrequencyByS(data,colnames(data)[i],sName))
         # if numeric
         } else if (is.numeric(data[,i])) {
             print(dsldDensityByS(data,colnames(data)[i],sName,fill))
