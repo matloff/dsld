@@ -3,11 +3,11 @@
 #fairml::nclm(response, predictors, sensitive, unfairness, covfun, lambda = 0, 
 #             save.auxiliary = FALSE)
 
-dsldNclm <- function (response, predictors, sensitive, unfairness, covfun, 
+dsldNclm <- function (yName, xName, sName, unfairness, covfun, 
                      lambda = 0, save.auxiliary = FALSE) 
 {
-  fairml::nclm(response = response, predictors = predictors, 
-               sensitive = sensitive, unfairness = unfairness, covfun = covfun,
+  fairml::nclm(response = yName, predictors = xName, 
+               sensitive = sName, unfairness = unfairness, covfun = covfun,
                lambda = lambda, save.auxiliary = save.auxiliary)
 }
 
