@@ -2,10 +2,10 @@
 #usage:
 #fairml::zlrm(response, predictors, sensitive, unfairness)
 
-dsldZlrm <- function(response, predictors, sensitive, unfairness)
+dsldZlrm <- function(yName, xName, sName, unfairness)
 {
-  fairml::zlrm(response = response, predictors = predictors,
-               sensitive = sensitive, unfairness = unfairness)
+  fairml::zlrm(response = yName, predictors = xName,
+               sensitive = sName, unfairness = unfairness)
 }
 
 # Example 1
@@ -16,7 +16,7 @@ dsldZlrm <- function(response, predictors, sensitive, unfairness)
 # s = adult[, c("sex", "race")]
 # p = adult[, setdiff(names(adult), c("income", "sex", "race"))]
 # ## Not run:
-# m = dsldZlrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+# m = dsldZlrm(yName = r, sName = s, xName = p, unfairness = 0.05)
 # summary(m)
 
 #Error: ‘there is no package called ‘CVXR’’
@@ -35,7 +35,7 @@ dsldZlrm <- function(response, predictors, sensitive, unfairness)
 # r = bank[, "subscribed"]
 # s = bank[, c("age")]
 # p = bank[, setdiff(names(bank), c("subscribed", "age"))]
-# m = dsldZlrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+# m = dsldZlrm(yName = r, sName = s, xName = p, unfairness = 0.05)
 # summary(m)
 
 
