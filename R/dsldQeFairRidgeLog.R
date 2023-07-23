@@ -12,4 +12,4 @@ dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal =
 #TODO: test examples after adding functions to namespace
 #library(dsld)
 #data(svcensus)
-#dsldQeFairRidgeLog(svcensus, 'wageinc', 1)
+#dsldQeFairRidgeLog(svcensus, 'gender', 1, yesYVal=1)
