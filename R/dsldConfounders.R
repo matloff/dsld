@@ -13,7 +13,7 @@
 #' @param sName: name of the sensitive variable, an R factor
 #' @param fill: whether or not to fill curve space, an R logical; defaults to
 #'      FALSE, not applicable to categorical data
-#' 
+#'
 dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
     # dispatch to appropriate auxiliary method
     for (i in 1:ncol(data)) {
@@ -36,15 +36,17 @@ dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
 #' library(dsld)
 #' data(svcensus)
 #' dsldDensityByS(svcensus)
-#' 
+#'
 #' ::: Description :::
-#' @brief Graphs densities of a response variable, grouped by a sensitive variable
+#' @brief Graphs densities of a response variable, grouped by a sensitive
+#'      variable
 #'
 #' ::: Arguments :::
-#' @param data A dataframe with 1 numerical column and a factor column
-#' @param yName A name or index of the numerical column
-#' @param sName A name or index of the factor column
-#' @param fill A logical value determining if the graphed curve should be filled in
+#' @param data: A dataframe with 1 numerical column and a factor column
+#' @param yName: A name or index of the numerical column
+#' @param sName: A name or index of the factor column
+#' @param fill: A logical value determining if the graphed curve should be
+#'      filled in
 #'
 #' @export
 #'
@@ -113,48 +115,44 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
 #' @examples
 #' library(dsld)
 #' data(svcensus)
-#' dsldDensityByS(svcensus)
-#' 
+#' dsldFrequencyByS(svcensus)
+#'
 #' ::: Description :::
-#' @brief Extracts frequencies of a response variable, grouped by a sensitive variable
+#' @brief Extracts frequencies of a response variable, grouped by a sensitive
+#'      variable
 #'
 #' ::: Arguments :::
-#' @param data A dataframe with 1 numerical column and a factor column
-#' @param yName A name or index of the categorical column
-#' @param sName A name or index of the factor column
+#' @param data: A dataframe with 1 numerical column and a factor column
+#' @param yName: A name or index of the categorical column
+#' @param sName: A name or index of the factor column
 #'
 #' @export
 #'
 dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
-    # force sensitive var
+    # force missing vars #
+    # check sensitive variable is missing
     if (is.null(sName)) {
         sName <- makeSName(data)
+    # check sensitive variable type
     } else if (!class(data[, sName]) %in% c("factor", "character")) {
-        stop(
-            "sName should be of factor or character data type. Consider setting this as a yName instead"
-        )
+        stop(paste(
+            "sName should be of factor or character data type. Consider",
+            " setting this as a yName instead"
+        ))
+    }
+    
+    # check missing response variable
+    if (is.null(yName)) {
+        yName <- makeYNames(data, 1)
     }
 
-    # for now, if theres no sName, this makes one so the function doesnt break
-    if (is.null(sName)) {
-        Group <- as.factor(rep(1, length(data[, 1])))
-        data <- cbind(data, Group)
-        sName <- length(data)
+    # sensitive variable frequencies #
+    # divide by level
+    sGroups <- levels(factor(data[, sName]))
+    
+    # find frequencies for each level
+    for (i in 1:seq_along(sGroups)) {
+        den <- density(data[data[, sName] == sGroups[i], ][, yName])
     }
-    
-    # yNames <- a vector of 2 ints/strings that correspond to the columns to be used for
-    # the 2 axis on the graph. The user can specify the cols or
-    # yNames will be the first 2 columns that are of numeric or integer data type
-    if (is.null(yName))
-        yName <- makeYNames(data, 1)
-    
-    sGroups <- levels(unique(data[, sName]))
-    
-    yNameStr <- names(data[yName])
-    sNameStr <- names(data[sName])
-    
-    for (i in 1:length(sGroups)) {
-        den <- density(data[data[, sName] == sGroups[i],][, yName])
-    }    
 }
 
