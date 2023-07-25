@@ -4,7 +4,7 @@ getRow1 <- function (data, yName) {
 }
 
 # This function is used by qeFair* function for additional computation
-prepData <- defmacro(zzz,scaling='mmscale',expr=
+dsldPrepData <- defmacro(zzz,scaling='mmscale',expr=
    {
       ycol <- which(names(data) == yName)
       y <- data[,ycol]
