@@ -23,7 +23,7 @@ dsldFrrm <- function(yName, xName, sName, unfairness,
 # s = cc[, c("racepctblack", "PctForeignBorn")]
 # p = cc[, setdiff(names(cc), c("ViolentCrimesPerPop", names(s)))]
 # 
-# m = dsldFrrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+# m = dsldFrrm(r, p, s, 0.05)
 # summary(m)
 
 # Example 2
@@ -35,5 +35,5 @@ dsldFrrm <- function(yName, xName, sName, unfairness,
 # r = ll[, "ugpa"]
 # s = ll[, c("age", "race1")]
 # p = ll[, setdiff(names(ll), c("ugpa", "age", "race1"))]
-# m = dsldFrrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+# m = dsldFrrm(r, p, s, 0.05)
 # summary(m)
