@@ -3,7 +3,7 @@ dsldQeFairKNN <- function(data, yName, deweightPars, sName=NULL,
    require(qeML)
 
    scaling <- if(scaleX) 'scale' else 'none'
-   prepData(scaling=scaling)
+   dsldPrepData(scaling=scaling)
 
    nonSensNames <- setdiff(names(data),sensNames)
    data1 <- data[nonSensNames]
