@@ -6,6 +6,7 @@
 dsldNclm <- function (yName, xName, sName, unfairness, covfun, 
                      lambda = 0, save.auxiliary = FALSE) 
 {
+  # TODO: Add if condition to check if cccp package is installed or call getSuggestLib
   fairml::nclm(response = yName, predictors = xName, 
                sensitive = sName, unfairness = unfairness, covfun = covfun,
                lambda = lambda, save.auxiliary = save.auxiliary)
@@ -22,7 +23,7 @@ dsldNclm <- function (yName, xName, sName, unfairness, covfun,
 # s = cc[, c("racepctblack", "PctForeignBorn")]
 # p = cc[, setdiff(names(cc), c("ViolentCrimesPerPop", names(s)))]
 
-# m = dsldNclm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+# m = dsldNclm(r, p, s, 0.05)
 # summary(m)
 
 #Error: ‘there is no package called ‘cccp’
@@ -39,5 +40,5 @@ dsldNclm <- function (yName, xName, sName, unfairness, covfun,
 # r = ll[, "ugpa"]
 # s = ll[, c("age", "race1")]
 # p = ll[, setdiff(names(ll), c("ugpa", "age", "race1"))]
-# m = dsldNclm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+# m = dsldNclm(r, p, s, 0.05)
 # summary(m)
