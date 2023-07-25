@@ -4,7 +4,7 @@
 \title{dsldFrrm}
 
 \description{
-    This is a wrapper for the Frrm function from the fairML pacakage
+    This is a wrapper for the Frrm function from the fairML package
     (link in references).
 }
 
@@ -53,7 +53,7 @@
 }
 
 \details{
-    % Probably need to edit this section
+  % Probably need to edit this section
     dsldFrrm() and dsldFgrrm() can accommodate different definitions of fairness, 
     which can be selected via the definition argument. The labels for the built-in 
     definitions are: "sp-komiyama" for the same definition of fairness as 
@@ -72,11 +72,12 @@
     The algorithm works like this:
         regresses the predictors against the sensitive attributes;
         constructs a new set of predictors that are decorrelated from the 
-        sensitive attributes using the residuals of this regression;
+            sensitive attributes using the residuals of this regression;
         regresses the response against the decorrelated predictors and the 
-        sensitive attributes; while using a ridge penalty to control the 
-        proportion of variance the sensitive attributes can explain with respect 
-        to the overall explained variance of the model.
+            sensitive attributes; while 
+        using a ridge penalty to control the proportion of variance the 
+            sensitive attributes can explain with respect to the overall 
+            explained variance of the model.
 
     Both sensitive and predictors are standardized internally before estimating 
     the regression coefficients, which are then rescaled back to match the 
@@ -90,8 +91,8 @@
 }
 
 \value{
-  frrm() returns an object of class c("frrm", "fair.model"). fgrrm() returns an
-   object of class c("fgrrm", "fair.model").
+    frrm() returns an object of class c("frrm", "fair.model"). fgrrm() returns an
+    object of class c("fgrrm", "fair.model").
 }
 
 \references{
