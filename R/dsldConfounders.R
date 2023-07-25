@@ -207,8 +207,8 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
     return(frequencies)
 }
 
-library(dsld)
-data(svcensus)
-dsldFrequencyByS(svcensus, yName = "educ", sName = "gender")
+#library(dsld)
+# data(svcensus)
+# dsldFrequencyByS(svcensus, yName = "educ", sName = "gender")
 
 
