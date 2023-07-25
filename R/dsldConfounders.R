@@ -129,6 +129,16 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
 #' @export
 #'
 dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
+    comment <- "
+    # ensure libraries #
+    getSuggestedLib('gt')
+
+    frequencies <- data %>%
+        group_by(sName) %>%
+        summarize(Frequency = n()) %>%
+        gt()
+    "
+
     # force missing vars #
     # check sensitive variable is missing
     if (is.null(sName)) {
@@ -146,13 +156,59 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
         yName <- makeYNames(data, 1)
     }
 
-    # sensitive variable frequencies #
-    # divide by level
-    sGroups <- levels(factor(data[, sName]))
+
+    # -------- Iterative Approach I -------- #
+    # # sensitive variable frequencies #
+    # # divide by level
+    # yGroups <- levels(factor(data[[yName]]))
+    # sGroups <- levels(factor(data[[sName]]))
+
+    # # setup dataframe
+    # frequencies <- data.frame(matrix(NA, nrow = length(sGroups),
+    #     ncol = length(yGroups)))
+    # rownames(frequencies) <- sGroups
+    # colnames(frequencies) <- yGroups
     
-    # find frequencies for each level
-    for (i in 1:seq_along(sGroups)) {
-        den <- density(data[data[, sName] == sGroups[i], ][, yName])
-    }
+    # # find frequencies for each level
+    # for (s in seq_along(sGroups)) {
+    #     # for each response level
+    #     for (y in seq_along(yGroups)) {
+    #         # add frequency
+    #         freq <- sum(data[[sName]] == sGroups[s] &&
+    #             data[[yName]] == yGroups[y])
+    #         frequencies[s, y] <- freq
+    #     }
+    # }
+
+    # # return frequencies #
+    # return(frequencies)
+
+
+    # -------- Efficient Approach II -------- #
+    # sensitive variable frequencies #
+    # unique levels to ensure order
+    yGroups <- unique(data[[yName]])
+    sGroups <- unique(data[[sName]])
+
+    # get a lookup for every s level against every ylevel
+    freqLookup <- table(df[[sName]], df[[yName]])
+
+    # convert to dataframe
+    frequencies <- as.data.frame.matrix(freqLookup)
+    names(frequencies) <- c(
+        paste(sName, " Levels"),
+        paste0("Frequency of ", unique(data[[yName]]))
+    )
+
+    # merge levels of sName into one row
+
+
+    # return frequncies #
+    return(frequencies)
 }
+
+library(dsld)
+data(svcensus)
+dsldFrequencyByS(svcensus, yName = "educ", sName = "gender")
+
 
