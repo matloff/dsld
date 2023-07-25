@@ -14,7 +14,9 @@ dsldNclm <- function (yName, xName, sName, unfairness, covfun,
 
 
 # #Example 1
-
+# library(dsld)
+# library(fairml)
+# library(cccp)
 # data(communities.and.crime)
 
 # # short-hand variable names.
@@ -32,7 +34,9 @@ dsldNclm <- function (yName, xName, sName, unfairness, covfun,
 
 
 # #Example 2
-
+# library(dsld)
+# library(fairml)
+# library(cccp)
 # data(law.school.admissions)
 
 # # short-hand variable names.
