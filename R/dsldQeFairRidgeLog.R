@@ -57,7 +57,7 @@ dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal =
   fairLogOut$yLevels <- yLevels
   fairLogOut$yesYVal <- yesYVal
   fairLogOut$deweightPars <- deweightPars
-  fairLogOut$sensNames <- sensNames
+  fairLogOut$sName <- sName
   fairLogOut$factorsInfo <- factorsInfo
   fairLogOut$trainRow1 <- trainRow1
   fairLogOut$scalePars <- scalePars
@@ -75,9 +75,9 @@ dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal =
   
   fairLogOut$scaling <- scaling
   
-  if (!is.null(sensNames) && !is.null(holdout)) {
+  if (!is.null(sName) && !is.null(holdout)) {
     data2 <- data1
-    fairLogOut$corrs <- corrsens(data,yName,fairLogOut,sensNames)
+    fairLogOut$corrs <- corrsens(data,yName,fairLogOut,sName)
   }
   
   fairLogOut
