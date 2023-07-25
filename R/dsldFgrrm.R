@@ -27,8 +27,7 @@ dsldFgrrm <- function(yName, xName, sName, unfairness,
 # p = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
 #                 "chapter")]
 # 
-# m = dsldFgrrm(response = r, sensitive = s, predictors = p, family = "cox",
-#           unfairness = 0.05)
+# m = dsldFgrrm(r, p, s, 0.05, family = "cox")
 # summary(m)
 
 
@@ -45,8 +44,7 @@ dsldFgrrm <- function(yName, xName, sName, unfairness,
 # p = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
 #                 "chapter")]
 # ## Not run:
-# m = fgrrm(response = r, sensitive = s, predictors = p, family = "cox",
-#           unfairness = 0.05)
+# m = dsldFgrrm(r, p, s, 0.05, family = "cox")
 # summary(m)
 
 
@@ -59,7 +57,6 @@ dsldFgrrm <- function(yName, xName, sName, unfairness,
 # p = obesity.levels[, setdiff(names(obesity.levels), c("NObeyesdad", "Gender", "Age"))]
 # ## Not run:
 # # the lambda = 0.1 is very helpful in making model estimation succeed.
-# m = fgrrm(response = r, sensitive = s, predictors = p, ,
-#           family = "multinomial", unfairness = 0.05, lambda = 0.1)
+# m = fgrrm(r, p, s, 0.05, family = "multinomial", lambda = 0.1)
 # summary(m)
 
