@@ -79,6 +79,7 @@
 \references{
     https://cran.r-project.org/web/packages/fairml/index.html
 }
+
 \author{
     S. Martha, A. Mittal, B. Ouattara, J. Tran, B. Zarate
 }
