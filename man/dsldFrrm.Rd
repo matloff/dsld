@@ -14,42 +14,42 @@
 }
 
 \arguments{
-  \item{yName}{
-      A numeric vector, the response variable.
-  }
-  \item{xName}{
-      A numeric matrix or a data frame containing numeric and factor columns; 
-      the predictors.
-  }
-  \item{sName}{
-      A numeric matrix or a data frame containing numeric and factor columns; 
-      the sensitive attributes
-  }
-  \item{unfairness}{
-      A positive number in [0, 1], how unfair is the model allowed to be. 
-      A value of 0 means the model is completely fair, while a value of 1 means 
-      the model is not constrained to be fair at all.
-  }
-  \item{definition}{
-      A character string, the label of the definition of fairness used in 
-      fitting the model. Currently either "sp-komiyama", "eo-komiyama" or 
-      "if-berk". It may also be a function: see below for details.
-  }
-  \item{family}{
-      A character string, either "gaussian" to fit a linear regression, 
-      "binomial" to fit a logistic regression, "poisson" to fit a log-linear 
-      regression, "cox" to fit a Cox proportional hazards regression of 
-      "multinomial" to fit a multinomial logistic regression.
-  }
-  \item{lambda}{
-      A non-negative number, a ridge-regression penalty coefficient. 
-      It defaults to zero.
-  }
-  \item{save.auxillary}{
-      A logical value, whether to save the fitted values and the residuals 
-      of the auxiliary model that constructs the decorrelated predictors. 
-      The default value is FALSE.
-  }
+    \item{yName}{
+        A numeric vector, the response variable.
+    }
+    \item{xName}{
+        A numeric matrix or a data frame containing numeric and factor columns; 
+        the predictors.
+    }
+    \item{sName}{
+        A numeric matrix or a data frame containing numeric and factor columns; 
+        the sensitive attributes
+    }
+    \item{unfairness}{
+        A positive number in [0, 1], how unfair is the model allowed to be. 
+        A value of 0 means the model is completely fair, while a value of 1 means 
+        the model is not constrained to be fair at all.
+    }
+    \item{definition}{
+        A character string, the label of the definition of fairness used in 
+        fitting the model. Currently either "sp-komiyama", "eo-komiyama" or 
+        "if-berk". It may also be a function: see below for details.
+    }
+    \item{family}{
+        A character string, either "gaussian" to fit a linear regression, 
+        "binomial" to fit a logistic regression, "poisson" to fit a log-linear 
+        regression, "cox" to fit a Cox proportional hazards regression of 
+        "multinomial" to fit a multinomial logistic regression.
+    }
+    \item{lambda}{
+        A non-negative number, a ridge-regression penalty coefficient. 
+        It defaults to zero.
+    }
+    \item{save.auxillary}{
+        A logical value, whether to save the fitted values and the residuals 
+        of the auxiliary model that constructs the decorrelated predictors. 
+        The default value is FALSE.
+    }
 }
 
 \details{
@@ -99,7 +99,7 @@
     https://cran.r-project.org/web/packages/fairml/index.html
 }
 \author{
-    S. Martha, A. Mittal, B. Ouattara, J. Tran, B. Zarate
+    S. Martha, A. Mittal, B. Ouattara, B. Zarate
 }
 
 \examples{

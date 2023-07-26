@@ -13,36 +13,35 @@
 }
 
 \arguments{
-  \item{yName}{
-      A numeric vector, the response variable.
-  }
-  \item{xName}{
-      A numeric matrix or a data frame containing numeric and factor columns; 
-      the predictors.
-  }
-  \item{sName}{
-      A numeric matrix or a data frame containing numeric and factor columns; 
-      the sensitive attributes.  
-  } 
-  \item{unfairness}{
-      A positive number in [0, 1], how unfair is the model allowed to be. 
-      A value of 0 means the model is completely fair, while a value of 1 means 
-      the model is not constrained to be fair at all.
-  } 
+    \item{yName}{
+        A numeric vector, the response variable.
+    }
+    \item{xName}{
+        A numeric matrix or a data frame containing numeric and factor columns; 
+        the predictors.
+    }
+    \item{sName}{
+        A numeric matrix or a data frame containing numeric and factor columns; 
+        the sensitive attributes.  
+    } 
+    \item{unfairness}{
+        A positive number in [0, 1], how unfair is the model allowed to be. 
+        A value of 0 means the model is completely fair, while a value of 1 means 
+        the model is not constrained to be fair at all.
+    } 
   \item{covfun}{
-      A function computing covariance matrices. It defaults to the cov() function 
-      from the stats package.  
-  }
-  \item{lambda}{
-      A non-negative number, a ridge-regression penalty coefficient. It defaults 
-      to zero.  
-  }
-  \item{save.auxiliary}{
-      A logical value, whether to save the fitted values and the residuals 
-      of the auxiliary model that constructs the decorrelated predictors. 
-      The default value is FALSE.
-  } 
-  
+        A function computing covariance matrices. It defaults to the cov() function 
+        from the stats package.  
+    }
+    \item{lambda}{
+        A non-negative number, a ridge-regression penalty coefficient. It defaults 
+        to zero.  
+    }
+    \item{save.auxiliary}{
+        A logical value, whether to save the fitted values and the residuals 
+        of the auxiliary model that constructs the decorrelated predictors. 
+        The default value is FALSE.
+    } 
 }
 
 \details{
@@ -81,7 +80,7 @@
 }
 
 \author{
-    S. Martha, A. Mittal, B. Ouattara, J. Tran, B. Zarate
+    S. Martha, A. Mittal, B. Ouattara, B. Zarate
 }
 
 \seealso{

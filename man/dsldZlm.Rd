@@ -12,22 +12,22 @@
 }
 
 \arguments{
-  \item{yName}{
-      A numeric vector, the response variable.
-}
-  \item{xName}{
-      A numeric matrix or a data frame containing numeric and factor columns; 
-      the predictors.
-}
-  \item{sName}{
-      A numeric matrix or a data frame containing numeric and factor columns; 
-      the sensitive attributes.
-}
-  \item{unfairness}{
-      A positive number in [0, 1], how unfair is the model allowed to be. 
-      A value of 0 means the model is completely fair, while a value of 1 means 
-      the model is not constrained to be fair at all.
-}
+    \item{yName}{
+        A numeric vector, the response variable.
+    }
+    \item{xName}{
+        A numeric matrix or a data frame containing numeric and factor columns; 
+        the predictors.
+    }
+    \item{sName}{
+        A numeric matrix or a data frame containing numeric and factor columns; 
+        the sensitive attributes.
+    }
+    \item{unfairness}{
+        A positive number in [0, 1], how unfair is the model allowed to be. 
+        A value of 0 means the model is completely fair, while a value of 1 means 
+        the model is not constrained to be fair at all.
+    }
 }
 
 \details{
@@ -55,7 +55,7 @@
 }
 
 \author{
-    S. Martha, A. Mittal, B. Ouattara, J. Tran, B. Zarate
+    S. Martha, A. Mittal, B. Ouattara, B. Zarate
 }
 
 \examples{
