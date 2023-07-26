@@ -3,29 +3,34 @@
 #fairml::nclm(response, predictors, sensitive, unfairness, covfun, lambda = 0, 
 #             save.auxiliary = FALSE)
 
-dsldNclm <- function (yName, xName, sName, unfairness, covfun, 
+dsldNclm <- function (data, yName, sName, unfairness, covfun, 
                      lambda = 0, save.auxiliary = FALSE) 
 {
+  if (!require('cccp')) install.packages('cccp'); library('cccp')
+
+  cc = data[complete.cases(data),]
+  r = cc[, yName]
+  p = cc[,!names(cc) %in% c(yName, sName)]
+  s = cc[, sName]
+
   # TODO: Add if condition to check if cccp package is installed or call getSuggestLib
-  fairml::nclm(response = yName, predictors = xName, 
-               sensitive = sName, unfairness = unfairness, covfun = covfun,
+  fairml::nclm(response = r, predictors = p, 
+               sensitive = s, unfairness = unfairness, covfun = covfun,
                lambda = lambda, save.auxiliary = save.auxiliary)
+  
 }
 
 
-# #Example 1
+# # Example 1
 # library(dsld)
 # library(fairml)
 # library(cccp)
-# data(communities.and.crime)
 
 # # short-hand variable names.
-# cc = communities.and.crime[complete.cases(communities.and.crime), ]
-# r = cc[, "ViolentCrimesPerPop"]
-# s = cc[, c("racepctblack", "PctForeignBorn")]
-# p = cc[, setdiff(names(cc), c("ViolentCrimesPerPop", names(s)))]
-
-# m = dsldNclm(r, p, s, 0.05)
+# data(communities.and.crime)
+# yName = "ViolentCrimesPerPop"
+# sName = c("racepctblack", "PctForeignBorn")
+# m = dsldNclm(communities.and.crime, yName, sName, 0.05)
 # summary(m)
 
 #Error: ‘there is no package called ‘cccp’
@@ -34,6 +39,7 @@ dsldNclm <- function (yName, xName, sName, unfairness, covfun,
 
 
 # #Example 2
+# NOT UPDATED EXAMPLE
 # library(dsld)
 # library(fairml)
 # library(cccp)

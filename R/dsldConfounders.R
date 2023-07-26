@@ -191,25 +191,24 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
     sGroups <- unique(data[[sName]])
 
     # get a lookup for every s level against every ylevel
-    freqLookup <- table(df[[sName]], df[[yName]])
-
+    freqLookup <- table(data[[sName]], data[[yName]])
     
     # convert to dataframe
     frequencies <- as.data.frame.matrix(freqLookup)
     sNameStr <- paste(sName, " Levels")
     names(frequencies) <- c(
-        sNameStr,
-        paste0("Frequency of ", unique(data[[yName]]))
+        # sNameStr,
+        paste0("Frequency of ", yGroups)
     )
 
-    # merge levels of sName into one row
-    uniqueSGroups <- data.frame(sName = unique(data[[sName]]))
-    names(uniqueSGroups) <- c(sNameStr)
-    frequencies <- merge(uniqueSGroups, frequencies, by = sNameStr,
-        all.x = TRUE)
+    # # merge levels of sName into one row
+    # uniqueSGroups <- data.frame(sName = unique(data[[sName]]))
+    # names(uniqueSGroups) <- c(sNameStr)
+    # frequencies <- merge(uniqueSGroups, frequencies, by = sNameStr,
+    #     all.x = TRUE)
 
-    # fill missing combination values with 0
-    frequencies[is.na(frequencies)] <- 0
+    # # fill missing combination values with 0
+    # frequencies[is.na(frequencies)] <- 0
 
     # return frequncies #
     return(frequencies)
