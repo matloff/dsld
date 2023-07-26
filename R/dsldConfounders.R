@@ -71,7 +71,7 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
     if (is.null(yName))
         yName <- makeYNames(data, 1)
     
-    sGroups <- levels(unique(data[, sName]))
+    numGroups <- length(levels(unique(data[, sName])))
     
     yNameStr <- names(data[yName])
     sNameStr <- names(data[sName])
@@ -79,35 +79,65 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
     filltype = 'none'
     if (fill) filltype = 'tozeroy'
     
-    fig <-
-      plotly::plot_ly(
-        type = 'scatter',
-        mode = 'lines',
-        fill = filltype
+    aval <- list()
+    for (step in 1:8) {
+      adjust <- .25 * step
+      dens <-
+        with(data, tapply(data[, yName], INDEX = data[, sName], density, adjust = adjust))
+      df <- data.frame(
+        x = unlist(lapply(dens, "[[", "x")),
+        y = unlist(lapply(dens, "[[", "y")),
+        group = rep(names(dens), each = length(dens[[1]]$x))
       )
-    
-    for (i in 1:length(sGroups)) {
-        den <- density(data[data[, sName] == sGroups[i],][, yName])
-    
-        fig <-
-            plotly::add_trace(
-                fig,
-                x = den$x,
-                y = den$y,
-                mode = 'lines',
-                name = sGroups[i]
-            )
+      
+      aval[[step]] <- list(
+        visible = FALSE,
+        name = paste0('adjust = ', adjust),
+        x =  df$x,
+        y =  df$y
+      )
     }
     
-    fig <- plotly::layout(
+    aval[4][[1]]$visible = TRUE
+    
+    
+    steps <- list()
+    fig <- plotly::plot_ly(type = 'scatter',
+                           mode = 'lines',
+                           fill = filltype,
+                           color = df$group)
+    for (i in 1:8) {
+      fig <-
+        plotly::add_lines(
+          fig,
+          x = aval[i][[1]]$x,
+          y = aval[i][[1]]$y,
+          visible = aval[i][[1]]$visible
+        )
+      
+      step <- list(args = list('visible', rep(FALSE, length(aval) * numGroups)),
+                   method = 'restyle', label = .25 * i)
+      step$args[[2]][1:numGroups + numGroups * i] = TRUE
+      steps[[i]] = step
+    }
+    
+    # add slider control to plot
+    fig <-
+      plotly::layout(
         fig,
+        sliders = list(list(
+          active = 3,
+          currentvalue = list(prefix = "Adjust: "),
+          steps = steps
+        )),
         title = paste("Density of", yNameStr, "by", sNameStr),
         xaxis = list(title = yNameStr),
         yaxis = list(title = "Density"),
         legend = list(title = list(text = sNameStr))
-    )
+      )
     
-    fig       
+    
+    fig
 }
 
 
