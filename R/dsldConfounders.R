@@ -14,7 +14,7 @@
 #' @param fill: whether or not to fill curve space, an R logical; defaults to
 #'      FALSE, not applicable to categorical data
 #'
-dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
+dsldConfounders <- function(data, sName = NULL) {
     # dispatch to appropriate auxiliary method
     for (i in 1:ncol(data)) {
         # if categorical
@@ -22,7 +22,7 @@ dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
             print(dsldFrequencyByS(data, colnames(data)[i], sName))
         # if numeric
         } else if (is.numeric(data[, i])) {
-            print(dsldDensityByS(data, colnames(data)[i], sName, fill))
+            print(dsldDensityByS(data, colnames(data)[i], sName))
         # throw error
         } else {
             stop("Neither categorical or numeric column, check dataframe")
@@ -51,97 +51,96 @@ dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
 #' @export
 #'
 dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
-    if (is.null(sName))
-        sName <- makeSName(data)
-    else if (!class(data[, sName]) %in% c("factor", "character"))
-        stop(
-            "sName should be of factor or character data type. Consider setting this as a yName instead"
-        )
-    
-    # for now, if theres no sName, this makes one so the function doesnt break
-    if (is.null(sName)) {
-        Group <- as.factor(rep(1, length(data[, 1])))
-        data <- cbind(data, Group)
-        sName <- length(data)
-    }
-    
-    # yNames <- a vector of 2 ints/strings that correspond to the columns to be used for
-    # the 2 axis on the graph. The user can specify the cols or
-    # yNames will be the first 2 columns that are of numeric or integer data type
-    if (is.null(yName))
-        yName <- makeYNames(data, 1)
-    
-    numGroups <- length(levels(unique(data[, sName])))
-    
-    yNameStr <- names(data[yName])
-    sNameStr <- names(data[sName])
-    
-    aval <- list()
-    for (step in 1:8) {
-      adjust <- .25 * step
-      dens <-
-        with(data, tapply(data[, yName], INDEX = data[, sName], density, adjust = adjust))
-      df <- data.frame(
-        x = unlist(lapply(dens, "[[", "x")),
-        y = unlist(lapply(dens, "[[", "y")),
-        group = rep(names(dens), each = length(dens[[1]]$x))
-      )
-      
-      aval[[step]] <- list(
-        visible = FALSE,
-        name = paste0('adjust = ', adjust),
-        x =  df$x,
-        y =  df$y
-      )
-    }
-    
-    aval[4][[1]]$visible = TRUE
-    
-    steps <- list()
-    fig <- plotly::plot_ly(type = 'scatter',
-                           mode = 'lines',
-                           color = df$group)
-    for (i in 1:8) {
-      fig <-
-        plotly::add_lines(
-          fig,
-          x = aval[i][[1]]$x,
-          y = aval[i][[1]]$y,
-          visible = aval[i][[1]]$visible
-        )
-      
-      step <- list(args = list('visible', rep(FALSE, length(aval) * numGroups)),
-                   method = 'restyle', label = .25 * i)
-      step$args[[2]][1:numGroups + numGroups * i] <- TRUE
-      steps[[i]] <- step
-    }
-    
-    buttons <- list(
-      list(method="restyle", args= list("fill", "none"), label="no fill"),
-      list(method="restyle", args= list("fill", "tozeroy"), label="fill")
+  if (is.null(sName))
+    sName <- makeSName(data)
+  else if (!class(data[, sName]) %in% c("factor", "character"))
+    stop(
+      "sName should be of factor or character data type. Consider setting this as a yName instead"
+    )
+  
+  # for now, if theres no sName, this makes one so the function doesnt break
+  if (is.null(sName)) {
+    Group <- as.factor(rep(1, length(data[, 1])))
+    data <- cbind(data, Group)
+    sName <- length(data)
+  }
+  
+  # yNames <- a vector of 2 ints/strings that correspond to the columns to be used for
+  # the 2 axis on the graph. The user can specify the cols or
+  # yNames will be the first 2 columns that are of numeric or integer data type
+  if (is.null(yName))
+    yName <- makeYNames(data, 1)
+  
+  numGroups <- length(levels(unique(data[, sName])))
+  
+  yNameStr <- names(data[yName])
+  sNameStr <- names(data[sName])
+  
+  aval <- list()
+  for (step in 1:8) {
+    adjust <- .25 * step
+    dens <-
+      with(data, tapply(data[, yName], INDEX = data[, sName], density, adjust = adjust))
+    df <- data.frame(
+      x = unlist(lapply(dens, "[[", "x")),
+      y = unlist(lapply(dens, "[[", "y")),
+      group = rep(names(dens), each = length(dens[[1]]$x))
     )
     
-    # add slider control to plot
+    aval[[step]] <- list(
+      visible = FALSE,
+      name = paste0('adjust = ', adjust),
+      x =  df$x,
+      y =  df$y
+    )
+  }
+  
+  aval[[4]]$visible = TRUE
+  
+  steps <- list()
+  fig <- plotly::plot_ly(type = 'scatter',
+                         mode = 'lines',
+                         color = df$group)
+  for (i in 1:8) {
     fig <-
-      plotly::layout(
+      plotly::add_lines(
         fig,
-        updatemenus = list(list(active = 0, x = 0, y = 1, 
-                                buttons=buttons)),
-        sliders = list(list(
-          active = 3,
-          currentvalue = list(prefix = "Adjust: "),
-          steps = steps
-        )),
-        title = paste("Density of", yNameStr, "by", sNameStr),
-        xaxis = list(title = yNameStr),
-        yaxis = list(title = "Density"),
-        legend = list(title = list(text = sNameStr))
+        x = aval[[i]]$x,
+        y = aval[[i]]$y,
+        visible = aval[[i]]$visible
       )
     
-    
-    fig
+    step <- list(args = list('visible', rep(FALSE, length(aval) * numGroups)),
+                 method = 'restyle', label = .25 * i)
+    step$args[[2]][1:numGroups + numGroups * i] <- TRUE
+    steps[[i]] <- step
+  }
+  
+  buttons <- list(
+    list(method="restyle", args= list("fill", "none"), label="no fill"),
+    list(method="restyle", args= list("fill", "tozeroy"), label="fill")
+  )
+  
+  # add slider control to plot
+  fig <-
+    plotly::layout(
+      fig,
+      updatemenus = list(list(active = 0, x = 0, y = 1, 
+                              buttons=buttons)),
+      sliders = list(list(
+        active = 3,
+        currentvalue = list(prefix = "Adjust: "),
+        steps = steps
+      )),
+      title = paste("Density of", yNameStr, "by", sNameStr),
+      xaxis = list(title = yNameStr),
+      yaxis = list(title = "Density"),
+      legend = list(title = list(text = sNameStr))
+    )
+  
+  
+  fig
 }
-
 
 # ----------------------- Auxiliary for Categorical ----------------------- #
 #' @examples
