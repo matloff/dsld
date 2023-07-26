@@ -4,15 +4,43 @@
 #               definition = "sp-komiyama", family = "binomial", lambda = 0,
 #               save.auxiliary = FALSE)
 
-dsldFgrrm <- function(yName, xName, sName, unfairness,
+
+#TODO: 
+# finalize variable names
+# Make wrapper accept str or double for yName
+# Complete examples after completing wrapper
+
+dsldFgrrm <- function(data, yName, xName, sName, unfairness,
                       definition = "sp-komiyama", family = "binomial", 
                       lambda = 0, save.auxiliary = FALSE)
 {
-  fairml::fgrrm(response = yName, predictors = xName, 
-                sensitive = sName, unfairness = unfairness,
+  if (!require('cccp')) install.packages('cccp'); library('cccp')
+  
+  cc = data[complete.cases(data),]
+  r = yName
+  p = cc[, xName]
+  s = cc[, sName]
+  
+  fairml::fgrrm(response = r, predictors = p, 
+                sensitive = s, unfairness = unfairness,
                 definition = definition, family = family, 
                 lambda = lambda, save.auxiliary = save.auxiliary)
 }
+
+
+
+# Example 1.1 --- Updated Example of 1.1
+library(survival)
+data(flchain)
+d = flchain
+r = cbind(time = flchain$futime + 1, status = flchain$death)#yName --- Turn this into a valid argument in function
+p = c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus", "chapter") #xName
+s = c("age", "sex") #sName
+m = dsldFgrrm(d, r, p, s, 0.05, family = "cox")
+
+
+
+
 
 # Example 1
 
@@ -29,6 +57,35 @@ dsldFgrrm <- function(yName, xName, sName, unfairness,
 # 
 # m = dsldFgrrm(r, p, s, 0.05, family = "cox")
 # summary(m)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
