@@ -30,13 +30,13 @@ dsldFgrrm <- function(data, yName, xName, sName, unfairness,
 
 
 # Example 1.1 --- Updated Example of 1.1
-library(survival)
-data(flchain)
-d = flchain
-r = cbind(time = flchain$futime + 1, status = flchain$death)#yName --- Turn this into a valid argument in function
-p = c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus", "chapter") #xName
-s = c("age", "sex") #sName
-m = dsldFgrrm(d, r, p, s, 0.05, family = "cox")
+# library(survival)
+# data(flchain)
+# d = flchain
+# r = cbind(time = flchain$futime + 1, status = flchain$death)#yName --- Turn this into a valid argument in function
+# p = c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus", "chapter") #xName
+# s = c("age", "sex") #sName
+# m = dsldFgrrm(d, r, p, s, 0.05, family = "cox")
 
 
 
