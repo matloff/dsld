@@ -50,7 +50,7 @@ dsldConfounders <- function(data, sName = NULL, fill = FALSE) {
 #'
 #' @export
 #'
-dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
+dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
     if (is.null(sName))
         sName <- makeSName(data)
     else if (!class(data[, sName]) %in% c("factor", "character"))
@@ -76,9 +76,6 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
     yNameStr <- names(data[yName])
     sNameStr <- names(data[sName])
     
-    filltype = 'none'
-    if (fill) filltype = 'tozeroy'
-    
     aval <- list()
     for (step in 1:8) {
       adjust <- .25 * step
@@ -100,11 +97,9 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
     
     aval[4][[1]]$visible = TRUE
     
-    
     steps <- list()
     fig <- plotly::plot_ly(type = 'scatter',
                            mode = 'lines',
-                           fill = filltype,
                            color = df$group)
     for (i in 1:8) {
       fig <-
@@ -117,14 +112,21 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL, fill = FALSE) {
       
       step <- list(args = list('visible', rep(FALSE, length(aval) * numGroups)),
                    method = 'restyle', label = .25 * i)
-      step$args[[2]][1:numGroups + numGroups * i] = TRUE
-      steps[[i]] = step
+      step$args[[2]][1:numGroups + numGroups * i] <- TRUE
+      steps[[i]] <- step
     }
+    
+    buttons <- list(
+      list(method="restyle", args= list("fill", "none"), label="no fill"),
+      list(method="restyle", args= list("fill", "tozeroy"), label="fill")
+    )
     
     # add slider control to plot
     fig <-
       plotly::layout(
         fig,
+        updatemenus = list(list(active = 0, x = 0, y = 1, 
+                                buttons=buttons)),
         sliders = list(list(
           active = 3,
           currentvalue = list(prefix = "Adjust: "),
