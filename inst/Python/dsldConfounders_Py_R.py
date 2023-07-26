@@ -24,7 +24,7 @@ rplotly is used to create a plotly widget to aid in displaying graph
 dsld    = importr("dsld")
 rplotly = importr("plotly")
 
-def dsldPyConfounders(data, sName = R_NULL, fill = False):
+def dsldPyConfounders(data, sName = R_NULL):
     # ************************** ARGUMENTS *******************************************
     
     # Data conversion handled by Utils function
@@ -49,9 +49,7 @@ def dsldPyConfounders(data, sName = R_NULL, fill = False):
         else:
             sName_r = sName
 
-    fill_r = robjects.BoolVector([fill])
-
-    result = dsld.dsldConfounders(r_data, sName_r, fill_r)
+    result = dsld.dsldConfounders(r_data, sName_r)
     
     # All necessary arguments are in R format at this point
     # ************************** END ARGUMENTS *******************************************
@@ -65,9 +63,9 @@ def dsldPyConfounders(data, sName = R_NULL, fill = False):
 #************************** OS SHELL FUNCTIONALITY *************************************
 # TODO: OS Shell functionality is INCOMPLETE
 if __name__ == "__main__":
-    cmd, data, sName, fill = sys.argv
+    cmd, data, sName = sys.argv
     data = pd.read_csv()
-    dsldPyConfounders(data, sName, bool(fill))
+    dsldPyConfounders(data, sName)
 #************************** END OS SHELL *******************************************
 
 '''
