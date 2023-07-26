@@ -76,20 +76,20 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
   yNameStr <- names(data[yName])
   sNameStr <- names(data[sName])
   
+  bw <- seq(.25,2,.25)
+  
   aval <- list()
-  for (step in 1:8) {
-    adjust <- .25 * step
+  for (i in 1:length(bw)) {
     dens <-
-      with(data, tapply(data[, yName], INDEX = data[, sName], density, adjust = adjust))
+      with(data, tapply(data[, yName], INDEX = data[, sName], density, adjust = bw[i]))
     df <- data.frame(
       x = unlist(lapply(dens, "[[", "x")),
       y = unlist(lapply(dens, "[[", "y")),
       group = rep(names(dens), each = length(dens[[1]]$x))
     )
     
-    aval[[step]] <- list(
+    aval[[i]] <- list(
       visible = FALSE,
-      name = paste0('adjust = ', adjust),
       x =  df$x,
       y =  df$y
     )
@@ -101,7 +101,7 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
   fig <- plotly::plot_ly(type = 'scatter',
                          mode = 'lines',
                          color = df$group)
-  for (i in 1:8) {
+  for (i in 1:length(bw)) {
     fig <-
       plotly::add_lines(
         fig,
@@ -111,7 +111,7 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
       )
     
     step <- list(args = list('visible', rep(FALSE, length(aval) * numGroups)),
-                 method = 'restyle', label = .25 * i)
+                 method = 'restyle', label = bw[i])
     step$args[[2]][1:numGroups + numGroups * i] <- TRUE
     steps[[i]] <- step
   }
