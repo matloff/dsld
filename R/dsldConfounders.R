@@ -39,7 +39,7 @@ dsldConfounders <- function(data, sName = NULL) {
 #' @examples
 #' library(dsld)
 #' data(svcensus)
-#' dsldDensityByS(svcensus)
+#' dsld::dsldDensityByS(svcensus, "wageinc", "educ")
 #'
 #' ::: Description :::
 #' @brief Graphs densities of a response variable, grouped by a sensitive
@@ -49,8 +49,6 @@ dsldConfounders <- function(data, sName = NULL) {
 #' @param data: A dataframe with 1 numerical column and a factor column
 #' @param yName: A name or index of the numerical column
 #' @param sName: A name or index of the factor column
-#' @param fill: A logical value determining if the graphed curve should be
-#'      filled in
 #'
 #' @export
 #'
@@ -82,8 +80,10 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
   
   bw <- seq(.25,4,.25)
   
+  # aval <- a list of the arguements of all the lines we're going to graph
   aval <- list()
   for (i in 1:length(bw)) {
+    # from plotly: creating a single group-separated density dataframe object to graph
     dens <-
       with(data, tapply(data[, yName], INDEX = data[, sName], density, adjust = bw[i]))
     df <- data.frame(
@@ -113,9 +113,11 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
         y = aval[[i]]$y,
         visible = aval[[i]]$visible
       )
-    
+    # if there are 3 groups in sName, and there are 8 bandwidths, we need to initally
+    # set all 24 graphs's visibility to false
     step <- list(args = list('visible', rep(FALSE, length(aval) * numGroups)),
                  method = 'restyle', label = bw[i])
+    # and then the correct 3 to true
     step$args[[2]][1:numGroups + numGroups * i] <- TRUE
     steps[[i]] <- step
   }
