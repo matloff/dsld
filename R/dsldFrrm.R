@@ -37,6 +37,7 @@ dsldFrrm <- function(data, yName, sName, unfairness,
 # data(law.school.admissions)
 # yName = "ugpa"
 # sName = c("age", "race1")
+
 # m = dsldFrrm(law.school.admissions, yName, sName, 0.05)
 # summary(m)
 

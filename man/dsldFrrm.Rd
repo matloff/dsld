@@ -67,7 +67,12 @@
     the model for each pair of observations with different values of the sensitive 
     attributes and different responses. Users may also pass a function via the 
     definition argument to plug custom fairness definitions. This function should 
-    have signature function(model, y, S, U, family) and return an array with an element called "value" (optionally along with others). The arguments will contain the model fitted for the current level of fairness (model), the sanitized response variable (y), the design matrix for the sanitized sensitive attributes (S), the design matrix for the sanitized decorrelated predictors (U) and the character string identifying the family the model belongs to (family).
+    have signature function(model, y, S, U, family) and return an array with an 
+    element called "value" (optionally along with others). The arguments will 
+    contain the model fitted for the current level of fairness (model), the 
+    sanitized response variable (y), the design matrix for the sanitized sensitive 
+    attributes (S), the design matrix for the sanitized decorrelated predictors (U) 
+    and the character string identifying the family the model belongs to (family).
 
     The algorithm works like this:
         regresses the predictors against the sensitive attributes;
@@ -104,27 +109,32 @@
 
 \examples{
     # Example 1
+    # Load the required libraries
     library(dsld)
     library(fairml)
+
+    # Define the arguments
     data(communities.and.crime)
-    # short-hand variable names.
-    cc = communities.and.crime[complete.cases(communities.and.crime), ]
-    r = cc[, "ViolentCrimesPerPop"]
-    s = cc[, c("racepctblack", "PctForeignBorn")]
-    p = cc[, setdiff(names(cc), c("ViolentCrimesPerPop", names(s)))]
-    m = dsldFrrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+    yName = "ViolentCrimesPerPop"
+    sName = c("racepctblack", "PctForeignBorn")
+
+    # Call the function
+    m = dsldFrrm(communities.and.crime, yName, sName, 0.05)
     summary(m)
 
     # Example 2
+    # Load the required libraries
     library(dsld)
     library(fairml)
+
+    # Define the arguments
     data(law.school.admissions)
-    # short-hand variable names.
-    ll = law.school.admissions
-    r = ll[, "ugpa"]
-    s = ll[, c("age", "race1")]
-    p = ll[, setdiff(names(ll), c("ugpa", "age", "race1"))]
-    m = dsldFrrm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+    yName = "ugpa"
+    sName = c("age", "race1")
+
+    # Call the function
+    m = dsldFrrm(law.school.admissions, yName, sName, 0.05)
     summary(m)
+
 }
 
