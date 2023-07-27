@@ -36,18 +36,14 @@ dsldNclm <- function (data, yName, sName, unfairness, covfun,
 #solution: Install 'cccp' through CRAN
 
 
-
 # #Example 2
-# NOT UPDATED EXAMPLE
 # library(dsld)
 # library(fairml)
 # library(cccp)
-# data(law.school.admissions)
 
-# # short-hand variable names.
-# ll = law.school.admissions
-# r = ll[, "ugpa"]
-# s = ll[, c("age", "race1")]
-# p = ll[, setdiff(names(ll), c("ugpa", "age", "race1"))]
-# m = dsldNclm(r, p, s, 0.05)
+# data(law.school.admissions)
+# yName = "ugpa"
+# sName = c("age", "race1")
+# m = dsldNclm(law.school.admissions, yName, sName, 0.05)
 # summary(m)
+

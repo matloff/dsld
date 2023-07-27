@@ -27,9 +27,19 @@ dsldFgrrm <- function(data, yName, xName, sName, unfairness,
                 lambda = lambda, save.auxiliary = save.auxiliary)
 }
 
+# IN PROGRESS
+# library(survival)
+# data(flchain)
+
+# yName = cbind(time = flchain$futime + 1, status = flchain$death)
+# xName = c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus", "chapter")
+# sName = c("age", "sex")
+# m = dsldFgrrm(flchain, yName, xName, sName, 0.05, family = "cox")
+# summary(m)
 
 
-# Example 1.1 --- Updated Example of 1.1
+#TODO: FIX EXAMPLE PRODUCES AN ERROR
+# Example 1.1 --- Updated Example of 1.1 
 # library(survival)
 # data(flchain)
 # d = flchain
