@@ -80,7 +80,7 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
   yNameStr <- names(data[yName])
   sNameStr <- names(data[sName])
   
-  bw <- seq(.25,2,.25)
+  bw <- seq(.25,4,.25)
   
   aval <- list()
   for (i in 1:length(bw)) {
