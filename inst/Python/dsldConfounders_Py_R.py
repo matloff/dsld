@@ -69,16 +69,19 @@ if __name__ == "__main__":
 #************************** END OS SHELL *******************************************
 
 '''
-Need to install.packages("plotly") in R
-pip install IPython
+# Need to install.packages("plotly") in R
+# Need to install Python's IPython
+#     through the following command (enter in terminal): pip install IPython
     python
     from dsldConfounders_Py_R import dsldPyConfounders
     import rpy2.robjects as robjects
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
-    dsldPyConfounders(data)
+    dsldPyConfounders(data, "educ")
 
-Other Examples:
-    from dsldConfounders_Py_R import dsldPyConfounders;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyConfounders(data)
+# Other Examples:
+    from dsldConfounders_Py_R import dsldPyConfounders;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyConfounders(data, "educ")
+    
+    # Below example doesn't work without the csv file downloaded onto user's machine
     from dsldConfounders_Py_R import dsldPyConfounders;import pandas as pd;data = pd.read_csv('../../data/svcensusFixed.csv');dsldPyConfounders(data)
 '''

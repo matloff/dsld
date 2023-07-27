@@ -7,16 +7,12 @@
 }
 
 \usage{
-    dsldConfounders <- function(data, sName = NULL)
+    dsldConfounders(data, sName = NULL)
 }
 
 \arguments{
     \item{data}{
         dataframe with labeled column names
-    }
-    \item{yName}{
-        as in qeML functions, predictive variable; should be a character or
-        vector of column names
     }
     \item{sName}{
         name of the sensitive variable column, an R factor
@@ -24,10 +20,12 @@
 }
 
 \author{
-    T. Abdullah, Arjun A., Jonathan T.
+    T. Abdullah, A. Ashok, J. Tran
 }
 
 \examples{
-    
+    # Example 1
+    data(svcensus)
+    dsldConfounders(svcensus, "educ")
 }
 
