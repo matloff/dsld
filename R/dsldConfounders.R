@@ -47,17 +47,17 @@ dsldConfounders <- function(data, sName = NULL) {
 #'
 #' ::: Arguments :::
 #' @param data: A dataframe with 1 numerical column and a factor column
-#' @param yName: A name or index of the numerical column
+#' @param cName: A name or index of the numerical column
 #' @param sName: A name or index of the factor column
 #'
 #' @export
 #'
-dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
+dsldDensityByS <- function(data, cName = NULL, sName = NULL) {
   if (is.null(sName))
     sName <- makeSName(data)
   else if (!class(data[, sName]) %in% c("factor", "character"))
     stop(
-      "sName should be of factor or character data type. Consider setting this as a yName instead"
+      "sName should be of factor or character data type. Consider setting this as a cName instead"
     )
   
   # for now, if theres no sName, this makes one so the function doesnt break
@@ -67,15 +67,15 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
     sName <- length(data)
   }
   
-  # yNames <- a vector of 2 ints/strings that correspond to the columns to be used for
+  # cNames <- a vector of 2 ints/strings that correspond to the columns to be used for
   # the 2 axis on the graph. The user can specify the cols or
-  # yNames will be the first 2 columns that are of numeric or integer data type
-  if (is.null(yName))
-    yName <- makeYNames(data, 1)
+  # cNames will be the first 2 columns that are of numeric or integer data type
+  if (is.null(cName))
+    cName <- makeyNames(data, 1)
   
   numGroups <- length(levels(unique(data[, sName])))
   
-  yNameStr <- names(data[yName])
+  cNameStr <- names(data[cName])
   sNameStr <- names(data[sName])
   
   bw <- seq(.25, 4, .25)
@@ -85,7 +85,7 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
   for (i in 1:length(bw)) {
     # from plotly: creating a single group-separated density dataframe object to graph
     dens <-
-      with(data, tapply(data[, yName], INDEX = data[, sName], density, adjust = bw[i]))
+      with(data, tapply(data[, cName], INDEX = data[, sName], density, adjust = bw[i]))
     df <- data.frame(
       x = unlist(lapply(dens, "[[", "x")),
       y = unlist(lapply(dens, "[[", "y")),
@@ -150,8 +150,8 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
         currentvalue = list(prefix = "Adjust: "),
         steps = steps
       )),
-      title = paste("Density of", yNameStr, "by", sNameStr),
-      xaxis = list(title = yNameStr),
+      title = paste("Density of", cNameStr, "by", sNameStr),
+      xaxis = list(title = cNameStr),
       yaxis = list(title = "Density"),
       legend = list(title = list(text = sNameStr))
     )
@@ -172,12 +172,12 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
 #'
 #' ::: Arguments :::
 #' @param data: A dataframe with 1 numerical column and a factor column
-#' @param yName: A name or index of the categorical column
+#' @param cName: A name or index of the categorical column
 #' @param sName: A name or index of the factor column
 #'
 #' @export
 #'
-dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
+dsldFrequencyByS <- function(data, cName = NULL, sName = NULL) {
     comment <- "
     # ensure libraries #
     getSuggestedLib('gt')
@@ -196,20 +196,20 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
     } else if (!class(data[, sName]) %in% c("factor", "character")) {
         stop(paste(
             "sName should be of factor or character data type. Consider",
-            " setting this as a yName instead"
+            " setting this as a cName instead"
         ))
     }
     
     # check missing response variable
-    if (is.null(yName)) {
-        yName <- makeYNames(data, 1)
+    if (is.null(cName)) {
+        cName <- makeyNames(data, 1)
     }
 
 
     # -------- Iterative Approach I -------- #
     # # sensitive variable frequencies #
     # # divide by level
-    # yGroups <- levels(factor(data[[yName]]))
+    # yGroups <- levels(factor(data[[cName]]))
     # sGroups <- levels(factor(data[[sName]]))
 
     # # setup dataframe
@@ -224,7 +224,7 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
     #     for (y in seq_along(yGroups)) {
     #         # add frequency
     #         freq <- sum(data[[sName]] == sGroups[s] &&
-    #             data[[yName]] == yGroups[y])
+    #             data[[cName]] == yGroups[y])
     #         frequencies[s, y] <- freq
     #     }
     # }
@@ -236,11 +236,11 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
     # -------- Efficient Approach II -------- #
     # sensitive variable frequencies #
     # unique levels to ensure order
-    yGroups <- unique(data[[yName]])
+    yGroups <- unique(data[[cName]])
     sGroups <- unique(data[[sName]])
 
     # get a lookup for every s level against every ylevel
-    freqLookup <- table(data[[sName]], data[[yName]])
+    freqLookup <- table(data[[sName]], data[[cName]])
     
     # convert to dataframe
     frequencies <- as.data.frame.matrix(freqLookup)
@@ -265,6 +265,6 @@ dsldFrequencyByS <- function(data, yName = NULL, sName = NULL) {
 
 # library(dsld)
 # data(svcensus)
-# dsldFrequencyByS(svcensus, yName = "educ", sName = "gender")
+# dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 
 
