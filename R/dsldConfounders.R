@@ -16,13 +16,17 @@
 #'
 dsldConfounders <- function(data, sName = NULL) {
     # dispatch to appropriate auxiliary method
-    for (i in 1:ncol(data)) {
+    for (i in 1:seq_len(ncol(data))) {
         # if categorical
         if (is.factor(data[, i])) {
             print(dsldFrequencyByS(data, colnames(data)[i], sName))
+            cat("Press <ENTER> to view next density graph / frequency dataframe...")
+            temp_input <- readline()
         # if numeric
         } else if (is.numeric(data[, i])) {
             print(dsldDensityByS(data, colnames(data)[i], sName))
+            cat("Press <ENTER> to view next density graph / frequency dataframe...")
+            temp_input <- readline()
         # throw error
         } else {
             stop("Neither categorical or numeric column, check dataframe")
