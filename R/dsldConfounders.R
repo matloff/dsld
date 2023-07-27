@@ -16,7 +16,7 @@
 #'
 dsldConfounders <- function(data, sName = NULL) {
     # dispatch to appropriate auxiliary method
-    for (i in 1:seq_len(ncol(data))) {
+    for (i in 1:(ncol(data))) {
         # if categorical
         if (is.factor(data[, i])) {
             print(dsldFrequencyByS(data, colnames(data)[i], sName))
