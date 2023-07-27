@@ -78,7 +78,7 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
   yNameStr <- names(data[yName])
   sNameStr <- names(data[sName])
   
-  bw <- seq(.25,4,.25)
+  bw <- seq(.25, 4, .25)
   
   # aval <- a list of the arguements of all the lines we're going to graph
   aval <- list()
@@ -92,11 +92,9 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
       group = rep(names(dens), each = length(dens[[1]]$x))
     )
     
-    aval[[i]] <- list(
-      visible = FALSE,
-      x =  df$x,
-      y =  df$y
-    )
+    aval[[i]] <- list(visible = FALSE,
+                      x =  df$x,
+                      y =  df$y)
   }
   
   aval[[4]]$visible = TRUE
@@ -107,32 +105,46 @@ dsldDensityByS <- function(data, yName = NULL, sName = NULL) {
                          color = df$group)
   for (i in 1:length(bw)) {
     fig <-
-      plotly::add_lines(
-        fig,
-        x = aval[[i]]$x,
-        y = aval[[i]]$y,
-        visible = aval[[i]]$visible
-      )
+      plotly::add_lines(fig,
+                        x = aval[[i]]$x,
+                        y = aval[[i]]$y,
+                        visible = aval[[i]]$visible)
     # if there are 3 groups in sName, and there are 8 bandwidths, we need to initally
     # set all 24 graphs's visibility to false
-    step <- list(args = list('visible', rep(FALSE, length(aval) * numGroups)),
-                 method = 'restyle', label = bw[i])
+    step <-
+      list(
+        args = list('visible', rep(FALSE, length(aval) * numGroups)),
+        method = 'restyle',
+        label = bw[i]
+      )
     # and then the correct 3 to true
     step$args[[2]][1:numGroups + numGroups * i] <- TRUE
     steps[[i]] <- step
   }
   
   buttons <- list(
-    list(method="restyle", args= list("fill", "none"), label="no fill"),
-    list(method="restyle", args= list("fill", "tozeroy"), label="fill")
+    list(
+      method = "restyle",
+      args = list("fill", "none"),
+      label = "no fill"
+    ),
+    list(
+      method = "restyle",
+      args = list("fill", "tozeroy"),
+      label = "fill"
+    )
   )
   
   # add slider control to plot
   fig <-
     plotly::layout(
       fig,
-      updatemenus = list(list(active = 0, x = 0, y = 1, 
-                              buttons=buttons)),
+      updatemenus = list(list(
+        active = 0,
+        x = 0,
+        y = 1,
+        buttons = buttons
+      )),
       sliders = list(list(
         active = 3,
         currentvalue = list(prefix = "Adjust: "),
