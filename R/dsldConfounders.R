@@ -16,10 +16,10 @@
 #'
 dsldConfounders <- function(data, sName) {
     # Error checking
-    if (sName == NULL) {
+    if (is.null(sName)) {
         stop("sName must be provided as a string of a column name")
     }
-    
+
     # dispatch to appropriate auxiliary method
     for (i in 1:(ncol(data))) {
         # if categorical
@@ -195,10 +195,7 @@ dsldFrequencyByS <- function(data, cName = NULL, sName = NULL) {
 
     # force missing vars #
     # check sensitive variable is missing
-    if (is.null(sName)) {
-        sName <- makeSName(data)
-    # check sensitive variable type
-    } else if (!class(data[, sName]) %in% c("factor", "character")) {
+    if (!class(data[, sName]) %in% c("factor", "character")) {
         stop(paste(
             "sName should be of factor or character data type. Consider",
             " setting this as a cName instead"
@@ -207,7 +204,7 @@ dsldFrequencyByS <- function(data, cName = NULL, sName = NULL) {
     
     # check missing response variable
     if (is.null(cName)) {
-        cName <- makeyNames(data, 1)
+        stop("null cName")
     }
 
 
