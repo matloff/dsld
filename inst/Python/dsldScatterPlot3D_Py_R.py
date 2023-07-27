@@ -174,8 +174,9 @@ if __name__ == "__main__":
 #************************** END OS SHELL *******************************************
 
 '''
-Need to install.packages("plotly") in R
-pip install IPython
+# Need to install.packages("plotly") in R
+# Need to install Python's IPython
+# through the following command (enter in terminal): pip install IPython
     python
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
     import rpy2.robjects as robjects
@@ -184,7 +185,7 @@ pip install IPython
     dsldPyScatterPlot3D(data, "sex")
     dsldPyScatterPlot3D(data, 4)
 
-Other Examples:
+# Other Examples:
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['occ', 'wageinc', 'wkswrkd'])
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['3', '5', '6'], ['1', '2'], "Frequency", "2", "10000", ['80', '90'])
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, xlim = ['80', '90'])

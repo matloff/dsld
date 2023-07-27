@@ -71,7 +71,7 @@ if __name__ == "__main__":
 '''
 # Need to install.packages("plotly") in R
 # Need to install Python's IPython
-#     through the following command (enter in terminal): pip install IPython
+# through the following command (enter in terminal): pip install IPython
     python
     from dsldConfounders_Py_R import dsldPyConfounders
     import rpy2.robjects as robjects
