@@ -14,7 +14,12 @@
 #' @param fill: whether or not to fill curve space, an R logical; defaults to
 #'      FALSE, not applicable to categorical data
 #'
-dsldConfounders <- function(data, sName = NULL) {
+dsldConfounders <- function(data, sName) {
+    # Error checking
+    if (sName == NULL) {
+        stop("sName must be provided as a string of a column name")
+    }
+    
     # dispatch to appropriate auxiliary method
     for (i in 1:(ncol(data))) {
         # if categorical

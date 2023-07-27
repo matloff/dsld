@@ -24,7 +24,7 @@ rplotly is used to create a plotly widget to aid in displaying graph
 dsld    = importr("dsld")
 rplotly = importr("plotly")
 
-def dsldPyConfounders(data, sName = R_NULL):
+def dsldPyConfounders(data, sName):
     # ************************** ARGUMENTS *******************************************
     
     # Data conversion handled by Utils function
@@ -43,11 +43,12 @@ def dsldPyConfounders(data, sName = R_NULL):
     elif type(sName) == int:
         sName_r = robjects.IntVector([sName])    # Convert number to R integer vector
     else:
-        if sName != R_NULL:
+        if sName != None:
             print("ERROR: sName needs to be a string or integer. You Entered: ", sName)
-            exit(1)
+            exit(ERROR)
         else:
-            sName_r = sName
+            print('Error: sName needs to be a string or integer. It cannot be null')
+            exit(ERROR)
 
     result = dsld.dsldConfounders(r_data, sName_r)
     
