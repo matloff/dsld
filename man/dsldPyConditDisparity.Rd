@@ -1,7 +1,7 @@
 \name{dsldPyConditDisparity}
 \alias{dsldPyConditDisparity}
 
-\title{DSLDPyConditDisparity}
+\title{dsldPyConditDisparity}
 
 \description{
     This function, meant for Python users, uses the rpy2 library to call the R 
@@ -82,7 +82,7 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10. It does not work on linux
+    The usage of this function requires Python 3.10. It might not work on linux
     machines.
 }    
 

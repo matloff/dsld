@@ -1,7 +1,7 @@
 \name{dsldPyTakeALookAround}
 \alias{dsldPyTakeALookAround}
 
-\title{DSLDPyTakeALookAround}
+\title{dsldPyTakeALookAround}
 
 \description{
     This function, meant for Python users, uses the rpy2 library to call the R 
@@ -50,8 +50,8 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10 and rpy2. It does not work on
-    linux machines.
+    The usage of this function requires Python 3.10 and rpy2. It might not work 
+    on linux machines.
 }    
 
 \note{ 

@@ -1,7 +1,7 @@
 \name{dsldPyLinear}
 \alias{dsldPyLinear}
 
-\title{DSLDPyLinear}
+\title{dsldPyLinear}
 
 \description{
     This function, meant for Python users, uses the rpy2 library to call the R 
@@ -64,7 +64,8 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10.
+    The usage of this function requires Python 3.10. It might not work on linux
+    machines.
 }    
 
 \note{ 

@@ -1,7 +1,7 @@
 \name{dsldPyScatterPlot3D}
 \alias{dsldPyScatterPlot3D}
 
-\title{DSLDPyScatterPlot3D}
+\title{dsldPyScatterPlot3D}
 
 \description{
     This function, meant for Python users, uses the rpy2 library to call the R 
@@ -98,7 +98,8 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10, rpy2, plotly, and IPython.
+    The usage of this function requires Python 3.10, rpy2, plotly, and IPython. 
+    It might not work on linux machines.
 }    
 
 \note{ 
