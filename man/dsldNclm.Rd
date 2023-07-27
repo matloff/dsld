@@ -88,35 +88,37 @@
 }
 
 \examples{
+    # NOTE: if the ERROR: ‘there is no package called ‘cccp’ appears
+    #       Solution: Install 'cccp' through CRAN
+
     # Example 1
+    # Load the required libraries
     library(dsld)
     library(fairml)
     library(cccp)
-    data(communities.and.crime)
-    # short-hand variable names.
-    cc = communities.and.crime[complete.cases(communities.and.crime), ]
-    r = cc[, "ViolentCrimesPerPop"]
-    s = cc[, c("racepctblack", "PctForeignBorn")]
-    p = cc[, setdiff(names(cc), c("ViolentCrimesPerPop", names(s)))]
 
-    m = dsldNclm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+    # Define the arguments
+    data(communities.and.crime)
+    yName = "ViolentCrimesPerPop"
+    sName = c("racepctblack", "PctForeignBorn")
+
+    # Call the function
+    m = dsldNclm(communities.and.crime, yName, sName, 0.05)
     summary(m)
 
-    #Error: ‘there is no package called ‘cccp’
-    #solution: Install 'cccp' through CRAN
-
     # Example 2
+    # Load the required libraries
     library(dsld)
     library(fairml)
     library(cccp)
-    data(law.school.admissions)
 
-    # short-hand variable names.
-    ll = law.school.admissions
-    r = ll[, "ugpa"]
-    s = ll[, c("age", "race1")]
-    p = ll[, setdiff(names(ll), c("ugpa", "age", "race1"))]
-    m = dsldNclm(response = r, sensitive = s, predictors = p, unfairness = 0.05)
+     # Define the arguments
+    data(law.school.admissions)
+    yName = "ugpa"
+    sName = c("age", "race1")
+
+    # Call the function
+    m = dsldNclm(law.school.admissions, yName, sName, 0.05)
     summary(m)
 }
 

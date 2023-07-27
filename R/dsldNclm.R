@@ -20,15 +20,15 @@ dsldNclm <- function (data, yName, sName, unfairness, covfun,
 }
 
 
-# # Example 1
+# Example 1
 # library(dsld)
 # library(fairml)
 # library(cccp)
 
-# # short-hand variable names.
 # data(communities.and.crime)
 # yName = "ViolentCrimesPerPop"
 # sName = c("racepctblack", "PctForeignBorn")
+
 # m = dsldNclm(communities.and.crime, yName, sName, 0.05)
 # summary(m)
 
@@ -44,6 +44,7 @@ dsldNclm <- function (data, yName, sName, unfairness, covfun,
 # data(law.school.admissions)
 # yName = "ugpa"
 # sName = c("age", "race1")
+
 # m = dsldNclm(law.school.admissions, yName, sName, 0.05)
 # summary(m)
 
