@@ -13,7 +13,6 @@ dsldNclm <- function (data, yName, sName, unfairness, covfun,
   p = cc[,!names(cc) %in% c(yName, sName)]
   s = cc[, sName]
 
-  # TODO: Add if condition to check if cccp package is installed or call getSuggestLib
   fairml::nclm(response = r, predictors = p, 
                sensitive = s, unfairness = unfairness, covfun = covfun,
                lambda = lambda, save.auxiliary = save.auxiliary)

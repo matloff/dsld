@@ -3,31 +3,37 @@
 #fairml::frrm(response, predictors, sensitive, unfairness,
 #     definition = "sp-komiyama", lambda = 0, save.auxiliary = FALSE)
 
-dsldFrrm <- function(yName, xName, sName, unfairness,
+dsldFrrm <- function(data, yName, sName, unfairness,
                      definition = "sp-komiyama", lambda = 0, 
                      save.auxiliary = FALSE) 
 {
-  fairml::frrm(response = yName, predictors = xName, 
-               sensitive = sName, unfairness = unfairness, 
+  cc = data[complete.cases(data), ]
+  r = cc[, yName]
+  p = cc[,!names(cc) %in% c(yName, sName)]
+  s = cc[, sName]
+
+  fairml::frrm(response = r, predictors = p, 
+               sensitive = s, unfairness = unfairness, 
                definition = definition, lambda = lambda, 
                save.auxiliary = save.auxiliary)
 }
 
 # Example 1
+# library(dsld)
+# library(fairml)
 
 # data(communities.and.crime)
-# 
-# # short-hand variable names.
-# cc = communities.and.crime[complete.cases(communities.and.crime), ]
-# r = cc[, "ViolentCrimesPerPop"]
-# s = cc[, c("racepctblack", "PctForeignBorn")]
-# p = cc[, setdiff(names(cc), c("ViolentCrimesPerPop", names(s)))]
-# 
-# m = dsldFrrm(r, p, s, 0.05)
+# yName = "ViolentCrimesPerPop"
+# sName = c("racepctblack", "PctForeignBorn")
+
+# m = dsldFrrm(communities.and.crime, yName, sName, 0.05)
 # summary(m)
 
-# Example 2
 
+# Example 2
+# EXAMPLE NOT UPDATED 
+# library(dsld)
+# library(fairml)
 # data(law.school.admissions)
 
 # # short-hand variable names.
