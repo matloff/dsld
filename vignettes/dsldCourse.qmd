@@ -17,14 +17,18 @@ format:
      toc: true
 ---
 
-![](WageIncByGender.png){width=85%}
+```{r}  
+library(dsld)
+data(pef)
+dsldDensityByS(pef,'wageinc','educ','plot',fill=TRUE)
+```
 
 # Overview
 
-Discrimination is one of the key social issues, in the US and in a
-number of other countries.  There is lots of available data with which
-one might investigate possible discrimination.  But how might such
-investigations be conducted?
+Discrimination is a key social issue in the US and in a number of other
+countries.  There is lots of available data with which one might
+investigate possible discrimination.  But how might such investigations
+be conducted?
 
 Our **dsld** package provides both graphical and analytical tools
 for this purpose.  We see it as widely applicable; here are just a few
@@ -52,25 +56,27 @@ intuition, is given in Appendix A.
 
 To set the stage, consider the following:
 
-**UC Berkeley discrimination claims **
+## UC Berkeley discrimination claims 
 
 ![](SatherGate.jpg){width=15%}
 
 
 UC Berkeley was accused of discriminating against female applicants
 for graduate school, and indeed the overall acceptance rate for women
-was lower than that for men.  However, upon breaking the data down
+was lower than that for men.  This seemed odd, given Berkeley's liberal
+reputation.
+
+However, upon breaking the data down
 [This data is included in R, as the built-in dataset **UCBAdmissions**.]{.column-margin}
 according to the program students were applying to, it was found that in
 every department, the female acceptance rate *within that department*
-was either higher than the male rate or of similar value.  The problem:
+was either higher than the male rate or of similar level.  The problem:
 women were applying to more selective programs, causing their overall
 rate to below that of men.
 
+## US Census data
 
-**US Census data**
-
-![](USCensus.png){width=15%}
+![](USCensus.png){width=25%}
 
 The **pef** dataset is a subset of US census data from back in 2000,
 focusing on six engineering occupations.  [Included here in the **dsld**
@@ -81,7 +87,7 @@ that some occupations pay more than others, and that men and women are
 not distributed evenly among the occupations, there still is a gender
 pay gap, of about 16%.
 
-*Commonality:*
+## Commonality
 
 In both examples, we have an outcome variable Y of interest--acceptance
 rate and wage income--and a sensitive variable S, which was gender in
@@ -90,14 +96,20 @@ mean Y for each gender was an oversimplication, due to a possible
 *confounder* C--department in the first example, occupation in the
 second.  Failure to take into account confounders (there can be more
 than one, and usually are so) can lead to spurious "relations" between S
-and Y.  Let's refer to such problems as *accounting for confounders,*
-or *adjusting for confounders*; or more succinctly, since these are
-classical statistics applications, we'll just refer to them as
-*statistics problems.*.
+and Y.  
 
-Now consider a different kind of example.
+::: {.callout-note}
+### Confounder Adjustment Problems
 
-**COMPAS recidivism data**
+So, in general, we wish to investigate the impact of a sensitive
+variable S on an outcome variable Y, but *accounting for confounders* C.
+Let's call them "confounder adjustment" problems.
+
+:::
+
+Now contrast the above examples with a different kind:
+
+## COMPAS recidivism data
 
 COMPAS is a commercial machine learning software tool for aiding judges
 in to predict recidivism by those convicted of crimes.  A 2016 [**Pro
@@ -106,28 +118,41 @@ article](https://www.propublica.org/article/machine-bias-risk-assessments-in-cri
 investigated, finding  the tool to be racially biased; African-American
 defendants tended to be given harsher ratings--i.e. higher estimated
 probabilities of recidivism--than similarly situated white defendants.
-Assuming that to be the case (which the firm Northpointe that developed
-COMPAS denies), how can the analysis be fixed?  A key point is that any
-remedy must not only avoid using race directly, but must also minimize
-the impact of variables O that are separate from race but still
-correlated with it, known as *proxies*.  If, say, educational attainment
-is correlated with race, its inclusion in our analysis will mean that
-race is still playing a role in our analysis after all.  We wish to
-predict Y, without using S, and making only limited use of the O
-variables.
 
-## Two kinds of discrimination scenarios 
+Northpointe, the firm that developed COMPAS, [disagrees with the *Pro
+Publica*
+analysis](https://www.equivant.com/response-to-propublica-demonstrating-accuracy-equity-and-predictive-parity/),
+and we are not supporting either side here.  But if the COMPAS tool were
+in fact biased, how could the analysis be fixed?  
+
+**A key point is that any remedy must not only avoid using race directly,
+but must also minimize the impact of variables O that are separate from
+race but still correlated with it, known as *proxies*.**  If, say,
+educational attainment is correlated with race, its inclusion in our
+analysis will mean that race is still playing a role in our analysis
+after all.  
+
+::: {.callout-note}
+### Fair ML Problems
+
+Thus our goal is to predict the outcome variable Y, without 
+using the sensitive variable S, while making only
+limited use of the proxy variables O.
+
+:::
+
+# Two kinds of discrimination analyses 
 
 This COMPAS example falls in the category of *fairness in machine learning ML*.
 
 Note the difference between accounting for confounders on the one hand,
 and fair ML on the other.  Here is a side-by-side comparison:
 
-  aspect      statistics              fair ML
+  aspect      confounder adjustment   fair ML
   ----------- ----------------------- ------------------------------------
   goal        estimate an effect      predict an outcome
   harm        comes from society      comes from an algorithm
-  side info   adjust for covariates   use proxies but limit their impact
+  side info   adjust for covariates   limit impact of proxies 
 
 
 # Format of this tutorial
