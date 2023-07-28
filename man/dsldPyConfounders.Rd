@@ -17,7 +17,7 @@
 }
 
 \usage{
-    dsldPyConfounders(data, sName)
+    dsldPyConfounders(data, sName, graphType, fill)
 }
 
 \arguments{
@@ -31,6 +31,15 @@
     \item{sName}{
         Column number for the grouping variable, if any (if none, all the data 
         is treated as a single group); vector or factor.
+    }
+    \item{graphType}{
+        either "plot" or "plotly".
+        "plot" : static graphs are made with R's default plot() function. 
+        "plotly" : interactable graphs are made with the plotly package.
+    }
+    \item{fill}{
+        only applicable to graphType = "plot" case. Setting to true will color
+        each line down to the x-axis.
     }
 }
 
@@ -67,15 +76,12 @@
     # run through the OS Shell Prompt instead, you have to enter the arguments 
     # in their proper order. See the above note for more information.
 
-    # Example 1: OS Shell Prompt
-    python dsldConfounders_Py_R.py ../../data/svcensusFixed.csv 10 age,wageinc,wkswrkd gender maxdens vert 50 250 -1 False
-
-    # Example 2: Python Shell Prompt
+    # Example 1: Python Shell Prompt
     python # Open Python shell prompt
     from dsldConfounders_Py_R import dsldPyConfounders
     import rpy2.robjects as robjects
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
-    dsldPyConfounders(data, "educ")
+    dsldPyConfounders(data, "educ", "plot")
 }
 

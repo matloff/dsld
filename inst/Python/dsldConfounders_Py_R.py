@@ -108,11 +108,8 @@ if __name__ == "__main__":
     import rpy2.robjects as robjects
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
-    dsldPyConfounders(data, "educ")
+    dsldPyConfounders(data, "educ", "plot")
 
 # Other Examples:
-    from dsldConfounders_Py_R import dsldPyConfounders;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyConfounders(data, "educ")
-    
-    # Below example doesn't work without the csv file downloaded onto user's machine
-    from dsldConfounders_Py_R import dsldPyConfounders;import pandas as pd;data = pd.read_csv('../../data/svcensusFixed.csv');dsldPyConfounders(data)
+    from dsldConfounders_Py_R import dsldPyConfounders;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyConfounders(data, "educ", "plot")
 '''
