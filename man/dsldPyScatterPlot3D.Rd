@@ -144,6 +144,7 @@
     %insert here
 
     # Example 1b: Running from the Python shell prompt
+    # Must install qeML in R to access the pef data
     python # Open Python shell prompt
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
     import rpy2.robjects as robjects

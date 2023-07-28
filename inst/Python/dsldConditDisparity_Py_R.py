@@ -61,7 +61,7 @@ def validate_input(yName, sName, xName, condits, minS, yLim, useLoess):
 # The arguments are converted into R data type before calling dsldConditDisparity function
 # This function uses qeML's qeKNN function as default argument for qeFtn
 def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", minS=50, yLim=R_NULL, useLoess=True):
-    # ************************** ARGUMENTS *******************************************
+    #************************** ARGUMENTS *******************************************
     r_data = dsld_Rpy2_IsRDataframe(data)                       # Convert the data to R format if not already
 
     # Validate the input to make sure that they ready to be converted to R format
@@ -98,10 +98,10 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     useLoess_r = robjects.BoolVector([useLoess])                # Convert variable name to R boolean type
 
     # All necessary arguments are in R format at this point
-    # ************************** END ARGUMENTS *******************************************
+    #************************** END ARGUMENTS *******************************************
     
 
-    # ************************** RETURN VALUE *******************************************
+    #************************** RETURN VALUE *******************************************
     dsld.dsldConditDisparity(r_data, yName_r, sName_r, xName_r, condits_r, qeFtn_r, minS_r, yLim_r, useLoess_r)
 
     # Copy and saves the image as condits_disparity_plot.png
@@ -120,10 +120,10 @@ def dsldPyConditDisparity(data, yName, sName, xName, condits, qeFtn="qeKNN", min
     image.close()
     # Delete the image file
     os.remove(plot_filename)
-    # ************************** END OF FUNCTION *******************************************
+    #************************** END OF FUNCTION *******************************************
 
 
-# ************************** OS SHELL FUNCTIONALITY *************************************
+#************************** OS SHELL FUNCTIONALITY *************************************
 if __name__ == "__main__":
     # Checks if user entered correct number of arguments
     if len(sys.argv) != 10:
@@ -160,7 +160,7 @@ if __name__ == "__main__":
     # ******************** End of data type conversion ********************
 
     dsldPyConditDisparity(data, yName, sName, xName, condits.split(','), qeFtn=qeFtn, minS=minS, yLim=yLim, useLoess=useLoess)
-# ************************** END OS SHELL *******************************************
+#************************** END OS SHELL *******************************************
 
 '''
     # Test cases: Before running, go to /dsld/inst/Python

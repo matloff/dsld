@@ -33,6 +33,7 @@ qeML    = importr("qeML")
 forcats = importr('forcats') #Where is this used?
 rplotly = importr("plotly")
 
+# TODO: Fix error: function displays error msg even when input is fine
 def validateInputSP3D(sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
                       sortedBy = "Name", numGroups = 8, maxPoints = R_NULL,
                       xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL,
@@ -82,7 +83,8 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     # ************************** ARGUMENTS *******************************************
     
     # Type validation of everything except for data
-    validateInputSP3D(sName,yNames,sGroups,sortedBy,numGroups,maxPoints,xlim,ylim,zlim,main,colors,opacity,pointSize)
+    # TODO: Fix error: see above todo
+    # validateInputSP3D(sName,yNames,sGroups,sortedBy,numGroups,maxPoints,xlim,ylim,zlim,main,colors,opacity,pointSize)
 
     # Data conversion handled by Utils function
     r_data = dsld_Rpy2_IsRDataframe(data)
@@ -150,12 +152,12 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     colors_r = robjects.StrVector(colors)
     opacity_r = robjects.StrVector([opacity])
     pointSize_r = robjects.StrVector([pointSize])
-    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
     
     # All necessary arguments are in R format at this point
     # ************************** END ARGUMENTS *******************************************
     
     # ************************** RETURN VALUE *******************************************
+    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
     # Convert the plot to a Plotly widget and display it
     plot_widget = rplotly.as_widget(scatter_plot)
     display(plot_widget)
@@ -175,6 +177,7 @@ if __name__ == "__main__":
 
 '''
 # Need to install.packages("plotly") in R
+# Need to install qeML to get the pef data
 # Need to install Python's IPython
 # through the following command (enter in terminal): pip install IPython
     python
