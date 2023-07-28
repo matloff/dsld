@@ -11,19 +11,17 @@ on a 4th variable.}
 
 \arguments{
   \item{data}{
-  A dataframe with at least 3 columns as response variables to be graphed on the 3 axes. 
-  An additional columm may be used as a sensitive variable.
+  A dataframe with at least 4 columns as response variables to be graphed on the 
+  3 axes, with an additional columm may be used as a sensitive variable.
   }
   \item{yNames}{
-  A vector of the indices or names of the columns of the dataframe to be graphed on the 
-  3 axes. If not supplied, the function will use the first 3 numeric columns in the dataframe.
+  A vector of the indices or names of the columns of the dataframe to be 
+  graphed on the 3 axes. 
   }
   \item{sName}{
   The index or name of the column that contains the groups for which the data
   will be grouped by. This will affect the colors of the points of the graph. 
   This column must not be numeric. 
-  If not supplied, the function will use a non-logical column with the least 
-  number of unique values.
   }
   \item{sGroups}{
   A vector of the names of the groups for which the data will be grouped by. 
@@ -49,7 +47,8 @@ on a 4th variable.}
   There is no limit by default.
   }
   \item{xlim, ylim, zlim}{
-  The x, y and z limits- a vector with c(min, max)- the plot will graph according to.
+  The x, y and z limits- a vector with c(min, max)- the plot will 
+  graph according to.
   }
   \item{main}{
   The title of the graph. By default, its the name of the sName "vs. " the yNames
@@ -75,15 +74,10 @@ Plotly's 3 scatterplot:
 Jonathan Tran and Brandon Zarate }
 
 \examples{
-# Example 1: Using dataframe alone
-library(qeML)
-data(mlb)
-dsldScatterPlot3D(mlb, main = "Example 1")
-
-# Example 2: Using sName, yNames, and xlim
-library(fairml)
-data("law.school.admissions")
-dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1", yNames=c("ugpa", "lsat","age"), xlim=c(2,4), main = "Example 2")
-
+  # Example 1: Using sName, yNames, and xlim
+  library(fairml)
+  data("law.school.admissions")
+  dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1",
+  yNames=c("ugpa", "lsat","age"), xlim=c(2,4))
 }
 

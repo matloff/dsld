@@ -32,53 +32,6 @@ pr2file <- function(filename)
    dev.set(origdev)
 }
 
-#' Generates an sName of a data frame
-#' @param data A data frame
-#' @return A string of the name of a factor column with the least amount of unique values
-#' @examples makeSName(svcensus)
-makeSName <- function(data) {
-  data_types <-
-    sapply(data, class) # the datatypes of each column in data
-  
-  num_uniques <- sort(sapply(sapply(data, unique), length))
-  sName <- NULL
-  # how many distinct values for each column, sorted by least unique values
-  for (i in 1:length(data_types)) {
-    col <- data_types[names(num_uniques[i])]
-    if (col %in% c("factor", "character")) {
-      sName <- names(col)
-      break
-    }
-  }
-  return(sName)
-}
-
-#' Generates the yNames of a dataframe
-#' @param data A data frame
-#' @param count A number of how many yNames to generate
-#'
-#' @return A numeric vector that corresponds to one or more numeric columns in the data frame
-#' @examples makeYNames(svcensus, 3)
-makeYNames <- function(data, count = 1) {
-  data_types <- sapply(data, class)
-  yNames <- vector()
-  for (i in 1:length(data_types)) {
-    if (data_types[i] %in% c("integer", "numeric")) {
-      yNames <- c(yNames, i)
-    }
-    if (length(yNames) == count)
-      break
-  }
-  # if no more numeric columns have been found, use the first other
-  i <- 1
-  while (length(yNames) < count) {
-    if (!i %in% yNames)
-      yNames <- c(yNames, i)
-    i <- i + 1
-  }
-  return(yNames)
-}
-
 #' Generates a list of groups that exist within a sName column of a data frame
 #'
 #' @param data A dataframe

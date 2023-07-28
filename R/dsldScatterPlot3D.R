@@ -6,12 +6,10 @@
 #' @param data A dataframe with at least 3 columns as response variables to be
 #' graphed on the 3 axes. An additional columm may be used as a sensitive variable.
 #' @param yNames A vector of the indices or names of the columns of the dataframe
-#' to be graphed on the 3 axes. If not supplied, the function will use the
-#' first 3 numeric columns in the dataframe.
+#' to be graphed on the 3 axes. 
 #' @param sName The index or name of the column that contains the groups
 #' for which the data will be grouped by. This will affect the colors of the
-#' points of the graph. This column must not be numeric. If not supplied, the
-#' function will use a non-logical column with the least number of unique values.
+#' points of the graph. This column must not be numeric. 
 #' @param sGroups A vector of the names of the groups for which the data will be grouped by.
 #' Every value in the vector must exist in the sName column of the dataframe.
 #' If not supplied or is NULL, the function will create this automatically
@@ -43,11 +41,11 @@
 #' library(fairml)
 #' data("law.school.admissions")
 #' dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1",
-#'   yNames=c("ugpa", "lsat","age"), xlim=c(2,4), main = "Example 2")
+#'   yNames=c("ugpa", "lsat","age"), xlim=c(2,4))
 dsldScatterPlot3D <-
   function(data,
-           yNames = NULL,
-           sName = NULL,
+           yNames,
+           sName,
            sGroups = NULL,
            sortedBy = "Name",
            numGroups = 8,
@@ -65,34 +63,18 @@ dsldScatterPlot3D <-
     if (!is.null(maxPoints))
       data <- data[1:maxPoints, ]
     
-    # sName <- an int/string of the col of the grouping variable.
-    # the variable the determines the colors of the dots. user can specify or
-    # sName will be the col with the lowest amount of unique values
-    if (is.null(sName))
-      sName <- makeSName(data)
-    else if (!class(data[, sName]) %in% c("factor", "character"))
+    if (!class(data[, sName]) %in% c("factor", "character"))
       stop(
-        "sName should be of factor or character data type. Consider setting this as yName instead"
+        "sName should be of factor or character data type. 
+        Consider setting this as yName instead"
       )
     
-    # for now, if theres no sName, this makes one so the function doesnt break
-    if (is.null(sName)) {
-      Group <- as.factor(rep(1, length(data[, 1])))
-      data <- cbind(data, Group)
-      sName <- length(data)
-    }
-    
-    # yNames <- a vector of 3 ints/strings that correspond to the columns to be used for
-    # the 3 axis on the graph. The user can specify the cols or
-    # yNames will be the first 3 columns that are of numeric or integer data type
-    if (is.null(yNames))
-      yNames <- makeYNames(data, 3)
-    else if (length(yNames) != 3)
+    if (length(yNames) != 3)
       stop("ScatterPlot3d requires 3 variables for the 3 axis")
     
     # sGroups <- a vector of the individual group names in the 'data'.
     # the user can supply sGroups as an vector of names they want to look at
-    if (is.null(sGroups) && !is.null(sName))
+    if (is.null(sGroups))
       sGroups <- makeSGroups(data, sName, numGroups, sortedBy)
     
     # limits dataset to include only those with a group in groupNames
@@ -104,10 +86,10 @@ dsldScatterPlot3D <-
       data <- limitRange(data, yNames, xlim, ylim, zlim)
     
     # Creates a title
-    if (is.null(main) && !is.null(sName)) {
-      main <- paste(names(data[sName]), " vs. ")
+    if (is.null(main)) {
       for (yName in names(data[yNames]))
         main <- paste(main, yName)
+      main <- paste(main, " by ", names(data[sName]))
     }
     
     # save this to print to the text of each point
@@ -149,9 +131,5 @@ dsldScatterPlot3D <-
 
 # ---- Test Cases ----
 # library(dsld)
-# data(pef)
-# dsldScatterPlot3D(pef, yNames = c("educ", "wageinc", "occ"))
-
-# library(qeML)
-# data(mlb)
-# dsldScatterPlot3D(mlb)
+# data(svcensus)
+# dsldScatterPlot3D(svcensus, yNames = c("educ", "wageinc", "occ"), sName = "gender")
