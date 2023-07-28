@@ -11,6 +11,8 @@
 #' ::: Arguments :::
 #' @param data: dataset, an R dataframe
 #' @param sName: name of the sensitive variable, an R factor
+#' @param graphType: type of graph to display, an R character; defaults to
+#'      "plotly", but can be one of ("plotly", "plot")
 #' @param fill: whether or not to fill curve space, an R logical; defaults to
 #'      FALSE, not applicable to categorical data
 #'
@@ -25,12 +27,12 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
         # if categorical
         if (is.factor(data[, i])) {
             print(dsldFrequencyByS(data, colnames(data)[i], sName))
-            cat("Press <ENTER> to view next density graph / frequency dataframe...")
+            cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
             temp_input <- readline()
         # if numeric
         } else if (is.numeric(data[, i])) {
             print(dsldDensityByS(data, colnames(data)[i], sName, graphType, fill))
-            cat("Press <ENTER> to view next density graph / frequency dataframe...")
+            cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
             temp_input <- readline()
         # throw error
         } else {
@@ -187,8 +189,8 @@ dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALS
 #' dsldFrequencyByS(svcensus)
 #'
 #' ::: Description :::
-#' @brief Extracts frequencies of a response variable, grouped by a sensitive
-#'      variable
+#' @brief Extracts frequencies of a combination of levels, grouped by a
+#'      sensitive variable and the response variable.
 #'
 #' ::: Arguments :::
 #' @param data: A dataframe with 1 numerical column and a factor column
