@@ -11,7 +11,7 @@
 }
 
 \usage{
-    dsldConfounders(data, sName, graphType = "plotly", fill = FALSE, plot_filename = NULL)
+    dsldConfounders(data, sName, graphType = "plotly", fill = FALSE)
 }
 
 \arguments{
@@ -29,15 +29,6 @@
     \item{fill}{
         only applicable to graphType = "plot" case. Setting to true will color
         each line down to the x-axis.
-    }
-    \item{plot_filename}{
-        Name of the file that will hold the saved graph image. 
-        
-        If null, the graph will not be saved as an image -- it will be generated
-        and displayed without being saved.
-        
-        If a filename is provided, the graph will not be displayed, only saved 
-        to a file with this filename.
     }
 }
 

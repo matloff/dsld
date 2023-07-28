@@ -17,7 +17,7 @@
 }
 
 \usage{
-    dsldPyConfounders(data, sName, graphType, fill)
+    dsldPyConfounders(data, sName)
 }
 
 \arguments{
@@ -31,15 +31,6 @@
     \item{sName}{
         Column number for the grouping variable, if any (if none, all the data 
         is treated as a single group); vector or factor.
-    }
-    \item{graphType}{
-        either "plot" or "plotly".
-        "plot" : static graphs are made with R's default plot() function. 
-        "plotly" : interactable graphs are made with the plotly package.
-    }
-    \item{fill}{
-        only applicable to graphType = "plot" case. Setting to true will color
-        each line down to the x-axis.
     }
 }
 
@@ -82,6 +73,6 @@
     import rpy2.robjects as robjects
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
-    dsldPyConfounders(data, "educ", "plot")
+    dsldPyConfounders(data, "educ")
 }
 

@@ -1,34 +1,28 @@
 '''
-dsldConfounders_Py_R.py is the python interface for dsldConfounders in the dsld R package.
-Utils contains helper functions which are used in multiple files
-rpy2 is used handle dsld function calls from R
-pandas processes dataset into a panda's data frame before performing any computation
-Ipython.display is used to display the interactive scatter plot
-sys is used for OS shell
+    dsldConfounders_Py_R.py is the python interface for dsldConfounders in the dsld R package.
+    Utils contains helper functions which are used in multiple files
+    rpy2 is used handle dsld function calls from R
+    pandas processes dataset into a panda's data frame before performing any computation
+    Ipython.display is used to display the interactive scatter plot
+    sys is used for OS shell
 '''
 
-from Utils import dsld_Rpy2_IsRDataframe, changeBg, R_NULL, ERROR
-from PIL import Image
-import os
+from Utils import dsld_Rpy2_IsRDataframe, ERROR
 from rpy2.robjects.packages import importr
-from rpy2.robjects import r
-from IPython.display import display
 import rpy2.robjects as robjects
+from IPython.display import display
 import pandas as pd
-import sys #remove this if we aren't doing shell?
+import sys
 
 '''
-Importing r packages {dsld, qeML, forcats, plotly} into Python through rpy2
-dsld contains this file's main R function, dsldConfounders and the dataset svcensus.rData
-qeML contains the dataset mlb, mlb1, and more
-forcats is used for reordering factor levels
-rplotly is used to create a plotly widget to aid in displaying graph
+    Importing r packages {dsld, plotly} into Python through rpy2
+    dsld contains this file's main R function, dsldConfounders and the dataset svcensus.rData
+    rplotly is used to create a plotly widget to aid in displaying graph
 '''
 dsld    = importr("dsld")
 rplotly = importr("plotly")
-grdevices = importr('grDevices')
 
-def dsldPyConfounders(data, sName, graphType = "plotly", fill = False):
+def dsldPyConfounders(data, sName):
     # ************************** ARGUMENTS *******************************************
     
     # Data conversion handled by Utils function
@@ -54,50 +48,26 @@ def dsldPyConfounders(data, sName, graphType = "plotly", fill = False):
             print('Error: sName needs to be a string or integer. It cannot be null')
             exit(ERROR)
 
-    graphType_r = robjects.StrVector([graphType])
-
-    fill_r = robjects.BoolVector([fill])
-    
     # All necessary arguments are in R format at this point
     # ************************** END ARGUMENTS *******************************************
     
     # ************************** RETURN VALUE *******************************************
-    if graphType.lower() == "plotly":
-        result = dsld.dsldConfounders(r_data, sName_r, graphType_r, fill_r)
-        # Convert the plot to a Plotly widget and display it
-        plot_widget = rplotly.as_widget(result)
-        display(plot_widget)
-    elif graphType.lower() == "plot":
-        # TODO: graph saved as img
-        # Copy and saves the image as confounders_plot.png
-        plot_filename = "confounders_plot.png"
 
-        dsld.dsldConfounders(r_data, sName_r, graphType_r, fill_r, plot_filename)
+    result = dsld.dsldConfounders(r_data, sName_r)
 
-        grdevices.dev_copy(device=r.png, filename=plot_filename)
-        grdevices.dev_off()
-
-        # Set background of image saved to white
-        changeBg(plot_filename)
-
-        # Load the image file in Python
-        image = Image.open(plot_filename)
-        image.show() # Display the plot using the default image viewer
-
-        # Close the displayed image
-        image.close()
-        # Delete the image file
-        os.remove(plot_filename)
+    # Convert the plot to a Plotly widget and display it
+    plot_widget = rplotly.as_widget(result)
+    display(plot_widget)
 
     # ************************** END FUNCTION *******************************************
 
-#************************** OS SHELL FUNCTIONALITY *************************************
+# ************************** OS SHELL FUNCTIONALITY *************************************
 # TODO: OS Shell functionality is INCOMPLETE
 if __name__ == "__main__":
-    cmd, data, sName, graphType, fill = sys.argv
-    data = pd.read_csv()
-    dsldPyConfounders(data, sName, graphType, bool(fill))
-#************************** END OS SHELL *******************************************
+    cmd, data, sName = sys.argv
+    data = pd.read_csv(data)
+    dsldPyConfounders(data, sName)
+# ************************** END OS SHELL *******************************************
 
 '''
 # Need to install.packages("plotly") in R
@@ -108,8 +78,8 @@ if __name__ == "__main__":
     import rpy2.robjects as robjects
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
-    dsldPyConfounders(data, "educ", "plot")
+    dsldPyConfounders(data, "educ")
 
 # Other Examples:
-    from dsldConfounders_Py_R import dsldPyConfounders;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyConfounders(data, "educ", "plot")
+    from dsldConfounders_Py_R import dsldPyConfounders;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyConfounders(data, "educ")
 '''

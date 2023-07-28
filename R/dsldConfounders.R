@@ -14,7 +14,7 @@
 #' @param fill: whether or not to fill curve space, an R logical; defaults to
 #'      FALSE, not applicable to categorical data
 #'
-dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE, plot_filename = NULL) {
+dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
     # Error checking
     if (is.null(sName)) {
         stop(paste("sName must be provided as a string of a column name"))
@@ -29,7 +29,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE, plo
             temp_input <- readline()
         # if numeric
         } else if (is.numeric(data[, i])) {
-            print(dsldDensityByS(data, colnames(data)[i], sName, graphType, fill, plot_filename))
+            print(dsldDensityByS(data, colnames(data)[i], sName, graphType, fill))
             cat("Press <ENTER> to view next density graph / frequency dataframe...")
             temp_input <- readline()
         # throw error
@@ -57,7 +57,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE, plo
 #'
 #' @export
 #'
-dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALSE, plot_filename = NULL) {
+dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALSE) {
     if (!class(data[, sName]) %in% c("factor", "character"))
         stop(paste("sName should be of factor or character data type. Consider setting this as a cName instead"))
 
@@ -97,11 +97,6 @@ dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALS
             lty = 1
         )
         # ************ plot() *********************************
-
-        # If no filename argument provided, do not save an image file, just generate the image
-        if (!is.null(plot_filename)) {
-            ggsave(plot_filename) # Save as img
-        }
     } else if (tolower(graphType) == "plotly") {
         getSuggestedLib('plotly')
         # ************ plotly *********************************
