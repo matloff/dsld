@@ -35,8 +35,8 @@
 }
 
 \note{
-    The usage of this function requires Python 3.10. It might not work on linux
-    machines.
+    The usage of this function requires Python 3.10 and R's plotly. It might not 
+    work on linux machines.
 }    
 
 \note{ 
