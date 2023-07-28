@@ -11,7 +11,7 @@ author:
   - Aditya Mittal 
   - Billy Ouattara 
   - Jonathan Tran
-date: "7/25/2023"
+date: "7/27/2023"
 format: 
   pdf:
      toc: true
@@ -48,6 +48,7 @@ well as introduction to use of the package.
 ## Prerequisite background
 
 In addition to having installed R, the user should have a very basic
+[Python wrappers are included for most functions.]{.column-margin}
 knowledge of statistical inference--mean, variance, confidence intervals
 and tests, and histograms.  A "bare bones" refresher, with emphasis on
 intuition, is given in Appendix A.
@@ -141,7 +142,7 @@ limited use of the proxy variables O.
 
 :::
 
-# Two kinds of discrimination analyses 
+## The two kinds of discrimination analysis covered here
 
 This COMPAS example falls in the category of *fairness in machine learning ML*.
 
@@ -154,8 +155,16 @@ and fair ML on the other.  Here is a side-by-side comparison:
   harm        comes from society      comes from an algorithm
   side info   adjust for covariates   limit impact of proxies 
 
+## Review of symbols
 
-# Format of this tutorial
+  example      Y            C           S        P
+  ---------    ---------    -------     ---      ---
+  UCB admits   acceptance   program     gender   \-
+  Census       wage         occupation  gender   \-
+  COMPAS       sentence     \-          race     education
+
+
+## Format of this tutorial
 
 We treat the topics in this order:
 
