@@ -157,11 +157,11 @@ and fair ML on the other.  Here is a side-by-side comparison:
 
 ## Review of symbols
 
-  example      Y            C           S        P
-  ---------    ---------    -------     ---      ---
-  UCB admits   acceptance   program     gender   \-
-  Census       wage         occupation  gender   \-
-  COMPAS       sentence     \-          race     education
+  example      Y            C                S        P
+  ---------    ---------    -------          ---      ---
+  UCB admits   acceptance   program          gender   \-
+  Census       wage         e.g. occupation  gender   \-
+  COMPAS       sentence     \-               race     e.g. education
 
 
 ## Format of this tutorial
@@ -183,3 +183,29 @@ this is a general tutorial on methodology for analysis of
 discrimination, and show the details of using our **dsld** package to
 make use of that methodology.
 
+So, let's get started.
+
+# Part I:  Adjustment for Confounders
+
+How do we adjust for confounders?  The most common approach involves
+linear models, with which we express the mean Y for given values of the C and
+S variables in a linear form.  
+
+Consider the census example above.  For simplicity, say we decide to
+consider only age as a confounder, so that Y is wage, C consists only of
+age, and S is gender.  Older workers tend to have more experience and
+thus higher wages, and if there is an age differential in our data, say
+with female workers tending to be older, this may mask a gender pay gap.
+
+Our linear model may this be
+
+mean W = b~0~ + b<sub>1</sub> A + b<sub>2</sub> M
+
+where W is wage, A is age and M is an indicator variable, with M = 1 for
+men and M = 0 for women.
+
+# Part II:  Fairness in Machine Learning
+
+# Appendix A: Fast Lane to Statistics
+
+# Appendix B: Standard Errors via the Bootstrap
