@@ -69,10 +69,11 @@ def dsldPyConfounders(data, sName, graphType = "plotly", fill = False):
         display(plot_widget)
     elif graphType.lower() == "plot":
         # TODO: graph saved as img
-        print("******************* PLOT ********************")
-        dsld.dsldConfounders(r_data, sName_r, graphType_r, fill_r)
         # Copy and saves the image as confounders_plot.png
         plot_filename = "confounders_plot.png"
+
+        dsld.dsldConfounders(r_data, sName_r, graphType_r, fill_r, plot_filename)
+
         grdevices.dev_copy(device=r.png, filename=plot_filename)
         grdevices.dev_off()
 

@@ -14,7 +14,7 @@
 #' @param fill: whether or not to fill curve space, an R logical; defaults to
 #'      FALSE, not applicable to categorical data
 #'
-dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
+dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE, plot_filename = NULL) {
     # Error checking
     if (is.null(sName)) {
         stop(paste("sName must be provided as a string of a column name"))
@@ -29,7 +29,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
             temp_input <- readline()
         # if numeric
         } else if (is.numeric(data[, i])) {
-            print(dsldDensityByS(data, colnames(data)[i], sName, graphType, fill))
+            print(dsldDensityByS(data, colnames(data)[i], sName, graphType, fill, plot_filename))
             cat("Press <ENTER> to view next density graph / frequency dataframe...")
             temp_input <- readline()
         # throw error
@@ -57,7 +57,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
 #'
 #' @export
 #'
-dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALSE) {
+dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALSE, plot_filename = NULL) {
     if (!class(data[, sName]) %in% c("factor", "character"))
         stop(paste("sName should be of factor or character data type. Consider setting this as a cName instead"))
 
@@ -69,6 +69,7 @@ dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALS
     bw <- seq(.25, 4, .25)
     
     if (tolower(graphType) == "plot") {
+        getSuggestedLib('ggplot2')
         # ************ plot() *********************************
         sGroups <- levels(unique(data[, sName]))
         for (i in 1:length(sGroups)) {
@@ -96,7 +97,13 @@ dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALS
             lty = 1
         )
         # ************ plot() *********************************
+
+        # If no filename argument provided, do not save an image file, just generate the image
+        if (!is.null(plot_filename)) {
+            ggsave(plot_filename) # Save as img
+        }
     } else if (tolower(graphType) == "plotly") {
+        getSuggestedLib('plotly')
         # ************ plotly *********************************
         # aval <- a list of the arguements of all the lines we're going to graph
         aval <- list()
