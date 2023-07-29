@@ -1,6 +1,7 @@
 import('qeML')
 import('regtools')
 import('gtools')
+import('ranger')
 
 export(
    getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS, dsldConfounders,
