@@ -6,7 +6,10 @@
 
 # ----------------------- Dispatching w/ Confounders ----------------------- #
 #' ::: Description :::
-#' @brief description goes here...
+#' @brief a dispatching function that allows users to pass in a dataframe they
+#'      want to analyze in the context of finding confounders for numeric and
+#'      categorical variables. Dispatches frequency by sensitive var or density
+#'      by sensitive var against every column in the dataframe as appropriate.
 #'
 #' ::: Arguments :::
 #' @param data: dataset, an R dataframe
@@ -24,6 +27,11 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
 
     # dispatch to appropriate auxiliary method
     for (i in 1:(ncol(data))) {
+        # skip sName
+        if (colnames(data)[i] == sName) {
+             next
+        }
+
         # if categorical
         if (is.factor(data[, i])) {
             print(dsldFrequencyByS(data, colnames(data)[i], sName))
@@ -186,7 +194,7 @@ dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALS
 #' @examples
 #' library(dsld)
 #' data(svcensus)
-#' dsldFrequencyByS(svcensus)
+#' dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 #'
 #' ::: Description :::
 #' @brief Extracts frequencies of a combination of levels, grouped by a
@@ -210,36 +218,37 @@ dsldFrequencyByS <- function(data, cName, sName) {
         gt()
     "
 
+    # type validation #
     if (!class(data[, sName]) %in% c("factor", "character")) {
         stop(paste(
-            "sName should be of factor or character data type. Consider",
-            " setting this as a cName instead"
+            "sName should be of factor or character data type."
+        ))
+    }
+    if (!class(data[, cName]) %in% c("factor", "character")) {
+        stop(paste(
+            "cName should be of factor or character data type. Consider",
+            " calling `dsldDensityByS(data, cName = ",
+            cName,
+            ")` instead"
         ))
     }
 
-    # -------- Efficient Approach II -------- #
+
     # sensitive variable frequencies #
     # unique levels to ensure order
     yGroups <- unique(data[[cName]])
-    sGroups <- unique(data[[sName]])
 
     # get a lookup for every s level against every ylevel
     freqLookup <- table(data[[sName]], data[[cName]])
     
     # convert to dataframe
     frequencies <- as.data.frame.matrix(freqLookup)
-    sNameStr <- paste(sName, " Levels")
     names(frequencies) <- c(
-        # sNameStr,
         paste0("Frequency of ", yGroups)
     )
 
     # return frequncies #
     return(frequencies)
 }
-
-# library(dsld)
-# data(svcensus)
-# dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 
 
