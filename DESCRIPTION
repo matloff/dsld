@@ -20,7 +20,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    )
 Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>
 VignetteBuilder: knitr
-Depends: fairml
+Depends: fairml, ranger
 License: GPL (>= 2) 
 Description: Statistical and graphical tools for detecting and measuring
    discrimination and bias, be it racial, gender, age or other.
