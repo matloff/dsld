@@ -1,3 +1,12 @@
+import('qeML')
+import('regtools')
+import('gtools')
+
+export(
+   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS, dsldConfounders,
+   dsldFgrrm, dsldFrrm, dsldNclm
+)
+
 S3method(summary,dsldLM)
 S3method(coef,dsldLM)
 S3method(vcov,dsldLM)
@@ -6,8 +15,5 @@ S3method(summary,dsldGLM)
 S3method(coef,dsldGLM)
 S3method(vcov,dsldGLM)
 
-export(
-   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS, dsldConfounders,
-   dsldFgrrm, dsldFrrm, dsldNclm
-)
+
 
