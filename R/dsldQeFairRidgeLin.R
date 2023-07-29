@@ -1,10 +1,9 @@
 # ------------------------ qeFairRidgeLin --------------------------------------
-qeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
+dsldQeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
                            holdout=floor(min(1000,0.1*nrow(data))))
 {
   
   require(qeML)
-  if (!require('gtools')) install.packages('gtools'); library('gtools')
   
   # data prep
   data <- na.exclude(data)
@@ -50,7 +49,7 @@ qeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
   fairLinOut$trainRow1 <- trainRow1
   fairLinOut$scalePars <- scalePars
   fairLinOut$classif <- FALSE
-  class(fairLinOut) <- c('qeFairRidgeLin','qeLin')
+  class(fairLinOut) <- c('dsldQeFairRidgeLin','qeLin')
   
   if (!is.null(holdout)) {      
     # need to turn off scaling in the case of predicting holdouts, as
@@ -72,11 +71,11 @@ qeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
   
 }
 
-# ------------------------ predict.qeFairRidgeLin ------------------------------
+# ------------------------ predict.dsldQeFairRidgeLin --------------------------
 # processNewx means to apply factorsToDummies() and scaling; it should
 # be TRUE for an "external" prediction, FALSE for predicting a holdlout
 # set
-predict.qeFairRidgeLin <- function(object,newx,processNewx=FALSE)
+predict.dsldQeFairRidgeLin <- function(object,newx,processNewx=FALSE)
 {
   
   # newx can include the sensitive variables, as prepNewx will remove
@@ -97,8 +96,7 @@ predict.qeFairRidgeLin <- function(object,newx,processNewx=FALSE)
 
 
 # ------------------------ Example 1 -------------------------------------------
-#library(qeML) 
-#data(pef) 
-#z <- qeFairRidgeLin(data=pef,yName='wageinc',deweightPars=list(occ=0.2),sensNames='sex')
+#library(dsld)
+#data("svcensus")
+#z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
 #z$testAcc
-# ------------------------------------------------------------------------------
