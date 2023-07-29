@@ -191,18 +191,87 @@ How do we adjust for confounders?  The most common approach involves
 linear models, with which we express the mean Y for given values of the C and
 S variables in a linear form.  
 
+## Prologue
+
 Consider the census example above.  For simplicity, say we decide to
 consider only age as a confounder, so that Y is wage, C consists only of
 age, and S is gender.  Older workers tend to have more experience and
 thus higher wages, and if there is an age differential in our data, say
 with female workers tending to be older, this may mask a gender pay gap.
 
-Our linear model may this be
+Our linear model may thus be
 
-mean W = b~0~ + b<sub>1</sub> A + b<sub>2</sub> M
+mean W = b~0~ + b~1~ A + b~2~ M
 
 where W is wage, A is age and M is an indicator variable, with M = 1 for
-men and M = 0 for women.
+men and M = 0 for women.  The parameters b~i~ are estimated from the
+data.
+
+The parameter b~2~, which turns out (see below) to be about $13,000,
+is the wage gap, if any.  Here's why:
+
+Under the model, the mean wage for, say, 36-year-old men is
+
+b~0~ + 32 b~1~ + b~2~ 1
+
+while for women of that wage it is
+
+b~0~ + 32 b~1~ 
+
+The difference is b~2~.  But if we look at, for instance, people of age
+43, the mean wages for men and women are
+
+b~0~ + 43 b~1~ + b~2~ 1
+
+and
+
+b~0~ + 43 b~1~ 
+
+and the difference is still b~2~.  So we can speak of b~2~ as *the*
+gender wage gap, at any age.  According to the model, younger men earn
+about $13,000 more than younger women, with the same-sized gap between
+older men and older women.
+
+The above approach to dealing with confounders is a very common one.
+But it raises questions, such as:
+
+* What are the assumptions underlying that model?  And how might we
+[In addition, the data here are, as is commonly the case,
+*observational*, as opposed to being the result of a *randomized
+clinical trial*; there may be serious issues, possibly analyzed via an
+advanced (and rather controversial) topic known as *causal inference*.
+Unfortunately, this is beyond our scope here.]{.column-margin} check
+whether they are (approximately) valid?
+
+* We chose only one C variable here, age.  We might also use
+occupation, as noted earlier.  In some datasets, might have dozens of
+possible confounders.  How do we choose which ones to use in our model?
+And for that matter, why not use them all?
+
+* The above model, in which the gender wage gap was uniform across all
+wages, may not be adequate.  How can we determine this, and what
+alternative models might we use?
+
+## Assessing linearity 
+
+As noted, linear models are ubiquitous in observational data analysis.
+But how would one check this?  Here a **dsld** function may help. 
+
+```{r}
+dsldConditDisparity(pef,'wageinc','gender','age','age >
+0',yLim=c(0,150000)) 
+```
+
+The function plots a smoothed graph of Y against a user-specified C
+[There is a conditions argument; we have none here, so we just
+used a trival one, 'age > 0']{.column-margin}
+variable, once for each level of S.  So, the call here says, "Plot wage
+income against age, for each gender."  The relation certainly looks
+nonlinear, suggesting that an age^2^ term be added to the equation:
+
+mean W = b~0~ + b~1~ A + b~2~ A^2^ + b~3~ M
+
+Note too that there is a suggestion here of possible age discrimination.
 
 # Part II:  Fairness in Machine Learning
 
