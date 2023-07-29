@@ -4,7 +4,7 @@ import('gtools')
 
 export(
    getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS, dsldConfounders,
-   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin
+   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF
 )
 
 S3method(summary,dsldLM)
@@ -16,6 +16,7 @@ S3method(coef,dsldGLM)
 S3method(vcov,dsldGLM)
 
 S3method(predict, dsldQeFairRidgeLin)
+S3method(predict, dsldQeFairRF)
 
 
 
