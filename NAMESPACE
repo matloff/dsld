@@ -8,6 +8,6 @@ S3method(vcov,dsldGLM)
 
 export(
    getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS, dsldConfounders,
-   dsldFgrrm,dsldFrrm,dsldNclm
+   dsldFgrrm, dsldFrrm, dsldNclm, prepData, getRow1, splitData, corrsens, predictHoldoutFair, expandDeweightPars
 )
 
