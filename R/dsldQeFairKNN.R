@@ -1,6 +1,7 @@
 dsldQeFairKNN <- function(data, yName, deweightPars, sName=NULL,
                       yesYVal=NULL, k=25, scaleX=TRUE, holdout=floor(min(1000,0.1*nrow(data)))) {
    require(qeML)
+   if (!require('gtools')) install.packages('gtools'); library('gtools')
 
    scaling <- if(scaleX) 'scale' else 'none'
    dsldPrepData(scaling=scaling)

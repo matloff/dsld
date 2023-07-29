@@ -4,6 +4,7 @@ qeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
 {
   
   require(qeML)
+  if (!require('gtools')) install.packages('gtools'); library('gtools')
   
   # data prep
   data <- na.exclude(data)

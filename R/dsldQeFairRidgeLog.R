@@ -6,6 +6,7 @@ dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal =
                               holdout = floor(min(1000,0.1 * nrow(data)))){
   #EDFfair::qeFairRidgeLog(data, yName, deweightPars, sName, yesYVal, holdout)
   require(qeML)
+  if (!require('gtools')) install.packages('gtools'); library('gtools')
   
   if (yesYVal == 0) stop('missing yesYVal')
   

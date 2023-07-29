@@ -3,6 +3,7 @@ dsldQeFairRF <- function(data,yName,deweightPars,sensNames=NULL,
    yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data))))
 {
    require(qeML)
+   if (!require('gtools')) install.packages('gtools'); library('gtools')
 
    prepData(1,scaling='none')
 
