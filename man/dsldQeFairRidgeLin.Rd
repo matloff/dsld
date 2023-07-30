@@ -1,7 +1,7 @@
 \name{dsldQeFairRidgeLin}
 \alias{dsldQeFairRidgeLin}
 
-\title{DSLDQeFairRidgeLin}
+\title{dsldQeFairRidgeLin}
 
 \description{ 
   To-do
@@ -12,11 +12,26 @@
 }
 
 \arguments{
-  To-do
+    \item{data}{
+        to-do
+    }
+    \item{yName}{
+        A numeric vector, the response variable.
+    }
+    \item{deweightPars}{
+        to-do
+    }
+    \item{holdout}{
+        to-decorrelated
+    } 
 }
 
 \author{
     N. Matloff, S. Martha, A. Mittal, B. Ouattara, B. Zarate
+}
+
+\details{
+    To-do
 }
 
 \examples{  
@@ -26,9 +41,5 @@
   z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
   z$testAcc
   z$corrs
-}
-
-\details{
-    To-do
 }
         
