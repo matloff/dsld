@@ -4,7 +4,12 @@ import('gtools')
 import('ranger')
 
 export(
-   getSuggestedLib,dsldFreqPCoord,dsldTakeALookAround,dsldConditDisparity,dsldScatterPlot3D, dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit, dsldDensityByS, dsldConfounders,
+   getSuggestedLib,
+   dsldFreqPCoord,
+   dsldTakeALookAround, dsldConditDisparity,
+   dsldScatterPlot3D,
+   dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit,
+   dsldConfounders, dsldDensityByS, dsldFrequencyByS,
    dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF
 )
 
