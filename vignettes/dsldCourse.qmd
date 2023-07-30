@@ -17,8 +17,13 @@ format:
      toc: true
 ---
 
-```{r}  
+```{r}
+#| include: false
 library(dsld)
+library(qeML)
+```
+
+```{r}  
 data(pef)
 dsldDensityByS(pef,'wageinc','educ','plot',fill=TRUE)
 ```
@@ -67,11 +72,11 @@ for graduate school, and indeed the overall acceptance rate for women
 was lower than that for men.  This seemed odd, given Berkeley's liberal
 reputation.
 
-However, upon breaking the data down
-[This data is included in R, as the built-in dataset **UCBAdmissions**.]{.column-margin}
-according to the program students were applying to, it was found that in
-every department, the female acceptance rate *within that department*
-was either higher than the male rate or of similar level.  The problem:
+However, upon breaking the data down [This data is included in R, as the
+built-in dataset **UCBAdmissions**.]{.column-margin} according to the
+program students were applying to, it was found that in every
+department, the female acceptance rate *within that department* was
+either higher than the male rate or of similar level.  The problem:
 women were applying to more selective programs, causing their overall
 rate to below that of men.
 
@@ -113,7 +118,7 @@ Now contrast the above examples with a different kind:
 ## COMPAS recidivism data
 
 COMPAS is a commercial machine learning software tool for aiding judges
-in to predict recidivism by those convicted of crimes.  A 2016 [**Pro
+to predict recidivism by those convicted of crimes.  A 2016 [**Pro
 Publica**
 article](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing)
 investigated, finding  the tool to be racially biased; African-American
@@ -153,11 +158,17 @@ and fair ML on the other.  Here is a side-by-side comparison:
   ----------- ----------------------- ------------------------------------
   goal        estimate an effect      predict an outcome
   harm        comes from society      comes from an algorithm
-  side info   adjust for covariates   limit impact of proxies 
+  side info   adjust for confounders  limit impact of proxies 
 
-## Review of symbols
+## Summary of symbols
 
-  example      Y            C                S        P
+We'll use X to denote the rest of the variables,i.e. those that are 
+related to Y but are not S, C or O.  The general terminology is that Y
+is variously termed the *outcome variable*, *target variable* or
+*dependent variable*; the X, C, S and O variables are known collectively
+as *covariates*, *features* or *independent variables*.
+
+  example      Y            C                S        O
   ---------    ---------    -------          ---      ---
   UCB admits   acceptance   program          gender   \-
   Census       wage         e.g. occupation  gender   \-
@@ -193,22 +204,32 @@ S variables in a linear form.
 
 ## Prologue
 
-Consider the census example above.  For simplicity, say we decide to
-consider only age as a confounder, so that Y is wage, C consists only of
-age, and S is gender.  Older workers tend to have more experience and
-thus higher wages, and if there is an age differential in our data, say
-with female workers tending to be older, this may mask a gender pay gap.
+Consider the **pef** census data example above.  For simplicity, say we
+decide to consider only age as a confounder, with no other predictors X.
+So Y is wage, C consists only of age, and S is gender.  Older workers
+tend to have more experience and thus higher wages, and if there is an
+age differential in our data, say with female workers tending to be
+older, this may mask a gender pay gap.
 
 Our linear model may thus be
 
 mean W = b~0~ + b~1~ A + b~2~ M
 
 where W is wage, A is age and M is an indicator variable, with M = 1 for
-men and M = 0 for women.  The parameters b~i~ are estimated from the
-data.
+men and M = 0 for women.  The parameters b~i~ are estimated by fitting
+the model to the data:
 
-The parameter b~2~, which turns out (see below) to be about $13,000,
-is the wage gap, if any.  Here's why:
+```{r}
+pef1 <- pef[,c(1,4,6)]  # age, wage, gender
+z <- dsldLinear(pef1,'wageinc','gender')
+summary(z)
+```
+
+Lots here, which we will gradually cover below.  For now, note that the
+[Always keep in mind that statistical quantities are only estimated,
+since we work only with sample data from some population, real or
+conceptual.  .]{.column-margin} estimated b~2~ turns out to be about
+$13,000, which is the wage gap, if any.  Here's why:
 
 Under the model, the mean wage for, say, 36-year-old men is
 
