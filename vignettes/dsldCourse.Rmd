@@ -1,0 +1,305 @@
+
+---
+title: "Data Science Looks at Discrimination"
+subtitle: "A toolkit for investigating bias in race, gender, age and so on"
+author: "Taha Abdullah, Arjun Ashok, Brandon Estrada, Shubhada Martha, Norman Matloff, Aditya Mittal, Billy Ouattara and Jonathan Tran"
+date: "7/27/2023"
+output:
+  tufte::tufte_html: 
+     default
+  vignette: >
+          %\VignetteIndexEntry{Machine Learning Overview}
+          %\VignetteEngine{knitr::rmarkdown}
+          %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+          collapse = TRUE,
+          comment = "#>"
+)
+``` 
+
+
+```{r}
+#| include: false
+library(dsld)
+library(qeML)
+```
+
+```{r}  
+data(pef)
+dsldDensityByS(pef,'wageinc','educ','plot',fill=TRUE)
+```
+
+# Overview
+
+Discrimination is a key social issue in the US and in a number of other
+countries.  There is lots of available data with which one might
+investigate possible discrimination.  But how might such investigations
+be conducted?
+
+Our **dsld** package provides both graphical and analytical tools
+for this purpose.  We see it as widely applicable; here are just a few
+use cases:
+
+* Quantitative analysis in instruction and research in social science.
+
+* Corporate HR analysis and research.
+
+* Litigation involving discrimination and related issues.
+
+* Concerned citizenry. 
+
+This document provides a tutorial regarding applicable methodology, as
+well as introduction to use of the package.
+
+## Prerequisite background
+
+In addition to having installed R, the user should have a very basic
+[Python wrappers are included for most functions.]{.column-margin}
+knowledge of statistical inference--mean, variance, confidence intervals
+and tests, and histograms.  A "bare bones" refresher, with emphasis on
+intuition, is given in Appendix A.
+
+# Introduction and motivating examples
+
+To set the stage, consider the following:
+
+## UC Berkeley discrimination claims 
+
+![](SatherGate.jpg){width=15%}
+
+
+UC Berkeley was accused of discriminating against female applicants
+for graduate school, and indeed the overall acceptance rate for women
+was lower than that for men.  This seemed odd, given Berkeley's liberal
+reputation.
+
+However, upon breaking the data down [This data is included in R, as the
+built-in dataset **UCBAdmissions**.]{.column-margin} according to the
+program students were applying to, it was found that in every
+department, the female acceptance rate *within that department* was
+either higher than the male rate or of similar level.  The problem:
+women were applying to more selective programs, causing their overall
+rate to below that of men.
+
+## US Census data
+
+![](USCensus.png){width=25%}
+
+The **pef** dataset is a subset of US census data from back in 2000,
+focusing on six engineering occupations.  [Included here in the **dsld**
+package.]{.column-margin} The question at hand is whether there is a
+gender pay gap.  Again, the overall pay for men is higher, by about 25%.
+But what if we break things down by occupation?  Though it does turn out
+that some occupations pay more than others, and that men and women are
+not distributed evenly among the occupations, there still is a gender
+pay gap, of about 16%.
+
+## Commonality
+
+In both examples, we have an outcome variable Y of interest--acceptance
+rate and wage income--and a sensitive variable S, which was gender in
+both examples.  But in both cases, were concerned that merely comparing
+mean Y for each gender was an oversimplication, due to a possible
+*confounder* C--department in the first example, occupation in the
+second.  Failure to take into account confounders (there can be more
+than one, and usually are so) can lead to spurious "relations" between S
+and Y.  
+
+::: {.callout-note}
+### Confounder Adjustment Problems
+
+So, in general, we wish to investigate the impact of a sensitive
+variable S on an outcome variable Y, but *accounting for confounders* C.
+Let's call them "confounder adjustment" problems.
+
+:::
+
+Now contrast the above examples with a different kind:
+
+## COMPAS recidivism data
+
+COMPAS is a commercial machine learning software tool for aiding judges
+to predict recidivism by those convicted of crimes.  A 2016 [**Pro
+Publica**
+article](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing)
+investigated, finding  the tool to be racially biased; African-American
+defendants tended to be given harsher ratings--i.e. higher estimated
+probabilities of recidivism--than similarly situated white defendants.
+
+Northpointe, the firm that developed COMPAS, [disagrees with the *Pro
+Publica*
+analysis](https://www.equivant.com/response-to-propublica-demonstrating-accuracy-equity-and-predictive-parity/),
+and we are not supporting either side here.  But if the COMPAS tool were
+in fact biased, how could the analysis be fixed?  
+
+**A key point is that any remedy must not only avoid using race directly,
+but must also minimize the impact of variables O that are separate from
+race but still correlated with it, known as *proxies*.**  If, say,
+educational attainment is correlated with race, its inclusion in our
+analysis will mean that race is still playing a role in our analysis
+after all.  
+
+::: {.callout-note}
+### Fair ML Problems
+
+Thus our goal is to predict the outcome variable Y, without 
+using the sensitive variable S, while making only
+limited use of the proxy variables O.
+
+:::
+
+## The two kinds of discrimination analysis covered here
+
+This COMPAS example falls in the category of *fairness in machine learning ML*.
+
+Note the difference between accounting for confounders on the one hand,
+and fair ML on the other.  Here is a side-by-side comparison:
+
+  aspect      confounder adjustment   fair ML
+  ----------- ----------------------- ------------------------------------
+  goal        estimate an effect      predict an outcome
+  harm        comes from society      comes from an algorithm
+  side info   adjust for confounders  limit impact of proxies 
+
+## Summary of symbols
+
+We'll use X to denote the rest of the variables,i.e. those that are 
+related to Y but are not S, C or O.  The general terminology is that Y
+is variously termed the *outcome variable*, *target variable* or
+*dependent variable*; the X, C, S and O variables are known collectively
+as *covariates*, *features* or *independent variables*.
+
+  example      Y            C                S        O
+  ---------    ---------    -------          ---      ---
+  UCB admits   acceptance   program          gender   \-
+  Census       wage         e.g. occupation  gender   \-
+  COMPAS       sentence     \-               race     e.g. education
+
+
+## Format of this tutorial
+
+We treat the topics in this order:
+
+* adjusting for confounders
+
+* fair ML
+
+Within each of the above topic, we cover:
+
+* graphical and tabular exploration
+
+* formal quantitative analysis
+
+In each case, we present explanations of the relevant concepts, so that
+this is a general tutorial on methodology for analysis of
+discrimination, and show the details of using our **dsld** package to
+make use of that methodology.
+
+So, let's get started.
+
+# Part I:  Adjustment for Confounders
+
+How do we adjust for confounders?  The most common approach involves
+linear models, with which we express the mean Y for given values of the C and
+S variables in a linear form.  
+
+## Prologue
+
+Consider the **pef** census data example above.  For simplicity, say we
+decide to consider only age as a confounder, with no other predictors X.
+So Y is wage, C consists only of age, and S is gender.  Older workers
+tend to have more experience and thus higher wages, and if there is an
+age differential in our data, say with female workers tending to be
+older, this may mask a gender pay gap.
+
+Our linear model may thus be
+
+mean W = b~0~ + b~1~ A + b~2~ M
+
+where W is wage, A is age and M is an indicator variable, with M = 1 for
+men and M = 0 for women.  The parameters b~i~ are estimated by fitting
+the model to the data:
+
+```{r}
+data(pef)
+pef1 <- pef[,c(1,4,6)]  # age, wage, gender
+names(pef1)
+```
+
+Lots here, which we will gradually cover below.  For now, note that the
+[Always keep in mind that statistical quantities are only estimated,
+since we work only with sample data from some population, real or
+conceptual.  .]{.column-margin} estimated b~2~ turns out to be about
+$13,000, which is the wage gap, if any.  Here's why:
+
+Under the model, the mean wage for, say, 36-year-old men is
+
+b~0~ + 32 b~1~ + b~2~ 1
+
+while for women of that wage it is
+
+b~0~ + 32 b~1~ 
+
+The difference is b~2~.  But if we look at, for instance, people of age
+43, the mean wages for men and women are
+
+b~0~ + 43 b~1~ + b~2~ 1
+
+and
+
+b~0~ + 43 b~1~ 
+
+and the difference is still b~2~.  So we can speak of b~2~ as *the*
+gender wage gap, at any age.  According to the model, younger men earn
+about $13,000 more than younger women, with the same-sized gap between
+older men and older women.
+
+The above approach to dealing with confounders is a very common one.
+But it raises questions, such as:
+
+* What are the assumptions underlying that model?  And how might we
+[In addition, the data here are, as is commonly the case,
+*observational*, as opposed to being the result of a *randomized
+clinical trial*; there may be serious issues, possibly analyzed via an
+advanced (and rather controversial) topic known as *causal inference*.
+Unfortunately, this is beyond our scope here.]{.column-margin} check
+whether they are (approximately) valid?
+
+* We chose only one C variable here, age.  We might also use
+occupation, as noted earlier.  In some datasets, might have dozens of
+possible confounders.  How do we choose which ones to use in our model?
+And for that matter, why not use them all?
+
+* The above model, in which the gender wage gap was uniform across all
+wages, may not be adequate.  How can we determine this, and what
+alternative models might we use?
+
+## Assessing linearity 
+
+As noted, linear models are ubiquitous in observational data analysis.
+But how would one check this?  Here a **dsld** function may help. 
+
+```{r}
+dsldConditDisparity(pef,'wageinc','sex','age','age >
+   0',yLim=c(0,150000)) 
+```
+
+The function plots a smoothed graph of Y against a user-specified C
+[There is a conditions argument; we have none here, so we just
+used a trival one, 'age > 0']{.column-margin}
+variable, once for each level of S.  So, the call here says, "Plot wage
+income against age, for each gender."  The relation certainly looks
+nonlinear, suggesting that an age^2^ term be added to the equation:
+
+mean W = b~0~ + b~1~ A + b~2~ A^2^ + b~3~ M
+
+Note too that there is a suggestion here of possible age discrimination.
+
+# Part II:  Fairness in Machine Learning
+
+# Appendix A: Fast Lane to Statistics
+
+# Appendix B: Standard Errors via the Bootstrap
