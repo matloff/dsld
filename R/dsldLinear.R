@@ -107,14 +107,14 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 }
 
 # -------------------- Test Run dsldLinear ------------------------------------#
-library(dsld)
-data(svcensus)
-svcensus$occ <- as.factor(svcensus$occ)
-svcensus$educ <- as.factor(svcensus$educ)
-svcensus$gender <- as.factor(svcensus$gender)
-newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))   
-lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1                                 # we are predicting wageinc
-lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
+# library(dsld)
+# data(svcensus)
+# svcensus$occ <- as.factor(svcensus$occ)
+# svcensus$educ <- as.factor(svcensus$educ)
+# svcensus$gender <- as.factor(svcensus$gender)
+# newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))   
+# lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1                                 # we are predicting wageinc
+# lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
 # -----------------------------------------------------------------------------#
 
 # ------------------- Test Run dsldLinear (law schools admissions) -------------------------------------#
