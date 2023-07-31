@@ -82,9 +82,6 @@ def dsldPyLinearSummary(dsldLinear): # TODO: function name
 
     dsldDiffRObject = dsldPyDiffS(dsldLinRObject, X_new)
     print(dsldDiffRObject)
-
-    dsldDiffPyObject = dsldPyDiffS(dsldLinRObject, X_new, "Python")
-    print(dsldDiffPyObject)
 '''
 
 
