@@ -173,6 +173,7 @@ if __name__ == "__main__":
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     import pandas as pd
+    # This csv DOES NOT EXIST: insert the path to a csv file from your machine
     data = pd.read_csv('../../data/compasNumericFixed.csv')
     dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], 'qeGBoost')
 
@@ -183,13 +184,4 @@ if __name__ == "__main__":
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
     dsldPyConditDisparity(data, "age", "gender", "wageinc", ['age<=60', 'wkswrkd>=25'])
-    
-
-    PEF Data Example from qeML
-    python # Open Python shell prompt
-    from dsldConditDisparity_Py_R import dsldPyConditDisparity
-    import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    pef = robjects.r['pef']
-    dsldPyConditDisparity(pef, "age", "sex", "wageinc", ['age<=60', 'wkswrkd>=25'])
 '''

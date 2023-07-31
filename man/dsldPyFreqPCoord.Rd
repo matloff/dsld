@@ -112,7 +112,7 @@
 }
 
 \author{
-    T. Abdullah, S. Martha, B. Ouattara, B. Zarate
+    N. Matloff, T. Abdullah, S. Martha, B. Ouattara, B. Zarate
 }
 
 \examples{    
@@ -134,6 +134,7 @@
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import pandas as pd
+    # This csv DOES NOT EXIST: insert the path to a csv file from your machine
     data = pd.read_csv('../../data/svcensusFixed.csv')
     dsldPyFreqPCoord(data, 10, [1,4,5], 'gender')
 
@@ -141,6 +142,7 @@
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import pandas as pd
+    # This csv DOES NOT EXIST: insert the path to a csv file from your machine
     data = pd.read_csv('../../data/svcensusFixed.csv')
     dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')   
 

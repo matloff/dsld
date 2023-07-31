@@ -183,6 +183,7 @@ if __name__ == "__main__":
     python
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
     import rpy2.robjects as robjects
+    # Must import qeML library into R environment
     robjects.r['data']('pef')
     data = robjects.r('pef')
     dsldPyScatterPlot3D(data, "sex")

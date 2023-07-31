@@ -86,7 +86,7 @@
 }
 
 \author{
-    T. Abdullah, S. Martha, B. Ouattara, B. Zarate
+    N. Matloff, T. Abdullah, S. Martha, B. Ouattara, B. Zarate
 }
 
 \examples{    
@@ -121,8 +121,5 @@
 
     dsldDiffRObject = dsldPyDiffS(dsldLinRObject, X_new)
     print(dsldDiffRObject)
-
-    dsldDiffPyObject = dsldPyDiffS(dsldLinRObject, X_new, "Python")
-    print(dsldDiffPyObject)
 }
 
