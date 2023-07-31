@@ -11,7 +11,7 @@ author:
   - Aditya Mittal 
   - Billy Ouattara 
   - Jonathan Tran
-date: "7/27/2023"
+date: "7/30/2023"
 format: 
   pdf:
      toc: true
@@ -23,12 +23,13 @@ library(dsld)
 library(qeML)
 ```
 
-```{r}  
-data(pef)
-dsldDensityByS(pef,'wageinc','educ','plot',fill=TRUE)
-```
-
 # Overview
+
+```{r,echo=FALSE}  
+data(svcensus)
+dsldDensityByS(svcensus,'wageinc',
+   'educ','plot',fill=TRUE)
+```
 
 Discrimination is a key social issue in the US and in a number of other
 countries.  There is lots of available data with which one might
@@ -52,13 +53,13 @@ well as introduction to use of the package.
 
 ## Prerequisite background
 
-In addition to having installed R, the user should have a very basic
-[Python wrappers are included for most functions.]{.column-margin}
-knowledge of statistical inference--mean, variance, confidence intervals
-and tests, and histograms.  A "bare bones" refresher, with emphasis on
-intuition, is given in Appendix A.
+In addition to having rudimentary skill in R, the user should have a
+very basic [Python wrappers are included for most
+functions.]{.column-margin} knowledge of statistical inference--mean,
+variance, confidence intervals and tests, and histograms.  A "bare
+bones" refresher, with emphasis on intuition, is given in Appendix A.
 
-# Introduction and motivating examples
+# Introduction and Motivating Examples
 
 To set the stage, consider the following:
 
@@ -84,7 +85,7 @@ rate to below that of men.
 
 ![](USCensus.png){width=25%}
 
-The **pef** dataset is a subset of US census data from back in 2000,
+The **svcensus** dataset is a subset of US census data from back in 2000,
 focusing on six engineering occupations.  [Included here in the **dsld**
 package.]{.column-margin} The question at hand is whether there is a
 gender pay gap.  Again, the overall pay for men is higher, by about 25%.
@@ -105,11 +106,11 @@ than one, and usually are so) can lead to spurious "relations" between S
 and Y.  
 
 ::: {.callout-note}
-### Confounder Adjustment Problems
+### Confounder Adjustment Settings
 
 So, in general, we wish to investigate the impact of a sensitive
 variable S on an outcome variable Y, but *accounting for confounders* C.
-Let's call them "confounder adjustment" problems.
+Let's call them "confounder adjustment" settings.
 
 :::
 
@@ -139,7 +140,7 @@ analysis will mean that race is still playing a role in our analysis
 after all.  
 
 ::: {.callout-note}
-### Fair ML Problems
+### Fair ML Settings
 
 Thus our goal is to predict the outcome variable Y, without 
 using the sensitive variable S, while making only
@@ -147,7 +148,7 @@ limited use of the proxy variables O.
 
 :::
 
-## The two kinds of discrimination analysis covered here
+## Summary:  the two kinds of discrimination analysis covered here
 
 This COMPAS example falls in the category of *fairness in machine learning ML*.
 
@@ -162,7 +163,7 @@ and fair ML on the other.  Here is a side-by-side comparison:
 
 ## Summary of symbols
 
-We'll use X to denote the rest of the variables,i.e. those that are 
+We'll use X to denote the rest of the variables, i.e. those that are 
 related to Y but are not S, C or O.  The general terminology is that Y
 is variously termed the *outcome variable*, *target variable* or
 *dependent variable*; the X, C, S and O variables are known collectively
@@ -199,19 +200,23 @@ So, let's get started.
 # Part I:  Adjustment for Confounders
 
 How do we adjust for confounders?  The most common approach involves
-linear models, with which we express the mean Y for given values of the C and
-S variables in a linear form.  
+[There will also be the question of *which* possible confounders to use.
+]{.column-margin} linear models, with which we express the mean Y for
+given values of the C and S variables in a linear form.  
 
 ## Prologue
 
-Consider the **pef** census data example above.  For simplicity, say we
-decide to consider only age as a confounder, with no other predictors X.
-So Y is wage, C consists only of age, and S is gender.  Older workers
-tend to have more experience and thus higher wages, and if there is an
-age differential in our data, say with female workers tending to be
-older, this may mask a gender pay gap.
+Consider the **svcensus** data example above, investigating a possible
+gender pay gap.  So Y is wage and S is gender.  We might treat age as a
+confounder C, reasoning as follows.  Older workers tend to have more
+experience and thus higher wages, and if there is an age differential in
+our data, say with female workers tending to be older, this may mask a
+gender pay gap.  So, let's take the set of confounders C to consist of
+age, and for simplicity in this introductory example, not include any
+other confounders, such as occupation, and let's not include any other
+variables X.
 
-Our linear model may thus be
+Our linear model would thus be
 
 mean W = b~0~ + b~1~ A + b~2~ M
 
@@ -220,16 +225,16 @@ men and M = 0 for women.  The parameters b~i~ are estimated by fitting
 the model to the data:
 
 ```{r}
-pef1 <- pef[,c(1,4,6)]  # age, wage, gender
-z <- dsldLinear(pef1,'wageinc','gender')
-summary(z)
+svcensus1 <- svcensus[,c(1,4,6)]  # age, wage, gender
+z <- dsldLinear(svcensus1,'wageinc','gender')
+coef(z)  # print the estimated coefficients b_i 
 ```
 
-Lots here, which we will gradually cover below.  For now, note that the
-[Always keep in mind that statistical quantities are only estimated,
-since we work only with sample data from some population, real or
-conceptual.  .]{.column-margin} estimated b~2~ turns out to be about
-$13,000, which is the wage gap, if any.  Here's why:
+Lots here to discuss, which we will gradually cover below.  [Always keep
+in mind that statistical quantities are only estimated, since we work
+only with sample data from some population, real or conceptual.
+.]{.column-margin} For now, note that the estimated b~2~ turns out to be
+about $13,000, which is the wage gap, if any.  Here's why:
 
 Under the model, the mean wage for, say, 36-year-old men is
 
@@ -242,7 +247,7 @@ b~0~ + 32 b~1~
 The difference is b~2~.  But if we look at, for instance, people of age
 43, the mean wages for men and women are
 
-b~0~ + 43 b~1~ + b~2~ 1
+b~0~ + 43 b~1~ + 1 b~2~ 
 
 and
 
@@ -276,23 +281,56 @@ alternative models might we use?
 ## Assessing linearity 
 
 As noted, linear models are ubiquitous in observational data analysis.
-But how would one check this?  Here a **dsld** function may help. 
+For now, note that the estimated b~2~ turns out to be Open any
+professional journal in medicine, sociology, economics and so on, and
+you'll many application of this methodology.  But how would one check
+that most basic assumption, the linearity of the mean Y for given X, C
+and S values?
+
+Typically, linearity is checked graphically.  [Alas, often researchers
+proceed without any checking of linearity or other assumptions at
+all.]{.column-margin}  A common approach involves plotting the
+*residuals*, which are the differences between the fitted line and the Y
+values.  Here, though, we use another graphical approach, via
+a **dsld** function that may be more informative. 
 
 ```{r}
-dsldConditDisparity(pef,'wageinc','gender','age','age >
-0',yLim=c(0,150000)) 
+dsldConditDisparity(svcensus1,'wageinc','gender',
+   'age','age > 0',yLim=c(0,150000)) 
 ```
 
 The function plots a smoothed graph of Y against a user-specified C
-[There is a conditions argument; we have none here, so we just
-used a trival one, 'age > 0']{.column-margin}
-variable, once for each level of S.  So, the call here says, "Plot wage
-income against age, for each gender."  The relation certainly looks
-nonlinear, suggesting that an age^2^ term be added to the equation:
+[There is a conditions argument; we have none here, so we just used a
+trival one, 'age > 0']{.column-margin} variable, once for each level of
+S.  So, the call here says, "Plot wage income against age, for each
+gender."  
+
+The model have mean Y being a linear of function of age, so we  should
+expect to see approximate straight lines here.  Yet the relation
+certainly looks nonlinear, possibly reflecting [Adding a squared term
+does not make our model nonlinear, as it is still linear in the b~i~; if
+we, say, double each of those, the entire expression is doubled, the
+definition of linearity.]{.column-margin} variable, once for each level
+of age discrimination.  We are already investigating one kind of
+discrimination here, gender, so again for simplicity let's keep age as a
+confounder.  But we must do something about the substantial nonlinearity
+we've discovered, and one possible remedy is to add an age^2^ term be
+added to the equation:
 
 mean W = b~0~ + b~1~ A + b~2~ A^2^ + b~3~ M
 
-Note too that there is a suggestion here of possible age discrimination.
+```{r}
+svcensus1$age2 <- svcensus1$age^2
+z <- dsldLinear(svcensus1,'wageinc','gender')
+coef(z)  # print the estimated coefficients b_i 
+```
+
+So, with this more accurate model, the gender gap actually increased
+further.  But we are just getting started!  As noted, we should think
+about adding a second confounder, occupation, and later consider
+interactions between and gender and age discrimination here.
+
+## What about other assumptions?
 
 # Part II:  Fairness in Machine Learning
 
