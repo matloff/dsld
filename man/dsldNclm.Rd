@@ -4,21 +4,22 @@
 \title{dsldNclm}
 
 \description{
-    This is a wrapper for the Nclm function from the fairML package  
-    (link in references).
+    This is a wrapper for the Nclm function from the fairml package  
+    (link in references). The fairml package bases their fair regression 
+    model based on the nonconvex Optimization for Regression with Fairness 
+    Constraints from Komiyama et al. (2018) (link in See also).
 }
 \usage{
-    dsldNclm(yName, xName, sName, unfairness, covfun, 
-         lambda = 0, save.auxiliary = FALSE) 
+    dsldNclm <- function (data, yName, sName, unfairness, covfun, 
+                     lambda = 0, save.auxiliary = FALSE)
 }
 
 \arguments{
+    \item{data}{
+        The data, in data frame or matrix form.
+    }
     \item{yName}{
         A numeric vector, the response variable.
-    }
-    \item{xName}{
-        A numeric matrix or a data frame containing numeric and factor columns; 
-        the predictors.
     }
     \item{sName}{
         A numeric matrix or a data frame containing numeric and factor columns; 
@@ -44,35 +45,27 @@
     } 
 }
 
+\note{
+    The usage of this function requires cccp package.
+} 
+
 \details{
   % Probably need to edit this section
-    dsldNclm() defines fairness as statistical parity. The model bounds the 
-    proportion of the variance that is explained by the sensitive attributes over 
+    dsldNclm serves as a function wrapper for Nclm, which bounds the proportion 
+    of the variance that is explained by the sensitive attributes over 
     the total explained variance.
 
-    The algorithm proposed by Komiyama et al. (2018) works like this:
-        regresses the predictors against the sensitive attributes;
-        constructs a new set of predictors that are decorrelated from the 
-            sensitive attributes using the residuals of this regression;
-        regresses the response against the decorrelated predictors and the 
-            sensitive attributes, while
-        bounding the proportion of variance the sensitive attributes can explain 
-            with respect to the overall explained variance of the model.
-
-    Both sensitive and predictors are standardized internally before estimating the 
-    regression coefficients, which are then rescaled back to match the original 
-    scales of the variables. response is only standardized if it has a variance 
-    smaller than 1, as that seems to improve the stability of the solutions 
-    provided by the optimizer (as far as the data included in fairml are concerned).
-
-    The covfun argument makes it possible to specify a custom function to compute 
-    the covariance matrices used in the constrained optimization. Some examples 
-    are the kernel estimators described in Komiyama et al. (2018) and the
-    shrinkage estimators in the corpcor package.
+    The arguments yName and sName are used to calculate the xName inside
+    the function as xName is everything inside the dataset except the yName
+    and sName.
+    
+    The covfun argument can take in a custom function to compute the covariance
+    matrices used in the constrained optimization (Komiyama et al. (2018)).
 }
 
 \value{
-    dsldNclm() returns an object of class c("nclm", "fair.model").
+    dsldNclm returns an object of class c("nclm", "fair.model") from the
+    fairml package.
 }
 
 \references{
@@ -85,6 +78,10 @@
 
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
+    Komiyama J, Takeda A, Honda J, Shimao H (2018). "Nonconvex Optimization for
+    Regression with Fairness Constraints". Proceedints of the 35th International
+    Conference on Machine Learning (ICML), PMLR \strong{80}:2737--2746. \cr
+    \code{http://proceedings.mlr.press/v80/komiyama18a/komiyama18a.pdf}
 }
 
 \examples{
