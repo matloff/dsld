@@ -2,11 +2,11 @@
 ---
 title: "Data Science Looks at Discrimination"
 subtitle: "A toolkit for investigating bias in race, gender, age and so on"
-author: "Taha Abdullah, Arjun Ashok, Brandon Estrada, Shubhada Martha, Norman Matloff, Aditya Mittal, Billy Ouattara and Jonathan Tran"
-date: "7/27/2023"
+author: "T. Abdullah, A. Ashok, B. Estrada, S. Martha, N. Matloff, A. Mittal, B. Ouattara and J. Tran"
+date: "7/30/2023"
 output:
-  tufte::tufte_html: 
-     default
+  tufte::tufte_handout: default
+  tufte::tufte_pdf: default
   vignette: >
           %\VignetteIndexEntry{Machine Learning Overview}
           %\VignetteEngine{knitr::rmarkdown}
@@ -16,7 +16,7 @@ output:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
           collapse = TRUE,
-          comment = "#>"
+          comment = "  _"
 )
 ``` 
 
@@ -27,7 +27,7 @@ library(dsld)
 library(qeML)
 ```
 
-```{r}  
+```{r,out.width="35%"}  
 data(pef)
 dsldDensityByS(pef,'wageinc','educ','plot',fill=TRUE)
 ```
@@ -57,7 +57,7 @@ well as introduction to use of the package.
 ## Prerequisite background
 
 In addition to having installed R, the user should have a very basic
-[Python wrappers are included for most functions.]{.column-margin}
+^[Python wrappers are included for most functions.]
 knowledge of statistical inference--mean, variance, confidence intervals
 and tests, and histograms.  A "bare bones" refresher, with emphasis on
 intuition, is given in Appendix A.
