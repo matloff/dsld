@@ -56,18 +56,18 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       diffData <- diffData[, !(names(diffData) %in% drop)]
       
       # create the model #
-      diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
-                       family = "gaussian", data = diffData)
+      diffModel <- lm(formula = as.formula(paste(yName, "~ .")),
+                      data = diffData)
       
       # setup individual instance of dsldDiffModel #
       dsldDiffModel <- c(dsldDiffModel,
-                         yName,
-                         sName,
-                         list(diffModel),
-                         list(newData),
-                         list(summary(diffModel)),
-                         list(coef(diffModel)),
-                         list(diffData)
+        yName,
+        sName,
+        list(diffModel),
+        list(newData),
+        list(summary(diffModel)),
+        list(coef(diffModel)),
+        list(diffData)
       )
       names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
                                 "summary", "coef", "data")
@@ -81,11 +81,10 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
   } else {
     # initialize instance of dsldDiffModel #
     dsldDiffModel <- list()
-    
+
     # create model #
-    diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
-                     family = "gaussian", data = data)
-    
+    diffModel <- lm(formula = as.formula(paste(yName, "~ .")), data = data)
+
     # setup instance of dsldDiffModel #
     dsldDiffModel <- c(dsldDiffModel,
                        yName,
@@ -108,13 +107,14 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 }
 
 # -------------------- Test Run dsldLinear ------------------------------------#
-#svcensus <- read.csv("~/Desktop/Dsld_Package/pef.csv")
-#svcensus$occ <- as.factor(svcensus$occ)
-#svcensus$educ <- as.factor(svcensus$educ)
-#svcensus$gender <- as.factor(svcensus$gender)
-#newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))   
-#lin1 = dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1                                 # we are predicting wageinc
-#lin2 = dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
+library(dsld)
+data(svcensus)
+svcensus$occ <- as.factor(svcensus$occ)
+svcensus$educ <- as.factor(svcensus$educ)
+svcensus$gender <- as.factor(svcensus$gender)
+newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106","106"))   
+lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1                                 # we are predicting wageinc
+lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
 # -----------------------------------------------------------------------------#
 
 # ------------------- Test Run dsldLinear (law schools admissions) -------------------------------------#
