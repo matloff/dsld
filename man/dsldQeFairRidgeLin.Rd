@@ -21,6 +21,9 @@
     \item{deweightPars}{
         to-do
     }
+    \item{sensNames}{
+        to-decorrelated
+    }
     \item{holdout}{
         to-decorrelated
     } 
