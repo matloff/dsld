@@ -55,8 +55,8 @@
     of the variance that is explained by the sensitive attributes over 
     the total explained variance.
 
-    The arguments yName and sName are used to calculate the xName inside
-    the function as xName is everything inside the dataset except the yName
+    The arguments yName and sName are used to internally estimate the xName 
+    as xName includes everything in the dataset except the yName
     and sName.
     
     The covfun argument can take in a custom function to compute the covariance

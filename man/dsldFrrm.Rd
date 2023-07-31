@@ -4,22 +4,22 @@
 \title{dsldFrrm}
 
 \description{
-    This is a wrapper for the Frrm function from the fairML package
+    This is a wrapper for the frrm function from the fairML package
     (link in references).
 }
 
 \usage{
-    dsldFrrm(yName, xName, sName, unfairness, definition = "sp-komiyama",
-         lambda = 0, save.auxiliary = FALSE)
+    dsldFrrm <- function(data, yName, sName, unfairness,
+                     definition = "sp-komiyama", lambda = 0, 
+                     save.auxiliary = FALSE) 
 }
 
 \arguments{
+    \item{data}{
+        The data, in data frame or matrix form.
+    }
     \item{yName}{
         A numeric vector, the response variable.
-    }
-    \item{xName}{
-        A numeric matrix or a data frame containing numeric and factor columns; 
-        the predictors.
     }
     \item{sName}{
         A numeric matrix or a data frame containing numeric and factor columns; 
@@ -33,7 +33,7 @@
     \item{definition}{
         A character string, the label of the definition of fairness used in 
         fitting the model. Currently either "sp-komiyama", "eo-komiyama" or 
-        "if-berk". It may also be a function: see below for details.
+        "if-berk". It may also be a custom function: see below for details.
     }
     \item{family}{
         A character string, either "gaussian" to fit a linear regression, 
@@ -53,51 +53,26 @@
 }
 
 \details{
-  % Probably need to edit this section
-    dsldFrrm() and dsldFgrrm() can accommodate different definitions of fairness, 
-    which can be selected via the definition argument. The labels for the built-in 
-    definitions are: "sp-komiyama" for the same definition of fairness as 
-    dsldNclm(): the model bounds the proportion of the variance that is explained 
-    by the sensitive attributes over the total explained variance. This falls 
-    within the definition of statistical parity. "eo-komiyama" enforces equality 
-    of opportunity in a similar way: it regresses the fitted values against the 
-    sensitive attributes and the response, and it bounds the proportion of the 
-    variance explained by the sensitive attributes over the total explained 
-    variance in that model. "if-berk" enforces individual fairness by penalizing 
-    the model for each pair of observations with different values of the sensitive 
-    attributes and different responses. Users may also pass a function via the 
-    definition argument to plug custom fairness definitions. This function should 
-    have signature function(model, y, S, U, family) and return an array with an 
-    element called "value" (optionally along with others). The arguments will 
-    contain the model fitted for the current level of fairness (model), the 
-    sanitized response variable (y), the design matrix for the sanitized sensitive 
-    attributes (S), the design matrix for the sanitized decorrelated predictors (U) 
-    and the character string identifying the family the model belongs to (family).
+    dsldFrrm serves as a function wrapper for frrm, which uses the argument 
+    definition to accommodate for different definitions of fairness.
 
-    The algorithm works like this:
-        regresses the predictors against the sensitive attributes;
-        constructs a new set of predictors that are decorrelated from the 
-            sensitive attributes using the residuals of this regression;
-        regresses the response against the decorrelated predictors and the 
-            sensitive attributes; while 
-        using a ridge penalty to control the proportion of variance the 
-            sensitive attributes can explain with respect to the overall 
-            explained variance of the model.
+    The argument definition is customization to custom definitions of 
+    fairness. This function should have signature
+    \code{function(model, y, S, U, family)} and return an array with an element
+    called \code{"value"} (optionally along with others). The arguments will
+    contain the model fitted for the current level of fairness (\code{model}),
+    the sanitized response variable (\code{y}), the design matrix for the
+    sanitized sensitive attributes (\code{S}), the design matrix for the
+    sanitized decorrelated predictors (\code{U}) and the character string
+    identifying the family the model belongs to (\code{family}) (Marco Scutari (2023)).
 
-    Both sensitive and predictors are standardized internally before estimating 
-    the regression coefficients, which are then rescaled back to match the 
-    original scales of the variables.
-
-    dsldFgrrm() is the extension of dsldFrrm() to generalized linear models, 
-    currently implementing linear (family = "gaussian") and 
-    logistic (family = "binomial") regressions. fgrrm() is equivalent to frrm() 
-    with family = "gaussian". The definition of fairness are identical between 
-    dsldFrrm() and dsldFgrrm().
+    The arguments yName and sName are used to internally estimate the xName 
+    as xName includes everything in the dataset except the yName
+    and sName.
 }
 
 \value{
-    frrm() returns an object of class c("frrm", "fair.model"). fgrrm() returns an
-    object of class c("fgrrm", "fair.model").
+    frrm() returns an object of class c("frrm", "fair.model").
 }
 
 \references{
