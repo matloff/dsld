@@ -87,12 +87,12 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 
     # setup instance of dsldDiffModel #
     dsldDiffModel <- c(dsldDiffModel,
-                       yName,
-                       sName,
-                       list(diffModel),
-                       list(summary(diffModel)),
-                       list(coef(diffModel)),
-                       list(data)
+      yName,
+      sName,
+      list(diffModel),
+      list(summary(diffModel)),
+      list(coef(diffModel)),
+      list(data)
     )
     names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
                               "coef", "data")
