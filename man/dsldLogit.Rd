@@ -1,32 +1,162 @@
 \name{dsldLogit}
 \alias{dsldLogit}
-
 \title{DSLDLogit}
 
 \description{ 
-    Comparison of conditions for sensitive groups via logistic regression models, with and without interactions.
+    Comparison of conditions for sensitive groups via logistic regression
+	models, with and without interactions.
 }
 
 \usage{
-    ## Fit linear model
+    ## Fit logistic model
     dsldLogit(data, yName, sName, interactions = FALSE, new_data = NULL)
 
-    ## s3 polymorphic functionalities for class 'dsldLogit'
-    summary(dsldLogit)
-    dsldDiffS(dsldLogit, newData) # compare mean Y | X for additional data in
-                                   # the full interactions case
+    ## s3 polymorphic functionalities for class 'dsldGLM'
+    summary(dsldGLM)
+    dsldDiffS(dsldGLM, newData) 	# compare mean Y | X for additional data in
+                                   	# the full interactions case
 }
 
 \arguments{
-    \item{data}{data frame used to train the linear model; will be split according to each level of sName in output if interactions = TRUE [dataframe]}
-    \item{yName}{a string, the response variable [character]}
-    \item{sName}{a string, the sensitive variable (an R factor) [character]}
-    \item{interactions}{a logical value indicating whether or not to fit interactions with the sensitive variable. Defaults to FALSE [logical]}
-    \item{new_data}{dataframe of new cases for which mean Y | X will be compared between each pairs of S levels. Defaults to NULL for the 
-    no-interactions case [dataframe]}
-    \item{dsldLogit}{output of dsldLinear, an s3 object of class 'dsldLogit' [list]}
+    \item{data}{
+		data frame used to train the linear model; will be split according to
+		each level of sName in output if interactions = TRUE [dataframe]
+	}
+    \item{yName}{
+		a string, the response variable [character]
+	}
+    \item{sName}{
+		a string, the sensitive variable (an R factor) [character]
+	}
+    \item{interactions}{
+		a logical value indicating whether or not to fit interactions with the
+		sensitive variable. Defaults to FALSE [logical]
+	}
+    \item{new_data}{
+		dataframe of new cases for which mean Y | X will be compared between
+		each pairs of S levels. Defaults to NULL for the no-interactions case
+		[dataframe]
+	}
+    \item{dsldLogit}{
+		output of dsldLinear, an s3 object of class 'dsldGLM' [list]
+	}
 }
 
 \author{
     N. Matloff, A. Ashok, A. Mittal
 }
+
+\examples{
+	# The examples provided are done with the law.school.admissions dataset; the
+	# dataset requires some minimal preparation prior to running dsldLogit.
+
+	# Example 1: ‘bar’ as yName; 'gender' as sName; interactions == TRUE,
+	# 			 new_data [dataframe]
+	data(law.school.admissions) # predicting probability of passing the ‘bar’
+	drop <- c('fulltime','cluster')
+	law.school.admissions <- law.school.admissions[,
+		!(names(law.school.admissions) %in% drop)]
+	law.school.admissions$bar <- as.integer(
+		as.logical(law.school.admissions$bar)
+	) 	# convert from TRUE/FALSE into binary 0’s and 1’s
+
+	# compare probability of passing the bar of low vs. high income 
+	newData <- data.frame(
+		age = c(18,18),
+		decile1 = c(5,5),
+		decile3 = c(4,4),
+		lsat = c(44,44),
+		fam_inc = c(1,5),
+		ugpa = c(3.8, 3.8),
+		race1 = c(‘black’, ‘black’)
+	)
+
+	log1 <- dsldLogit(law.school.admissions,'bar','gender', interactions = TRUE,
+		newData) 	# we are predicting lsat score       
+
+	# Extract individual regression coefficients AND compare differences in
+	# P(Y | X) between each pairs of sName levels:
+	summary(log1)
+              
+	# Users can also make additional comparisons with new data as well using
+	# dsldDiffS to compare mean P(Y|X) between each pair of S levels.
+	X_new <- data.frame(
+		age = c(18,18),
+		decile1 = c(5,5),
+		decile3 = c(4,4),
+		lsat = c(44,44),
+		fam_inc = c(1,5),
+		ugpa = c(3.8, 3.8),
+		race1 = c(‘white’, ‘white’)
+	)
+
+	dat1 <- dsldDiffS(log1, X_new)
+
+	# Example 2: ‘bar’ as yName; 'gender' as sName; interactions == FALSE;
+	# new_data = NULL
+	log2 <- dsldLogit(law.school.admissions,'bar','gender', interactions = FALSE)
+
+	# Extract individual regression coefficients AND compare differences in
+	# regression coefficients between each pairs of S levels:
+	summary(log2)
+}
+
+\details{
+	The dsldLogit function fits a logistic regression model to the response
+	variable, yName, using all other available covariates in the user provided
+	dataset. The user may select for full interactions across the sensitive
+	variable, sName, in which case the function will fit m separate models,
+	where m is the number of levels of sName.
+
+	The function produces an instance of the `dsldGLM` class (an S3 object) that
+	houses several instances of the `dsldDiffModel` class for each unique level
+	of the sensitive column specified.
+
+	The output of dsldLinear will store a list of useful traits pertaining the
+	linear model; the following useful information will be stored: 
+		1. yName & sName; [character] @ yName, @ sName
+		2. Model; [character] @ model
+		3. (Full Interactions only) New data input by user; [dataframe] @ data   
+		3. Summary Output of model; [character] @ summary
+		4. Coef of beta parameters; [character] @ coef
+		5. Data used in the model (useful to see for interactions); [dataframe]
+		   @ data
+
+	Furthermore, summary() is a polymorphic method that takes in an object of
+	the ‘dsldGLM’ class and outputs an S3 object containing several dataframes.
+	In the full interactions case, the first m elements (where m is the number
+	of levels in sName) contain information regarding regression coefficients,
+	standard errors, p-values etc. for each model fitted across each level in
+	sName. The last element of the object is a dataframe comparing the
+	differences in P(Y | X) for each row in the new data between each pair of
+	sName levels. The intention is to allow users to see the comparisons of
+	conditions for sensitive groups via logistic regression models, with and
+	without interactions, in a user-friendly data frame format. For the
+	no-interactions case: the first element of dsldSummary outputs a dataframe
+	containing information regarding individual regression coefficients,
+	standard errors, p-values etc. for the fitted model; the second element
+	compares differences in regression coefficients between each pairs of sName
+	levels.
+
+	For differences in regression coefficients for no-interactions case,
+	summary() returns a data frame with 4 columns:
+		1. Pairs of S level names 
+		2. Estimates of the differences
+		3. Associated standard errors
+		4. P-values
+		There will be one row for each pair of S levels.
+
+	For differences in Y | X  in the full-interactions case, summary() returns a
+	data frame with 3 columns:
+		1. Col. number of diffs argument
+		2. Estimate of the difference in mean Y at that X value
+		3. Associated std. err.
+		There will be one row for each pair of S levels.
+
+	The dsldDiffS() function allows users to compare mean Y at that X between
+	each pair of S levels for additional new unseen data levels using the model
+	fitted from dsldLogit. The user can input additional data if they'd like to
+	make new comparisons IN addition to those from output of summary(dsldObj).
+	Note: the output of dsldDiffS is the same dataframe format as summary().
+}
+
