@@ -19,9 +19,8 @@ import sys
 dsld    = importr("dsld")
 
 
-def dsldPyNclm(data, yName, sName, unfairness, covfun, xName = R_NULL, lamda = 0, save = False):
+def dsldPyNclm(data, yName, sName, unfairness, covfun = robjects.r('cov()'), xName = R_NULL, lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
-    
     # Note: covfun is supposed to be an R function not python function
 
     # Data conversion handled by Utils function
@@ -29,11 +28,13 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun, xName = R_NULL, lamda = 0
 
     yName_r = robjects.StrVector([yName])                               # Convert variable name to R character vector
 
-    xName_r = robjects.StrVector([xName])                               # Convert variable name to R character vector
+    xName_r = robjects.StrVector(xName)                               # Convert variable name to R character vector
 
-    sName_r = robjects.StrVector([sName])                               # Convert variable name to R character vector
+    sName_r = robjects.StrVector(sName)                               # Convert variable name to R character vector
 
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
+
+    covfun_r = covfun
 
     dsldlambda_r = robjects.IntVector([lamda])                          # Convert variable name to R int vector
 
@@ -41,4 +42,8 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun, xName = R_NULL, lamda = 0
 
     # Might need to convert the data back into pandas data frame or proper
     # python data format
-    return dsld.dsldNclm(data = r_data, yName = yName_r, sName = sName_r, unfairness = unfairness_r, covfun = covfun, save = save_r) #lamda=dsldlambda)
+    return dsld.dsldNclm(r_data, yName_r, sName_r,  unfairness_r, covfun_r, dsldlambda_r, save_r)
+
+'''
+    from dsldNclm_Py_R import dsldPyNclm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
+'''
