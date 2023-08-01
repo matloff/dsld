@@ -204,7 +204,7 @@ How do we adjust for confounders?  The most common approach involves
 ]{.column-margin} linear models, with which we express the mean Y for
 given values of the C and S variables in a linear form.  
 
-## Prologue
+## Prologue: a simple gender wage gap analysis
 
 Consider the **svcensus** data example above, investigating a possible
 gender pay gap.  So Y is wage and S is gender.  We might treat age as a
@@ -215,6 +215,8 @@ gender pay gap.  So, let's take the set of confounders C to consist of
 age, and for simplicity in this introductory example, not include any
 other confounders, such as occupation, and let's not include any other
 variables X.
+
+### Initial analysis
 
 Our linear model would thus be
 
@@ -230,10 +232,11 @@ z <- dsldLinear(svcensus1,'wageinc','gender')
 coef(z)  # print the estimated coefficients b_i 
 ```
 
+### Interpretation of b~2~
 Lots here to discuss, which we will gradually cover below.  [Always keep
 in mind that statistical quantities are only estimated, since we work
 only with sample data from some population, real or conceptual.
-.]{.column-margin} For now, note that the estimated b~2~ turns out to be
+.]{.column-margin} For now, note that the *estimated* b~2~ turns out to be
 about $13,000, which is the wage gap, if any.  Here's why:
 
 Under the model, the mean wage for, say, 36-year-old men is
@@ -278,21 +281,34 @@ And for that matter, why not use them all?
 wages, may not be adequate.  How can we determine this, and what
 alternative models might we use?
 
-## Assessing linearity 
+### Statistical inference
+
+The full output of **dsldLinear()** goes to the heart of discrimination
+analysis, enabling statistical inferences on differences in levels of
+the sensitive variable S:
+
+```{r}
+summary(z)
+```
+
+So, an approximate 95% confidence interval for the gender way gap is
+
+13098.2091 &plusmn; 1.96 x 790.44515
+
+or (11548.94,14647.48).
+
+### Assessing linearity 
 
 As noted, linear models are ubiquitous in observational data analysis.
-For now, note that the estimated b~2~ turns out to be Open any
-professional journal in medicine, sociology, economics and so on, and
-you'll many application of this methodology.  But how would one check
-that most basic assumption, the linearity of the mean Y for given X, C
-and S values?
+Open any professional journal in medicine, sociology, economics and so
+on, and you'll many applications of this methodology.  But how would one
+check that most basic assumption, the linearity of the mean Y for given
+X, C and S values?
 
-Typically, linearity is checked graphically.  [Alas, often researchers
-proceed without any checking of linearity or other assumptions at
-all.]{.column-margin}  A common approach involves plotting the
-*residuals*, which are the differences between the fitted line and the Y
-values.  Here, though, we use another graphical approach, via
-a **dsld** function that may be more informative. 
+Typically, linearity is checked graphically.  A common approach involves
+plotting the *residuals*, which are the differences between the fitted
+line and the Y values.  Here, though, we use another graphical approach,
+via a **dsld** function that may be more informative. 
 
 ```{r}
 dsldConditDisparity(svcensus1,'wageinc','gender',
@@ -300,7 +316,7 @@ dsldConditDisparity(svcensus1,'wageinc','gender',
 ```
 
 The function plots a smoothed graph of Y against a user-specified C
-[There is a conditions argument; we have none here, so we just used a
+[There is a 'conditions' argument; we have none here, so we just used a
 trival one, 'age > 0']{.column-margin} variable, once for each level of
 S.  So, the call here says, "Plot wage income against age, for each
 gender."  
@@ -313,7 +329,11 @@ we, say, double each of those, the entire expression is doubled, the
 definition of linearity.]{.column-margin} variable, once for each level
 of age discrimination.  We are already investigating one kind of
 discrimination here, gender, so again for simplicity let's keep age as a
-confounder.  But we must do something about the substantial nonlinearity
+confounder.  
+
+### Updated model
+
+But we must do something about the substantial nonlinearity
 we've discovered, and one possible remedy is to add an age^2^ term be
 added to the equation:
 
@@ -325,15 +345,20 @@ z <- dsldLinear(svcensus1,'wageinc','gender')
 coef(z)  # print the estimated coefficients b_i 
 ```
 
-So, with this more accurate model, the gender gap actually increased
-further.  But we are just getting started!  As noted, we should think
-about adding a second confounder, occupation, and later consider
-interactions between and gender and age discrimination here.
+So we see that the original wage gap figure of about $13,000 was
+incorrect, underestimating it by about 15%.
 
-## What about other assumptions?
+We see in this example that misspecifying a linear model can have a
+major impact on its accuracy.  Further issues of model assumptions are
+beyond the scope of this book, but the interested reader is referred one
+of the most popular applied linear models books, *Regression Modeling
+Strategies: With Applications to Linear Models, Logistic and Ordinal
+Regression, and Survival Analysis*, by Prof. Frank Harrell, Jr. of the
+Vanderbilt University School of Medicine.
 
 # Part II:  Fairness in Machine Learning
 
 # Appendix A: Fast Lane to Statistics
 
 # Appendix B: Standard Errors via the Bootstrap
+
