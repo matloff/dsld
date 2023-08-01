@@ -9,16 +9,16 @@
 # Instead of the users having to enter yName and xName try to do that
 #   inside the function
 
-dsldFgrrm <- function(data, yName, xName, sName, unfairness,
+dsldFgrrm <- function(data, yData, xData, sName, unfairness,
                       definition = "sp-komiyama", family = "binomial", 
                       lambda = 0, save.auxiliary = FALSE)
 {
   if (!require('cccp')) install.packages('cccp'); library('cccp')
   
   cc = data[complete.cases(data),]
-  r = yName
+  r = yData
 
-  p = xName
+  p = xData
 
   s = cc[, sName]
   
@@ -35,12 +35,12 @@ dsldFgrrm <- function(data, yName, xName, sName, unfairness,
 # # complete data analysis.
 # flchain = flchain[complete.cases(flchain), ]
 
-# yName = cbind(time = flchain$futime + 1, status = flchain$death)
-# xName = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
+# yData = cbind(time = flchain$futime + 1, status = flchain$death)
+# xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
 #                 "chapter")]
 # sName = c("age", "sex")
 
-# m = dsldFgrrm(data = flchain, yName = yName, xName = xName, sName = sName, 0.05, family = "cox")
+# m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
 # summary(m)
 
 
@@ -54,7 +54,7 @@ dsldFgrrm <- function(data, yName, xName, sName, unfairness,
 # sName = c("age", "sex")
 # xName = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
 #                 "chapter")]
-# m = dsldFgrrm(data = flchain, yName = yName, xName = xName, sName = sName, 0.05, family = "cox")
+# m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
 # summary(m)
 
 
@@ -65,5 +65,5 @@ dsldFgrrm <- function(data, yName, xName, sName, unfairness,
 # yName = obesity.levels[, "NObeyesdad"]
 # sName = c("Gender", "Age")
 # xName = obesity.levels[, setdiff(names(obesity.levels), c("NObeyesdad", "Gender", "Age"))]
-# m = dsldFgrrm(data = obesity.levels, yName = yName, xName = xName, sName = sName, 0.05, family = "multinomial", lambda = 0.1)
+# m = dsldFgrrm(data = obesity.levels, yData = yData, xData = xData, sName = sName, 0.05, family = "multinomial", lambda = 0.1)
 # summary(m)

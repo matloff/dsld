@@ -19,11 +19,10 @@
         The data, in data frame or matrix form.
     }
     \item{yName}{
-        A numeric vector, the response variable.
+        Name of the response variable.
     }
     \item{sName}{
-        A numeric matrix or a data frame containing numeric and factor columns; 
-        the sensitive attributes
+        A string vector of column names, the sensitive attributes.
     }
     \item{unfairness}{
         A positive number in [0, 1], how unfair is the model allowed to be. 

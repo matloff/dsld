@@ -9,7 +9,7 @@
 }
 
 \usage{
-    dsldFrrm <- function(data, yName, sName, unfairness,
+    dsldFrrm <- function(data, yData, xData, sName, unfairness,
                      definition = "sp-komiyama", lambda = 0, 
                      save.auxiliary = FALSE) 
 }
@@ -18,16 +18,15 @@
     \item{data}{
         The data, in data frame or matrix form.
     }
-    \item{yName}{
+    \item{yData}{
         A numeric vector, the response variable.
     }
-    \item{xName}{
+    \item{xData}{
         A numeric matrix or a data frame containing numeric and
         factor columns; the predictors.
     }
     \item{sName}{
-        A numeric matrix or a data frame containing numeric and factor columns; 
-        the sensitive attributes
+        A string vector of column names, the sensitive attributes.
     }
     \item{unfairness}{
         A positive number in [0, 1], how unfair is the model allowed to be. 
@@ -92,13 +91,13 @@
     # Set the arguments
     # Complete data analysis
     flchain = flchain[complete.cases(flchain), ]
-    yName = cbind(time = flchain$futime + 1, status = flchain$death)
-    xName = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
+    yData = cbind(time = flchain$futime + 1, status = flchain$death)
+    xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
                     "chapter")]
     sName = c("age", "sex")
 
     # Call the function
-    m = dsldFgrrm(data = flchain, yName = yName, xName = xName, sName = sName, 0.05, family = "cox")
+    m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
     summary(m)
 
 
@@ -110,13 +109,13 @@
     # Set the arguments
     # Complete data analysis
     flchain = flchain[complete.cases(flchain), ]
-    yName = cbind(time = flchain$futime + 1, status = flchain$death)
+    yData = cbind(time = flchain$futime + 1, status = flchain$death)
     sName = c("age", "sex")
-    xName = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
+    xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
                     "chapter")]
 
     # Call the function
-    m = dsldFgrrm(data = flchain, yName = yName, xName = xName, sName = sName, 0.05, family = "cox")
+    m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
     summary(m)
 
 
@@ -127,12 +126,12 @@
 
     # Set the arguments
     # Complete data analysis
-    yName = obesity.levels[, "NObeyesdad"]
+    yData = obesity.levels[, "NObeyesdad"]
     sName = c("Gender", "Age")
-    xName = obesity.levels[, setdiff(names(obesity.levels), c("NObeyesdad", "Gender", "Age"))]
+    xData = obesity.levels[, setdiff(names(obesity.levels), c("NObeyesdad", "Gender", "Age"))]
     
     # Call the function
-    m = dsldFgrrm(data = obesity.levels, yName = yName, xName = xName, sName = sName, 0.05, family = "multinomial", lambda = 0.1)
+    m = dsldFgrrm(data = obesity.levels, yData = yData, xData = xData, sName = sName, 0.05, family = "multinomial", lambda = 0.1)
     summary(m)
 
 }
