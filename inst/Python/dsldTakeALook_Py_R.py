@@ -126,6 +126,7 @@ if __name__ == "__main__":
     python # Open python prompt
     from dsldTakeALook_Py_R import dsldPyTakeALookAround
     import pandas as pd
+    # This csv DOES NOT EXIST: insert the path to a csv file from your machine
     data = pd.read_csv('../../data/svcensusFixed.csv')
     result = dsldPyTakeALookAround(data, 'wageinc', 'gender')
     print(result)

@@ -124,12 +124,12 @@
 }
 
 \references{
-    plotly's 3 scatterplot:
+    plotly's 3d scatterplot:
     \link{https://plotly.com/r/3d-scatter-plots/}
 }
 
 \author{
-    T. Abdullah, S. Martha, B. Ouattara, B. Zarate
+    N. Matloff, T. Abdullah, S. Martha, B. Ouattara, B. Zarate
 }
 
 \examples{

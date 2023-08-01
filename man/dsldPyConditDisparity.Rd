@@ -107,7 +107,7 @@
 }
 
 \author{
-    T. Abdullah, S. Martha, B. Ouattara, B. Zarate
+    N. Matloff, T. Abdullah, S. Martha, B. Ouattara, B. Zarate
 }
 
 \examples{
@@ -125,6 +125,7 @@
     python # Open Python shell prompt
     from dsldConditDisparity_Py_R import dsldPyConditDisparity
     import pandas as pd
+    # This csv DOES NOT EXIST: insert the path to a csv file from your machine
     data = pd.read_csv('../../data/compasNumericFixed.csv')
     dsldPyConditDisparity(data, 'two_year_recid', 'race', 'age', ['priors_count <= 4','decile_score>=6'], 'qeGBoost')
 

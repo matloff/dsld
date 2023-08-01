@@ -26,7 +26,8 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
     }
 
     # dispatch to appropriate auxiliary method
-    for (i in 1:(ncol(data))) {
+    numCols <- ncol(data)
+    for (i in 1:numCols) {
         # skip sName
         if (colnames(data)[i] == sName) {
              next
@@ -35,13 +36,21 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
         # if categorical
         if (is.factor(data[, i])) {
             print(dsldFrequencyByS(data, colnames(data)[i], sName))
-            cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
-            temp_input <- readline()
+
+            # require input if there's a next
+            if (i != numCols) {
+                cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
+                temp_input <- readline()
+            }
         # if numeric
         } else if (is.numeric(data[, i])) {
             print(dsldDensityByS(data, colnames(data)[i], sName, graphType, fill))
-            cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
-            temp_input <- readline()
+
+            # require input if there's a next
+            if (i != numCols) {
+                cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
+                temp_input <- readline()
+            }
         # throw error
         } else {
             stop(paste("Neither categorical or numeric column, check dataframe"))
@@ -229,7 +238,10 @@ dsldFrequencyByS <- function(data, cName, sName) {
             "cName should be of factor or character data type. Consider",
             " calling `dsldDensityByS(data, cName = ",
             cName,
-            ")` instead"
+            ", sName = ",
+            sName,
+            ")` instead",
+            sep = ""
         ))
     }
 

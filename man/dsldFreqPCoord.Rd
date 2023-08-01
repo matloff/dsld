@@ -87,20 +87,21 @@
     
     The y-axis represents the distance from the mean of the column variable.
 }
+
 \value{
     Object of type "gg" (\pkg{ggplot2} object), with components \code{idxs}
     and \code{xdisp} added if \code{keepidxs} is not NULL (see argument
     \code{keepidxs} above).
 }
+
 \references{
     https://cran.r-project.org/web/packages/freqparcoord/index.html
 }
 \author{
-    T. Abdullah, B. Ouattara, J. Tran, B. Zarate
+    N. Matloff, T. Abdullah, B. Ouattara, J. Tran, B. Zarate
 }
 
 \examples{
-    % Need to fix the "run examples link". Error: "/Example/dsld not found"
     # Example 1
     library(dsld)
     data(svcensus)

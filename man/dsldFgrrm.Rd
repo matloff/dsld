@@ -21,6 +21,10 @@
     \item{yName}{
         A numeric vector, the response variable.
     }
+    \item{xName}{
+        A numeric matrix or a data frame containing numeric and
+        factor columns; the predictors.
+    }
     \item{sName}{
         A numeric matrix or a data frame containing numeric and factor columns; 
         the sensitive attributes
@@ -53,7 +57,7 @@
 }
 
 \details{
-    dsldFrrm serves as a function wrapper for frrm, which uses the argument 
+    dsldFgrrm serves as a function wrapper for fgrrm, which uses the argument 
     definition to accommodate for different definitions of fairness.
 
     The argument definition is customization to custom definitions of 
@@ -66,13 +70,10 @@
     sanitized decorrelated predictors (\code{U}) and the character string
     identifying the family the model belongs to (\code{family}) (Marco Scutari (2023)).
 
-    The arguments yName and sName are used to internally estimate the xName 
-    as xName includes everything in the dataset except the yName
-    and sName.
 }
 
 \value{
-    frrm() returns an object of class c("frrm", "fair.model").
+    fgrrm() returns an object of class c("fgrrm", "fair.model").
 }
 
 \references{
@@ -84,32 +85,54 @@
 
 \examples{
     # Example 1
-    # Load the required libraries
-    library(dsld)
-    library(fairml)
+    # Load the required libraries and dataset
+    library(survival)
+    data(flchain)
 
-    # Define the arguments
-    data(communities.and.crime)
-    yName = "ViolentCrimesPerPop"
-    sName = c("racepctblack", "PctForeignBorn")
+    # Set the arguments
+    # Complete data analysis
+    flchain = flchain[complete.cases(flchain), ]
+    yName = cbind(time = flchain$futime + 1, status = flchain$death)
+    xName = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
+                    "chapter")]
+    sName = c("age", "sex")
 
     # Call the function
-    m = dsldFrrm(communities.and.crime, yName, sName, 0.05)
+    m = dsldFgrrm(data = flchain, yName = yName, xName = xName, sName = sName, 0.05, family = "cox")
     summary(m)
 
-    # Example 2
-    # Load the required libraries
-    library(dsld)
-    library(fairml)
 
-    # Define the arguments
-    data(law.school.admissions)
-    yName = "ugpa"
-    sName = c("age", "race1")
+    # Example 2
+    # Load the required libraries and dataset
+    library(survival)
+    data(flchain)
+
+    # Set the arguments
+    # Complete data analysis
+    flchain = flchain[complete.cases(flchain), ]
+    yName = cbind(time = flchain$futime + 1, status = flchain$death)
+    sName = c("age", "sex")
+    xName = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
+                    "chapter")]
 
     # Call the function
-    m = dsldFrrm(law.school.admissions, yName, sName, 0.05)
+    m = dsldFgrrm(data = flchain, yName = yName, xName = xName, sName = sName, 0.05, family = "cox")
+    summary(m)
+
+
+    # Example 3
+    # Load the required libraries and dataset
+    library(fairml)
+    data(obesity.levels)
+
+    # Set the arguments
+    # Complete data analysis
+    yName = obesity.levels[, "NObeyesdad"]
+    sName = c("Gender", "Age")
+    xName = obesity.levels[, setdiff(names(obesity.levels), c("NObeyesdad", "Gender", "Age"))]
+    
+    # Call the function
+    m = dsldFgrrm(data = obesity.levels, yName = yName, xName = xName, sName = sName, 0.05, family = "multinomial", lambda = 0.1)
     summary(m)
 
 }
-

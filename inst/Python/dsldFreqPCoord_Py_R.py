@@ -161,6 +161,7 @@ if __name__ == "__main__":
     python # Open Python shell prompt
     from dsldFreqPCoord_Py_R import dsldPyFreqPCoord
     import pandas as pd
+    # This csv DOES NOT EXIST: insert the path to a csv file from your machine
     data = pd.read_csv('../../data/svcensusFixed.csv')
     dsldPyFreqPCoord(data, 10, ['age','wageinc','wkswrkd'], 'gender')   
 

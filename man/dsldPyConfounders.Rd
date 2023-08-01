@@ -57,7 +57,7 @@
 }
 
 \author{
-    T. Abdullah, A. Ashok, J. Tran
+    N. Matloff, T. Abdullah, A. Ashok, J. Tran
 }
 
 \examples{    
