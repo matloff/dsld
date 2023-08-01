@@ -32,12 +32,8 @@
 }
 
 \examples{  
-    # The examples provided are done with the svcensus dataset; the dataset requires
-    #   some columns to be converted to factors prior to running the function. 
+    # The examples provided are done with the svcensus dataset
     data(svcensus) # load updated dataset w/ sName as 'gender'
-    svcensus$occ <- as.factor(svcensus$occ)  
-    svcensus$gender <- as.factor(svcensus$gender)
-    svcensus$educ <- as.factor(svcensus$educ)
 
     # Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, 
     #   new_data [dataframe]
