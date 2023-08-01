@@ -11,7 +11,7 @@ author:
   - Aditya Mittal 
   - Billy Ouattara 
   - Jonathan Tran
-date: "7/30/2023"
+date: "8/1/2023"
 format: 
   pdf:
      toc: true
@@ -204,7 +204,7 @@ How do we adjust for confounders?  The most common approach involves
 ]{.column-margin} linear models, with which we express the mean Y for
 given values of the C and S variables in a linear form.  
 
-## Prologue: a simple gender wage gap analysis
+## Example: a simple gender wage gap analysis
 
 Consider the **svcensus** data example above, investigating a possible
 gender pay gap.  So Y is wage and S is gender.  We might treat age as a
@@ -222,12 +222,16 @@ Our linear model would thus be
 
 mean W = b~0~ + b~1~ A + b~2~ M
 
+[The column svcensus$gender is an R factor. Our function **dsldLinear**
+calls R's **lm**, which replaces that column by a dummy variable
+**gendermale**, our M above.]{.column-margin} 
 where W is wage, A is age and M is an indicator variable, with M = 1 for
 men and M = 0 for women.  The parameters b~i~ are estimated by fitting
 the model to the data:
 
 ```{r}
-svcensus1 <- svcensus[,c(1,4,6)]  # age, wage, gender
+svcensus1 <- 
+   svcensus[,c(1,4,6)]  # age, wage, gender
 z <- dsldLinear(svcensus1,'wageinc','gender')
 coef(z)  # print the estimated coefficients b_i 
 ```
@@ -257,20 +261,21 @@ and
 b~0~ + 43 b~1~ 
 
 and the difference is still b~2~.  So we can speak of b~2~ as *the*
-gender wage gap, at any age.  According to the model, younger men earn
+gender wage gap, at any age.  
+According to the model, younger men earn
 about $13,000 more than younger women, with the same-sized gap between
 older men and older women.
 
 The above approach to dealing with confounders is a very common one.
 But it raises questions, such as:
 
-* What are the assumptions underlying that model?  And how might we
-[In addition, the data here are, as is commonly the case,
-*observational*, as opposed to being the result of a *randomized
-clinical trial*; there may be serious issues, possibly analyzed via an
-advanced (and rather controversial) topic known as *causal inference*.
-Unfortunately, this is beyond our scope here.]{.column-margin} check
-whether they are (approximately) valid?
+* What are the assumptions underlying that model?  And how might we [In
+  addition, the data here are, as is commonly the case, *observational*,
+  as opposed to being the result of a *randomized clinical trial*; there
+  may be serious issues, due to unobserved confounders.  Such problems
+  might be solvable via an advanced (and rather controversial) topic
+  known as *causal inference*.  Unfortunately, this is beyond our scope
+  here.]{.column-margin} check whether they are (approximately) valid?
 
 * We chose only one C variable here, age.  We might also use
 occupation, as noted earlier.  In some datasets, might have dozens of
@@ -297,6 +302,24 @@ So, an approximate 95% confidence interval for the gender way gap is
 
 or (11548.94,14647.48).
 
+### With-interactions model
+
+As discussed above, in our model
+
+mean W = b~0~ + b~1~ A + b~2~ M
+
+we identified b~2~ as *the* difference in mean wage between men and
+women, regardless of age, so that for instance:
+
+> According to the model, younger men earn about $13,000 more than younger
+> women, with the same-sized gap between older men and older women.
+
+But that may not be true.  On the contrary, gender discrimination and
+[Interaction between two types of discrimination is called
+*intersectionality* by some analysts.]{.column-margin}
+age discrimination may interact.  It may be, for instance, that the
+gender gap is small at younger ages but much larger for older people.
+
 ### Assessing linearity 
 
 As noted, linear models are ubiquitous in observational data analysis.
@@ -304,6 +327,19 @@ Open any professional journal in medicine, sociology, economics and so
 on, and you'll many applications of this methodology.  But how would one
 check that most basic assumption, the linearity of the mean Y for given
 X, C and S values?
+
+::: {.callout-note}
+### Assumptions--not just a formality
+
+Assumptions *matter*.  They are never perfectly satisfied, but failure
+to be even approximately valid can mean deciding that there is no
+discrimination when it actually is there, or vice versa.  It can mean
+bad medication being declared by the government as good, or vice versa.
+In litigation, if a key expert witness is exposed by opposing counsel as
+not having checked the assumptions in his/her analysis, the side for
+which the witness was testifying will likely lose the case on the spot.
+
+:::
 
 Typically, linearity is checked graphically.  A common approach involves
 plotting the *residuals*, which are the differences between the fitted
