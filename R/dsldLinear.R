@@ -121,7 +121,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 #load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw2/law.school.admissions.rda')                        
 #drop <- c('fulltime', 'bar','cluster')
 #law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
-#newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(5,1), ugpa = c(3.5, 3.5), race1 = c('asian', 'asian')) 
+#newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(1,5), ugpa = c(3.8, 3.8), race1 = c('asian', 'asian')) 
 #lin_1 <- dsldLinear(law.school.admissions,'lsat','gender', interactions = TRUE, newData); lin_1                   # we are predicting lsat score                         
 #lin_2 <- dsldLinear(law.school.admissions,'lsat','gender', interactions = FALSE); lin_2
 # -----------------------------------------------------------------------------#
@@ -407,7 +407,7 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 # dat1 <- dsldDiffS(lin1, educ_data) # run with interactions 
 # View(dat1)
 
-# fam_data <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(5,1), ugpa = c(2.0, 2.0), race1 = c('asian', 'asian')) 
+# fam_data <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(1,5), ugpa = c(3.8, 3.8), race1 = c('black', 'black')) 
 # dat2 <- dsldDiffS(lin_1, fam_data)
 # View(dat2)
 # -----------------------------------------------------------------------------#
