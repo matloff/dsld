@@ -42,8 +42,6 @@
 
 \examples{
   data(law.school.admissions)                      
-  drop <- c('fulltime','cluster')
-  law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
   law.school.admissions$bar <- as.integer(as.logical(law.school.admissions$bar))
   law.school.admissions$bar <- as.factor(law.school.admissions$bar)
   z <- dsldQeFairRidgeLog(data=law.school.admissions,yName='bar',deweightPars=list(fam_inc=0.2),sName='gender', yesYVal = '1') # causes Error 
