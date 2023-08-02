@@ -2,7 +2,7 @@
 dsldQeFairRidgeLog <- function(data,yName,deweightPars,sensNames=NULL,
                            yesYVal=0,holdout=floor(min(1000,0.1*nrow(data))))
 {
-  
+  sensNames = sName
   require(qeML)
   if (yesYVal == 0) stop('missing yesYVal')
   
