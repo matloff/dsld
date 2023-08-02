@@ -18,29 +18,46 @@ import sys
 '''
 dsld    = importr("dsld")
 
+#dsldFgrrm <- function(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lambda = 0, save.auxiliary = FALSE)
 
-def dsldPyFrrm(data, yName, sName, unfairness, xName = R_NULL, definition = "sp-komiyama", family = "binomial", lamda = 0, save = False):
+def dsldPyFrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
-    
     # Data conversion handled by Utils function
     r_data = dsld_Rpy2_IsRDataframe(data)
 
-    yName_r = robjects.StrVector([yName])                               # Convert variable name to R character vector
+    yData_r = yData                               
 
-    xName_r = robjects.StrVector([xName])                               # Convert variable name to R character vector
+    xData_r = xData
 
-    sName_r = robjects.StrVector([sName])                               # Convert variable name to R character vector
+    sName_r = robjects.StrVector(sName)                                 # Convert variable name to R character vector
 
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
 
-    def_r = robjects.StrVector([definition])                            # Convert variable name to R character vector
+    definition_r = robjects.StrVector([definition])                     # Convert variable name to R character vector
 
-    fam_r = robjects.StrVector([family])                                # Convert variable name to R character vector
+    family_r = robjects.StrVector([family])                     # Convert variable name to R character vector
 
-    dsldlambda_r = robjects.IntVector([lamda])                          # Convert variable name to R int vector
+    dsldlambda_r = robjects.FloatVector([lamda])                        # Convert variable name to R int vector
 
     save_r = robjects.BoolVector([save])                                # Convert variable name to R boolean vector
+    
+    # All necessary arguments are in R format at this point
+    # ************************** END ARGUMENTS *******************************************
 
-    # Might need to convert the data back into pandas data frame or proper
-    # python data format
-    return dsld.dsldFrrm(data = r_data, yName = yName_r, sName = sName_r, unfairness = unfairness_r, definition = def_r, family = fam_r, save = save_r) #lamda=dsldlambda)
+    # ************************** RETURN VALUE *******************************************
+    return dsld.dsldFgrrm(r_data, yData_r, xData_r, sName_r, unfairness_r, definition_r, family_r, dsldlambda_r, save_r)
+
+'''
+    # Examples NOT WORKING
+    # TODO: Figure out how to input the yData and xData as r data frames/ matrices
+    python
+    from dsldFrrm_Py_R import dsldPyFrrm
+    import rpy2.robjects as robjects
+    robjects.r['data']('communities.and.crime')
+    data = robjects.r('communities.and.crime')
+    nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
+    print(robjects.r['summary'](nclmR))
+
+    # Other examples
+    from dsldFrrm_Py_R import dsldPyFrrm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05); print(robjects.r['summary'](nclmR))
+'''
