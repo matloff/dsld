@@ -19,7 +19,7 @@ import sys
 dsld    = importr("dsld")
 
 
-def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, xName = R_NULL, lamda = 0, save = False):
+def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
     # Note: covfun is supposed to be an R function not python function
 
@@ -28,21 +28,27 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, xName = R_NULL, 
 
     yName_r = robjects.StrVector([yName])                               # Convert variable name to R character vector
 
-    xName_r = robjects.StrVector(xName)                               # Convert variable name to R character vector
-
     sName_r = robjects.StrVector(sName)                               # Convert variable name to R character vector
 
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
 
-    covfun_r = covfun
+    if covfun == R_NULL:
+        covfun_r = robjects.r('cov')
+    else:
+        covfun_r = covfun
 
     dsldlambda_r = robjects.FloatVector([lamda])                          # Convert variable name to R int vector
 
     save_r = robjects.BoolVector([save])                                # Convert variable name to R boolean vector
+    
+    # All necessary arguments are in R format at this point
+    # ************************** END ARGUMENTS *******************************************
+
+    # ************************** RETURN VALUE *******************************************
 
     # Might need to convert the data back into pandas data frame or proper
     # python data format
-    return dsld.dsldNclm(r_data, yName_r, sName_r,  unfairness_r, covfun_r, dsldlambda_r, save_r)
+    return dsld.dsldNclm(r_data, yName_r, sName_r, unfairness_r, covfun_r, dsldlambda_r, save_r)
 
 '''
     # Examples
@@ -50,7 +56,7 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, xName = R_NULL, 
     import rpy2.robjects as robjects
     robjects.r['data']('communities.and.crime')
     data = robjects.r('communities.and.crime')
-    nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05, robjects.r('cov'))
+    nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
     print(robjects.r['summary'](nclmR))
 
     # Other examples
