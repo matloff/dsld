@@ -19,7 +19,7 @@ import sys
 dsld    = importr("dsld")
 
 
-def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, lamda = 0, save = False):
+def dsldPyNclm(data, yName, sName, unfairness, covfun = robjects.r('cov'), lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
     # Note: covfun is supposed to be an R function not python function
 
@@ -32,10 +32,7 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, lamda = 0, save 
 
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
 
-    if covfun == R_NULL:
-        covfun_r = robjects.r('cov')
-    else:
-        covfun_r = covfun
+    covfun_r = covfun
 
     dsldlambda_r = robjects.FloatVector([lamda])                          # Convert variable name to R int vector
 
