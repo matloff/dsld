@@ -56,9 +56,6 @@ dsldDiffS(dsldGLM, newData) 	# compare mean Y | X for additional data in
 # 			 newData [dataframe]
 data(law.school.admissions) # predicting probability of passing the ‘bar’
 lsa <- law.school.admission # **abbreviated name** for ease of use
-drop <- c('fulltime', 'cluster')
-
-lsa <- lsa[, !(names(lsa) %in% drop)]
 
 lsa$bar <- as.integer(
     as.logical(lsa$bar)
