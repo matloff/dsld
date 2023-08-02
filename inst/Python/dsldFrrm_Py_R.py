@@ -30,7 +30,7 @@ def dsldPyFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", lamda
 
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
 
-    definition_r = robjects.StrVector([definition])
+    def_r = robjects.StrVector([definition])                            # Convert variable name to R character vector
 
     dsldlambda_r = robjects.FloatVector([lamda])                          # Convert variable name to R int vector
 
@@ -43,7 +43,7 @@ def dsldPyFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", lamda
 
     # Might need to convert the data back into pandas data frame or proper
     # python data format
-    return dsld.dsldFrrm(r_data, yName_r, sName_r, unfairness_r, definition_r, dsldlambda_r, save_r)
+    return dsld.dsldFrrm(r_data, yName_r, sName_r, unfairness_r, def_r, dsldlambda_r, save_r)
 
 '''
     # Examples
@@ -52,9 +52,9 @@ def dsldPyFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", lamda
     import rpy2.robjects as robjects
     robjects.r['data']('communities.and.crime')
     data = robjects.r('communities.and.crime')
-    nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
-    print(robjects.r['summary'](nclmR))
+    frrmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
+    print(robjects.r['summary'](frrmR))
 
     # Other examples
-    from dsldFrrm_Py_R import dsldPyFrrm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05); print(robjects.r['summary'](nclmR))
+    from dsldFrrm_Py_R import dsldPyFrrm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); frrmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05); print(robjects.r['summary'](frrmR))
 '''
