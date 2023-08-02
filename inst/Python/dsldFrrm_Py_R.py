@@ -19,26 +19,42 @@ import sys
 dsld    = importr("dsld")
 
 
-def dsldPyFrrm(data, yName, sName, unfairness, xName = R_NULL, definition = "sp-komiyama", lamda = 0, save = False):
+def dsldPyFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
-    
     # Data conversion handled by Utils function
     r_data = dsld_Rpy2_IsRDataframe(data)
 
     yName_r = robjects.StrVector([yName])                               # Convert variable name to R character vector
 
-    xName_r = robjects.StrVector([xName])                               # Convert variable name to R character vector
-
-    sName_r = robjects.StrVector([sName])                               # Convert variable name to R character vector
+    sName_r = robjects.StrVector(sName)                               # Convert variable name to R character vector
 
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
 
-    def_r = robjects.StrVector([definition])                            # Convert variable name to R character vector
+    definition_r = robjects.StrVector([definition])
 
-    dsldlambda_r = robjects.IntVector([lamda])                          # Convert variable name to R int vector
+    dsldlambda_r = robjects.FloatVector([lamda])                          # Convert variable name to R int vector
 
     save_r = robjects.BoolVector([save])                                # Convert variable name to R boolean vector
+    
+    # All necessary arguments are in R format at this point
+    # ************************** END ARGUMENTS *******************************************
+
+    # ************************** RETURN VALUE *******************************************
 
     # Might need to convert the data back into pandas data frame or proper
     # python data format
-    return dsld.dsldFrrm(data = r_data, yName = yName_r, sName = sName_r, unfairness = unfairness_r, definition = def_r, save = save_r) #lamda=dsldlambda)
+    return dsld.dsldFrrm(r_data, yName_r, sName_r, unfairness_r, definition_r, dsldlambda_r, save_r)
+
+'''
+    # Examples
+    python
+    from dsldFrrm_Py_R import dsldPyFrrm
+    import rpy2.robjects as robjects
+    robjects.r['data']('communities.and.crime')
+    data = robjects.r('communities.and.crime')
+    nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
+    print(robjects.r['summary'](nclmR))
+
+    # Other examples
+    from dsldFrrm_Py_R import dsldPyFrrm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05); print(robjects.r['summary'](nclmR))
+'''
