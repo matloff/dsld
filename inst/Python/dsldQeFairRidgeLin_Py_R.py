@@ -19,19 +19,6 @@ import sys
 '''
 dsld = importr("dsld")
 
-def getDeweightPars(dp):
-    param = ""
-    # ["occ=0.2", "edu=1", "age=30"]
-    for p in dp:
-        param += p + ','
-    
-    param = param[:-1]
-    
-    # param = "occ=0.2, edu=1, age=30"
-    # list(occ=0.2, edu=1, age=30)
-
-    return robjects.r('list')(param)
-    
 
 def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, holdout = R_NULL):
     # ************************** ARGUMENTS *******************************************
@@ -44,9 +31,9 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
     if sName == R_NULL:
         sName_r = sName
     else:
-        sName_r = robjects.StrVector(sName)                               # Convert variable name to R character vector
+        sName_r = robjects.StrVector(sName)                           # Convert variable name to R character vector
 
-    deweightPars_r = getDeweightPars(deweightPars)
+    deweightPars_r = robjects.ListVector(deweightPars)
     print(deweightPars_r)
 
     if holdout == R_NULL:
@@ -64,8 +51,16 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
 
     # Might need to convert the data back into pandas data frame or proper
     # python data format
-    return dsld.dsldQeFairRidgeLin(r_data, yName_r, sName_r, deweightPars_r, holdout)
+    return dsld.dsldQeFairRidgeLin(r_data, yName_r, deweightPars_r, sName_r, holdout)
 
+
+#library(dsld)
+#data("svcensus")
+#z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
+#z$testAcc
+
+# NOTE to dsld devlopers: Function from R dsld package works. The return value
+# seems to an s3 object. However, when printing resR$testAcc we get NULL
 
 '''
     # Examples
@@ -74,10 +69,11 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
     import rpy2.robjects as robjects
     robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
-    resR = dsldPyQeFairRidgeLin(data, "wageinc", deweightPars = ["occ=0.2"], holdout = "gender")
+    resR = dsldPyQeFairRidgeLin(data, "wageinc", sName = "gender", deweightPars = {"occ":0.2})
     robjects.r.assign("resR", resR)
+    #print(robjects.r('resR$testAcc'))
     robjects.r('print(resR$testAcc)')
 
     # Other examples
-    from dsldQeFairRidgeLin_Py_R import dsldPyQeFairRidgeLin; import rpy2.robjects as robjects; robjects.r['data']('svcensus'); data = robjects.r('svcensus'); resR = dsldPyQeFairRidgeLin(data, "wageinc", deweightPars = ["occ=0.2"], holdout = "gender"); robjects.r.assign("resR", resR); robjects.r('print(resR$testAcc)')
+    from dsldQeFairRidgeLin_Py_R import dsldPyQeFairRidgeLin; import rpy2.robjects as robjects; robjects.r['data']('svcensus'); data = robjects.r('svcensus'); resR = dsldPyQeFairRidgeLin(data, "wageinc", sName = "gender", deweightPars = {"occ":0.2}); robjects.r.assign("resR", resR); robjects.r('print(resR$testAcc)')
 '''
