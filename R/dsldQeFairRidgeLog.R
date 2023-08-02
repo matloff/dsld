@@ -1,5 +1,5 @@
 ### Currently In-Progress; makes use of the EDFFAIRMisc.R functions
-dsldQeFairRidgeLog <- function(data,yName,deweightPars,sensNames=NULL,
+dsldQeFairRidgeLog <- function(data,yName,deweightPars,sName=NULL,
                            yesYVal=0,holdout=floor(min(1000,0.1*nrow(data))))
 {
   sensNames = sName
