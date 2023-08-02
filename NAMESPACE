@@ -13,13 +13,13 @@ export(
    dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF
 )
 
-S3method(summary,dsldLM)
-S3method(coef,dsldLM)
-S3method(vcov,dsldLM)
+S3method(summary, dsldLM)
+S3method(coef, dsldLM)
+S3method(vcov, dsldLM)
 
-S3method(summary,dsldGLM)
-S3method(coef,dsldGLM)
-S3method(vcov,dsldGLM)
+S3method(summary, dsldGLM)
+S3method(coef, dsldGLM)
+S3method(vcov, dsldGLM)
 
 S3method(predict, dsldQeFairRidgeLin)
 S3method(predict, dsldQeFairRF)
