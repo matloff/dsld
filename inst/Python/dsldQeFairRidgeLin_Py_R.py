@@ -19,14 +19,6 @@ import sys
 '''
 dsld = importr("dsld")
 
-
-"""
-
-function(data,yName,deweightPars,sensNames=NULL,
-                           holdout=floor(min(1000,0.1*nrow(data))))
-
-"""
-
 def getDeweightPars(dp):
     param = ""
     # ["occ=0.2", "edu=1", "age=30"]
@@ -41,9 +33,7 @@ def getDeweightPars(dp):
     return robjects.r('list')(param)
     
 
-
-
-def dsldPyQeFairRidgeLin(data, yName, sName, deweightPars, holdout = R_NULL):
+def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, holdout = R_NULL):
     # ************************** ARGUMENTS *******************************************
 
     # Data conversion handled by Utils function
@@ -51,12 +41,19 @@ def dsldPyQeFairRidgeLin(data, yName, sName, deweightPars, holdout = R_NULL):
 
     yName_r = robjects.StrVector([yName])                             # Convert variable name to R character vector
 
-    sName_r = robjects.StrVector(sName)                               # Convert variable name to R character vector
+    if sName == R_NULL:
+        sName_r = sName
+    else:
+        sName_r = robjects.StrVector(sName)                               # Convert variable name to R character vector
 
     deweightPars_r = getDeweightPars(deweightPars)
+    print(deweightPars_r)
 
     if holdout == R_NULL:
-        holdout_r = math.floor(min(1000, 0.1 * robjects.r('nrow')(r_data)))
+        # holdout_r = robjects.IntVector([math.floor(min(1000, 0.1 * robjects.r('nrow')(r_data)))])
+        robjects.r.assign("rdata", r_data)
+        robjects.r('hold <- floor(min(1000, 0.1 * nrow(rdata)))')
+        holdout_r = robjects.r('hold')
     else:
         holdout_r = holdout
     
@@ -69,28 +66,18 @@ def dsldPyQeFairRidgeLin(data, yName, sName, deweightPars, holdout = R_NULL):
     # python data format
     return dsld.dsldQeFairRidgeLin(r_data, yName_r, sName_r, deweightPars_r, holdout)
 
-"""
-
-#library(dsld)
-#data("svcensus")
-#z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
-#z$testAcc
-
-
-"""
-
-
 
 '''
     # Examples
     python
-    from dsldNclm_Py_R import dsldPyNclm
+    from dsldQeFairRidgeLin_Py_R import dsldPyQeFairRidgeLin
     import rpy2.robjects as robjects
-    robjects.r['data']('communities.and.crime')
-    data = robjects.r('communities.and.crime')
-    nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05, robjects.r('cov'))
-    print(robjects.r['summary'](nclmR))
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
+    resR = dsldPyQeFairRidgeLin(data, "wageinc", deweightPars = ["occ=0.2"], holdout = "gender")
+    robjects.r.assign("resR", resR)
+    robjects.r('print(resR$testAcc)')
 
     # Other examples
-    from dsldNclm_Py_R import dsldPyNclm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05, robjects.r('cov')); print(robjects.r['summary'](nclmR))
+    from dsldQeFairRidgeLin_Py_R import dsldPyQeFairRidgeLin; import rpy2.robjects as robjects; robjects.r['data']('svcensus'); data = robjects.r('svcensus'); resR = dsldPyQeFairRidgeLin(data, "wageinc", deweightPars = ["occ=0.2"], holdout = "gender"); robjects.r.assign("resR", resR); robjects.r('print(resR$testAcc)')
 '''
