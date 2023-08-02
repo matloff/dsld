@@ -1,13 +1,9 @@
-#dsldQeFairRidgeLog(), a wrapper for EDFfair::qeFairRidgeLog()
-#usage:
-#EDFfair::qeFairRidgeLog(data, yName, deweightPars, sensNames = sName, yesYVal, holdout)
-
-dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal = 0,
-                              holdout = floor(min(1000,0.1 * nrow(data)))){
-  #EDFfair::qeFairRidgeLog(data, yName, deweightPars, sName, yesYVal, holdout)
-  require(qeML)
-  if (!require('gtools')) install.packages('gtools'); library('gtools')
+### Currently In-Progress; makes use of the EDFFAIRMisc.R functions
+dsldQeFairRidgeLog <- function(data,yName,deweightPars,sensNames=NULL,
+                           yesYVal=0,holdout=floor(min(1000,0.1*nrow(data))))
+{
   
+  require(qeML)
   if (yesYVal == 0) stop('missing yesYVal')
   
   yLevels <- levels(data[,yName])
@@ -53,21 +49,19 @@ dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal =
   fairLogOut <- qeLogit(dataExtended,yName,holdout=NULL)
   tmp <- data[,yName]
   fairLogOut$whichYesY <- whichYesY
-  
   fairLogOut$yName <- yName
   fairLogOut$yLevels <- yLevels
   fairLogOut$yesYVal <- yesYVal
   fairLogOut$deweightPars <- deweightPars
-  fairLogOut$sName <- sName
+  fairLogOut$sensNames <- sensNames
   fairLogOut$factorsInfo <- factorsInfo
   fairLogOut$trainRow1 <- trainRow1
   fairLogOut$scalePars <- scalePars
   fairLogOut$classif <- TRUE
-  class(fairLogOut) <- c('qeFairRidgeLog')
+  class(fairLogOut) <- c('qeFairRidgeLog', 'qeLogit')
+
   
   if (!is.null(holdout)) {      
-    # need to turn off scaling in the case of predicting holdouts, as
-    # they have already been scaled
     fairLogOut$scaling <- 'none'  
     fairLogOut$factorsInfo <- NULL
     predictHoldoutFair(fairLogOut)
@@ -76,12 +70,13 @@ dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal =
   
   fairLogOut$scaling <- scaling
   
-  if (!is.null(sName) && !is.null(holdout)) {
+  if (!is.null(sensNames) && !is.null(holdout)) {
     data2 <- data1
-    fairLogOut$corrs <- corrsens(data,yName,fairLogOut,sName)
+    fairLogOut$corrs <- corrsens(data,yName,fairLogOut,sensNames)
   }
   
   fairLogOut
+  
 }
 
 # processNewx means to apply factorsToDummies() and scaling; it should
@@ -89,10 +84,6 @@ dsldQeFairRidgeLog<- function(data, yName, deweightPars, sName = NULL, yesYVal =
 # set
 predict.dsldQeFairRidgeLog <- function(object,newx)
 {
-  
-  # newx can include the sensitive variables, as prepNewx will remove
-  # them in present
-  
   processNewx <- is.null(attr(newx,'noNeedPrepNewx'))
   if (processNewx) newx <- prepNewx(object,newx)
   if (is.vector(newx)) {
@@ -101,15 +92,17 @@ predict.dsldQeFairRidgeLog <- function(object,newx)
     nr <- nrow(newx)
   }
   newx <- as.data.frame(newx)
-  tmp <- object$glmOuts[[object$whichYesY]]
-  class(tmp) <- c('glm','lm')
-  preds <- predict(tmp,newx,type='response')
-  preds
+  #tmp <- object$glmOuts[[object$whichYesY]]
+  class(object) <- c('qeLogit','glm')
+  preds <- predict(object,newx,type='response')
+  return(preds)
 }
 
+# ------------------------------------------------------------------------------------------------
 #Example: 1
-#NOTE: EXAMPLE DOESN'T WORK BUT CALLS THE EDF FUNCTION
-#TODO: test examples after adding functions to namespace
-#library(dsld)
-#data(svcensus)
-#dsldQeFairRidgeLog(svcensus, 'gender', 1, yesYVal=1)
+#load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw2/law.school.admissions.rda')                        
+#drop <- c('fulltime','cluster')
+#law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
+#law.school.admissions$bar <- as.integer(as.logical(law.school.admissions$bar))
+#law.school.admissions$bar <- as.factor(law.school.admissions$bar)
+#z <- dsldQeFairRidgeLog(data=law.school.admissions,yName='bar',deweightPars=list(fam_inc=0.2),sensNames='gender', yesYVal = '1')
