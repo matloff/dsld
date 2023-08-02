@@ -18,10 +18,10 @@ import sys
 '''
 dsld    = importr("dsld")
 
-#dsldFrrm <- function(data, yName, sName, unfairness, definition = "sp-komiyama", lambda = 0,  save.auxiliary = FALSE) 
 
-def dsldPyNclm(data, yName, sName, unfairness, definition = "sp-komiyama", lamda = 0, save = False):
+def dsldPyNclm(data, yName, sName, unfairness, covfun = robjects.r('cov'), lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
+    # Note: covfun is supposed to be an R function not python function
 
     # Data conversion handled by Utils function
     r_data = dsld_Rpy2_IsRDataframe(data)
@@ -32,7 +32,7 @@ def dsldPyNclm(data, yName, sName, unfairness, definition = "sp-komiyama", lamda
 
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
 
-    definition_r = robjects.StrVector([definition])                               # Convert variable name to R character vector
+    covfun_r = covfun
 
     dsldlambda_r = robjects.FloatVector([lamda])                          # Convert variable name to R int vector
 
@@ -45,7 +45,7 @@ def dsldPyNclm(data, yName, sName, unfairness, definition = "sp-komiyama", lamda
 
     # Might need to convert the data back into pandas data frame or proper
     # python data format
-    return dsld.dsldNclm(r_data, yName_r, sName_r, unfairness_r, definition_r, dsldlambda_r, save_r)
+    return dsld.dsldNclm(r_data, yName_r, sName_r, unfairness_r, covfun_r, dsldlambda_r, save_r)
 
 '''
     # Examples
