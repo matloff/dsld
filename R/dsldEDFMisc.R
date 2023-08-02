@@ -262,3 +262,26 @@ expandDeweightPars <- function(data,yName,deweightPars)
   deweightPars <- newPars
   deweightPars
 }
+
+# -------------- prepNewx ----------------------------------------
+prepNewx <- function(object,newx) 
+{
+  nonSensNames <- setdiff(names(newx),object$sensNames)
+  newx <- newx[nonSensNames]
+  newx <- qeML:::setTrainFactors(object,newx)
+  newx <- 
+    factorsToDummies(newx,omitLast=TRUE,factorsInfo=object$factorsInfo)
+  cnames <- colnames(newx)
+  sps <- object$scalePars
+  if (object$scaling != 'none') {
+    newx <- 
+      if(object$scaling == 'mmscale') {
+        mmscale(newx,sps)
+      } else {
+        scale(newx,center=sps$ctr,scale=sps$scl)
+      }
+  }
+  
+  colnames(newx) <- cnames
+  newx
+}
