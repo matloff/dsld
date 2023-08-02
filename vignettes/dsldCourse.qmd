@@ -211,9 +211,11 @@ gender pay gap.  So Y is wage and S is gender.  We might treat age as a
 confounder C, reasoning as follows.  Older workers tend to have more
 experience and thus higher wages, and if there is an age differential in
 our data, say with female workers tending to be older, this may mask a
-gender pay gap.  So, let's take the set of confounders C to consist of
-age, and for simplicity in this introductory example, not include any
-other confounders, such as occupation, and let's not include any other
+gender pay gap.  
+
+So, let's take the set of confounders C to consist of age, and for
+simplicity in this introductory example, not include any other
+confounders, such as occupation, and let's not include any other
 variables X.
 
 ### Initial analysis
@@ -245,7 +247,7 @@ about $13,000, which is the wage gap, if any.  Here's why:
 
 Under the model, the mean wage for, say, 36-year-old men is
 
-b~0~ + 32 b~1~ + b~2~ 1
+b~0~ + 32 b~1~ + 1 b~2~ 
 
 while for women of that wage it is
 
@@ -291,6 +293,8 @@ alternative models might we use?
 The full output of **dsldLinear()** goes to the heart of discrimination
 analysis, enabling statistical inferences on differences in levels of
 the sensitive variable S:
+[It is here that **dsld** adds value over the basic functions that it
+wraps; **dsld** adds analysts of differences between S groups]{.column-margin}
 
 ```{r}
 summary(z)
@@ -324,7 +328,7 @@ gender gap is small at younger ages but much larger for older people.
 
 As noted, linear models are ubiquitous in observational data analysis.
 Open any professional journal in medicine, sociology, economics and so
-on, and you'll many applications of this methodology.  But how would one
+on, and you'll see many applications of this methodology.  But how would one
 check that most basic assumption, the linearity of the mean Y for given
 X, C and S values?
 
@@ -357,19 +361,21 @@ trival one, 'age > 0']{.column-margin} variable, once for each level of
 S.  So, the call here says, "Plot wage income against age, for each
 gender."  
 
-The model have mean Y being a linear of function of age, so we  should
+The model has mean Y being a linear of function of age, so we  should
 expect to see approximate straight lines here.  Yet the relation
-certainly looks nonlinear, possibly reflecting [Adding a squared term
-does not make our model nonlinear, as it is still linear in the b~i~; if
-we, say, double each of those, the entire expression is doubled, the
-definition of linearity.]{.column-margin} variable, once for each level
-of age discrimination.  We are already investigating one kind of
-discrimination here, gender, so again for simplicity let's keep age as a
-confounder.  
+certainly looks nonlinear, possibly reflecting 
+
+age discrimination against both very young and very old workers.  
+We are already investigating one kind of discrimination here, gender, 
+so again for simplicity let's keep age as a confounder.  
 
 ### Updated model
 
 But we must do something about the substantial nonlinearity
+[Adding a squared term
+does not make our model nonlinear, as it is still linear in the b~i~; if
+we, say, double each of those, the entire expression is doubled, the
+definition of linearity.]{.column-margin} 
 we've discovered, and one possible remedy is to add an age^2^ term be
 added to the equation:
 
