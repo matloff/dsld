@@ -52,11 +52,12 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, lamda = 0, save 
 
 '''
     # Examples
+    python
     from dsldNclm_Py_R import dsldPyNclm
     import rpy2.robjects as robjects
     robjects.r['data']('communities.and.crime')
     data = robjects.r('communities.and.crime')
-    nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
+    nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05, robjects.r('cov'))
     print(robjects.r['summary'](nclmR))
 
     # Other examples
