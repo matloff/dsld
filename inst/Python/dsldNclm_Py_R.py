@@ -19,7 +19,7 @@ import sys
 dsld    = importr("dsld")
 
 
-def dsldPyNclm(data, yName, sName, unfairness, covfun = robjects.r('cov()'), xName = R_NULL, lamda = 0, save = False):
+def dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, xName = R_NULL, lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
     # Note: covfun is supposed to be an R function not python function
 
@@ -36,7 +36,7 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun = robjects.r('cov()'), xNa
 
     covfun_r = covfun
 
-    dsldlambda_r = robjects.IntVector([lamda])                          # Convert variable name to R int vector
+    dsldlambda_r = robjects.FloatVector([lamda])                          # Convert variable name to R int vector
 
     save_r = robjects.BoolVector([save])                                # Convert variable name to R boolean vector
 
@@ -45,5 +45,14 @@ def dsldPyNclm(data, yName, sName, unfairness, covfun = robjects.r('cov()'), xNa
     return dsld.dsldNclm(r_data, yName_r, sName_r,  unfairness_r, covfun_r, dsldlambda_r, save_r)
 
 '''
-    from dsldNclm_Py_R import dsldPyNclm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
+    # Examples
+    from dsldNclm_Py_R import dsldPyNclm
+    import rpy2.robjects as robjects
+    robjects.r['data']('communities.and.crime')
+    data = robjects.r('communities.and.crime')
+    nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05, robjects.r('cov'))
+    print(robjects.r['summary'](nclmR))
+
+    # Other examples
+    from dsldNclm_Py_R import dsldPyNclm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyNclm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05, robjects.r('cov')); print(robjects.r['summary'](nclmR))
 '''

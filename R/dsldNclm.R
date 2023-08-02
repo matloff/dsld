@@ -3,7 +3,7 @@
 #fairml::nclm(response, predictors, sensitive, unfairness, covfun, lambda = 0, 
 #             save.auxiliary = FALSE)
 
-dsldNclm <- function (data, yName, sName, unfairness, covfun, 
+dsldNclm <- function (data, yName, sName, unfairness, covfun = cov, 
                      lambda = 0, save.auxiliary = FALSE) 
 {
   if (!require('cccp')) install.packages('cccp'); library('cccp')
