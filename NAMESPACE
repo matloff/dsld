@@ -10,7 +10,7 @@ export(
    dsldScatterPlot3D,
    dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit,
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
-   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF
+   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog
 )
 
 S3method(summary, dsldLM)
@@ -22,6 +22,7 @@ S3method(coef, dsldGLM)
 S3method(vcov, dsldGLM)
 
 S3method(predict, dsldQeFairRidgeLin)
+S3method(predict, dsldQeFairRidgeLog)
 S3method(predict, dsldQeFairRF)
 
 
