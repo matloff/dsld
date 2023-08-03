@@ -9,12 +9,14 @@
 
 \usage{
 ## Fit linear model
-dsldLinear(data, yName, sName, interactions = FALSE, new_data = NULL)
+dsldLinear(data, yName, sName, interactions = FALSE, newData = NULL)
 
 ## s3 polymorphic functionalities for class 'dsldLM'
-summary(dsldLM)
-dsldDiffS(dsldLM, newData)  # compare mean Y | X for additional data in
-                            # the full interactions case
+summary(dsldLM)                 # summary of all attributes
+coef(dsldLM)                    # coefficients of the underlying linear model
+vcov(dsldLM)
+dsldDiffS(dsldLM, newData)      # compare mean Y | X for additional data in
+                                # the full interactions case
 }
 
 \arguments{
@@ -32,13 +34,10 @@ dsldDiffS(dsldLM, newData)  # compare mean Y | X for additional data in
         a logical value indicating whether or not to fit interactions with the
         sensitive variable. Defaults to FALSE [logical]
     }
-    \item{new_data}{
+    \item{newData}{
         dataframe of new cases for which mean Y | X will be compared between
         each pairs of S levels. Defaults to NULL for the no-interactions case
         [dataframe]
-    }
-    \item{dsldObj}{
-        output of dsldLinear, an s3 object of class 'dsldLM' [list]
     }
 }
 
@@ -51,13 +50,13 @@ dsldDiffS(dsldLM, newData)  # compare mean Y | X for additional data in
 data(svcensus) # load updated dataset w/ sName as 'gender'
 
 # Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, 
-#   new_data [dataframe]
+#   newData [dataframe]
 
 # compare early vs late career
-new_data <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), 
+newData <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), 
     wkswrkd = c(50, 50), occ = c("106", "106"))
-lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE,
-    new_data)
+lin1 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = TRUE,
+    newData)
 
 # Extract individual regression coefficients AND compare differences in 
 #   Y | X between each pairs of sName levels:
@@ -65,18 +64,22 @@ summary(lin1)
 
 # Users can also make additional comparisons with new data as well using 
 #   dsldDiffS to compare mean Y|X between each pair of S levels.
-X_new  <- data.frame(age = c(18, 60), educ = c("16", '16'), 
+xNew  <- data.frame(age = c(18, 60), educ = c("16", '16'), 
     occ = c("106", "106"), wkswrkd = c(50, 50)) # Note: educLevel = '16' 
                                                 # not educLevel = 'zzzOther'
-dat1 <- dsldDiffS(lin1, X_new)
+dat1 <- dsldDiffS(lin1, xNew)
 
 # Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; 
-#   new_data = NULL
+#   newData = NULL
 lin2 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = FALSE)
 
 # Extract individiual regression coefficients AND compare differences in 
 #   regression coefficients between each pairs of S levels:
 summary(lin2)
+}
+
+\note{
+    The output of dsldDiffS is the same dataframe format as summary().
 }
 
 \details{
@@ -133,7 +136,6 @@ summary(lin2)
     The dsldDiffS() function allows users to compare mean Y at that X between
     each pair of S level for additional new unseen data levels using the model
     fitted from dsldLinear. The user can input additional data if they'd like to
-    make new comparisons IN addition to those from output of summary(dsldObj).
-    Note: the output of dsldDiffS is the same dataframe format as summary().
+    make new comparisons IN addition to those from output of summary(dsldLM).
 }
         

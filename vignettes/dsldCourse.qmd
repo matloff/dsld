@@ -59,6 +59,19 @@ functions.]{.column-margin} knowledge of statistical inference--mean,
 variance, confidence intervals and tests, and histograms.  A "bare
 bones" refresher, with emphasis on intuition, is given in Appendix A.
 
+## The dsld package
+
+The **dsld** package, which this tutorial uses for examples, has two
+aims:
+
+* To enable exploraty analysis of possible discrimination effects
+through various graphical and tabular functions.
+
+* To enable formal statistical analysis of such effects via addition of
+a number of group-comparison operations to general R functions
+such as **lm()** and **glm()**, thereby facilitating comparisons across
+races, genders and so on.
+
 # Introduction and Motivating Examples
 
 To set the stage, consider the following:
@@ -184,7 +197,7 @@ We treat the topics in this order:
 
 * fair ML
 
-Within each of the above topic, we cover:
+Within each of the above topics, we cover:
 
 * graphical and tabular exploration
 
@@ -202,7 +215,7 @@ So, let's get started.
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
 ]{.column-margin} linear models, with which we express the mean Y for
-given values of the C and S variables in a linear form.  
+given values of the X, C and S variables in a linear form.  
 
 ## Example: a simple gender wage gap analysis
 
@@ -222,7 +235,7 @@ variables X.
 
 Our linear model would thus be
 
-mean W = b~0~ + b~1~ A + b~2~ M
+> mean W = b~0~ + b~1~ A + b~2~ M
 
 [The column svcensus$gender is an R factor. Our function **dsldLinear**
 calls R's **lm**, which replaces that column by a dummy variable
@@ -239,34 +252,34 @@ coef(z)  # print the estimated coefficients b_i
 ```
 
 ### Interpretation of b~2~
+
 Lots here to discuss, which we will gradually cover below.  [Always keep
 in mind that statistical quantities are only estimated, since we work
-only with sample data from some population, real or conceptual.
-.]{.column-margin} For now, note that the *estimated* b~2~ turns out to be
+only with sample data from some population, real or conceptual.  Hence
+the need for standard errors, confidence intervals and so on.]{.column-margin} For now, note that the *estimated* b~2~ turns out to be
 about $13,000, which is the wage gap, if any.  Here's why:
 
 Under the model, the mean wage for, say, 36-year-old men is
 
-b~0~ + 32 b~1~ + 1 b~2~ 
+> b~0~ + 36 b~1~ + 1 b~2~ 
 
 while for women of that wage it is
 
-b~0~ + 32 b~1~ 
+> b~0~ + 36 b~1~ 
 
 The difference is b~2~.  But if we look at, for instance, people of age
 43, the mean wages for men and women are
 
-b~0~ + 43 b~1~ + 1 b~2~ 
+> b~0~ + 43 b~1~ + 1 b~2~ 
 
 and
 
-b~0~ + 43 b~1~ 
+> b~0~ + 43 b~1~ 
 
-and the difference is still b~2~.  So we can speak of b~2~ as *the*
-gender wage gap, at any age.  
-According to the model, younger men earn
-about $13,000 more than younger women, with the same-sized gap between
-older men and older women.
+and the difference *is still* b~2~.  So we can speak of b~2~ as *the*
+gender wage gap, at any age.  According to the model, younger men earn
+an estimated $13,000 more than younger women, with the same-sized gap
+between older men and older women.
 
 The above approach to dealing with confounders is a very common one.
 But it raises questions, such as:
@@ -275,11 +288,12 @@ But it raises questions, such as:
   addition, the data here are, as is commonly the case, *observational*,
   as opposed to being the result of a *randomized clinical trial*; there
   may be serious issues, due to unobserved confounders.  Such problems
-  might be solvable via an advanced (and rather controversial) topic
+  might be solvable via an advanced (and rather controversial)
+  methodology
   known as *causal inference*.  Unfortunately, this is beyond our scope
   here.]{.column-margin} check whether they are (approximately) valid?
 
-* We chose only one C variable here, age.  We might also use
+* We chose only one C variable here, age.  We might also include
 occupation, as noted earlier.  In some datasets, might have dozens of
 possible confounders.  How do we choose which ones to use in our model?
 And for that matter, why not use them all?
@@ -292,17 +306,23 @@ alternative models might we use?
 
 The full output of **dsldLinear()** goes to the heart of discrimination
 analysis, enabling statistical inferences on differences in levels of
-the sensitive variable S:
-[It is here that **dsld** adds value over the basic functions that it
-wraps; **dsld** adds analysts of differences between S groups]{.column-margin}
+the sensitive variable S: 
 
 ```{r}
 summary(z)
 ```
 
-So, an approximate 95% confidence interval for the gender way gap is
+The first half of this output is from **lm()**, which is called by
+**dsldLinear()**.  The second half is the material added by the latter
+function.
 
-13098.2091 &plusmn; 1.96 x 790.44515
+So, an approximate 95% confidence interval for the gender wage gap is
+[Since the gender gap here is simply b~2~, the CI could of course have
+also been obtained directly from the **lm** half of the output.  But
+with an S having more than two levels, e.g. race, the **dsld**
+enhancement is quite valuable.]{.column-margin}
+
+> 13098.2091 &plusmn; 1.96 x 790.44515
 
 or (11548.94,14647.48).
 
@@ -310,7 +330,7 @@ or (11548.94,14647.48).
 
 As discussed above, in our model
 
-mean W = b~0~ + b~1~ A + b~2~ M
+> mean W = b~0~ + b~1~ A + b~2~ M
 
 we identified b~2~ as *the* difference in mean wage between men and
 women, regardless of age, so that for instance:
