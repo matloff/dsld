@@ -9,9 +9,6 @@
 from Utils import dsld_Rpy2_IsRDataframe, ERROR, R_NULL
 from rpy2.robjects.packages import importr
 import rpy2.robjects as robjects
-import pandas as pd
-import math
-import sys
 
 '''
     Importing r packages {dsld} into Python through rpy2
@@ -31,7 +28,7 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
     if sName == R_NULL:
         sName_r = sName
     else:
-        sName_r = robjects.StrVector(sName)                           # Convert variable name to R character vector
+        sName_r = robjects.StrVector([sName])                           # Convert variable name to R character vector
 
     deweightPars_r = robjects.ListVector(deweightPars)
     print(deweightPars_r)
@@ -41,6 +38,7 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
         robjects.r.assign("rdata", r_data)
         robjects.r('hold <- floor(min(1000, 0.1 * nrow(rdata)))')
         holdout_r = robjects.r('hold')
+        # print(holdout_r)
     else:
         holdout_r = holdout
     
@@ -51,16 +49,8 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
 
     # Might need to convert the data back into pandas data frame or proper
     # python data format
-    return dsld.dsldQeFairRidgeLin(r_data, yName_r, deweightPars_r, sName_r, holdout)
+    return dsld.dsldQeFairRidgeLin(r_data, yName_r, deweightPars_r, sName_r, holdout_r)
 
-
-#library(dsld)
-#data("svcensus")
-#z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
-#z$testAcc
-
-# NOTE to dsld devlopers: Function from R dsld package works. The return value
-# seems to an s3 object. However, when printing resR$testAcc we get NULL
 
 '''
     # Examples
@@ -71,8 +61,10 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
     data = robjects.r('svcensus')
     resR = dsldPyQeFairRidgeLin(data, "wageinc", sName = "gender", deweightPars = {"occ":0.2})
     robjects.r.assign("resR", resR)
-    #print(robjects.r('resR$testAcc'))
     robjects.r('print(resR$testAcc)')
+    robjects.r('X_new  <- data.frame(age = c(18, 60), educ = c("zzzOther", "zzzOther"), occ = c("106", "106"), wkswrkd = c(50, 50), gender = c("male","male"))')
+    robjects.r('rs <- predict(resR, X_new)')
+    print(robjects.r('rs'))
 
     # Other examples
     from dsldQeFairRidgeLin_Py_R import dsldPyQeFairRidgeLin; import rpy2.robjects as robjects; robjects.r['data']('svcensus'); data = robjects.r('svcensus'); resR = dsldPyQeFairRidgeLin(data, "wageinc", sName = "gender", deweightPars = {"occ":0.2}); robjects.r.assign("resR", resR); robjects.r('print(resR$testAcc)')
