@@ -16,17 +16,18 @@ import sys
     Importing r packages {dsld} into Python through rpy2
     dsld contains this file's main R function, dsldFgrrm
 '''
-dsld    = importr("dsld")
+dsld = importr("dsld")
 
-#dsldFgrrm <- function(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lambda = 0, save.auxiliary = FALSE)
-
-def dsldPyFrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lamda = 0, save = False):
+def dsldPyFgrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lamda = 0, save = False):
     # ************************** ARGUMENTS *******************************************
     # Data conversion handled by Utils function
-    r_data = dsld_Rpy2_IsRDataframe(data)
+    # function get rdata as it is
+    r_data = dsld_Rpy2_IsRDataframe(data) 
 
+    # function gets rdata complete case [ydata]
     yData_r = yData                               
 
+    # function gets rdata complete case [ydata]
     xData_r = xData
 
     sName_r = robjects.StrVector(sName)                                 # Convert variable name to R character vector
@@ -34,6 +35,8 @@ def dsldPyFrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama"
     unfairness_r = robjects.FloatVector([unfairness])                   # Convert variable name to R float vector
 
     definition_r = robjects.StrVector([definition])                     # Convert variable name to R character vector
+    print(definition_r)
+    print(definition)
 
     family_r = robjects.StrVector([family])                     # Convert variable name to R character vector
 
@@ -47,17 +50,24 @@ def dsldPyFrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama"
     # ************************** RETURN VALUE *******************************************
     return dsld.dsldFgrrm(r_data, yData_r, xData_r, sName_r, unfairness_r, definition_r, family_r, dsldlambda_r, save_r)
 
-'''
-    # Examples NOT WORKING
-    # TODO: Figure out how to input the yData and xData as r data frames/ matrices
-    python
-    from dsldFrrm_Py_R import dsldPyFrrm
-    import rpy2.robjects as robjects
-    robjects.r['data']('communities.and.crime')
-    data = robjects.r('communities.and.crime')
-    nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05)
-    print(robjects.r['summary'](nclmR))
 
-    # Other examples
-    from dsldFrrm_Py_R import dsldPyFrrm; import rpy2.robjects as robjects; robjects.r['data']('communities.and.crime'); data = robjects.r('communities.and.crime'); nclmR = dsldPyFrrm(data, "ViolentCrimesPerPop", ["racepctblack","PctForeignBorn"], 0.05); print(robjects.r['summary'](nclmR))
-'''
+    # Examples
+
+    # python
+    # from dsldFgrrm_Py_R import dsldPyFgrrm
+    # import rpy2.robjects as robjects
+    # robjects.r("library(survival)")
+    # robjects.r['data']('flchain')
+    # data = robjects.r('flchain')
+    # prepData = '''flchain = flchain[complete.cases(flchain), ]'''
+    # robjects.r(prepData)
+
+    # robjects.r('yData = cbind(time = flchain$futime + 1, status = flchain$death)')
+    # yData = robjects.r('yData')
+
+    # robjects.r('xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus","chapter")]')
+    # xData = robjects.r('xData')
+
+    #     # Call the function
+    # m = dsldPyFgrrm(data, yData, xData, ["age", "sex"], 0.05, family="cox")
+    # print(robjects.r['summary'](m))

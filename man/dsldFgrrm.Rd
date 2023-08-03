@@ -92,8 +92,7 @@
     # Complete data analysis
     flchain = flchain[complete.cases(flchain), ]
     yData = cbind(time = flchain$futime + 1, status = flchain$death)
-    xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
-                    "chapter")]
+    xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus","chapter")]
     sName = c("age", "sex")
 
     # Call the function
