@@ -1,10 +1,10 @@
-\name{dsldFrrm}
-\alias{dsldFrrm}
+\name{dsldFgrrm}
+\alias{dsldFgrrm}
 
-\title{dsldFrrm}
+\title{dsldFgrrm}
 
 \description{
-    This is a wrapper for the frrm function from the fairML package
+    This is a wrapper for the fgrrm function from the fairML package
     (link in references).
 }
 
