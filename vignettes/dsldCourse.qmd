@@ -11,7 +11,7 @@ author:
   - Aditya Mittal 
   - Billy Ouattara 
   - Jonathan Tran
-date: "8/1/2023"
+date: "8/2/2023"
 format: 
   pdf:
      toc: true
@@ -289,9 +289,10 @@ But it raises questions, such as:
   as opposed to being the result of a *randomized clinical trial*; there
   may be serious issues, due to unobserved confounders.  Such problems
   might be solvable via an advanced (and rather controversial)
-  methodology
-  known as *causal inference*.  Unfortunately, this is beyond our scope
-  here.]{.column-margin} check whether they are (approximately) valid?
+  methodology known as *causal inference*.  Unfortunately, details are
+  beyond our scope in this tutorial, but we will explain some basic
+  concepts in Appendix B.]{.column-margin} check whether they are
+  (approximately) valid?
 
 * We chose only one C variable here, age.  We might also include
 occupation, as noted earlier.  In some datasets, might have dozens of
@@ -306,15 +307,15 @@ alternative models might we use?
 
 The full output of **dsldLinear()** goes to the heart of discrimination
 analysis, enabling statistical inferences on differences in levels of
-the sensitive variable S: 
+the sensitive variable S.  Let's take a look: 
 
 ```{r}
 summary(z)
 ```
 
 The first half of this output is from **lm()**, which is called by
-**dsldLinear()**.  The second half is the material added by the latter
-function.
+**dsldLinear()**.  The second half is the "value added" material 
+from **dsld**.
 
 So, an approximate 95% confidence interval for the gender wage gap is
 [Since the gender gap here is simply b~2~, the CI could of course have
@@ -376,28 +377,27 @@ dsldConditDisparity(svcensus1,'wageinc','gender',
 ```
 
 The function plots a smoothed graph of Y against a user-specified C
-[There is a 'conditions' argument; we have none here, so we just used a
+[The function has a 'conditions' argument; we have none here, so we just used a
 trival one, 'age > 0']{.column-margin} variable, once for each level of
 S.  So, the call here says, "Plot wage income against age, for each
 gender."  
 
 The model has mean Y being a linear of function of age, so we  should
 expect to see approximate straight lines here.  Yet the relation
-certainly looks nonlinear, possibly reflecting 
-
-age discrimination against both very young and very old workers.  
-We are already investigating one kind of discrimination here, gender, 
-so again for simplicity let's keep age as a confounder.  
+certainly looks nonlinear, possibly reflecting age discrimination
+against both very young and very old workers.  We are already
+investigating one kind of discrimination here, gender, so again for
+simplicity let's keep age as a confounder.  
 
 ### Updated model
 
-But we must do something about the substantial nonlinearity
-[Adding a squared term
-does not make our model nonlinear, as it is still linear in the b~i~; if
-we, say, double each of those, the entire expression is doubled, the
-definition of linearity.]{.column-margin} 
-we've discovered, and one possible remedy is to add an age^2^ term be
-added to the equation:
+But we must do something about the substantial nonlinearity [Adding a
+squared term does not make our model nonlinear, as it is still linear in
+the b~i~; if we, say, double each of those, the entire expression is
+doubled, the definition of linearity. The model is nonlinear in age but
+linear in the b~i~.]{.column-margin} we've discovered,
+and one possible remedy is to add an age^2^ term be added to the
+equation:
 
 mean W = b~0~ + b~1~ A + b~2~ A^2^ + b~3~ M
 
@@ -418,9 +418,22 @@ Strategies: With Applications to Linear Models, Logistic and Ordinal
 Regression, and Survival Analysis*, by Prof. Frank Harrell, Jr. of the
 Vanderbilt University School of Medicine.
 
+### Other assumptions
+
+Other than linearity, the standard errors reported by **lm()** also [It
+is also assumed that wage income has a normal/gaussian distribution at
+each level, but the Central Limit Theorem's implications for the sums
+created by **lm()** are in fact approximately normal.]{.column-margin}
+assume that variance of wage income is approximately constant across
+ages and genders.  Lack of this property has some effect on the accuracy
+of reported standard errors, but this can be adjusted via the so-called
+*sandwich* operation, an option in **dsldLinear()**.
+
 # Part II:  Fairness in Machine Learning
 
 # Appendix A: Fast Lane to Statistics
 
-# Appendix B: Standard Errors via the Bootstrap
+# Appendix B: A Note on Causal Inference
+
+# Appendix C: Standard Errors via the Bootstrap
 
