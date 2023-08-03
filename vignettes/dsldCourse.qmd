@@ -261,11 +261,11 @@ about $13,000, which is the wage gap, if any.  Here's why:
 
 Under the model, the mean wage for, say, 36-year-old men is
 
-> b~0~ + 32 b~1~ + 1 b~2~ 
+> b~0~ + 36 b~1~ + 1 b~2~ 
 
 while for women of that wage it is
 
-> b~0~ + 32 b~1~ 
+> b~0~ + 36 b~1~ 
 
 The difference is b~2~.  But if we look at, for instance, people of age
 43, the mean wages for men and women are
