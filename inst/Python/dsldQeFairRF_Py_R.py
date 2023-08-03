@@ -19,9 +19,6 @@ import sys
 '''
 dsld = importr("dsld")
 
-#  dsldQeFairRF <- function(data,yName,deweightPars,sensNames=NULL,
-#                      nTree=500,minNodeSize=10,mtry = floor(sqrt(ncol(data))),
-#                      yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data))))
 def dsldPyQeFairRF(data, yName, sName = R_NULL, deweightPars = R_NULL, nTree = 500, minNodeSize = 10, mtry = R_NULL, 
                    yesYVal = "", holdout = R_NULL):
     # ************************** ARGUMENTS *******************************************
@@ -67,15 +64,6 @@ def dsldPyQeFairRF(data, yName, sName = R_NULL, deweightPars = R_NULL, nTree = 5
     # Might need to convert the data back into pandas data frame or proper
     # python data format
     return dsld.dsldQeFairRF(r_data, yName_r, deweightPars_r, sName_r, nTree_r, minNodeSize_r, mtry_r, yesYVal_r, holdout_r)
-
-
-#library(dsld)
-#data("svcensus")
-#z <- dsldQeFairRF(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
-#z$testAcc
-
-# NOTE to dsld devlopers: Function from R dsld package works. The return value
-# seems to an s3 object. However, when printing resR$testAcc we get NULL
 
 '''
     # Examples

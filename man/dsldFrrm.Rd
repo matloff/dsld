@@ -22,7 +22,7 @@
         Name of the response variable.
     }
     \item{sName}{
-        A string vector of column names, the sensitive attributes.
+        Name of the sensitive variable.
     }
     \item{unfairness}{
         A positive number in [0, 1], how unfair is the model allowed to be. 
