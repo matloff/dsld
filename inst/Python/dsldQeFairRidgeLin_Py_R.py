@@ -31,14 +31,11 @@ def dsldPyQeFairRidgeLin(data, yName, sName = R_NULL, deweightPars = R_NULL, hol
         sName_r = robjects.StrVector([sName])                           # Convert variable name to R character vector
 
     deweightPars_r = robjects.ListVector(deweightPars)
-    print(deweightPars_r)
 
     if holdout == R_NULL:
-        # holdout_r = robjects.IntVector([math.floor(min(1000, 0.1 * robjects.r('nrow')(r_data)))])
         robjects.r.assign("rdata", r_data)
         robjects.r('hold <- floor(min(1000, 0.1 * nrow(rdata)))')
         holdout_r = robjects.r('hold')
-        # print(holdout_r)
     else:
         holdout_r = holdout
     
