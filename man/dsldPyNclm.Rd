@@ -21,7 +21,7 @@
 }
 
 \usage{
-    dsldPyNclm(data, yName, sName, unfairness, covfun = R_NULL, lamda = 0, save = False)
+    dsldPyFgrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lamda = 0, save = False)
 }
 
 \arguments{
