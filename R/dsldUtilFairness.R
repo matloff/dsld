@@ -1,7 +1,7 @@
 #' TODO: Modify function to use plotly instead of plot() to benefit Py users
 #'
 #' ::: Description :::
-#' @brief a dispatching function that depicts the utility and fairness against D
+#' @brief Depicts the utility and fairness against D
 #'          in graphical form
 #'
 #' ::: Arguments :::
