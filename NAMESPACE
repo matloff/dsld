@@ -6,7 +6,7 @@ import('ranger')
 export(
    getSuggestedLib,
    dsldFreqPCoord,
-   dsldTakeALookAround, dsldConditDisparity,
+   dsldTakeALookAround, dsldConditDisparity, dsldUtilFairness,
    dsldScatterPlot3D,
    dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit,
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
