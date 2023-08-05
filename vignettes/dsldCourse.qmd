@@ -431,6 +431,18 @@ of reported standard errors, but this can be adjusted via the so-called
 
 # Part II:  Fairness in Machine Learning
 
+## Motivation
+why the need for fairml...
+
+## Example
+introduce example + context...
+
+## FairML Methodology
+introduce solutions they offer, what the results would be on the example, etc.
+
+## EDF Fair Methodology
+introduce solutions they offer, what the results would be on the example, etc.
+
 # Appendix A: Fast Lane to Statistics
 
 # Appendix B: A Note on Causal Inference
