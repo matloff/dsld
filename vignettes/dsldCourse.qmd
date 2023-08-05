@@ -64,7 +64,7 @@ bones" refresher, with emphasis on intuition, is given in Appendix A.
 The **dsld** package, which this tutorial uses for examples, has two
 aims:
 
-* To enable exploraty analysis of possible discrimination effects
+* To enable exploratory analysis of possible discrimination effects
 through various graphical and tabular functions.
 
 * To enable formal statistical analysis of such effects via addition of
@@ -114,8 +114,8 @@ rate and wage income--and a sensitive variable S, which was gender in
 both examples.  But in both cases, were concerned that merely comparing
 mean Y for each gender was an oversimplication, due to a possible
 *confounder* C--department in the first example, occupation in the
-second.  Failure to take into account confounders (there can be more
-than one, and usually are so) can lead to spurious "relations" between S
+second.  Failure to take confounders (there can be more than one, and 
+usually are so) into account can lead to spurious "relations" between S
 and Y.  
 
 ::: {.callout-note}
