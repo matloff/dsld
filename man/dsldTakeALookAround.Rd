@@ -1,7 +1,7 @@
 \name{dsldTakeALookAround}
 \alias{dsldTakeALookAround}
 
-\title{DSLDTakeALookAround}
+\title{dsldTakeALookAround}
 
 \description{
     The dsldTakeALookAround function is an exploratory tool for users to see which features in a dataset are 

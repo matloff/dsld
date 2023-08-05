@@ -1,6 +1,6 @@
 \name{dsldLinear}
 \alias{dsldLinear}
-\title{DSLDLinear}
+\title{dsldLinear}
 
 \description{ 
     Comparison of conditions for sensitive groups via linear models, with and

@@ -1,6 +1,6 @@
 \name{dsldLogit}
 \alias{dsldLogit}
-\title{DSLDLogit}
+\title{dsldLogit}
 
 \description{ 
     Comparison of conditions for sensitive groups via logistic regression

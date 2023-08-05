@@ -1,7 +1,7 @@
 \name{dsldQeFairRidgeLog}
 \alias{dsldQeFairRidgeLog}
 
-\title{DSLDQeFairRidgeLog}
+\title{dsldQeFairRidgeLog}
 
 \description{ 
   To-do

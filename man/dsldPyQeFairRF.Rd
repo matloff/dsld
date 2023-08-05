@@ -41,16 +41,16 @@
         to-do
     }
     \item{nTree}{
-        to-do
+        Number of trees.
     }
     \item{minNodeSize}{
-        to-do
+        Minimum number of data points in a tree node.
     }
     \item{mtry}{
-        to-do
+        Number of variables randomly tried at each split.
     }
     \item{yesYVal}{
-        to-do
+        Y value to be considered "yes," to be coded 1 rather than 0.
     } 
     \item{holdout}{
         The size of holdout set, if any
