@@ -432,6 +432,30 @@ of reported standard errors, but this can be adjusted via the so-called
 # Part II:  Fairness in Machine Learning
 
 ## Motivation
+
+<!-- Don't know how accurate this is, so I'll leave it as a comment for now:
+In modern applications of machine learning as a predictive modeling tool, it 
+would be irresponsible to produce a model that biases one sensitive group over 
+another. As such, it becomes imperative to find methods of reducing any such 
+biases that a model might hold when it comes to modeling and predicting on 
+sensitive datasets.
+
+Of course, nothing comes for free: the inherent tradeoff of increasing fairness 
+is reduced utility (predictive power over the dataset). Thus, a means of 
+balancing this tradeoff between fairness and utility becomes essential in any 
+future implementations of machine learning.
+
+The two primary areas of focus for ensuring fairness are:
+    1. Engineering the data itself before modeling
+    2. Minimizing the impact of sensitive features in the model itself
+
+The end result of this modified modeling process is a tool that allows users to:
+    1. Compare a fair model against one with no fairness implemented; the 
+       effective result is a means of uncovering if biases exist within the 
+       dataset itself, but also how much fairness is gained for utility lost.
+    2. Reduce the impact of any inherent discrimination within the data (of 
+       course only to the level that is specified).
+-->
 why the need for fairml...
 
 ## Example
