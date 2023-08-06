@@ -10,22 +10,28 @@
 #' @param cName: name of proxy variable to deweight [character]
 #' @param sName: name of the sensitive variable, an R factor [character]
 #' @param count: Number of times to run the qeKNN function call [numeric]
+#' @param deweight_increment: Increment to weight the proxy by [numeric]
 
 dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_increment = 0.1) {
-  getSuggestedLib('qeML')                                                       
+  getSuggestedLib('qeML')                                                        
   getSuggestedLib('regtools')
   getSuggestedLib('Kendall')
   
-  cGroups <- factorToDummies(data[, cName], cName, omitLast = TRUE)              
-  newData <- cbind(data,cGroups)                                                 
+  if (is.factor(cName)){
+    cGroups <- factorToDummies(data[, cName], cName, omitLast = TRUE)              
+    newData <- cbind(data,cGroups)                                                
+  }
+  newData = data
+  cGroups = cName
   newData <- newData[,!names(newData) %in% c(cName,sName)]                       
+
 
   if (deweight_increment > 0.25) {
     stop(paste("deweight_increment value must be below 1"))
   }
-    
+  
   d = seq(deweight_increment,1,deweight_increment) 
-    
+ 
   testAcc = c()  
   mean_cor = c() 
   for (i in d) {
@@ -62,4 +68,5 @@ dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_incr
 # Example:
 # library(regtools); library(Kendall); library(qeML); library(dsld)
 # data(svcensus)
-# dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')
+# dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')     # example w/ categorical cName
+# dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender') # example w/ continuous cName
