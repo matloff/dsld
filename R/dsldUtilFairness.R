@@ -17,21 +17,22 @@ dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_incr
   getSuggestedLib('regtools')
   getSuggestedLib('Kendall')
   
-  if (is.factor(cName)){
-    cGroups <- factorToDummies(data[, cName], cName, omitLast = TRUE)              
-    newData <- cbind(data,cGroups)                                                
+  if (is.factor(data[[cName]])) {
+    cGroups <- factorToDummies(data[, cName], cName, omitLast = TRUE)    
+    newData <- cbind(data,cGroups)                    
+    newData <- newData[,!names(newData) %in% c(cName,sName)]
+  } else {
+    newData = data
+    newData <- newData[,!names(newData) %in% c(sName)]
+    cGroups = cName
   }
-  newData = data
-  cGroups = cName
-  newData <- newData[,!names(newData) %in% c(cName,sName)]                       
-
-
+  
   if (deweight_increment > 0.25) {
-    stop(paste("deweight_increment value must be below 1"))
+    stop(paste("deweight_increment value must be below 0.25"))
   }
   
   d = seq(deweight_increment,1,deweight_increment) 
- 
+  
   testAcc = c()  
   mean_cor = c() 
   for (i in d) {
@@ -69,4 +70,4 @@ dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_incr
 # library(regtools); library(Kendall); library(qeML); library(dsld)
 # data(svcensus)
 # dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')     # example w/ categorical cName
-# dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender') # example w/ continuous cName
+# dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender', deweight_increment = 0.05) # example w/ continuous cName
