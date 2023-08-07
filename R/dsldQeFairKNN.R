@@ -1,83 +1,46 @@
-dsldQeFairKNN <- function(data, yName, deweightPars, sName=NULL,
-                      yesYVal=NULL, k=25, scaleX=TRUE, holdout=floor(min(1000,0.1*nrow(data)))) {
-   require(qeML)
-   if (!require('gtools')) install.packages('gtools'); library('gtools')
-
-   scaling <- if(scaleX) 'scale' else 'none'
-   dsldPrepData(scaling=scaling)
-
-   nonSensNames <- setdiff(names(data),sensNames)
-   data1 <- data[nonSensNames]
-
-   y <- data[yName][,1]
-   classif <- is.factor(y)
-   if (classif) classNames <- levels(y)
-
-   deweightNames <- names(deweightPars)
-   deweightVals <- unlist(deweightPars)
-   expandVars <- deweightNames
-   expandVals <- deweightVals 
-
-   knnout <- qeKNN(data1,yName,k,yesYVal=yesYVal,
-      expandVars=expandVars,expandVals=expandVals,,
-      holdout=holdout)
-
-   srout <- list(knnout=knnout)
-   srout$factorsInfo <- knnout$factorsInfo
-   srout$classif <- classif
-   srout$deweightNames <- deweightNames
-   srout$deweightVals <- deweightVals
-   srout$sensNames <- sensNames
-   srout$trainRow1 <- trainRow1
-   class(srout) <- c('qeFairKNN')
-   srout$scalePars <- scalePars
-   srout$yesYVal <- yesYVal
-   if (!is.null(yesYVal)) {
-      lvlsY <- levels(data1[,yName])
-      noYVal <- lvlsY[3 - which(lvlsY==yesYVal)]
-      srout$noYVal <- noYVal
-   }
-   if (!is.null(holdout)){
-      if (classif) tst[,ycol] <- as.integer(tst[,ycol] == yesYVal)
-      predictHoldoutFair(srout)
-      srout$corrs <- corrsens(data,yName,srout,sensNames)
-   }
-   srout
+### ------------------------------- dsldQeFairKNN ------------------------------
+dsldQeFairKNN <- function(data, yName, sName, expandVars = NULL, expandVals = NULL, 
+                          scaleX = TRUE, yesYVal= NULL,k=25,
+                          holdout=floor(min(1000,0.1*nrow(data)))) {
+  original_data <- data
+  scol <- original_data[,sName]
+  data <- data[,!names(data) %in% c(sName)] 
+  scaled_data = dsldScaleData(data = data, yName = yName, scaleX = scaleX, 
+                              expandVars = expandVars, expandVals = expandVals)
+  
+  classif <- is.factor(data[[yName]])
+  if (classif) classNames <- levels(data[[yName]])
+  
+  knnOut <- qeKNN(data = scaled_data,yName = yName,k = k, 
+                  scaleX = FALSE, yesYVal = yesYVal, holdout = holdout)
+  
+  knnOut$classif <- classif
+  knnOut$deweightNames <- expandVars
+  knnOut$deweightVals <- expandVals
+  knnOut$sName <- sName
+  knnOut$scol <- scol
+  knnOut$data <- data
+  knnOut$scaled_data <- scaled_data
+  knnOut$scaleX <- scaleX
+  knnOut$yesYVal <- yesYVal
+  knnOut$corrsens <- corrsens(original_data, yName, knnOut,sName)
+  class(knnOut) <- c('dsldQeFairKNN','qeKNN')
+  return(knnOut)
 }
 
-predict.dsldQeFairKNN <- function(object,newx,needsSetup=TRUE)
-{
-
-   # remove the sensitive variables, if any
-   sens <- object$sensNames
-   nonsens <- setdiff(colnames(newx),sens)
-   newx <- newx[,nonsens]
-
-   if (needsSetup && !is.null(object$factorsInfo)) 
-      newx <- factorsToDummies(newx,TRUE,object$factorsInfo)
-
-   if (needsSetup) {
-      sps <- object$scalePars
-      newx <- scale(newx,center=sps$ctr,scale=sps$scl)
-   }
-   knnout <- object$knnout
-
-   # have already scaled and dealt with factors, so turn that off
-   if (needsSetup) {
-      knnout$scalePars <- NULL
-      knnout$factorsInfo <- NULL
-   }
-   
-   preds <- predict(knnout,newx)
-   # if (knnout$classfic) {
-   #    ifelse(preds >= 0.5,knnout$yesYVal,knnout$noYVal)
-   # } else as.vector(preds)
-   as.vector(preds)
-}
-
-# Currently running into some issues when calling the function cannot find function getRow1(data, yName) 
-# from prepData in EDF_Misc.R
-
+# Working example:
 # library(dsld)
-# data(svcensus)
-#	dsldQeFairKNN(svcensus, "wageinc", NULL, "gender")
+# data("svcensus")
+# knn1 = dsldQeFairKNN(data = svcensus,yName = 'wageinc',sName = 'gender', expandVars = 'occ', expandVals = 0.1, scaleX = TRUE)
+# knn1$testAcc
+# knn1$corrsens
+
+# knn2 = dsldQeFairKNN(data = svcensus,yName = 'educ',sName = 'gender', expandVars = 'occ', expandVals = 0.1, scaleX = TRUE)
+# knn2$testAcc
+# knn2$corrsens
+
+
+# data("law.school.admissions")
+# a2 <- dsldQeFairKNN(data = law.school.admissions,yName = 'lsat',sName = 'race1', expandVars = 'fam_inc', expandVals = 0.1, scaleX = TRUE)
+# a2$testAcc
+# a2$corrsens
