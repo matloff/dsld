@@ -10,7 +10,7 @@ export(
    dsldScatterPlot3D,
    dsldLinear, dsldGetData, dsldValidateData, dsldDiffS, dsldLogit,
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
-   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog
+   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN
 )
 
 S3method(summary, dsldLM)
