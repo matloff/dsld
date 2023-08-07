@@ -1,5 +1,5 @@
 ### ------------------------------- dsldQeFairRF ------------------------------
-dsldQeFairRF <- function(data,yName, sName=NULL,deweightPars, scaleX = TRUE, nTree=500,
+dsldQeFairRF <- function(data,yName, sName=NULL,deweightPars, nTree=500,
                          minNodeSize=10,mtry = floor(sqrt(ncol(data))),
                          yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data)))) {
   scol <- data[,sName]
