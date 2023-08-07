@@ -1,3 +1,133 @@
+### I've created functions to aid the qeFairFTN()
+
+### Code taken from matloff/qeML 
+newMultCols <- function (x,cols,vals) {
+  partx <- x[,cols,drop=FALSE]
+  nvals <- length(vals)
+  x[,cols] <- partx %*% diag(vals,nrow=nvals,ncol=nvals)
+  return(x)
+}
+
+#---------------------------------- dsldScaleData ------------------------------
+
+### This function will rescale the data if user desires; it will also deweight the selected covariate.
+dsldScaleData <- function(data, yName, scaleX = TRUE, expandVars = NULL, expandVals = NULL) {
+  y <- data[,yName]
+  x <- data[,!names(data) %in% c(yName)]
+  
+  
+  if (!is.numeric(x)) {
+    x <- regtools::factorsToDummies(x,omitLast=TRUE)
+    factorsInfo <- attr(x,'factorsInfo') 
+  } else factorsInfo <- NULL
+  
+  xm <- as.matrix(x)
+  
+  if (scaleX) {
+    xm <- scale(xm)
+    ctr <- attr(xm,'scaled:center')
+    scl <- attr(xm,'scaled:scale')
+    scalePars <- list(ctr=ctr,scl=scl)
+  } else scalePars <- NULL
+  
+  if (!is.null(expandVars)) {
+    dta <- xm[,grep(expandVars, colnames(xm), value = TRUE),drop=FALSE]
+    dta <- rbind(expandVals,dta)
+    dta <- as.data.frame(dta)
+    tmp <- regtools::factorsToDummies(dta,omitLast=TRUE)
+    expandVars <- colnames(tmp)
+    expandVals <- tmp[1,]
+    
+    for (i in 1:length(expandVars)) {
+      j <- which(expandVars[i] == colnames(x))
+      expandVars[i] <- j
+    }
+    expandVars <- as.numeric(expandVars)
+    xm <- newMultCols(xm,expandVars,expandVals)
+  }
+  xm <- as.data.frame(xm)
+  #df = cbind(xm,y)
+  xm[[yName]] <- y
+  return(xm)
+}
+
+#data("svcensus")
+#df1 = dsldScaleData(data = svcensus, yName = 'wageinc',scaleX = FALSE,expandVars = 'occ', expandVals = NULL)
+#df2 = dsldScaleData(data = svcensus, yName = 'wageinc',scaleX = FALSE,expandVars = 'wkswrkd', expandVals = 0.1)
+#df3 = dsldScaleData(data = svcensus, yName = 'educ',scaleX = FALSE,expandVars = 'wkswrkd', expandVals = 0.1)
+
+#------------------------------------ Corrsens ---------------------------------
+corrsens <- function(data,yName,fittedObject,sensNames=NULL) 
+{
+  classif <- fittedObject$classif
+  if (is.null(classif)) classif <- attr(data,'classif')
+  
+  preds <- 
+    if (classif && is.numeric(fittedObject$holdoutPreds))
+      fittedObject$holdoutPreds
+  else if(classif && is.list(fittedObject$holdoutPreds))
+    fittedObject$holdoutPreds$probs[,1]
+  else 
+    fittedObject$holdoutPreds
+  
+  xNames <- setdiff(names(data),c(yName,sensNames))
+  allX <- setdiff(names(data),c(yName))
+  holdIdxs <- fittedObject$holdIdxs
+  
+  corrs <- NULL  
+  nCorrs <- 0
+  
+  for (sensNm in sensNames) {
+    sens <- data[sensNm][holdIdxs,]
+    if (is.factor(sens)) {
+      lvls <- levels(sens)
+      sens <- as.numeric(sens)
+      nLvls <- length(lvls)
+      if (nLvls == 2) {  # sens is dichotomous
+        # set up R formula to be used in glm() call
+        frml <- paste0(sensNm,' ~ .')
+        frml <- as.formula(frml)
+        tmp <- glm(frml,data[allX],family=binomial())
+        sensProbs <- tmp$fitted.values[holdIdxs]
+        corrs <- c(corrs,cor(preds,sensProbs)^2)
+        nCorrs <- nCorrs + 1
+        names(corrs)[nCorrs] <- sensNm
+      } else {  
+        tmp <- qeLogit(data[allX],sensNm,holdout=NULL)
+        for (i in 1:length(tmp$glmOuts)) {
+          glmout <- tmp$glmOuts[[i]]
+          sens <- glmout$fitted.values[holdIdxs]
+          corrs <- c(corrs,cor(preds,sens)^2)
+          nCorrs <- nCorrs + 1
+          nm <- paste0(sensNm,'.',lvls[i])
+          names(corrs)[nCorrs] <- nm
+        }
+      }
+    } else {
+      if (is.matrix(preds)) preds <- as.vector(preds)
+      corrs <- c(corrs,cor(preds,sens)^2)
+      nCorrs <- nCorrs + 1
+      names(corrs)[nCorrs] <- sensNm
+    }
+  }
+  return(corrs)
+}
+
+#--------------------------------- PrepNewX ----------------------------------
+dsldPrepNewX <- function(dsldObj, new_data) {
+  data <- dsldObj$data
+  char_cols <- sapply(new_data, is.character)
+  new_data[char_cols] <- lapply(new_data[char_cols], as.factor)
+  for (i in 1:length(char_cols)) {
+    if (char_cols[i] == TRUE) {
+      currlevels <- levels(data[[names(char_cols[i])]]) 
+      new_data[[names(char_cols[i])]] <- factor(new_data[[names(char_cols[i])]], levels = currlevels)
+    }
+  }
+  return(new_data)
+}
+
+
 #------------------------------------ prepData ---------------------------------
 # common prep for all qeFair*(); here the S and C sets are as in the
 # paper, S being the set of sensitive variables, to be excluded from the
@@ -103,95 +233,6 @@ splitData <- defmacro(holdout,data,
                       }
 )
 
-#------------------------------------ Corrsens ---------------------------------
-corrsens <- function(data,yName,fittedObject,sensNames=NULL) 
-{
-  classif <- fittedObject$classif
-  if (is.null(classif)) classif <- attr(data,'classif')
-  
-  SU <- inherits(fittedObject,'qeSU')
-  if (SU) {
-    xCols <- fittedObject$xCols
-    sensCols <- fittedObject$sensCols
-    holdIdxs <- fittedObject$holdIdxs
-  }
-  
-  preds <- 
-    if (SU) fittedObject$holdoutPreds 
-  else if (classif && is.numeric(fittedObject$holdoutPreds))
-    fittedObject$holdoutPreds
-  else if(classif && is.list(fittedObject$holdoutPreds))
-    fittedObject$holdoutPreds$probs[,1]
-  else fittedObject$holdoutPreds
-  
-  xNames <- setdiff(names(data),c(yName,sensNames))
-  allX <- setdiff(names(data),c(yName))
-  holdIdxs <- fittedObject$holdIdxs
-  
-  if (SU) {
-    # xCols <- attr(fittedObject,'xCols')
-    # sensCols <- attr(fittedObject,'sensCols')
-    xCols <- fittedObject$xCols
-    sensCols <- fittedObject$sensCols
-  }
-  
-  corrs <- NULL  # eventual output
-  nCorrs <- 0
-  # loop through all the elements of S
-  for (sensNm in sensNames) {
-    sens <- data[sensNm][holdIdxs,]
-    
-    # the case of factor sens is more complex, for 2 reasons:
-    # 1. we must change the 1 or more dummies to probabilities, so
-    # that cor() makes sense, and 2. if this is a categorical
-    # variable, not Bernoulli, then we must call cor() on each of the
-    # resulting dummies
-    
-    # say for example S consists of Age and Race, with say 5
-    # categories for the latter; that will mean S will be a vector of
-    # 6 components, 1 continuous and 5 dichotomous; also, if in the input
-    # data Race is an R factor, we need to convert it to 5 dummies
-    
-    if (is.factor(sens)) {
-      
-      lvls <- levels(sens)
-      sens <- as.numeric(sens)
-      nLvls <- length(lvls)
-      if (nLvls == 2) {  # sens is dichotomous
-        # set up R formula to be used in glm() call
-        frml <- paste0(sensNm,' ~ .')
-        frml <- as.formula(frml)
-        tmp <- glm(frml,data[allX],family=binomial())
-        sensProbs <- tmp$fitted.values[holdIdxs]
-        corrs <- c(corrs,cor(preds,sensProbs)^2)
-        nCorrs <- nCorrs + 1
-        names(corrs)[nCorrs] <- sensNm
-      } else {  # sens is categorical
-        # qeLogit does handle categorical Y; a glm() call is made
-        # for each class, results in glmOuts
-        tmp <- qeLogit(data[allX],sensNm,holdout=NULL)
-        for (i in 1:length(tmp$glmOuts)) {
-          glmout <- tmp$glmOuts[[i]]
-          sens <- glmout$fitted.values[holdIdxs]
-          corrs <- c(corrs,cor(preds,sens)^2)
-          nCorrs <- nCorrs + 1
-          nm <- paste0(sensNm,'.',lvls[i])
-          names(corrs)[nCorrs] <- nm
-        }
-      }
-    } else {
-      if (is.matrix(preds)) preds <- as.vector(preds)
-      corrs <- c(corrs,cor(preds,sens)^2)
-      nCorrs <- nCorrs + 1
-      names(corrs)[nCorrs] <- sensNm
-    }
-  }
-  
-  corrs
-  
-}
-
-
 #------------------------------------ predictHoldoutFair  ----------------------
 # modified version of qeML::predictHoldout()
 # globals:  trn, tst, yName, preds
@@ -202,7 +243,7 @@ predictHoldoutFair <- defmacro(res,
                                  ycol <- which(names(tst) == yName);
                                  ycolData <- which(names(data) == yName);
                                  tstx <- tst[,-ycol,drop=FALSE];
-                                 attr(tstx,'noNeedPrepNewx') <- TRUE
+                                 attr(tstx,'noNeedPrepNewx') <- TRUE;
                                  preds <- predict(res,tstx);
                                  res$holdoutPreds <- preds;
                                  if (res$classif) {
@@ -263,7 +304,8 @@ expandDeweightPars <- function(data,yName,deweightPars)
   deweightPars
 }
 
-# -------------- prepNewx ----------------------------------------
+
+
 prepNewx <- function(object,newx) 
 {
   nonSensNames <- setdiff(names(newx),object$sensNames)
@@ -285,3 +327,4 @@ prepNewx <- function(object,newx)
   colnames(newx) <- cnames
   newx
 }
+
