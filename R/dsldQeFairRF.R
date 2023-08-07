@@ -1,60 +1,32 @@
-# qeFair*() arguments:
-# data:  dataframe, training set; class labels col is a factor; other columns may be factors
-# yName: column name for outcome variable; vector indicates regression, factor classification 
-# selectProbs: probabilities that specified features will be selected
-# sensNames: sensitive variables to be excluded from the ML analysis possible algorithm-specific options
-# holdout: size of holdout set, if any
-
-# value: see individual functions below
-# predict() arguments:
-# object:  output from q*()
-# newx:  data frame of points to be predicted possible options
-
-# value: R list with components as follows:
-
-# classification case:
-# ypreds:  R factor instance of predicted class labels, one element for each row of newx 
-# conditprobs:  vector/matrix of class probabilities; in the 2-class case, a vector, 
-# the probabilities of Y = 1
-
-# regression case: vector of predicted values
-
-# -------------------------------  qeFairRF()  ---------------------------------
-dsldQeFairRF <- function(data,yName,deweightPars,sensNames=NULL,
-                     nTree=500,minNodeSize=10,mtry = floor(sqrt(ncol(data))),
-                     yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data))))
-{
-  if (!require('ranger')) install.packages('ranger'); library('ranger')
-  require(qeML)
+### ------------------------------- dsldQeFairRF ------------------------------
+dsldQeFairRF <- function(data,yName,expandVars,expandVals, scaleX = TRUE, sName=NULL,
+                         nTree=500,minNodeSize=10,mtry = floor(sqrt(ncol(data))),
+                         yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data)))) {
   
-  prepData(1,scaling='none')
+  original_data <- data
+  scol <- original_data[,sName]
+  data <- data[,!names(data) %in% c(sName)] 
+  scaled_data = dsldScaleData(data = data, yName = yName, scaleX = scaleX, 
+                              expandVars = expandVars, expandVals = expandVals)
+
+  classif <- is.factor(data[[yName]])
+  if (classif) classNames <- levels(data[[yName]])
+  rfout <- qeRFranger(data = scaled_data,yName = yName,
+                      nTree=nTree,minNodeSize=minNodeSize,mtry=mtry,yesYVal=yesYVal,
+                      holdout=holdout)
   
-  rfout <- qeRFranger(data2,'y',
-                      nTree=nTree,minNodeSize=minNodeSize,mtry=mtry,
-                      deweightPars,yesYVal=yesYVal,holdout=holdout)
-  
-  fairRFout <- list(rfout=rfout)
-  fairRFout$classif <- rfout$classif
-  fairRFout$deweightPars <- deweightPars
-  fairRFout$sensNames <- sensNames
-  fairRFout$trainRow1 <- trainRow1
-  fairRFout$factorsInfo <- factorsInfo
-  class(fairRFout) <- c('qeFairRF')
-  fairRFout$holdIdxs <- rfout$holdIdxs
-  fairRFout$holdoutPreds <- rfout$holdoutPreds
-  fairRFout$testAcc <- rfout$testAcc
-  fairRFout$baseAcc <- rfout$baseAcc
-  fairRFout$confusion <- rfout$confusion
-  fairRFout$scaling <- 'none'
-  
-  if (!is.null(sensNames) && !is.null(holdout)) {
-    fairRFout$corrs <- corrsens(data,yName,rfout,sensNames)
-    if (fairRFout$classif)
-      fairRFout$sensConfusion <- calcSensConfusion(data,data1,yName,
-                                                   fairRFout$holdIdxs,fairRFout$holdoutPreds,sensNames)
-  }
-  
-  fairRFout
+  rfout$classif <- rfout$classif
+  rfout$deweightPars <- expandVars
+  rfout$deweightVal <- expandVals
+  rfout$sName <- sName
+  rfout$scol <- scol
+  rfout$data <- data
+  rfout$scaled_data <- scaled_data
+  rfout$scaleX <- scaleX
+  rfout$yesYVal <- yesYVal
+  rfout$corrsens <- corrsens(original_data, yName, rfout,sName)
+  class(rfout) <- c('dsldQeFairRF','qeRF')
+  return(rfout)
 }
 
 predict.dsldQeFairRF <- function(object,newx)
@@ -65,8 +37,11 @@ predict.dsldQeFairRF <- function(object,newx)
   predict(rfout,newx)
 }
 
-# Example 1
-#library(dsld)
-#data("svcensus")
-#z <- dsldQeFairRF(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
-#z$testAcc
+# --------------------------------- Working Example -----------------------
+# z1 <- dsldQeFairRF(data=svcensus,yName='wageinc',expandVars ='occ', expandVals = 0.1,sName='gender')
+# z1$testAcc
+# z1$corrsens
+
+# z2 <- dsldQeFairRF(data=svcensus,yName='educ',expandVars ='occ', expandVals = 0.001,sName='gender')
+# z2$testAcc
+# z2$corrsens
