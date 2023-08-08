@@ -470,89 +470,163 @@ introduce solutions they offer, what the results would be on the example, etc.
 # Appendix A: Fast Lane to Statistics
 
 # Appendix B: A Note on Causal Inference
-Let's say we are trying to establish the effect of screen time with the 
-chances of developing obesity in children. However, given what you know, 
-there may be many other factors that may exaggerate the effect of this 
-relationship shown in some data. Lets assume you constructed a DAG that 
-looks like this.
-
-![](obesitydag.png){width=50%}
-
-What's nice about depicting the relationships with a DAG is that you can 
-see if one variable will have a statistical effect on another by 
-following the arrows. If you follow the arrows in the direction they are 
-pointing in you can see there is a direct path from screen time to 
-obesity. This a causal path. 
+One of the most common ways to do causal inference is to show the effects of 
+your variables in a directed acyclic graph (DAG). Suppose you think there is a 
+relationship between smoking and developing cancer. Your graph would look like 
+this.
 
 
-However, if you treat the arrow that goes into screen time as if it were
-pointing out of it, you can see there is an otherwise "back path" from 
-screen time to obesity that is different from the causal path. This path 
-indicates an additional statistical effect between screen time and 
-obesity but one that isn't associated with a causal relation - a 
-non-causal path. 
-
-![](obesitydagpath.png){width=50%}
-
-By controlling any variable along this back path, you can essentially 
-block this effect, allowing you to isolate the true relation between the 
-two variables. Once you know what variables to control, you can get the 
-numerical relationship by methods such as linear regression.
+![](scdag.png){width=40%}
 
 
-But often the problem with observed data is that there may be confounders 
-that are impossible to control. How would you control a variable that you 
-can't measure?
+With an arrow from a smoking node to a cancer node. Because these nodes are 
+connected, even ignoring the arrows, these two variables would have a 
+statistical effect on each other. The arrow pointing from the smoking node to 
+the cancer node indicates that smoking causes cancer.
 
 
-A classic example of this is trying to control for a hypothetical genetic 
-factor in trying to determine the relationship between smoking and cancer. 
-Genetics may play a role in whether someone is more likely to be a smoker 
-and whether someone is more likely to develop cancer from it. There is a 
-non-causal path between smoking and cancer, but unlike before, we can't 
-exactly only look at people with certain unidentifiable genes.
-
-<!-- Taha: It may be better to remove these next few paragraphs and move
-on to the warning to emphasize the need to be aware of CI's pitfalls, as 
-opposed to finding workarounds.-->
-<!--
-![](smokingdag.png){width=50%}
-
-However, we can still control for it by adding an additional step in 
-between smoking and cancer, that isn't correlated with genetics at all. 
-In this case, that step is the presence of tar in the lungs.
+Now, suppose you suspect that older people are more likely to smoke and are more
+likely to develop cancer. A 3rd variable, age, is added to the DAG like this.
 
 
-To isolate the effect of smoking and cancer, now you can add the effects 
-of smoking on tar with those of tar and cancer. 
+![](ascdag.png){width=40%}
 
-![](tardag.png){width=50%}
--->
-<!-- I need to research this more -->
-<!--
-To isolate the effect of the latter, you can do the same as we've done 
-before: block the back path by controlling the smoking variable. The 
-effect on smoking tar is much similar, as there is no back path.  
-Therefore, by combining the effects of the half steps, you get the 
-relation of the full step from smoking to cancer.
 
-Just like that, we were able to control the effect on an unmeasurable 
-confounder.
--->
+There is a new path in between smoking and cancer. But because the arrows 
+are pointing the wrong ways, this *backdoor path* doesn't depict a causal 
+relation between smoking and cancer. However, the existence of this additional
+path means there is an additional statistical effect between smoking and cancer.
+This is how confounding is represented a DAG.
 
-<!-- Taha: Must check with Prof that this justification (for CI being 
-potentially unreliable) is accurate-->
-The inability to control for a confounder (like genetics in the above 
-example) shows that Causal Inference is not the end-all-be-all for 
-establishing causal relations between features.[We can try to control 
-for genetics by adding a step between smoke and cancer unrelated to 
-genetics, such as tar. We can add the effects of smoking on tar with 
-those of tar and cancer, and then control the smoking variable to 
-block the back path.]{.column-margin} Although it is possible to 
-reduce the effect of a non-causal path, it is another thing entirely 
-to fully isolate a causal path. We cannot guarantee the elimination 
-of every confounding factor which could muddle our causal 
-interpretation.
+But, by controlling for this age variable, you block this backdoor path from 
+altering the true statistical effect observed between smoking and cancer.
+
+
+![](ascdagc.png){width=40%}
+
+
+Suppose you add a new variable, the presence tar in lungs, that acts as a median
+between smoking and cancer. 
+
+
+![](astcdag.png){width=40%}
+
+[There is no connection between having COVID and having 
+appendicitis, at least that we know of. Having appendicitis does not increase 
+your chance of having COVID, and vice versa. However, having either of these 
+attributes increases the likelihood of ending up in the hospital. Two variables 
+have the same effect. That is, hospitalization is a collider in between COVID 
+and appendicitis.
+An interesting thing happens when you control for that effect, ending up in the
+hospital. If you took a survey of patients at a hospital, you would find that 
+those with appendicitis are less likely to have COVID. Think about it this way: 
+If someone was in the hospital, and they didn't have appendicitis, it becomes 
+likely that their hospitalization is because of COVID.
+So by controlling for a collider will create a statistical association between 
+two variables that are otherwise unrelated, which is something you want to 
+avoid.]{.column-margin}
+
+The arrows all pointing in the same direction still indicates that smoking 
+causes cancer, just through an intermediate step. But what about the 
+relationship between smoking and tar? 
+
+There is the direct path between smoking and tar, indicating that smoking causes
+tar in lungs. But what of the backdoor path? Interestingly, this path is 
+blocked, even if you didn't control age.
+
+
+![](astcdagc.png){width=40%}
+
+
+Because both tar and age both affect cancer, cancer is a a *collider* between 
+tar and age. A collider indicates that there is no statistical effect between 
+tar and age in the path that goes through cancer. But perhaps 
+counter-intuitively, if you were to control for cancer, like if you were only to
+sample those with cancer, you would find an inverse statistical relationship 
+between age and tar.
+
+
+With this information, there is something very powerful you can do with casual
+inference: control for a confounder you can't measure. 
+
+Lets say that one's genetics can both increase one's likelihood of becoming a 
+smoker and developing cancer. Because you can't measure one's genetics, you cant
+control for it. But you still want to get the true causal effect between smoking
+and cancer. 
+
+
+![](gastcdag.png){width=40%}
+
+
+We can solve this by getting the causal effect of smoking and tar, and combining
+that with the causal effect of tar and cancer. By controlling for the smoking 
+variable, you can block the backdoor path between tar and cancer.
+
+
+![](tcdag.png){width=40%}
+
+
+And, because cancer is a collider for genes, age, and tar, there the backdoor 
+path is blocked between smoking and tar. Now, you have isolated the causal 
+effects of smoking and tar, and tar and cancer.
+
+
+![](stdag.png){width=40%}
+
+
+Combining the two, usually by multiplying the linear regression coefficients, 
+gives us the causal effect of smoking and cancer. And we did that by not even 
+having to control for age or genes directly!
+
+
+<!-- Taha: Must check with Prof that this justification (for CI being
+potentially unreliable) is accurate
+The inability to control for a confounder (like genetics in the above
+example) shows that Causal Inference is not the end-all-be-all for
+establishing causal relations between features.[We can try to control
+for genetics by adding a step between smoke and cancer unrelated to
+genetics, such as tar. We can add the effects of smoking on tar with
+those of tar and cancer, and then control the smoking variable to
+block the back path.]{.column-margin} Although it is possible to
+reduce the effect of a non-causal path, it is another thing entirely
+to fully isolate a causal path. We cannot guarantee the elimination
+of every confounding factor which could muddle our causal
+interpretation. -->
+
+# A Catch
+
+All of this sounds very appealing, but there is a huge assumption we are making 
+with these graphs: That these graphs are even accurate to our data. Data isn't 
+always simple enough that we can represent the relationships between variables 
+in just a few nodes and arrows. And as our data becomes more complex, it becomes
+harder justify certain decisions, like whether a variable X directly effects 
+another Y, or are there some intermediate steps Z in between X and Y, as in our
+smoking-tar-cancer example.
+
+Even in a simple example there seems to be no single correct answer in how a 
+graph should be constructed. Say you were trying to model the DAG described in
+the UC Berkeley discrimination claims. However, there seems to be two ways to 
+model it. Either one's gender influences the type of department they apply to, 
+or the type of department influences the majority gender of the people that 
+apply to it. 
+
+![](gdadag.png){width=80%}
+
+Both constructions seem valid to the scenario, but have two wildly different 
+interpretations. If you were to control for the department, under the first 
+graph, you may be underestimating the relationship of gender and acceptance 
+rate. Under the second graph, you are controlling for the a confounding 
+variable, isolating the true relationship of gender and acceptance rate.
+
+All this is to say that constructing an accurate DAG requires extreme depth of 
+knowledge in the field you are analyzing. Two different experts in the same 
+field can come up with two entirely different graphs for a given scenario.
+And if different DAGS can produce two different sets of variables that should
+be controlled, your conclusions may be entirely different depending on how you 
+construct your graph.
+
+Because there is no way to know the correct way to construct a graph, the 
+credibility for this kind of analysis is questionable at best.
 
 
 # Appendix C: Standard Errors via the Bootstrap
