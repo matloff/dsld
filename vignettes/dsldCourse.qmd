@@ -543,15 +543,16 @@ confounder.
 <!-- Taha: Must check with Prof that this justification (for CI being 
 potentially unreliable) is accurate-->
 The inability to control for a confounder (like genetics in the above 
-example) shows that Confidence Intervals are not the end-all-be-all for 
+example) shows that Causal Inference is not the end-all-be-all for 
 establishing causal relations between features.[We can try to control 
 for genetics by adding a step between smoke and cancer unrelated to 
 genetics, such as tar. We can add the effects of smoking on tar with 
 those of tar and cancer, and then control the smoking variable to 
 block the back path.]{.column-margin} Although it is possible to 
-isolate the relation between features so that we are reducing the 
-effect of a non-causal path, it is crucial to be aware that Confidence 
-Intervals don't guarantee the elimination of every non-causal path.
+reduce the effect of a non-causal path, it is another thing entirely 
+to fully isolate a causal path. We cannot guarantee the elimination 
+of every confounding factor which could muddle our causal 
+interpretation.
 
 
 # Appendix C: Standard Errors via the Bootstrap
