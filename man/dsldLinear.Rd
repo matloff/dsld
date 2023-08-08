@@ -9,7 +9,8 @@
 
 \usage{
 ## Fit linear model
-dsldLinear(data, yName, sName, interactions = FALSE, newData = NULL)
+dsldLinear(data, yName, sName, interactions = FALSE, newData = NULL,
+    sandwich = FALSE)
 
 ## s3 polymorphic functionalities for class 'dsldLM'
 summary(dsldLM)                 # summary of all attributes
