@@ -470,6 +470,66 @@ introduce solutions they offer, what the results would be on the example, etc.
 # Appendix A: Fast Lane to Statistics
 
 # Appendix B: A Note on Causal Inference
+Let's say we are trying to establish the effect of screen time with the 
+chances of developing obesity in children. However, given what you know, there 
+may be many other factors that may exaggerate the effect of this relationship 
+shown in some data. Lets assume you constructed a DAG that looks like this.
+
+![](obesitydag.png){width=50%}
+
+What's nice about depicting the relationships with a DAG is that you can see if
+one variable will have a statistical effect on another by following the arrows. 
+If you follow the arrows in the direction they are pointing in you can see there
+is a direct path from screen time to obesity. This a causal path. 
+
+
+However, if you treat the arrow that goes into screen time as if it were
+pointing out of it, you can see there is an otherwise "back path" from screen 
+time to obesity that is different from the causal path.
+This path indicates an additional statistical effect between screen time 
+and obesity but one that isn't associated with a causal relation- a non-causal 
+path. 
+
+![](obesitydagpath.png){width=50%}
+
+By controlling any variable along this back path, you can essentially block
+this effect, allowing you to isolate the true relation between the two variables. 
+Once you know what variables to control, you can get the numerical relationship 
+by methods such as linear regression.
+
+
+But often the problem with observed data is that there may be confounders that 
+are impossible to control. How would you control a variable that you can't 
+measure?
+
+
+A classic example of this is trying to control for a hypothetical genetic factor 
+in trying to determine the relationship between smoking and cancer. Genetics may
+play a role in whether someone is more likely to be a smoker and whether someone
+is more likely to develop cancer from it. There is a non-causal path between 
+smoking and cancer, but unlike before, we can't exactly only look at people with
+certain unidentifiable genes.
+
+
+![](smokingdag.png){width=50%}
+However, we can still control for it by adding an additional step in between 
+smoking and cancer, that isn't correlated with genetics at all. In this case, 
+that step is the presence of tar in the lungs.
+
+
+To isolate the effect of smoking and cancer, now you can add the effects of 
+smoking on tar with those of tar and cancer. 
+
+![](tardag.png){width=50%}
+
+<!-- I need to research this more -->
+
+To isolate the effect of the latter, you can do the same as we've done before: 
+block the back path by controlling the smoking variable. The effect on smoking 
+tar is much similar, as there is no back path.  Therefore, by combining the 
+effects of the half steps, you get the relation of the full step from smoking to cancer.
+
+Just like that, we were able to control the effect on an unmeasurable confounder.
 
 # Appendix C: Standard Errors via the Bootstrap
 
