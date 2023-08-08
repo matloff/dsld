@@ -476,7 +476,7 @@ relationship between smoking and developing cancer. Your graph would look like
 this.
 
 
-![](scdag.png){width=40%}
+![](appendixB/scdag.png){width=40%}
 
 
 With an arrow from a smoking node to a cancer node. Because these nodes are 
@@ -489,7 +489,7 @@ Now, suppose you suspect that older people are more likely to smoke and are more
 likely to develop cancer. A 3rd variable, age, is added to the DAG like this.
 
 
-![](ascdag.png){width=40%}
+![](appendixB/ascdag.png){width=40%}
 
 
 There is a new path in between smoking and cancer. But because the arrows 
@@ -502,14 +502,14 @@ But, by controlling for this age variable, you block this backdoor path from
 altering the true statistical effect observed between smoking and cancer.
 
 
-![](ascdagc.png){width=40%}
+![](appendixB/ascdagc.png){width=40%}
 
 
 Suppose you add a new variable, the presence tar in lungs, that acts as a median
 between smoking and cancer. 
 
 
-![](astcdag.png){width=40%}
+![](appendixB/astcdag.png){width=40%}
 
 [There is no connection between having COVID and having 
 appendicitis, at least that we know of. Having appendicitis does not increase 
@@ -535,7 +535,7 @@ tar in lungs. But what of the backdoor path? Interestingly, this path is
 blocked, even if you didn't control age.
 
 
-![](astcdagc.png){width=40%}
+![](appendixB/astcdagc.png){width=40%}
 
 
 Because both tar and age both affect cancer, cancer is a a *collider* between 
@@ -555,7 +555,7 @@ control for it. But you still want to get the true causal effect between smoking
 and cancer. 
 
 
-![](gastcdag.png){width=40%}
+![](appendixB/gastcdag.png){width=40%}
 
 
 We can solve this by getting the causal effect of smoking and tar, and combining
@@ -563,7 +563,7 @@ that with the causal effect of tar and cancer. By controlling for the smoking
 variable, you can block the backdoor path between tar and cancer.
 
 
-![](tcdag.png){width=40%}
+![](appendixB/tcdag.png){width=40%}
 
 
 And, because cancer is a collider for genes, age, and tar, there the backdoor 
@@ -571,7 +571,7 @@ path is blocked between smoking and tar. Now, you have isolated the causal
 effects of smoking and tar, and tar and cancer.
 
 
-![](stdag.png){width=40%}
+![](appendixB/stdag.png){width=40%}
 
 
 Combining the two, usually by multiplying the linear regression coefficients, 
@@ -610,7 +610,7 @@ model it. Either one's gender influences the type of department they apply to,
 or the type of department influences the majority gender of the people that 
 apply to it. 
 
-![](gdadag.png){width=80%}
+![](appendixB/gdadag.png){width=80%}
 
 Both constructions seem valid to the scenario, but have two wildly different 
 interpretations. If you were to control for the department, under the first 
