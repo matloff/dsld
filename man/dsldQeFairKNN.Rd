@@ -36,8 +36,7 @@
         it is the number of neighbors to use in finding conditional probabilities via knnCalib.
     } 
     \item{holdout} {
-        If not NULL, form a holdout set of the specified size. After fitting to the remaining data, 
-        evaluate accuracy on the test set.
+        If not NULL, form a holdout set of the specified size. After fitting to the remaining data, evaluate accuracy on the test set.
     } 
 }
 
