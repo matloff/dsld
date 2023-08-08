@@ -514,8 +514,8 @@ exactly only look at people with certain unidentifiable genes.
 
 <!-- Taha: It may be better to remove these next few paragraphs to emphasize the 
 need to be aware of CI's pitfalls, as opposed to finding ways to workaround these
-pitfalls. We could just move on to the warning instead.
--->
+pitfalls. We could just move on to the warning instead.-->
+<!--
 ![](smokingdag.png){width=50%}
 
 However, we can still control for it by adding an additional step in 
@@ -527,9 +527,9 @@ To isolate the effect of smoking and cancer, now you can add the effects
 of smoking on tar with those of tar and cancer. 
 
 ![](tardag.png){width=50%}
-
+-->
 <!-- I need to research this more -->
-
+<!--
 To isolate the effect of the latter, you can do the same as we've done 
 before: block the back path by controlling the smoking variable. The 
 effect on smoking tar is much similar, as there is no back path.  
@@ -538,18 +538,17 @@ relation of the full step from smoking to cancer.
 
 Just like that, we were able to control the effect on an unmeasurable 
 confounder.
+-->
 
 <!-- Taha: Must check with Prof that this justification (for CI being 
-potentially unreliable) is accurate
--->
+potentially unreliable) is accurate-->
 The inability to control for a confounder (like genetics in the above 
 example) shows that Confidence Intervals are not the end-all-be-all for 
-establishing causal relations between features. Although it is possible 
-to isolate the relation between 1 feature and another so that we are 
-reducing the effect of the non-causal path (e.g. by adding an additional 
-step in the causal path unrelated to the confounder), it is crucial to 
-be aware that Confidence Intervals don't guarantee the elimination of 
-every non-causal path.
+establishing causal relations between features.[We can try to control for genetics by adding a step between smoke and cancer unrelated to genetics, such as tar. We can add the effects of smoking on tar with those of tar and cancer, and then control the smoking variable to block the back path.]{.column-margin} Although it is possible 
+to isolate the relation between features so that we are reducing the 
+effect of a non-causal path, it is crucial to be aware that Confidence 
+Intervals don't guarantee the elimination of every non-causal path.
+
 
 # Appendix C: Standard Errors via the Bootstrap
 
