@@ -7,7 +7,8 @@
 }
 
 \usage{
-    dsldUtilFairness <- function(data, yName, cName, sName, count)
+    dsldUtilFairness <- function(data, yName, cName, sName, count = 5, 
+                                deweight_increment = 0.1)
 }
 
 \arguments{
@@ -15,16 +16,19 @@
         dataset in dataframe form
     }
     \item{yName}{
-        as in qeML functions, predictive variable, must be numeric
+        name of the response column [character]
     }
     \item{cName}{
-        
+        name of proxy variable to deweight [character]
     }
     \item{sName}{
-        name of the sensitive variable, an R factor
+        name of the sensitive variable, an R factor [character]
     }
     \item{count}{
-        Number of times to run the qeKNN function call
+        Number of times to run the qeKNN function call [numeric]
+    }
+    \item{deweight_increment}{
+        Increment to weight the proxy by [numeric]
     }
 }
 
@@ -33,8 +37,13 @@
 }
 
 \examples{
-    library(regtools); library(Kendall); library(qeML)
-    data(pef)
-    dsldUtilFairness(pef, 'wageinc', 'occ', 'sex', 5)
+    library(regtools); library(Kendall); library(qeML); library(dsld)
+    data(svcensus)
+
+    # example w/ categorical cName
+    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')
+
+    # example w/ continuous cName
+    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender', deweight_increment = 0.05)
 }
 
