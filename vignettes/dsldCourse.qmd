@@ -432,8 +432,7 @@ of reported standard errors, but this can be adjusted via the so-called
 # Part II:  Fairness in Machine Learning
 
 ## Motivation
-
-<!-- Don't know how accurate this is, so I'll leave it as a comment for now:
+<!-- Don't know how accurate this is, please feel free to make edits -->
 In modern applications of machine learning as a predictive modeling tool, it 
 would be irresponsible to produce a model that biases one sensitive group over 
 another. As such, it becomes imperative to find methods of reducing any such 
@@ -445,8 +444,9 @@ is reduced utility (predictive power over the dataset). Thus, a means of
 balancing this tradeoff between fairness and utility becomes essential in any 
 future implementations of machine learning.
 
-The two primary areas of focus for ensuring fairness are:
-    1. Engineering the data itself before modeling
+While there exists a plethora of methods for ensuring a fair machine learning 
+model, the primary approaches utilized in the `dsld` package are:
+    1. Engineering the data itself before modeling through deweighting
     2. Minimizing the impact of sensitive features in the model itself
 
 The end result of this modified modeling process is a tool that allows users to:
@@ -455,17 +455,39 @@ The end result of this modified modeling process is a tool that allows users to:
        dataset itself, but also how much fairness is gained for utility lost.
     2. Reduce the impact of any inherent discrimination within the data (of 
        course only to the level that is specified).
--->
-why the need for fairml...
 
 ## Example
-introduce example + context...
+<!-- introduce running example + context... this example should most likely 
+come from COMPAS -->
 
-## FairML Methodology
-introduce solutions they offer, what the results would be on the example, etc.
+## Measurements of Fairness & Utility
+Different algorithms and approaches attempt to reduce bias as indicated through 
+different metrics. In the following subsection, our aim is to explain what each 
+of these metrics tell users and which algorithms perform best with respect to 
+each one.
 
-## EDF Fair Methodology
-introduce solutions they offer, what the results would be on the example, etc.
+### Fairness Metrics
+<!-- compare all the fairness metrics against one another... -->
+
+#### S-Correlation
+<!-- correlation between S-feature and output -->
+
+### Utility Metrics
+<!-- compare all the utility metrics against one another... -->
+
+#### Test Accuracies
+<!-- accuracy results on test sets -->
+
+#### ROC Curves
+<!-- show a graph for this one... -->
+
+#### F1-Score
+<!-- compare against ROC -->
+
+## Approaches Deployed in DSLD
+<!-- go over all the approaches we use in the fairML & EDFair wrappers -->
+<!-- compare their performance against each other across all metrics 
+previously describes -->
 
 # Appendix A: Fast Lane to Statistics
 
