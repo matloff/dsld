@@ -32,9 +32,11 @@
 #'      to FALSE [logical]
 #' 
 dsldLinear <- function(data, yName, sName, interactions = FALSE,
-                       newData = NULL, sandwich = FALSE) {
-  
-  library(sandwich)
+                       newData = NULL, useSandwich = FALSE) {
+  # load if needed
+  if (useSandwich) {
+    library(sandwich)
+  }
   
   # create final output list to by populated with results #
   dsldModel <- list()
@@ -65,22 +67,22 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       diffModel <- lm(formula = as.formula(paste(yName, "~ .")),
                       data = diffData)
       
-      if (sandwich) {
+      if (useSandwich) {
         covMatrix <- sandwich(diffModel)
       } else {
-        covMatrix = vcov(diffModel)
+        covMatrix <- vcov(diffModel)
       }
       
       # setup individual instance of dsldDiffModel #
       dsldDiffModel <- c(dsldDiffModel,
-                         yName,
-                         sName,
-                         list(diffModel),
-                         list(newData),
-                         list(summary(diffModel)),
-                         list(coef(diffModel)),
-                         list(covMatrix),
-                         list(diffData)
+        yName,
+        sName,
+        list(diffModel),
+        list(newData),
+        list(summary(diffModel)),
+        list(coef(diffModel)),
+        list(covMatrix),
+        list(diffData)
       )
       names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
                                 "summary", "coef", "covarianceMatrix", "data")
@@ -105,13 +107,13 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     
     # setup instance of dsldDiffModel #
     dsldDiffModel <- c(dsldDiffModel,
-                       yName,
-                       sName,
-                       list(diffModel),
-                       list(summary(diffModel)),
-                       list(coef(diffModel)),
-                       list(covMatrix),
-                       list(data)
+      yName,
+      sName,
+      list(diffModel),
+      list(summary(diffModel)),
+      list(coef(diffModel)),
+      list(covMatrix),
+      list(data)
     )
     names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
                               "coef", "covarianceMatrix", "data")

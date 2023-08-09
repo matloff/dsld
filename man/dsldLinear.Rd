@@ -10,7 +10,7 @@
 \usage{
 ## Fit linear model
 dsldLinear(data, yName, sName, interactions = FALSE, newData = NULL,
-    sandwich = FALSE)
+    useSandwich = FALSE)
 
 ## s3 polymorphic functionalities for class 'dsldLM'
 summary(dsldLM)                 # summary of all attributes
@@ -39,6 +39,10 @@ dsldDiffS(dsldLM, newData)      # compare mean Y | X for additional data in
         dataframe of new cases for which mean Y | X will be compared between
         each pairs of S levels. Defaults to NULL for the no-interactions case
         [dataframe]
+    }
+    \item{useSandwich}{
+        whether or not to use sandwich variance estimator; defaults to FALSE
+        [logical]
     }
 }
 
