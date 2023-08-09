@@ -73,14 +73,14 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       
       # setup individual instance of dsldDiffModel #
       dsldDiffModel <- c(dsldDiffModel,
-        yName,
-        sName,
-        list(diffModel),
-        list(newData),
-        list(summary(diffModel)),
-        list(coef(diffModel)),
-        list(covMatrix),
-        list(diffData)
+                         yName,
+                         sName,
+                         list(diffModel),
+                         list(newData),
+                         list(summary(diffModel)),
+                         list(coef(diffModel)),
+                         list(covMatrix),
+                         list(diffData)
       )
       names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
                                 "summary", "coef", "covarianceMatrix", "data")
@@ -105,13 +105,13 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     
     # setup instance of dsldDiffModel #
     dsldDiffModel <- c(dsldDiffModel,
-      yName,
-      sName,
-      list(diffModel),
-      list(summary(diffModel)),
-      list(coef(diffModel)),
-      list(covMatrix),
-      list(data)
+                       yName,
+                       sName,
+                       list(diffModel),
+                       list(summary(diffModel)),
+                       list(coef(diffModel)),
+                       list(covMatrix),
+                       list(data)
     )
     names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
                               "coef", "covarianceMatrix", "data")
@@ -266,18 +266,21 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
     # from summary output
     data <- dsldGetData(dsldLM)[[1]]
     model <- dsldLM[[1]]$model
-    C <- vcov(model)
+    C <- dsldLM[[1]]$covarianceMatrix
+    se_robust <- sqrt(diag(C))
     c <- coef(model)
     
     # get all values containing sName levels from summary(model) #
     rowsWithRace <- grep(sName, rownames(coef(summary(model))))
     regularS <- summary(model)$coefficients[rowsWithRace, ]
+    standardErrors <- se_robust[rowsWithRace]
     
     # for the case when we have only two levels in S; ex: male/female #
     if (length(levels(data[[sName]])) == 2) {
       estimate <- regularS[1]
-      standardError <- regularS[2]
-      pVal <- regularS[4]
+      standardError <- standardErrors
+      testStat <- estimate / standardError
+      pVal <- 2 * (1 - pnorm(abs(testStat)))
       sPairs <- combn(levels(data[[sName]]), 2)
       a <- sPairs[1]
       b <- sPairs[2]
@@ -290,7 +293,7 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
     
     # extract estimates and standard errors #
     estimates <- regularS[, 1]
-    standardErrors <- regularS[, 2]
+    #standardErrors <- se_robust[rowsWithRace]
     pVal <- regularS[, 4]
     
     # create dataframe #
@@ -298,7 +301,7 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
     df$estimates <- -df$estimates
     
     # extract other pairwise combinations of levels (not including dummy) #
-    featureNames <- colnames(vcov(model))
+    featureNames <- colnames(C)
     combinationMatrix <- combn(featureNames, 2)
     
     # remove all columns that do not have sName #
@@ -331,12 +334,8 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
       # get estimates & standard errors #
       estimates <- aValue - bValue
       standardErrors <- sqrt((t(rt) %*% C %*% rt))
-      
       tStatistic <- (estimates) / standardErrors
-      degOfFreedom <- nrow(data) - 1 # degrees of freedom
-      pVal <- 2 * pt(abs(tStatistic), df = degOfFreedom,
-                     lower.tail = FALSE)
-      
+      pVal <- 2 * (1 - pnorm(abs(tStatistic)))
       tempDF <- data.frame(estimates, standardErrors, pVal)
       df <- rbind(df, tempDF)
     }
@@ -446,8 +445,10 @@ summary.dsldLM <- function(dsldLM) {
     data <- dsldGetData(dsldLM)[[1]]
     summaryOutput <- summary(dsldLM[[1]]$model)
     coef <- summaryOutput$coefficients[, 1]
-    stdErr <- summaryOutput$coefficients[, 2]
-    pValues <- summaryOutput$coefficients[, 4]
+    covMatrix = dsldLM[[1]]$covarianceMatrix
+    stdErr <- sqrt(diag(covMatrix))
+    testStat <- coef / stdErr
+    pValues <- 2 * (1 - pnorm(abs(testStat)))
     
     # Create dataframe
     df <- data.frame(
@@ -473,8 +474,10 @@ summary.dsldLM <- function(dsldLM) {
       data <- dsldLM[[i]]$data
       summaryOutput <- summary(dsldLM[[i]]$model)
       coef <- summaryOutput$coefficients[, 1]
-      stdErr <- summaryOutput$coefficients[, 2]
-      pValues <- summaryOutput$coefficients[, 4]
+      covMatrix = dsldLM[[i]]$covarianceMatrix
+      stdErr <- sqrt(diag(covMatrix))
+      testStat <- coef / stdErr
+      pValues <- 2 * (1 - pnorm(abs(testStat)))
       
       df <- data.frame(
         Covariate = row.names(summaryOutput$coefficients),
