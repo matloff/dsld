@@ -99,7 +99,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     
     # create model #
     diffModel <- lm(formula = as.formula(paste(yName, "~ .")), data = data)
-    if (sandwich) {
+    if (useSandwich) {
       covMatrix <- sandwich(diffModel)
     } else {
       covMatrix <- vcov(diffModel)
