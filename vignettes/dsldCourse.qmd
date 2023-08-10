@@ -642,11 +642,13 @@ Combining the two (i.e. by multiplying the linear regression coefficients)
 gives us the causal effect of smoking and cancer *without* having to control 
 for age or genetics!
 
+<!-- Could remove this example and instead move the next 3 paragraphs to the margin 
+- Taha -->
 [Another example: as far as we know, there is no connection between contracting 
 COVID and having appendicitis. However, someone with either conditions is more likely 
 to be hospitalized than someone without COVID or appendicitis, making 
 hospitalization a collider between the two conditions. If we 
-control for this collider by only considering hospital patients, we would find 
+control for this collider by only considering hospital patients, we might find 
 that those with appendicitis are less likely to have 
 COVID. In other words, if someone was hospitalized, and they didn't have 
 appendicitis, their hospitalization is likely due to 
@@ -657,8 +659,8 @@ genetics both affect cancer, cancer is a a *collider* between tar and genetics.
 
 This collider indicates that there is no statistical effect between 
 tar and genetics in the path containing cancer. And yet (perhaps 
-counter-intuitively), if you were to control for cancer (i.e. by only
-sampling those with cancer), you would find an inverse statistical relationship 
+counter-intuitively), if we were to control for cancer (i.e. by only
+sampling those with cancer), we might find an inverse statistical relationship 
 between genetics and tar.
 
 So, while we *can* use an intermediate to account for an immeasurable confounder,
