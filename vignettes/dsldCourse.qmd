@@ -521,7 +521,43 @@ each one.
 <!-- accuracy results on test sets -->
 
 #### ROC Curves
-<!-- show a graph for this one... -->
+[![ROC Curve](partII/rocCurve.png)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
+An ROC curve (receiver operating characteristic curve) is a graph that plots
+the model's behavior at various classification thresholds. The graph aids in 
+visually identifying optimal thresholds by avoiding confusion matrices.
+
+
+The graph plots the true positive rate (sensitivity) on the y-axis and the 
+false positive rate (selectivity) on the x axis. For each threshold, its true 
+positive rate and false positive rate are calculated.
+
+
+A model that perfectly classifies each sample is plotted at (0, 1). A point at
+(1,1), (.75, .75), (.5, .5) etc. means that the proportion of correctly 
+classified samples is equal to the the proportion of incorrectly classified
+samples. A point at (1, 0) incorrectly classifies each sample.
+
+
+Say, we are trying to classify a group of people as infected or not infected
+to prevent an outbreak. So, initially  we set our threshold to be "Lets consider
+everyone to be infected." Then our threshold correctly identified a person who 
+is infected as infected. But it also incorrectly calculated all non-infected 
+peopl as infected. So, this threshold is plotted at (1, 1). 
+
+
+If we change our threshold to "a person with a high body temperature is 
+considered infected" then our point will move on the graph. This may correctly 
+identify most people who are infected, but it may also misidentify a few people
+who are not infected as infected, and vice-versa. So we can arbitrarily say 
+that this threshold is plotted at (.1, .8).
+
+
+We can keep changing our threshold level and we will get different points on
+the graph. It is up to the user to determine what true positive rate he wants 
+for the model and make a risk assessment on who is free to socialize and who
+is required to quarantine. The ROC curve is a diagnostic tool to help the user
+choose which threshold he wants to use.
+
 
 #### F1-Score
 <!-- compare against ROC -->
