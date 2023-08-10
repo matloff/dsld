@@ -670,12 +670,12 @@ variables.
 
 
 While our examples might still make causal inference seem very appealing, there is one
-more big catch - we are assuming that these graphs are accurate to our data. U
-nfortunately, data isn't always simple enough for the relationships between variables 
+more big catch - we are assuming that these graphs are accurate to our data. 
+Unfortunately, data isn't always simple enough for the relationships between variables 
 to be depicted with just a few nodes and arrows. And as our data becomes more complex, 
+it becomes harder justify certain decisions,
 [Indirectly meaning through an intermediate variable Z]{.column-margin}
-it becomes harder justify certain decisions, like whether a variable X directly 
-or indirectly effects another variable Y.
+like whether a variable X directly or indirectly effects another variable Y.
 
 Even in a simple example, there seems to be no single correct answer in how a 
 graph should be constructed. If we tried to model the DAG described in
