@@ -556,7 +556,7 @@ this is called a *backdoor path*. This path does not depict a causal relation
 between smoking and cancer, but it illustrates some additional statistical 
 effect between smoking and cancer. [Usually there are multiple criteria that must 
 be met for something to be considered a confounder. We are not claiming that age 
-is a confounder solely due to this DAG]{.column-margin}This an example of 
+is a confounder solely due to this DAG.]{.column-margin}This an example of 
 confounding being shown via a DAG (where age is the confounder).
 
 By controlling for this age variable, we can block this backdoor path from 
@@ -581,28 +581,32 @@ between smoking and tar?
 
 There is the direct (causal) path between smoking and tar, indicating that smoking 
 causes tar formation in the lungs. However, the backdoor path is blocked, 
-regardless of whether we control for age.
+regardless of whether we control for age. Thus, we have successfully isolated the 
+causal path by accounting for age *without* measuring it!
 
 
 ![](appendixB/astcdagc.png){width=40%}
 
 
-Since both tar and age both affect cancer, cancer is a a *collider* between 
-tar and age. This collider indicates that there is no statistical effect between 
-tar and age in the path containing cancer. And yet (perhaps 
-counter-intuitively), if you were to control for cancer (i.e. by only
-sampling those with cancer), you would find an inverse statistical relationship 
-between age and tar.
 [Another example: as far as we know, there is no connection between contracting 
-COVID and 
-having appendicitis. However, someone with either conditions is more likely to be 
-hospitalized than someone without COVID or appendicitis -- in other words, 
+COVID and having appendicitis. However, someone with either conditions is more likely 
+to be hospitalized than someone without COVID or appendicitis -- in other words, 
 hospitalization is a collider in between the two conditions. Yet, if we attempt to 
 control for this collider by only considering hospital patients, we would find 
 (by surveying these patients) that those with appendicitis are less likely to have 
 COVID. In other words, if someone was hospitalized, and they didn't have 
-appendicitis, it becomes likely that their hospitalization is due to COVID.]
-{.column-margin}
+appendicitis, it becomes likely that their hospitalization is due to COVID.]{.column-margin}
+
+However, this method can have unintended negative consequences. Since both tar 
+and age both affect cancer, cancer is a a *collider* between 
+tar and age. 
+
+
+This collider indicates that there is no statistical effect between 
+tar and age in the path containing cancer. And yet (perhaps 
+counter-intuitively), if you were to control for cancer (i.e. by only
+sampling those with cancer), you would find an inverse statistical relationship 
+between age and tar.
 
 
 So, while we *can* use an intermediate to account for an immeasurable confounder,
@@ -612,7 +616,7 @@ variables.
 
 <!-- We should cut out one of these examples (tar, genetics, or hospitalization)
 - Taha -->
-
+<!--
 Lets assume that genetics can increase one's chances of becoming a smoker and 
 one's chances of developing cancer. We want to isolate the true causal effect 
 between smoking and cancer, but we can't measure (and thus control for) one's
@@ -641,7 +645,7 @@ tar. Now, we have isolated the causal effects of smoking/tar and tar/cancer.
 Combining the two (i.e. by multiplying the linear regression coefficients) 
 gives us the causal effect of smoking and cancer *without* having to control 
 for age or genetics!
-
+-->
 
 ### A Catch
 
@@ -649,9 +653,10 @@ All of this sounds very appealing -- however, we are assuming that these graphs
 are accurate to our data. Unfortunately, data isn't always simple enough for the 
 relationships between variables to be depicted with 
 just a few nodes and arrows. And as our data becomes more complex, it becomes
-harder justify certain decisions, like whether a variable X directly or indirectly
-[Indirectly meaning througn an intermediate variable Z]{.column-margin} 
+harder justify certain decisions, like whether a variable X directly or indirectly 
 effects another variable Y.
+[Indirectly meaning througn an intermediate variable Z]{.column-margin} 
+
 
 Even in a simple example, there seems to be no single correct answer in how a 
 graph should be constructed. If we tried to model the DAG described in
