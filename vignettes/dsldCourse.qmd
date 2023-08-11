@@ -287,6 +287,7 @@ and
 and the difference *is still* $\beta$~2~.  
 
 ::: {.callout-note}
+### "The" effect of gender
 Thus we can speak of $\beta$~2~ as *the* gender wage gap, at any age.
 According to the model, younger men earn an estimated $13,000 more than
 younger women, with the *same-sized* gap between older men and older
@@ -399,9 +400,7 @@ at age 43, only about $100.  The estimated gap between ages 36 and 53,
 not shown, is larger, close to $300, but it seems there is not much
 interaction here.
 
-### S may consist of more than one factor 
-
-### Assessing linearity 
+### Linearity and other assumptions
 
 As noted, linear models are ubiquitous in observational data analysis.
 Open any professional journal in medicine, sociology, economics and so
@@ -427,6 +426,9 @@ plotting the *residuals*, which are the differences between the fitted
 line and the Y values.  Here, though, we use another graphical approach,
 via a **dsld** function that may be more informative. 
 
+Returning to our earlier setting with just S = gender for our example,
+we run
+
 ```{r}
 dsldConditDisparity(svcensus1,'wageinc','gender',
    'age','age > 0',yLim=c(0,150000)) 
@@ -443,19 +445,21 @@ expect to see approximate straight lines here.  Yet the relation
 certainly looks nonlinear, possibly reflecting age discrimination
 against both very young and very old workers.  We are already
 investigating one kind of discrimination here, gender, so again for
-simplicity let's keep age as a confounder.  
+simplicity let's just keep age as a confounder.  
 
 ### Updated model
 
 But we must do something about the substantial nonlinearity [Adding a
 squared term does not make our model nonlinear, as it is still linear in
-the b~i~; if we, say, double each of those, the entire expression is
+the $\beta$~i~; if we, say, double each of those, the entire expression is
 doubled, the definition of linearity. The model is nonlinear in age but
-linear in the b~i~.]{.column-margin} we've discovered,
+linear in the $\beta$~i~.]{.column-margin} we've discovered,
 and one possible remedy is to add an age^2^ term be added to the
 equation:
 
 mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ A^2^ + $\beta$~3~ M
+
+Let's fit the updated model:
 
 ```{r}
 svcensus1$age2 <- svcensus1$age^2
@@ -484,6 +488,61 @@ assume that variance of wage income is approximately constant across
 ages and genders.  Lack of this property has some effect on the accuracy
 of reported standard errors, but this can be adjusted via the so-called
 *sandwich* operation, an option in **dsldLinear()**.
+
+## S may consist of more than one factor 
+
+In introducing this example, we noted the need to start simple.  Let's
+move away from that a bit.
+
+In the **svcensus** data, both age and gender are potential areas of
+discrimination.  We can treat both as such by combining these two R
+factor variables into one "super R factor," as follows.
+
+We'll need to discretize age, and since federal law on age
+discrimination uses age 40 as the definition of "older," let's use that
+as an example:
+
+```{r}
+age <- svcensus$age
+age <- ifelse(age >= 40,'40+','under40')
+age <- as.factor(age)
+head(age)
+svcensus$age <- age
+```
+
+Now let's make our "super factor," using a function from **qeML**:
+
+```{r}
+AgeGend <- cartesianFactor('svcensus',c('age','gender')) 
+svcensus$AgeGend <- AgeGend
+head(svcensus)
+```
+
+We no longer need the original age and gender columns, so we'll delete
+them and then try some analysis:
+
+```{r}
+svcensus$age <- NULL
+svcensus$gender <- NULL
+w <- dsldLinear(svcensus,'wageinc','AgeGend')
+summary(w)
+```
+
+Ah, this is a more nuanced probe than the ones above in which we simply
+[This is an example of *Simpson's Paradox*, in which an overall average
+effect might be large than the terms that make up the average.]{.column-margin}
+used age as a confounder.  The male-female differences at both the older
+and younger age levels, about $9800 and $7800, are both substantial, but
+smaller than the $13,100 overall figure we obtained earlier.  
+
+Note too the impact of age within genders.  Older women made about $8200
+more than younger women, but for men the figure was rather larger, about
+$10,200.
+
+On the other hand, this analysis is probably too coarse with respect to
+age, as it does not reveal the negative impact of age well beyond 40.
+It may be worth trying a finer discretization of age, say, 35-, 
+35-55 and 55+.
 
 # Part II:  Fairness in Machine Learning
 
