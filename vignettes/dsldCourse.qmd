@@ -380,7 +380,6 @@ However, this added-product-term is a bit abstract, and it is easier
 men and one for women.
 
 ::: {.callout-note}
-
 The **dsldLinear** function includes an argument **interactions**. The
 default value is FALSE, but if TRUE, it fits separate linear models for
 each level of S.  An additional argument 'newData' is now
@@ -392,6 +391,7 @@ one or more (X,C) values at which to compare the effect of S.
 newData <- data.frame(age=c(36,43))
 z <- dsldLinear(svcensus1,'wageinc','gender',interactions=T,
    newData)
+summary(z)
 ```
 
 So the gender pay gap is estimated to be -13156.88 at age 36, -13039.27
