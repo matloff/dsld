@@ -221,7 +221,7 @@ How do we adjust for confounders?  The most common approach involves
 ]{.column-margin} linear models, with which we express the mean Y for
 given values of the X, C and S variables in a linear form.  
 
-## Example: a simple gender wage gap analysis
+## Linear model example: a simple gender wage gap analysis
 
 Consider the **svcensus** data example in @sec-census above,
 investigating a possible gender pay gap.  So Y is wage and S is gender.
@@ -543,6 +543,21 @@ On the other hand, this analysis is probably too coarse with respect to
 age, as it does not reveal the negative impact of age well beyond 40.
 It may be worth trying a finer discretization of age, say, 35-, 
 35-55 and 55+.
+
+## Logistic model example: German credit data
+
+Just as linear models are the most commonly used for numeric Y, in the
+the binary-Y case the go-to standard is the logistic model.  Let's first
+consider a very simple prediction problem, in which Y is gender, say 1
+for male, 0 for female, and X is simply income, using the **svcensus**
+data.
+
+Note mean Y is now the probability that Y = 1.  That's because the
+average of a bunch of 1s and 0s is the proportion of 1s.
+
+Now suppose that within each gender, X has a normal (Gaussian)
+distribution, the familiar "bell-shaped" curve, with the same standard
+deviation for each gender.
 
 # Part II:  Fairness in Machine Learning
 
