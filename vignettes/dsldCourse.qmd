@@ -319,7 +319,8 @@ alternative models might we use?
 
 The full output of **dsldLinear()** goes to the heart of discrimination
 analysis, enabling statistical inferences on differences in levels of
-the sensitive variable S.  Let's take a look: 
+the sensitive variable S.  Let's take a look, continuing from the above
+code: 
 
 ```{r}
 summary(z)
