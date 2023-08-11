@@ -386,7 +386,6 @@ default value is FALSE, but if TRUE, it fits separate linear models for
 each level of S.  An additional argument 'newData' is now
 needed, through which the user specifies a data frame consisting of
 one or more (X,C) values at which to compare the effect of S.
-
 :::
 
 ```{r}
