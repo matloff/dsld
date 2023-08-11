@@ -24,12 +24,9 @@
 #' @param data: dataset used to train the model [dataframe]
 #' @param yName: name of the response column [character]
 #' @param sName: name of the sensitive column [character]
-#' @param interactions: specifies whether or not to consider interactions;
-#'      Defaults to TRUE [boolean]
-#' @param newData: new test cases to compute Y | X ; REQUIRED when
-#'      interactions = TRUE [dataframe]
+#' @param newData: new test cases to compute Y | X 
 #'
-dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
+dsldLogit <- function(data, yName, sName, newData) {
   # create final output list to by populated with results #
   dsldModel <- list()
   
@@ -80,30 +77,31 @@ dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
 	}
 	
 	# user selects interactions == FALSE #
-  } else {
-	# initialize instance of dsldDiffModel #
-	dsldDiffModel <- list()
-	
-	# create model #
-	diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
-					 family = "binomial", data = data)
-	
-	# setup instance of dsldDiffModel #
-	dsldDiffModel <- c(
-		dsldDiffModel,
-		yName,
-		sName,
-		list(diffModel),
-		list(summary(diffModel)),
-		list(coef(diffModel)),
-		list(data)
-	)
-	names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
-							  "coef", "data")
-	
-	# add instance into dsldModel
-	dsldModel[[sName]] <- dsldDiffModel
-  }
+  } 
+#   else {
+# 	# initialize instance of dsldDiffModel #
+# 	dsldDiffModel <- list()
+# 	
+# 	# create model #
+# 	diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
+# 					 family = "binomial", data = data)
+# 	
+# 	# setup instance of dsldDiffModel #
+# 	dsldDiffModel <- c(
+# 		dsldDiffModel,
+# 		yName,
+# 		sName,
+# 		list(diffModel),
+# 		list(summary(diffModel)),
+# 		list(coef(diffModel)),
+# 		list(data)
+# 	)
+# 	names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
+# 							  "coef", "data")
+# 	
+# 	# add instance into dsldModel
+# 	dsldModel[[sName]] <- dsldDiffModel
+#   }
   
   # finalize dsldModel #
   class(dsldModel) <- "dsldGLM"
@@ -116,8 +114,7 @@ dsldLogit <- function(data, yName, sName, interactions = TRUE, newData = NULL) {
 # law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
 # law.school.admissions$bar <- as.integer(as.logical(law.school.admissions$bar))
 # newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), lsat = c(44,44), fam_inc = c(3,3), ugpa = c(3.5, 3.5), race1 = c('asian', 'black')) 
-# log1 <- dsldLogit(law.school.admissions,'bar','gender', interactions = TRUE, newData); log1 # we are predicting lsat score                         
-# log2 <- dsldLogit(law.school.admissions,'bar','gender', interactions = FALSE); log2
+# log1 <- dsldLogit(law.school.admissions,'bar','gender', newData); log1 # we are predicting lsat score                         
 # ------------------------------------------------------------------------------------------------------------
 
 # ----------------------- Auxiliary Functions ---------------------------------#
@@ -178,8 +175,8 @@ dsldGetData <- function(dsldGLM) {
 
 #------------------------- dsldDiffS function ---------------------------------#
 #' ::: Description ::
-#' @brief dsldValidateData() is an indirect helper function for dsldDiffS()
-#'      full-interactions case. The function takes in the newData argument
+#' @brief dsldValidateData() is an indirect helper function for #' dsldDiffS().
+#'      The function takes in the newData argument
 #'      from dsldDiffS() and validates if the user has entered appropriate
 #'      entries for newData.
 #'
