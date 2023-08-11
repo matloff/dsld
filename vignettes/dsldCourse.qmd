@@ -557,7 +557,12 @@ average of a bunch of 1s and 0s is the proportion of 1s.
 
 Now suppose that within each gender, X has a normal (Gaussian)
 distribution, the familiar "bell-shaped" curve, with the same standard
-deviation for each gender.
+deviation for each gender.  Then it turns out that one can show
+mathematically that
+
+$$
+\frac{u}{v}
+$$
 
 # Part II:  Fairness in Machine Learning
 
