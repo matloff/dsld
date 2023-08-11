@@ -31,7 +31,8 @@ dsldLogit <- function(data, yName, sName, newData) {
   dsldModel <- list()
   
   # user wants interactions #
-  if (interactions) {
+  # if (interactions) {
+  if (TRUE) {
 	# raise error if user doesn't input newData #
 	if (is.null(newData)) {
 	  stop(paste("Please enter the newData input to compare for ",
