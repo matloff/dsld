@@ -396,7 +396,10 @@ summary(z)
 
 So the gender pay gap is estimated to be -13156.88 at age 36, -13039.27
 at age 43, only about $100.  The estimated gap between ages 36 and 53,
-not shown, is larger, close to $300.
+not shown, is larger, close to $300, but it seems there is not much
+interaction here.
+
+### S may consist of more than one factor 
 
 ### Assessing linearity 
 
