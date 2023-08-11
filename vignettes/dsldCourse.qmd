@@ -358,15 +358,26 @@ But that may not be true.  On the contrary, gender discrimination and
 age discrimination may interact.  It may be, for instance, that the
 gender gap is small at younger ages but much larger for older people.
 
-The with-interactions model is technically
+Technically, the with-interactions model adds a product term:
 
 > mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M + $\beta$~3~ AM 
 
-So for example, the gender pay gap for 
+So for example, the gender pay gap for people of age 36 is
 
-However, this is a bit abstract, and it is easier (and approximately
-equivalent) to simply fit two linear models, one for men and one for
-women.
+($\beta$~0~ + $\beta$~1~ 36 + $\beta$~2~ 1 + $\beta$~3~ 36) -
+($\beta$~0~ + $\beta$~1~ 36 ) =
+
+$\beta$~2~ 1 + $\beta$~3~ 36
+
+And at age 43, the gap is
+
+$\beta$~2~ 1 + $\beta$~3~ 43
+
+So, this model does indeed allow for interaction between age and gender.
+
+However, this added-product-term is a bit abstract, and it is easier
+(and approximately equivalent) to simply fit two linear models, one for
+men and one for women.
 
 ::: {.callout-note}
 
