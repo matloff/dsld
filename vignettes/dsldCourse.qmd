@@ -974,8 +974,8 @@ w <- dsldLinear(svcensus,'wageinc','gender',interactions=FALSE)
 coef(w)
 ```
 
-Here, even correcting for age, education and so on, we find a
-substantial gender pay gap.
+Here, even correcting for age, education and so on, we still find a
+substantial gender pay gap.  Gender does matter, on its own.
 
 CI DAGs are of course quite visually appealing, but as pointed out by
 the developers of such methodology, the graphs can be very misleading.
@@ -988,7 +988,7 @@ of CI to keep the following points in mind:
 ### Caution with DAGS
 * The definition of *cause* is of course central to proper use of CI
 DAGs, and "wrapping one's head around" the definition can be a challenge
-even for experiencedprobabilistic modelers.
+even for experienced probabilistic modelers.
 
 * Unseen variables, such as age in the above example, can be just as
 harmful in CI contexts as in observational data.
