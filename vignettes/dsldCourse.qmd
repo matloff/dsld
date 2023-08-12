@@ -715,6 +715,45 @@ previously describes -->
 
 ## Appendix B: A Note on Causal Inference {#sec-causal}
 
+An *observational study* is, in essence, one that is not planned. For
+instance, say we are comparing an old and a new drug for hypertension.
+Suppose that, unknown to us, the new medication does well on younger
+patients but not on older ones.  Say the nature of the data collection
+process results in disproportionately sampling older patients, but our
+data itself does not include patient ages.  This could unfairly make the
+new drug appear ineffective.
+
+In a *randomized clinical trial,* we would randomly assign treatments to
+patients, so there would likely be no strong imbalance in age
+distribution in the two drug groups.  So, even if our data still did not
+record patient age, there would be no age bias in our analysis.
+
+*Causal inference* CI can be viewed both as a way to deal with unseen
+variables in observational studies, and as a graphical alternative to
+traditional statistical relational analysis.  Though CI takes on many
+forms, our discussion here will focus on *directed acyclic graphs*
+(DAGs).  In a DAG, an arrow from A to B signifies that A "causes" B.
+
+CI DAGs are of course quite visually appealing, but as pointed out by
+the developers of such methodology, the graphs can be very misleading.
+Using DAGs effectively requires deep understanding of the concepts.
+A treatment of these concepts
+is well beyond the scope of this course, but we urge users and consumers
+of CI to keep the following points in mind:
+
+* The definition of *cause* is of course central to proper use of CI
+dags, and "wrapping one's head around* the definition can be a challenge
+even for probabilistic modelers.
+
+* Unseen variables, such as age in the above example, can be just as
+harmful in CI contexts as in observational data.
+
+* Most important, for any given dataset, there is no unique DAG;
+typically many DAGs can fit the dataset equally well, and they can be in
+conflict with each other.  One might say that A causes B, while another,
+equally credible one in terms of data fit, might have B causing A.
+
+
 A common way to conduct causal inference is to show the effects of 
 your variables in a directed acyclic graph (DAG). Imagine we are investigating 
 a possible relationship between smoking and developing cancer. A DAG of this
