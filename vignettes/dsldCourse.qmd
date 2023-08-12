@@ -216,6 +216,31 @@ So, let's get started.
 
 # Part I:  Adjustment for Confounders
 
+## Determining Confounders
+
+Suppose we assume (purely hypothetically) that the COMPAS data shows a bias 
+against particular racial groups. What if other variables are impacting our 
+conclusion? For example, we can graph the density of age for different racial 
+groups as follows:
+
+```{r}  
+data(compas)
+dsldDensityByS(compas,'age',
+   'race','plot')
+```
+
+From this graph, we can see that the density of age noticeably varies 
+according to race. In particular, note the difference between the curve
+for "African-American" and the curve for "Asian" between ages 20 and 30.
+There is a higher density of young African-Americans in the dataset compared
+to the other groups at a similar age. This suggests that race is correlated to
+age, and age could potentially be confounding our inference of racial bias in
+the COMPAS data. Perhaps this could be due to a younger person's increased 
+capacity to engage in criminal activity compared to older people.
+
+This is one example of how one can use dsld functions to discover possible 
+confounders in a dataset.
+
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
 ]{.column-margin} linear models, with which we express the mean Y for
