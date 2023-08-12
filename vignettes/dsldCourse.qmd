@@ -216,33 +216,6 @@ So, let's get started.
 
 # Part I:  Adjustment for Confounders
 
-## Determining Confounders
-
-Suppose we assume (purely hypothetically) that the COMPAS data shows a bias 
-against particular racial groups. What if other variables are impacting our 
-conclusion? For example, we can graph the density of age for different racial 
-groups as follows:
-
-```{r}  
-data(compas)
-dsldDensityByS(compas,'age',
-   'race','plot')
-```
-
-From this graph, we can see that the density of age noticeably varies 
-according to race. In particular, note the difference between the curve
-for "African-American" and the curve for "Asian" between ages 20 and 30.
-There is a higher density of young African-Americans in the dataset compared
-to the other groups at a similar age. This suggests that race is correlated to
-age, and age could potentially be confounding our inference of racial bias in
-the COMPAS data. Perhaps this could be due to a younger person's increased 
-capacity to engage in criminal activity compared to older people.
-
-This is one example of how one can use dsld functions to discover possible 
-confounders in a dataset. If we did not pre-suspect age as a confounder, we could 
-use the dsldConfounders function to generate a graph (like the one above) for 
-multiple numeric features in a dataset.
-
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
 ]{.column-margin} linear models, with which we express the mean Y for
@@ -573,6 +546,11 @@ It may be worth trying a finer discretization of age, say, 35-,
 
 ## Logistic model example: German credit data
 
+The *logistic* model is an example of a *generalized linear model*,
+whose name stems from it having a linear component in the formula.
+
+### Form of the model
+
 Just as linear models are the most commonly used for numeric Y, in the
 the binary-Y case the go-to standard is the logistic model.  Let's first
 consider a very simple prediction problem, in which Y is gender, say 1
@@ -587,9 +565,49 @@ distribution, the familiar "bell-shaped" curve, with the same standard
 deviation for each gender.  Then it turns out that one can show
 mathematically that
 
+probability male =
 $$
-\frac{u}{v}
+\frac
+{1}{1 + e^{-\beta_0 - \beta_1 age}}
 $$
+
+That follows the form of the *logistic function*,
+$f(t) = 1 / [1 + e^{-t}]$, which has the shape of an S-curve:
+
+```{r}
+curve(1/(1+exp(-x)),-4,4)
+```
+
+The estimates b~i~ of the population values $\beta_i$ are obtained via a
+method generalizing the least-squares method used in the linear case.
+[There is a similar situation for the linear case.  If Y and the
+predictor variables have a multivariate normal distribution, one can
+show that mean Y as a function of the features is linear in the
+features, etc.]{.column-margin} Say we predict gender from age and wage
+income.  If the latter two variables have a *bivariate normal*
+distribution (two-dimensional histogram has a 3-D bell shape) with the
+same variance matrices within each gender, it turns out that we again
+get a logistic form:
+
+probability male =
+$$
+\frac
+{1}{1 + e^{-\beta_0 - \beta_1 age - \beta_2 wage income}}
+$$
+
+Now, what about that assumption of the normal distributions and so on?
+Just as the many regression functions in practice are roughly linear, in
+predicting binary Y the S-curve model is roughly valid.  Moreover, the
+logistic model has two desirable properties for predicting binary Y:
+
+* Its value is between 0 and 1, appropriate for modeling a probability.
+
+* The expression $1 / [1 + e^{-t}]$ is increasing in t.
+
+The point is that the logistic (popularly referred to as "logit") is
+often a good model in general.
+
+### German credit data
 
 # Part II:  Fairness in Machine Learning
 
