@@ -54,43 +54,36 @@ dsldCheckData <- function(data1, data2, yName) {
 #' @param sName: name of the sensitive column [character]
 #' @param newData: new test cases to compute Y | X 
 
-dsldLogit <- function(data, yName, sName, sComparisonPts) {
+dsldLogit <- function(data, yName, sName, sComparisonPts, yesYVal) {
   dsldModel <- list()
-
-  if (is.factor(data[[yName]])) {
-    data[[yName]] <- as.numeric(as.character(data[[yName]]))
-  }
   
-  if (is.null(sComparisonPts)) {
-    stop(paste("Please enter the sComparisonPts argument to compare for ",
-                "between sLevels in summary()"))
-  }
-  
+  data[[yName]] <- ifelse(data[[yName]] == yesYVal, 1, 0)
+ 
   if (!is.data.frame(sComparisonPts)) {
     stop(paste("Error: sComparisonPts must be a dataframe"))
   } 
-
+  
   tempData <- data[, !(names(data) %in% sName)]
   newData <- dsldCheckData(tempData, sComparisonPts, yName)
-    
+  
   # split data into list of dataframes by each level of sName #
   dataSplit <- split(data, data[[sName]])
   dataNames <- names(dataSplit)
-    
+  
   # loop and create model for each level in sName #
   for (name in dataNames) {
     # initialize instance of dsldDiffModel #
     dsldDiffModel <- list()
-      
+    
     # get data for each specific S factor & drop sensitive column #
     diffData <- dataSplit[[name]]
     drop <- c(sName)
     diffData <- diffData[, !(names(diffData) %in% drop)]
-      
+    
     # create the model #
     diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
                      family = "binomial", data = diffData)
-  
+    
     # setup individual instance of dsldDiffModel #
     dsldDiffModel <- c(
       dsldDiffModel,
@@ -101,7 +94,7 @@ dsldLogit <- function(data, yName, sName, sComparisonPts) {
       list(summary(diffModel)),
       list(coef(diffModel)),
       list(diffData)
-      )
+    )
     
     names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
                               "summary", "coef", "data")
@@ -287,7 +280,7 @@ summary.dsldGLM <- function(dsldGLM) {
   
   sNames <- names(dsldGLM)
   newData <- dsldGLM[[1]]$newData
-    
+  
   # loop through each level of S name to compute estimates and standard errors
   for (i in sNames) {
     data <- dsldGLM[[i]]$data
@@ -303,11 +296,11 @@ summary.dsldGLM <- function(dsldGLM) {
       PValue = pValues,
       stringsAsFactors = FALSE,
       row.names = NULL
-      )
+    )
     diffS[[i]] <- df
   }
   diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLog(dsldGLM,
-                                                               newData)
+                                                                newData)
   return(diffS)
 }
 
