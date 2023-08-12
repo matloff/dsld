@@ -751,6 +751,25 @@ cancer even if they are nonsmokers.  A graphical description would be
 
 ![](appendixB/ascdag.png){width=40%}
 
+Here is an example the **bnlearn** package on our **svcensus** dataset:
+
+![](svcensusDAG.png){width=100%}
+
+There are a couple of undirected arcs, e.g. between gender and
+occupation--relations, but not found to be causal, using available data.
+
+More interesting, though, is the lack of a causal arc from gender to
+wage income.  This is in stark contrast to what **dsldLinear** suggests:
+
+```{r}
+data(svcensus)
+w <- dsldLinear(svcensus,'wageinc','gender',interactions=FALSE)
+coef(w)
+```
+
+Here, even correcting for age, education and so on, we find a
+substantial gender pay gap.
+
 CI DAGs are of course quite visually appealing, but as pointed out by
 the developers of such methodology, the graphs can be very misleading.
 Using DAGs effectively requires deep understanding of the concepts.
