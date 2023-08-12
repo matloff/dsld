@@ -723,16 +723,18 @@ process results in disproportionately sampling older patients, but our
 data itself does not include patient ages.  This could unfairly make the
 new drug appear ineffective.
 
-In a *randomized clinical trial,* we would randomly assign treatments to
-patients, so there would likely be no strong imbalance in age
-distribution in the two drug groups.  So, even if our data still did not
-record patient age, there would be no age bias in our analysis.
+In a *randomized clinical trial* (RCTs), we would randomly assign
+treatments to patients, so there would likely be no strong imbalance in
+age distribution in the two drug groups.  So, even if our data still did
+not record patient age, there would be no age bias in our analysis.
 
-*Causal inference* CI can be viewed both as a way to deal with unseen
-variables in observational studies, and as a graphical alternative to
-traditional statistical relational analysis.  Though CI takes on many
-forms, our discussion here will focus on *directed acyclic graphs*
-(DAGs).  In a DAG, an arrow from A to B signifies that A "causes" B.
+In many cases, RCTs are infeasible or impossible (we cannot "assign"
+race).  *Causal inference* CI can be viewed both as a way to deal with
+unseen variables in observational studies, and as a graphical
+alternative to traditional statistical relational analysis.  Though CI
+takes on many forms, our discussion here will focus on *directed acyclic
+graphs* (DAGs).  In a DAG, an arrow from A to B signifies that A
+"causes" B.
 
 For instance, a graphical description of a situation in which older
 people (say who came of age before anti-smoking campaigns) might be more
@@ -749,7 +751,7 @@ is well beyond the scope of this course, but we urge users and consumers
 of CI to keep the following points in mind:
 
 * The definition of *cause* is of course central to proper use of CI
-dags, and "wrapping one's head around* the definition can be a challenge
+DAGs, and "wrapping one's head around" the definition can be a challenge
 even for probabilistic modelers.
 
 * Unseen variables, such as age in the above example, can be just as
