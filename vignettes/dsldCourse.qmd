@@ -732,8 +732,16 @@ In many cases, RCTs are infeasible or impossible (we cannot "assign"
 race).  *Causal inference* CI can be viewed both as a way to deal with
 unseen variables in observational studies, and as a graphical
 alternative to traditional statistical relational analysis.  Though CI
-takes on many forms, our discussion here will focus on *directed acyclic
-graphs* (DAGs).  In a DAG, an arrow from A to B signifies that A
+takes on many forms, our discussion here will focus on *instrumental
+variables* (IVs) and *directed acyclic graphs* (DAGs).  
+
+### IVs
+
+https://deliverypdf.ssrn.com/delivery.php?ID=186110029069008092066073109126021081054087021052029007119070078009004021071020065065016043025056016121004087011123121013084088027086028018020067000013083121109072039003101088069101127114110097102124121118023107099087067118078116065004118095117072&EXT=pdf&INDEX=TRUE
+
+### DAGS
+
+In a DAG, an arrow from A to B signifies that A
 "causes" B.
 
 For instance, a graphical description of a situation in which older
@@ -750,9 +758,11 @@ A treatment of these concepts
 is well beyond the scope of this course, but we urge users and consumers
 of CI to keep the following points in mind:
 
+::: {.callout-note}
+### Caution with DAGS
 * The definition of *cause* is of course central to proper use of CI
 DAGs, and "wrapping one's head around" the definition can be a challenge
-even for probabilistic modelers.
+even for experiencedprobabilistic modelers.
 
 * Unseen variables, such as age in the above example, can be just as
 harmful in CI contexts as in observational data.
@@ -760,7 +770,7 @@ harmful in CI contexts as in observational data.
 * Most important, for any given dataset, there is no unique DAG;
 typically many DAGs can fit the dataset equally well, and they can be in
 conflict with each other.  One might say that A causes B, while another,
-equally credible one in terms of data fit, might have B causing A.
+equally credible in terms of data fit, might have B causing A.
 
 This last point is of course very concerning.  In recent years, there
 has been much handwringing in science about the Replication Crisis, in
@@ -772,6 +782,7 @@ just one of many equally-credible DAGs, as is usually the case.
 DAGs can indeed lead to valuable insight, but can be misleading as well.
 A healthy skepticism and a solid understanding of the concepts are
 mandatory for proper use.
+:::
 
 ## Appendix C: Standard Errors via the Bootstrap
 
