@@ -734,6 +734,13 @@ traditional statistical relational analysis.  Though CI takes on many
 forms, our discussion here will focus on *directed acyclic graphs*
 (DAGs).  In a DAG, an arrow from A to B signifies that A "causes" B.
 
+For instance, a graphical description of a situation in which older
+people (say who came of age before anti-smoking campaigns) might be more
+likely to smoke, and for other reasons may be more likely to develop
+cancer even if they are nonsmokers.  A graphical description would be
+
+![](appendixB/ascdag.png){width=40%}
+
 CI DAGs are of course quite visually appealing, but as pointed out by
 the developers of such methodology, the graphs can be very misleading.
 Using DAGs effectively requires deep understanding of the concepts.
