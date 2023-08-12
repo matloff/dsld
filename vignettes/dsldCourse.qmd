@@ -239,7 +239,9 @@ the COMPAS data. Perhaps this could be due to a younger person's increased
 capacity to engage in criminal activity compared to older people.
 
 This is one example of how one can use dsld functions to discover possible 
-confounders in a dataset.
+confounders in a dataset. If we did not pre-suspect age as a confounder, we could 
+use the dsldConfounders function to generate a graph (like the one above) for 
+multiple numeric features in a dataset.
 
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
