@@ -1,4 +1,33 @@
-# -------------------------- dsldLinear -------------------------- #
+### --------------------------- DSLDCheckData ----------------------------------
+dsldCheckData <- function(data1, data2, yName) {
+  data1 <- data1[, !(names(data1) %in% yName)]
+  missingCols <- setdiff(names(data1), names(data2))
+  if (length(missingCols) > 0) {
+    stop(paste("Invalid column(s) in sComparisonPts:", paste(missingCols, collapse = ", ")))
+  }
+  
+  if (!identical(sort(names(data1)), sort(names(data2)))) {
+    stop("Error: Column names do not match")
+  }
+  data2 <- data2[names(data1)]
+  
+  char <- sapply(data2, is.character)
+  for (colName in names(data2)[char]) {
+    if (colName %in% names(data1) && is.factor(data1[[colName]])) {
+      levels_data1 <- levels(data1[[colName]])
+      data2[[colName]] <- factor(data2[[colName]], levels = levels_data1)
+      
+      invalid_levels <- !data2[[colName]] %in% levels_data1
+      if (any(invalid_levels)) {
+        stop(paste("Invalid", colName, "level(s) in sComparisonPts:", 
+                   paste(data2[[colName]][invalid_levels], collapse = ", ")))
+      }
+    }
+  }
+  return(data2)
+}
+
+### -------------------------- DSLD Linear -------------------------------------
 #' ::: Descripton :::
 #' @brief The dsldLinear function fits a linear model to the response variable,
 #'      yName, using all other available covariates in the user provided
@@ -30,9 +59,9 @@
 #'      interactions = TRUE [dataframe]
 #' @param sandwich: whether or not to use sandwich variance estimator; defaults
 #'      to FALSE [logical]
-#' 
-dsldLinear <- function(data, yName, sName, interactions = FALSE,
-                       newData = NULL, useSandwich = FALSE) {
+
+dsldLinear <- function(data, yName, sName, interactions = FALSE, 
+                       sComparisonPts = NULL, useSandwich = FALSE) {
   # load if needed
   if (useSandwich) {
     library(sandwich)
@@ -43,11 +72,18 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
   
   # user wants interactions #
   if (interactions) {
-    # raise error if user doesn't input newData #
-    if (is.null(newData)) {
-      stop(paste("Please enter the newData input to compare for ",
+    
+    # raise error if user doesn't input proper Data #
+    if (is.null(sComparisonPts)) {
+      stop(paste("Please enter the sComparisonPts argument to compare for ",
                  "interactions in summary()"))
     }
+    if (!is.data.frame(sComparisonPts)) {
+      stop(paste("Error: sComparisonPts must be a dataframe"))
+    } 
+    
+    tempData <- data[, !(names(data) %in% sName)]
+    newData <- dsldCheckData(tempData, sComparisonPts, yName)
     
     # split data into list of dataframes by each level of sName #
     dataSplit <- split(data, data[[sName]])
@@ -75,14 +111,14 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       
       # setup individual instance of dsldDiffModel #
       dsldDiffModel <- c(dsldDiffModel,
-        yName,
-        sName,
-        list(diffModel),
-        list(newData),
-        list(summary(diffModel)),
-        list(coef(diffModel)),
-        list(covMatrix),
-        list(diffData)
+                         yName,
+                         sName,
+                         list(diffModel),
+                         list(newData),
+                         list(summary(diffModel)),
+                         list(coef(diffModel)),
+                         list(covMatrix),
+                         list(diffData)
       )
       names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
                                 "summary", "coef", "covarianceMatrix", "data")
@@ -107,13 +143,13 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     
     # setup instance of dsldDiffModel #
     dsldDiffModel <- c(dsldDiffModel,
-      yName,
-      sName,
-      list(diffModel),
-      list(summary(diffModel)),
-      list(coef(diffModel)),
-      list(covMatrix),
-      list(data)
+                       yName,
+                       sName,
+                       list(diffModel),
+                       list(summary(diffModel)),
+                       list(coef(diffModel)),
+                       list(covMatrix),
+                       list(data)
     )
     names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
                               "coef", "covarianceMatrix", "data")
@@ -128,19 +164,12 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 }
 
 # -------------------- Test Run dsldLinear ------------------------------------#
-# data(svcensus)
-# newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106", "106"))   
-# lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1                                 # we are predicting wageinc
-# lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
-# -----------------------------------------------------------------------------#
-
-# ------------------- Test Run dsldLinear (law schools admissions) -------------------------------------#
-# data("law.school.admissions")                  
-# drop <- c('fulltime', 'bar','cluster')
-# law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
-# newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(1,5), ugpa = c(3.8, 3.8), gender = c('male', 'male')) 
-# lin_1 <- dsldLinear(law.school.admissions,'lsat','race1', interactions = TRUE, newData); lin_1                   # we are predicting lsat score                         
-# lin_2 <- dsldLinear(law.school.admissions,'lsat','race1', interactions = FALSE); lin_2
+#data(svcensus)
+#newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106", "106"))  
+#lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1   
+#lin11 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData, useSandwich = TRUE); lin11   
+#lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
+#lin22 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE, useSandwich = TRUE); lin22
 # -----------------------------------------------------------------------------#
 
 # ----------------------- Auxiliary Functions ---------------------------------#
@@ -152,7 +181,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 #'
 #' ::: Arguments :::
 #' @param dsldLM: an instance of the dsldLM s3 object.
-#'
+
 coef.dsldLM <- function(dsldLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldLM, function(x) x$coef)
@@ -161,7 +190,7 @@ coef.dsldLM <- function(dsldLM) {
 
 
 # coef(lin1) # test run
-# coef(lin2)
+# coef(lin11)
 
 # added vcov generic
 vcov.dsldLM <- function(dsldLM) {
@@ -171,8 +200,7 @@ vcov.dsldLM <- function(dsldLM) {
 }
 
 # vcov(lin1)
-# vcov(lin2)
-
+# vcov(lin11)
 
 #' ::: Description ::
 #' @brief the dsldGetData() function takes in an object of the 'dsldLM'
@@ -181,7 +209,7 @@ vcov.dsldLM <- function(dsldLM) {
 #'
 #' ::: Arguments :::
 #' @param dsldLM: an instance of the dsldLM s3 object.
-#'
+
 dsldGetData <- function(dsldLM) {
   # merge & return datasets #
   mergedData <- lapply(dsldLM, function(x) x$data)
@@ -190,45 +218,9 @@ dsldGetData <- function(dsldLM) {
 
 
 # dsldGetData(lin1)
-# dsldGetData(lin2)
+# dsldGetData(lin11)
 
 #------------------------- dsldDiffS function ---------------------------------#
-#' ::: Description ::
-#' @brief dsldValidateData() is an indirect helper function for dsldDiffS()
-#'      full-interactions case. The function takes in the newData argument
-#'      from dsldDiffS() and validates if the user has entered appropriate
-#'      entries for newData.
-#'
-#' ::: Arguments :::
-#' @param newData: user inputted data for incoming new test cases.
-#' @param model: linear model fitted by output of dsldLinear().
-#'
-dsldValidateData <- function(newData, model) {
-  #  check to see if columns in newData exist in the original data #
-  missingCols <- setdiff(names(newData), names(model$model))
-  if (length(missingCols) > 0) {
-    stop(paste("Invalid column(s):", paste(missingCols,
-                                           collapse = ", ")))
-  }
-  
-  # Check if categorical variables entries are valid #
-  categoricalVars <- names(model$model)[sapply(model$model, is.factor)]
-  for (i in 1:nrow(newData)) {
-    curRow <- newData[i, ]
-    
-    for (var in categoricalVars) {
-      levels <- unique(model$model[[var]])
-      if (!(curRow[[var]] %in% levels)) {
-        stop(paste("Invalid", var, "level in row", i, "."))
-      }
-    }
-  }
-  
-  # return the data back if everything is good #
-  return(newData)
-}
-
-
 #' ::: Description ::
 #' @brief The dsldDiffS() function helps users quantify possible evidence of
 #'      discrimination between S levels. For the no-interactions case,
@@ -256,8 +248,9 @@ dsldValidateData <- function(newData, model) {
 #' @param dsldLM: output from dsldLinear() function
 #' @param newData: new test cases to be provided; required for
 #'      full-interactions case
-#'
-dsldDiffS <- function(dsldLM, newData = NULL) {
+
+dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
+  library(regtools)
   # get sName and yName from the output of dsldLinear #
   sName <- dsldLM[[1]]$sName
   yName <- dsldLM[[1]]$yName
@@ -295,8 +288,8 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
     
     # extract estimates and standard errors #
     estimates <- regularS[, 1]
-    #standardErrors <- se_robust[rowsWithRace]
-    pVal <- regularS[, 4]
+    testStat <- estimates / standardErrors
+    pVal <- 2 * (1 - pnorm(abs(testStat)))
     
     # create dataframe #
     df <- data.frame(estimates, standardErrors, pVal)
@@ -336,8 +329,8 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
       # get estimates & standard errors #
       estimates <- aValue - bValue
       standardErrors <- sqrt((t(rt) %*% C %*% rt))
-      tStatistic <- (estimates) / standardErrors
-      pVal <- 2 * (1 - pnorm(abs(tStatistic)))
+      testStat <- (estimates) / standardErrors
+      pVal <- 2 * (1 - pnorm(abs(testStat)))
       tempDF <- data.frame(estimates, standardErrors, pVal)
       df <- rbind(df, tempDF)
     }
@@ -360,10 +353,16 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
                    "P-Value")
     return(df)
   } else { # with interactions
+    
     # raise error if the user doesn't input new data #
-    if (is.null(newData)) {
-      stop("Please enter the newData input to compare for interactions")
+    if (is.null(sComparisonPts)) {
+      stop("Please enter the sComparisonPts argument to compare for interactions")
     }
+    if (!is.data.frame(sComparisonPts)) {
+      stop(paste("Error: sComparisonPts is not a dataframe"))
+    } 
+    tempData <- dsldLM[[1]]$data
+    xNew <- dsldCheckData(tempData, sComparisonPts, yName)
     
     # get vector of all levels in sName #
     sNames <- names(dsldLM)
@@ -374,17 +373,25 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
     for (i in sNames) {
       data <- dsldLM[[i]]$data
       model <- dsldLM[[i]]$model
-      xNew <- dsldValidateData(newData, model)
-      
-      predictions <- predict(model, xNew, type = "response",
-                             se.fit = TRUE)
-      pred <- predictions$fit
-      se <- predictions$se.fit
-      tempDF <- data.frame(level = i, row = 1:nrow(xNew),
-                           prediction = pred, standardError = se)
-      df <- rbind(df, tempDF)
+      C <- (dsldLM[[i]]$covarianceMatrix)
+      u_names <- names(coef(dsldLM[[i]]$model))
+      for (j in 1:nrow(xNew)) {
+        row <- xNew[j, ]
+        if (!is.numeric(row)) {
+          x <- regtools::factorsToDummies(row,omitLast=FALSE)
+        }
+        full_u <- x[1,]
+        cleaned_vector1_names <- names(full_u)
+        cleaned_vector1_names <- gsub("\\.", "", cleaned_vector1_names)
+        matched_names <- intersect(cleaned_vector1_names, u_names)
+        subset_values <- full_u[match(matched_names, cleaned_vector1_names)]
+        subset_values <- c(1,subset_values)
+        pred <- predict(model,row)
+        standard_error <- sqrt(t(subset_values) %*% C %*% subset_values)
+        tempDf <- data.frame(level = i, row = j, prediction = pred, standardError = standard_error)
+        df <- rbind(df, tempDf)
+      }
     }
-    
     # compute difference in estimates between each pair factor level for
     # each row
     uniqueElements <- sort(unique(df$row))
@@ -412,19 +419,13 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
         pairwiseDF <- rbind(pairwiseDF, tempDF)
       }
     }
-    
     return(pairwiseDF)
   }
 }
-
 # ---------------------------- Test runs  -------------------------------------#
 # educ_data <- data.frame(age = c(18,60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50),occ = c("106", "106")) 
-# dat1 <- dsldDiffS(lin1, educ_data) # run with interactions 
-# View(dat1)
-
-# fam_data <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), fam_inc = c(1,5), ugpa = c(3.8, 3.8), gender = c('male', 'male')) 
-# dat2 <- dsldDiffS(lin_1, fam_data)
-# View(dat2)
+# dat1 <- dsldDiffSLin(lin1, educ_data) # run with interactions 
+# dat11 <- dsldDiffSLin(lin11, educ_data)
 # -----------------------------------------------------------------------------#
 
 #' ::: Description ::
@@ -435,7 +436,7 @@ dsldDiffS <- function(dsldLM, newData = NULL) {
 #' 
 #' ::: Arguments :::
 #' @param dsldLM: an instance of the dsldLM s3 object that output summary objects.
-#'
+
 summary.dsldLM <- function(dsldLM) {
   diffS <- list()
   
@@ -463,7 +464,7 @@ summary.dsldLM <- function(dsldLM) {
     )
     
     diffS[['Summary Coefficients']] <- df
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldLM)
+    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLin(dsldLM)
     
     return(diffS)
   } else {
@@ -492,15 +493,14 @@ summary.dsldLM <- function(dsldLM) {
       
       diffS[[i]] <- df
     }
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffS(dsldLM,
-                                                               newData)
+    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLin(dsldLM,
+                                                                  newData)
     return(diffS)
   }
 }
 
 # Test runs --------------------------------------------------------------------
-# interactions_summary <- summary(lin1); interactions_summary
-# no_interactions_summary <- summary(lin2); no_interactions_summary
-
-# interactions_summary_2 <- summary(lin_1); interactions_summary_2
-# no_interactions_summary_2 <- summary(lin_2); no_interactions_summary_2
+# summary(lin1)
+# summary(lin11)
+# summary(lin2)
+# summary(lin22)
