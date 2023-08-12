@@ -753,6 +753,17 @@ typically many DAGs can fit the dataset equally well, and they can be in
 conflict with each other.  One might say that A causes B, while another,
 equally credible one in terms of data fit, might have B causing A.
 
+This last point is of course very concerning.  In recent years, there
+has been much handwringing in science about the Replication Crisis, in
+which scientists try to replicate the findings of an earlier published
+paper, and discover serious problems with the earlier results.  Imagine
+the replication problems that can arise if authors of a paper present
+just one of many equally-credible DAGs, as is usually the case.
+
+DAGs can indeed lead to valuable insight, but can be misleading as well.
+A healthy skepticism and a solid understanding of the concepts are
+mandatory for proper use.
+
 
 A common way to conduct causal inference is to show the effects of 
 your variables in a directed acyclic graph (DAG). Imagine we are investigating 
