@@ -394,5 +394,20 @@ model when our predictors have monotonic relations with Y.
 The point is that the logistic (popularly referred to as "logit") is
 often a good model in general.
 
+### We no longer have a no-interactions case
+
+In the first linear model example above, predicting wage income from age
+and gender, the model implied a uniform gender, independent of age.  The
+male and female regression lines were parallel.  That's not possible in
+the logit case:
+
+```{r}
+curve(1/(1+exp(-x)),-4,4)
+curve(1/(1+exp(-2*x)),-4,4,add=TRUE)
+```
+
+The curves are no longer parallel; they even cross.
+
+
 ### German credit data
 
