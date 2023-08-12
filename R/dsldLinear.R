@@ -1,12 +1,6 @@
 ### --------------------------- DSLDCheckData ----------------------------------
 dsldCheckData <- function(data1, data2, yName) {
-  colName <- names(data1)
-  colName <- colName[colName != yName]
-  data1 <- data1[, !(names(data1) %in% yName)]
-  if (is.vector(data1)) {
-    data1 <- data.frame(column_name = data1)
-    colnames(data1) <- colName
-  }
+  data1 <- data1[, !(names(data1) == yName), drop = FALSE]
   missingCols <- setdiff(names(data1), names(data2))
   if (length(missingCols) > 0) {
     stop(paste("Invalid column(s) in sComparisonPts:", paste(missingCols, collapse = ", ")))
@@ -169,12 +163,12 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 }
 
 # -------------------- Test Run dsldLinear ------------------------------------#
-#data(svcensus)
-#newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106", "106"))  
-#lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1   
-#lin11 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData, useSandwich = TRUE); lin11   
-#lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
-#lin22 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE, useSandwich = TRUE); lin22
+# data(svcensus)
+# newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106", "106"))  
+# lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1   
+# lin11 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData, useSandwich = TRUE); lin11   
+# lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
+# lin22 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE, useSandwich = TRUE); lin22
 # -----------------------------------------------------------------------------#
 
 # ----------------------- Auxiliary Functions ---------------------------------#
@@ -377,13 +371,21 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
     # standard errors
     for (i in sNames) {
       data <- dsldLM[[i]]$data
+      colName <- names(data)
+      colName <- colName[colName != yName]
       model <- dsldLM[[i]]$model
       C <- (dsldLM[[i]]$covarianceMatrix)
       u_names <- names(coef(dsldLM[[i]]$model))
       for (j in 1:nrow(xNew)) {
         row <- xNew[j, ]
+        if (!is.data.frame(row)) {
+          row <- data.frame(x = row)
+          colnames(row) <- colName
+        }
         if (!is.numeric(row)) {
           x <- regtools::factorsToDummies(row,omitLast=FALSE)
+        } else {
+          x <- as.vector(row)
         }
         full_u <- x[1,]
         cleaned_vector1_names <- names(full_u)
@@ -427,10 +429,11 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
     return(pairwiseDF)
   }
 }
+
 # ---------------------------- Test runs  -------------------------------------#
 # educ_data <- data.frame(age = c(18,60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50),occ = c("106", "106")) 
-# dat1 <- dsldDiffSLin(lin1, educ_data) # run with interactions 
-# dat11 <- dsldDiffSLin(lin11, educ_data)
+# dsldDiffSLin(lin1, educ_data) # run with interactions 
+# dsldDiffSLin(lin11, educ_data)
 # -----------------------------------------------------------------------------#
 
 #' ::: Description ::
