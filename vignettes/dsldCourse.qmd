@@ -549,7 +549,7 @@ It may be worth trying a finer discretization of age, say, 35-,
 The *logistic* model is an example of a *generalized linear model*,
 whose name stems from it having a linear component in the formula.
 
-### Form of the model
+### General form of the model
 
 Just as linear models are the most commonly used for numeric Y, in the
 the binary-Y case the go-to standard is the logistic model.  Let's first
@@ -568,10 +568,10 @@ mathematically that
 probability male =
 $$
 \frac
-{1}{1 + e^{-\beta_0 - \beta_1 age}}
+{1}{1 + e^{-(\beta_0 + \beta_1 income)}}
 $$
 
-That follows the form of the *logistic function*,
+That formula follows the form of the *logistic function*,
 $f(t) = 1 / [1 + e^{-t}]$, which has the shape of an S-curve:
 
 ```{r}
@@ -592,17 +592,19 @@ get a logistic form:
 probability male =
 $$
 \frac
-{1}{1 + e^{-\beta_0 - \beta_1 age - \beta_2 wage income}}
+{1}{1 + e^{-(\beta_0 + \beta_1 age + \beta_2 income)}}
 $$
 
 Now, what about that assumption of the normal distributions and so on?
-Just as the many regression functions in practice are roughly linear, in
-predicting binary Y the S-curve model is roughly valid.  Moreover, the
-logistic model has two desirable properties for predicting binary Y:
+Just as many regression functions for numeric Y in practice are roughly
+linear, in predicting binary Y the S-curve model is often roughly valid.
+Moreover, the logistic model has two desirable properties for predicting
+binary Y:
 
 * Its value is between 0 and 1, appropriate for modeling a probability.
 
-* The expression $1 / [1 + e^{-t}]$ is increasing in t.
+* The expression $1 / [1 + e^{-t}]$ is increasing in t, which we wish to
+model when our predictors have monotonic relations with Y.
 
 The point is that the logistic (popularly referred to as "logit") is
 often a good model in general.
