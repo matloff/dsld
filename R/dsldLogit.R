@@ -1,12 +1,6 @@
 ### --------------------------- DSLDCheckData ----------------------------------
 dsldCheckData <- function(data1, data2, yName) {
-  colName <- names(data1)
-  colName <- colName[colName != yName]
-  data1 <- data1[, !(names(data1) %in% yName)]
-  if (is.vector(data1)) {
-    data1 <- data.frame(column_name = data1)
-    colnames(data1) <- colName
-  }
+  data1 <- data1[, !(names(data1) == yName), drop = FALSE]
   missingCols <- setdiff(names(data1), names(data2))
   if (length(missingCols) > 0) {
     stop(paste("Invalid column(s) in sComparisonPts:", paste(missingCols, collapse = ", ")))
