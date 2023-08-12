@@ -1,0 +1,16 @@
+
+
+## Determining Confounders
+
+<!--
+### What A Confounder Looks Like
+Conceptual and Graphical Examples
+How does graphing a confounder change how we look at the relationship between variables
+Essentially, if we want to see the relationship between Y and S, but S and C look like they're correlated, there's a problem
+-->
+### Graphical Example
+Some example(s) using dsld Scatterplot3D or densityByS
+
+### Tabular Example
+Some example(s) using dsld Scatterplot3D or frequencyByS
+

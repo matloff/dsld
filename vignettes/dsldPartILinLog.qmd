@@ -1,0 +1,398 @@
+
+# Part I:  Adjustment for Confounders
+
+How do we adjust for confounders?  The most common approach involves
+[There will also be the question of *which* possible confounders to use.
+]{.column-margin} linear models, with which we express the mean Y for
+given values of the X, C and S variables in a linear form.  
+
+## Linear model example: a simple gender wage gap analysis
+
+Consider the **svcensus** data example in @sec-census above,
+investigating a possible gender pay gap.  So Y is wage and S is gender.
+We might treat age as a confounder C, reasoning as follows.  Older
+workers tend to have more experience and thus higher wages, and if there
+is an age differential in our data, say with female workers tending to
+be older, this may mask a gender pay gap.  
+
+So, let's take the set of confounders C to consist of age, and for
+simplicity in this introductory example, not include any other
+confounders, such as occupation, and not include any other
+variables X.
+
+### Initial analysis
+
+Our linear model would thus be
+
+> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+
+[The column svcensus$gender is an R factor. Our function **dsldLinear**
+calls R's **lm**, which replaces that column by a dummy variable
+**gendermale**, our M above.]{.column-margin} where W is wage, A is age
+and M is an indicator variable, with M = 1 for men and M = 0 for women.
+The parameters $\beta$~i~ are estimated by fitting the model to the
+data:
+
+```{r}
+svcensus1 <- 
+   svcensus[,c(1,4,6)]  # age, wage, gender
+z <- dsldLinear(svcensus1,'wageinc','gender')
+coef(z)  # print the estimated coefficients b_i 
+```
+
+Let's use b~i~ to denote our estimated $\beta$~i~.  So for instance b~1~
+[Always keep in mind that statistical quantities are only estimated,
+since we work only with sample data from some population, real or
+conceptual.  Hence the need for standard errors, confidence intervals
+and so on.]{.column-margin} 
+= 489.5728 is our estimate of the unknown population parameter
+$\beta_1$.
+
+### Interpretation of $\beta$~2~
+
+Lots in the output to discuss, which we will gradually cover below.  For now, note that the estimate b~2~ turns out to be about $13,000, which is the (estimated) wage gap, if any.  Here's why:
+
+Under the model, the mean wage for, say, 36-year-old men is
+
+> $\beta$~0~ + 36 $\beta$~1~ + 1 $\beta$~2~ 
+
+while for women of that age it is
+
+> $\beta$~0~ + 36 $\beta$~1~ 
+
+The difference is $\beta$~2~.  But if we look at, for instance, people of age
+43, the mean wages for men and women are
+
+> $\beta$~0~ + 43 $\beta$~1~ + 1 $\beta$~2~ 
+
+and
+
+> $\beta$~0~ + 43 $\beta$~1~ 
+
+and the difference *is still* $\beta$~2~.  
+
+::: {.callout-note}
+### "The" effect of gender
+Thus we can speak of $\beta$~2~ as *the* gender wage gap, at any age.
+According to the model, younger men earn an estimated $13,000 more than
+younger women, with the *same-sized* gap between older men and older
+women.
+:::
+
+The above approach to dealing with confounders is a very common one.
+But it raises questions, such as:
+
+* What are the assumptions underlying that model?  And how might we [In
+  addition, the data here are, as is commonly the case, *observational*,
+  as opposed to being the result of a *randomized clinical trial*; there
+  may be serious issues, due to unobserved confounders.  Such problems
+  might be solvable via an advanced (and rather controversial)
+  methodology known as *causal inference*.  Unfortunately, details are
+  beyond our scope in this tutorial, but we will explain some basic
+  concepts in @sec-causal.]{.column-margin} check whether they are
+  (approximately) valid?
+
+* We chose only one C variable here, age.  We might also include
+occupation, as noted earlier.  In some datasets, might have dozens of
+possible confounders.  How do we choose which ones to use in our model?
+And for that matter, why not use them all?
+
+* The above model, in which the gender wage gap was uniform across all
+wages, may not be adequate.  How can we determine this, and what
+alternative models might we use?
+
+### Statistical inference
+
+The full output of **dsldLinear()** goes to the heart of discrimination
+analysis, enabling statistical inferences on differences in levels of
+the sensitive variable S.  Let's take a look, continuing from the above
+code: 
+
+```{r}
+summary(z)
+```
+
+The first half of this output is from **lm()**, which is called by
+**dsldLinear()**.  The second half is the "value added" material 
+from **dsld**.
+
+So, an approximate 95% confidence interval for the gender wage gap is
+[Since the estimated gender gap here is simply b~2~, the CI could of
+course have also been obtained directly from the **lm** half of the
+output.  But with an S having more than two levels, e.g. race, the
+**dsld** enhancement is quite valuable.]{.column-margin}
+
+> 13098.2091 &plusmn; 1.96 x 790.4451
+
+or (11548.94,14647.48).
+
+### With-interactions model
+
+As discussed above, in our model
+
+> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+
+we identified b~2~ as *the* difference in mean wage between men and
+women, regardless of age, so that for instance:
+
+> According to the model, younger men earn about $13,000 more than younger
+> women, with the same-sized gap between older men and older women.
+
+But that may not be true.  On the contrary, gender discrimination and
+[Interaction between two types of discrimination is called
+*intersectionality* by some analysts.]{.column-margin}
+age discrimination may interact.  It may be, for instance, that the
+gender gap is small at younger ages but much larger for older people.
+
+Technically, the with-interactions model adds a product term:
+
+> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M + $\beta$~3~ AM 
+
+So for example, the gender pay gap for people of age 36 is
+
+($\beta$~0~ + $\beta$~1~ 36 + $\beta$~2~ 1 + $\beta$~3~ 36) -
+($\beta$~0~ + $\beta$~1~ 36 ) =
+
+$\beta$~2~ 1 + $\beta$~3~ 36
+
+And at age 43, the gap is
+
+$\beta$~2~ 1 + $\beta$~3~ 43
+
+So, this model does indeed allow for interaction between age and gender.
+
+However, this added-product-term is a bit abstract, and it is easier
+(and approximately equivalent) to simply fit two linear models, one for
+men and one for women.
+
+::: {.callout-note}
+The **dsldLinear** function includes an argument **interactions**. The
+default value is FALSE, but if TRUE, it fits separate linear models for
+each level of S.  An additional argument 'newData' is now
+needed, through which the user specifies a data frame consisting of
+one or more (X,C) values at which to compare the effect of S.
+:::
+
+```{r}
+newData <- data.frame(age=c(36,43))
+z <- dsldLinear(svcensus1,'wageinc','gender',interactions=T,
+   newData)
+summary(z)
+```
+
+So the gender pay gap is estimated to be -13156.88 at age 36, -13039.27
+at age 43, only about $100.  The estimated gap between ages 36 and 53,
+not shown, is larger, close to $300, but it seems there is not much
+interaction here.
+
+### Linearity and other assumptions
+
+As noted, linear models are ubiquitous in observational data analysis.
+Open any professional journal in medicine, sociology, economics and so
+on, and you'll see many applications of this methodology.  But how would one
+check that most basic assumption, the linearity of the mean Y for given
+X, C and S values?
+
+::: {.callout-note}
+### Assumptions--not just a formality
+
+Assumptions *matter*.  They are never perfectly satisfied, but failure
+to be even approximately valid can mean deciding that there is no
+discrimination when it actually is there, or vice versa.  It can mean
+bad medication being declared by the government as good, or vice versa.
+In litigation, if a key expert witness is exposed by opposing counsel as
+not having checked the assumptions in his/her analysis, the side for
+which the witness was testifying will likely lose the case on the spot.
+
+:::
+
+Typically, linearity is checked graphically.  A common approach involves
+plotting the *residuals*, which are the differences between the fitted
+line and the Y values.  Here, though, we use another graphical approach,
+via a **dsld** function that may be more informative. 
+
+Returning to our earlier setting with just S = gender for our example,
+we run
+
+```{r}
+dsldConditDisparity(svcensus1,'wageinc','gender',
+   'age','age > 0',yLim=c(0,150000)) 
+```
+
+The function plots a smoothed graph of Y against a user-specified C
+[The function has a 'conditions' argument; we have none here, so we just used a
+trival one, 'age > 0']{.column-margin} variable, once for each level of
+S.  So, the call here says, "Plot wage income against age, for each
+gender."  
+
+The model has mean Y being a linear of function of age, so we  should
+expect to see approximate straight lines here.  Yet the relation
+certainly looks nonlinear, possibly reflecting age discrimination
+against both very young and very old workers.  We are already
+investigating one kind of discrimination here, gender, so again for
+simplicity let's just keep age as a confounder.  
+
+### Updated model
+
+But we must do something about the substantial nonlinearity [Adding a
+squared term does not make our model nonlinear, as it is still linear in
+the $\beta$~i~; if we, say, double each of those, the entire expression is
+doubled, the definition of linearity. The model is nonlinear in age but
+linear in the $\beta$~i~.]{.column-margin} we've discovered,
+and one possible remedy is to add an age^2^ term be added to the
+equation:
+
+mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ A^2^ + $\beta$~3~ M
+
+Let's fit the updated model:
+
+```{r}
+svcensus1$age2 <- svcensus1$age^2
+z <- dsldLinear(svcensus1,'wageinc','gender')
+coef(z)  # print the estimated coefficients b_i 
+```
+
+So we see that the original wage gap figure of about $13,000 was
+incorrect, underestimating it by about 15%.
+
+We see in this example that misspecifying a linear model can have a
+major impact on its accuracy.  Further issues of model assumptions are
+beyond the scope of this book, but the interested reader is referred one
+of the most popular applied linear models books, *Regression Modeling
+Strategies: With Applications to Linear Models, Logistic and Ordinal
+Regression, and Survival Analysis*, by Prof. Frank Harrell, Jr. of the
+Vanderbilt University School of Medicine.
+
+### Other assumptions
+
+Other than linearity, the standard errors reported by **lm()** also [It
+is also assumed that wage income has a normal/gaussian distribution at
+each level, but the Central Limit Theorem's implications for the sums
+created by **lm()** are in fact approximately normal.]{.column-margin}
+assume that variance of wage income is approximately constant across
+ages and genders.  Lack of this property has some effect on the accuracy
+of reported standard errors, but this can be adjusted via the so-called
+*sandwich* operation, an option in **dsldLinear()**.
+
+## S may consist of more than one factor 
+
+In introducing this example, we noted the need to start simple.  Let's
+move away from that a bit.
+
+In the **svcensus** data, both age and gender are potential areas of
+discrimination.  We can treat both as such by combining these two R
+factor variables into one "super R factor," as follows.
+
+We'll need to discretize age, and since federal law on age
+discrimination uses age 40 as the definition of "older," let's use that
+as an example:
+
+```{r}
+age <- svcensus$age
+age <- ifelse(age >= 40,'40+','under40')
+age <- as.factor(age)
+head(age)
+svcensus$age <- age
+```
+
+Now let's make our "super factor," using a function from **qeML**:
+
+```{r}
+AgeGend <- cartesianFactor('svcensus',c('age','gender')) 
+svcensus$AgeGend <- AgeGend
+head(svcensus)
+```
+
+We no longer need the original age and gender columns, so we'll delete
+them and then try some analysis:
+
+```{r}
+svcensus$age <- NULL
+svcensus$gender <- NULL
+w <- dsldLinear(svcensus,'wageinc','AgeGend')
+summary(w)
+```
+
+Ah, this is a more nuanced probe than the ones above in which we simply
+[This is an example of *Simpson's Paradox*, in which an overall average
+effect might be large than the terms that make up the average.]{.column-margin}
+used age as a confounder.  The male-female differences at both the older
+and younger age levels, about $9800 and $7800, are both substantial, but
+smaller than the $13,100 overall figure we obtained earlier.  
+
+Note too the impact of age within genders.  Older women made about $8200
+more than younger women, but for men the figure was rather larger, about
+$10,200.
+
+On the other hand, this analysis is probably too coarse with respect to
+age, as it does not reveal the negative impact of age well beyond 40.
+It may be worth trying a finer discretization of age, say, 35-, 
+35-55 and 55+.
+
+## Logistic model example: German credit data
+
+The *logistic* model is an example of a *generalized linear model*,
+whose name stems from it having a linear component in the formula.
+
+### General form of the model
+
+Just as linear models are the most commonly used for numeric Y, in the
+the binary-Y case the go-to standard is the logistic model.  Let's first
+consider a very simple prediction problem, in which Y is gender, say 1
+for male, 0 for female, and X is simply income, using the **svcensus**
+data.
+
+Note mean Y is now the probability that Y = 1.  That's because the
+average of a bunch of 1s and 0s is the proportion of 1s.
+
+Now suppose that within each gender, X has a normal (Gaussian)
+distribution, the familiar "bell-shaped" curve, with the same standard
+deviation for each gender.  Then it turns out that one can show
+mathematically that
+
+probability male =
+$$
+\frac
+{1}{1 + e^{-(\beta_0 + \beta_1 income)}}
+$$
+
+That formula follows the form of the *logistic function*,
+$f(t) = 1 / [1 + e^{-t}]$, which has the shape of an S-curve:
+
+```{r}
+curve(1/(1+exp(-x)),-4,4)
+```
+
+The estimates b~i~ of the population values $\beta_i$ are obtained via a
+method generalizing the least-squares method used in the linear case.
+[There is a similar situation for the linear case.  If Y and the
+predictor variables have a multivariate normal distribution, one can
+show that mean Y as a function of the features is linear in the
+features, etc.]{.column-margin} Say we predict gender from age and wage
+income.  If the latter two variables have a *bivariate normal*
+distribution (two-dimensional histogram has a 3-D bell shape) with the
+same variance matrices within each gender, it turns out that we again
+get a logistic form:
+
+probability male =
+$$
+\frac
+{1}{1 + e^{-(\beta_0 + \beta_1 age + \beta_2 income)}}
+$$
+
+Now, what about that assumption of the normal distributions and so on?
+Just as many regression functions for numeric Y in practice are roughly
+linear, in predicting binary Y the S-curve model is often roughly valid.
+Moreover, the logistic model has two desirable properties for predicting
+binary Y:
+
+* Its value is between 0 and 1, appropriate for modeling a probability.
+
+* The expression $1 / [1 + e^{-t}]$ is increasing in t, which we wish to
+model when our predictors have monotonic relations with Y.
+
+The point is that the logistic (popularly referred to as "logit") is
+often a good model in general.
+
+### German credit data
+

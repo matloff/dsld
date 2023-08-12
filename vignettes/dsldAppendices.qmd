@@ -1,0 +1,110 @@
+
+# Appendices {.appendix}
+
+## Appendix A: Fast Lane to Statistics
+
+
+## Appendix B: A Note on Causal Inference {#sec-causal}
+
+An *observational study* is, in essence, one that is not planned. For
+instance, say we are comparing an old and a new drug for hypertension.
+Suppose that, unknown to us, the new medication does well on younger
+patients but not on older ones.  Say the nature of the data collection
+process results in disproportionately sampling older patients, but our
+data itself does not include patient ages.  This could unfairly make the
+new drug appear ineffective.
+
+In a *randomized clinical trial* (RCTs), we would randomly assign
+treatments to patients, so there would likely be no strong imbalance in
+age distribution in the two drug groups.  So, even if our data still did
+not record patient age, there would be no age bias in our analysis.
+
+In many cases, RCTs are infeasible or impossible (we cannot "assign"
+race).  *Causal inference* CI can be viewed both as a way to deal with
+unseen variables in observational studies, and as a graphical
+alternative to traditional statistical relational analysis.  Though CI
+takes on many forms, our discussion here will focus on 
+*directed acyclic graphs* (DAGs).  
+
+### DAGS
+
+In a DAG, an arrow from A to B signifies that A "causes" B.
+
+For instance, a graphical description of a situation in which older
+people (say who came of age before anti-smoking campaigns) might be more
+likely to smoke, and for other reasons may be more likely to develop
+cancer even if they are nonsmokers.  A graphical description would be
+
+![](appendixB/ascdag.png){width=40%}
+
+Here is an example the **bnlearn** package on our **svcensus** dataset:
+
+``` r
+   library(bnlearn)
+   library(dsld)
+   data(svcensus)
+   svcensus$wageinc <- as.numeric(svcensus$wageinc)
+   svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
+   svcdag <- iamb(svcensus)  # default argument values
+   plot(svcdag)
+```
+
+![](svcensusDAG.png){width=100%}
+
+There are a couple of undirected arcs, e.g. between gender and [Though
+again we omit a detailed treatment of CI DAGs here, we note that that
+field defines a confounder of two variables as a variable that is an
+"ancestor" to both, education being a confounder for income and
+occupation.]{.column-margin} occupation--found to be relations, but not
+found to be causal, using available data.
+
+More interesting, though, is the lack of a causal arc from gender to
+wage income.  This is in stark contrast to what **dsldLinear** suggests:
+
+```{r}
+data(svcensus)
+w <- dsldLinear(svcensus,'wageinc','gender',interactions=FALSE)
+coef(w)
+```
+
+Here, even correcting for age, education and so on, we still find a
+substantial gender pay gap.  Gender does matter, on its own.
+
+CI DAGs are of course quite visually appealing, but as pointed out by
+the developers of such methodology, the graphs can be very misleading.
+Using DAGs effectively requires deep understanding of the concepts.
+A treatment of these concepts
+is well beyond the scope of this course, but we urge users and consumers
+of CI to keep the following points in mind:
+
+::: {.callout-note}
+### Caution with DAGS
+* The definition of *cause* is of course central to proper use of CI
+DAGs, and "wrapping one's head around" the definition can be a challenge
+even for experienced probabilistic modelers.
+
+* Unseen variables, such as age in the above example, can be just as
+harmful in CI contexts as in observational data.
+
+* Most important, for any given dataset, there is no unique DAG;
+[Following mathematical parlance, CI DAG terminology says we have an
+*equivalence class* of DAGs with the same fit to the
+data.]{.column-margin} typically many DAGs can fit the dataset equally
+well, and they can be in conflict with each other.  One might say that A
+causes B, while another, equally credible in terms of data fit, might
+have B causing A.
+
+This last point is of course very concerning.  In recent years, there
+has been much handwringing in science about the Replication Crisis, in
+which scientists try to replicate the findings of an earlier published
+paper, and discover serious problems with the earlier results.  Imagine
+the replication problems that can arise if authors of a paper present
+just one of many equally-credible DAGs, as is usually the case.
+
+DAGs can indeed lead to valuable insight, but can be misleading as well.
+A healthy skepticism and a solid understanding of the concepts are
+mandatory for proper use.
+:::
+
+## Appendix C: Standard Errors via the Bootstrap
+
