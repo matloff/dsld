@@ -1,6 +1,12 @@
 ### --------------------------- DSLDCheckData ----------------------------------
 dsldCheckData <- function(data1, data2, yName) {
+  colName <- names(data1)
+  colName <- colName[colName != yName]
   data1 <- data1[, !(names(data1) %in% yName)]
+  if (is.vector(data1)) {
+    data1 <- data.frame(column_name = data1)
+    colnames(data1) <- colName
+  }
   missingCols <- setdiff(names(data1), names(data2))
   if (length(missingCols) > 0) {
     stop(paste("Invalid column(s) in sComparisonPts:", paste(missingCols, collapse = ", ")))
@@ -26,7 +32,6 @@ dsldCheckData <- function(data1, data2, yName) {
   }
   return(data2)
 }
-
 ### -------------------------- DSLD Linear -------------------------------------
 #' ::: Descripton :::
 #' @brief The dsldLinear function fits a linear model to the response variable,
