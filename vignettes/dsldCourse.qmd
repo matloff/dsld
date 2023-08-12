@@ -757,6 +757,213 @@ Here is an example the **bnlearn** package on our **svcensus** dataset:
 
 There are a couple of undirected arcs, e.g. between gender and
 occupation--relations, but not found to be causal, using available data.
+More interesting, though, is the lack of a causal arc from gender to
+wage income.  This is in stark contrast to what **dsldLinear** suggests:
+
+```{r,fig.fullwidth = TRUE}
+data(svcensus)
+w <- dsldLinear(svcensus,'wageinc','gender',interactions=FALSE)
+coef(w)
+```
+
+Here, even correcting for age, education and so on, we find a
+substantial gender pay gap.
+
+CI DAGs are of course quite visually appealing, but as pointed out by
+the developers of such methodology, the graphs can be very misleading.
+Using DAGs effectively requires deep understanding of the concepts.
+A treatment of these concepts
+is well beyond the scope of this course, but we urge users and consumers
+of CI to keep the following points in mind:
+
+::: {.callout-note}
+### Caution with DAGS
+* The definition of *cause* is of course central to proper use of CI
+DAGs, and "wrapping one's head around" the definition can be a challenge
+even for experiencedprobabilistic modelers.
+
+* Unseen variables, such as age in the above example, can be just as
+harmful in CI contexts as in observational data.
+
+* Most important, for any given dataset, there is no unique DAG;
+typically many DAGs can fit the dataset equally well, and they can be in
+conflict with each other.  One might say that A causes B, while another,
+equally credible in terms of data fit, might have B causing A.
+
+This last point is of course very concerning.  In recent years, there
+has been much handwringing in science about the Replication Crisis, in
+which scientists try to replicate the findings of an earlier published
+paper, and discover serious problems with the earlier results.  Imagine
+the replication problems that can arise if authors of a paper present
+just one of many equally-credible DAGs, as is usually the case.
+
+DAGs can indeed lead to valuable insight, but can be misleading as well.
+A healthy skepticism and a solid understanding of the concepts are
+mandatory for proper use.
+:::
+
+## Appendix C: Standard Errors via the Bootstrap
+
+
+# Part II:  Fairness in Machine Learning
+
+## Motivation
+<!-- Don't know how accurate this is, please feel free to make edits -->
+In modern applications of machine learning as a predictive modeling tool, it 
+would be irresponsible to produce a model that biases one sensitive group over 
+another. As such, it becomes imperative to find methods of reducing any such 
+biases that a model might hold when it comes to modeling and predicting on 
+sensitive datasets.
+
+Of course, nothing comes for free: the inherent tradeoff of increasing fairness 
+is reduced utility (predictive power over the dataset). Thus, a means of 
+balancing this tradeoff between fairness and utility becomes essential in any 
+future implementations of machine learning.
+
+While there exists a plethora of methods for ensuring a fair machine learning 
+model, the primary approaches utilized in the `dsld` package are:
+    1. Engineering the data itself before modeling through deweighting
+    2. Minimizing the impact of sensitive features in the model itself
+
+The end result of this modified modeling process is a tool that allows users to:
+    1. Compare a fair model against one with no fairness implemented; the 
+       effective result is a means of uncovering if biases exist within the 
+       dataset itself, but also how much fairness is gained for utility lost.
+    2. Reduce the impact of any inherent discrimination within the data (of 
+       course only to the level that is specified).
+
+## Example
+<!-- introduce running example + context... this example should most likely 
+come from COMPAS -->
+
+## Measurements of Fairness & Utility
+Different algorithms and approaches attempt to reduce bias as indicated through 
+different metrics. In the following subsection, our aim is to explain what each 
+of these metrics tell users and which algorithms perform best with respect to 
+each one.
+
+### Fairness Metrics
+<!-- compare all the fairness metrics against one another... -->
+
+#### S-Correlation
+<!-- correlation between S-feature and output -->
+
+### Utility Metrics
+<!-- compare all the utility metrics against one another... -->
+
+#### Test Accuracies
+<!-- accuracy results on test sets -->
+
+#### ROC Curves
+
+[![ROC Curve](partII/rocCurve.png)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
+An ROC curve (receiver operating characteristic curve) is a graph that plots
+the model's behavior at various classification thresholds. The graph aids in 
+visually identifying optimal thresholds by avoiding confusion matrices.
+
+
+The graph plots the true positive rate (sensitivity) on the y-axis and the 
+false positive rate (selectivity) on the x axis. For each threshold, its true 
+positive rate and false positive rate are calculated.
+
+
+A model that perfectly classifies each sample is plotted at (0, 1). A point at
+(1,1), (.75, .75), (.5, .5) etc. means that the proportion of correctly 
+classified samples is equal to the the proportion of incorrectly classified
+samples. A point at (1, 0) incorrectly classifies each sample.
+
+
+Say, we are trying to classify a group of people as infected or not infected
+to prevent an outbreak. So, initially  we set our threshold to be "Lets consider
+everyone to be infected." Then our threshold correctly identified a person who 
+is infected as infected. But it also incorrectly calculated all non-infected 
+peopl as infected. So, this threshold is plotted at (1, 1). 
+
+
+If we change our threshold to "a person with a high body temperature is 
+considered infected" then our point will move on the graph. This may correctly 
+identify most people who are infected, but it may also misidentify a few people
+who are not infected as infected, and vice-versa. So we can arbitrarily say 
+that this threshold is plotted at (.1, .8).
+
+
+We can keep changing our threshold level and we will get different points on
+the graph. It is up to the user to determine what true positive rate he wants 
+for the model and make a risk assessment on who is free to socialize and who
+is required to quarantine. The ROC curve is a diagnostic tool to help the user
+choose which threshold he wants to use.
+
+
+#### F1-Score
+
+
+## Approaches Deployed in DSLD
+<!-- go over all the approaches we use in the fairML & EDFair wrappers -->
+<!-- compare their performance against each other across all metrics 
+previously describes -->
+
+# Appendices {.appendix}
+
+## Appendix A: Fast Lane to Statistics
+
+
+## Appendix B: A Note on Causal Inference {#sec-causal}
+
+An *observational study* is, in essence, one that is not planned. For
+instance, say we are comparing an old and a new drug for hypertension.
+Suppose that, unknown to us, the new medication does well on younger
+patients but not on older ones.  Say the nature of the data collection
+process results in disproportionately sampling older patients, but our
+data itself does not include patient ages.  This could unfairly make the
+new drug appear ineffective.
+
+In a *randomized clinical trial* (RCTs), we would randomly assign
+treatments to patients, so there would likely be no strong imbalance in
+age distribution in the two drug groups.  So, even if our data still did
+not record patient age, there would be no age bias in our analysis.
+
+In many cases, RCTs are infeasible or impossible (we cannot "assign"
+race).  *Causal inference* CI can be viewed both as a way to deal with
+unseen variables in observational studies, and as a graphical
+alternative to traditional statistical relational analysis.  Though CI
+takes on many forms, our discussion here will focus on *instrumental
+variables* (IVs) and *directed acyclic graphs* (DAGs).  
+
+### IVs
+
+https://deliverypdf.ssrn.com/delivery.php?ID=186110029069008092066073109126021081054087021052029007119070078009004021071020065065016043025056016121004087011123121013084088027086028018020067000013083121109072039003101088069101127114110097102124121118023107099087067118078116065004118095117072&EXT=pdf&INDEX=TRUE
+
+### DAGS
+
+In a DAG, an arrow from A to B signifies that A "causes" B.
+
+For instance, a graphical description of a situation in which older
+people (say who came of age before anti-smoking campaigns) might be more
+likely to smoke, and for other reasons may be more likely to develop
+cancer even if they are nonsmokers.  A graphical description would be
+
+![](appendixB/ascdag.png){width=40%}
+
+Here is an example the **bnlearn** package on our **svcensus** dataset:
+
+``` r
+   library(bnlearn)
+   library(dsld)
+   data(svcensus)
+   svcensus$wageinc <- as.numeric(svcensus$wageinc)
+   svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
+   svcdag <- iamb(svcensus)
+   plot(svcdag)
+```
+
+![](svcensusDAG.png){width=100%}
+
+There are a couple of undirected arcs, e.g. between gender and [Though
+again we omit a detailed treatment of CI DAGs here, we note that that
+field defines a confounder of two variables as a variable that is an
+"ancestor" to both, education being a confounder for income and
+occupation.]{.column-margin} occupation--found to be relations, but not
+found to be causal, using available data.
 
 More interesting, though, is the lack of a causal arc from gender to
 wage income.  This is in stark contrast to what **dsldLinear** suggests:
