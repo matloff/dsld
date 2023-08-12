@@ -952,7 +952,7 @@ Here is an example the **bnlearn** package on our **svcensus** dataset:
    data(svcensus)
    svcensus$wageinc <- as.numeric(svcensus$wageinc)
    svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
-   svcdag <- iamb(svcensus)
+   svcdag <- iamb(svcensus)  # default argument values
    plot(svcdag)
 ```
 
@@ -994,6 +994,9 @@ even for experienced probabilistic modelers.
 harmful in CI contexts as in observational data.
 
 * Most important, for any given dataset, there is no unique DAG;
+[Following mathematical parlance, CI DAG terminology says we have an
+*equivalence class* of DAGs with the same fit to the
+data.]{.column-margin}
 typically many DAGs can fit the dataset equally well, and they can be in
 conflict with each other.  One might say that A causes B, while another,
 equally credible in terms of data fit, might have B causing A.
