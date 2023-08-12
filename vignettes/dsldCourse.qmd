@@ -746,12 +746,8 @@ In many cases, RCTs are infeasible or impossible (we cannot "assign"
 race).  *Causal inference* CI can be viewed both as a way to deal with
 unseen variables in observational studies, and as a graphical
 alternative to traditional statistical relational analysis.  Though CI
-takes on many forms, our discussion here will focus on *instrumental
-variables* (IVs) and *directed acyclic graphs* (DAGs).  
-
-### IVs
-
-https://deliverypdf.ssrn.com/delivery.php?ID=186110029069008092066073109126021081054087021052029007119070078009004021071020065065016043025056016121004087011123121013084088027086028018020067000013083121109072039003101088069101127114110097102124121118023107099087067118078116065004118095117072&EXT=pdf&INDEX=TRUE
+takes on many forms, our discussion here will focus on 
+*directed acyclic graphs* (DAGs).  
 
 ### DAGS
 
