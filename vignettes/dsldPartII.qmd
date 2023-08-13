@@ -45,7 +45,7 @@ each one.
 ### Utility Metrics
 <!-- compare all the utility metrics against one another... -->
 
-#### Test Accuracies
+#### Test Accuracies (Misclassification Error)
 <!-- accuracy results on test sets -->
 
 #### ROC Curves
@@ -68,7 +68,7 @@ samples. A point at (1, 0) incorrectly classifies each sample.
 
 
 Say, we are trying to classify a group of people as infected or not infected
-to prevent an outbreak. So, initially  we set our threshold to be "Lets consider
+to prevent an outbreak. So, initially we set our threshold to be "Lets consider
 everyone to be infected." Then our threshold correctly identified a person who 
 is infected as infected. But it also incorrectly calculated all non-infected 
 peopl as infected. So, this threshold is plotted at (1, 1). 
@@ -88,11 +88,40 @@ is required to quarantine. The ROC curve is a diagnostic tool to help the user
 choose which threshold he wants to use.
 
 
-#### F1-Score
+#### MSPE & MAPE
+<!-- Mean Squared Prediction Error & Mean Absolute Prediction Error -->
+The Mean Squared Prediction Error (MSPE) and Mean Absolute Prediction Error 
+(MAPE) are both metrics used for quantifying the accuracy of a predictive 
+model. The two parallel each other in many ways as they are both an average of 
+the difference in predicted value and the actual value, except one (as the 
+names suggest) squares the difference and the other takes its absolute value.
+
+The Mean Squared Prediction Error can be defined as:
+$MSPE(L) = \frac{1}{n} * \sum{[(L(X_{i}) - y(X_{i}))^{2}]}$, 
+where $L$ is a predictive model and $y(X_{i})$ is the actual value at the 
+specified point in space $X_{i}$.
+
+The Mean Absolute Prediction Error can be defined as:
+$MSPE(L) = \frac{1}{n} * \sum{|L(X_{i}) - y(X_{i})|}$, 
+where $L$ is a predictive model and $y(X_{i})$ is the actual value at the 
+specified point in space $X_{i}$.
+
+They both measure roughly the same thing (deviation of the prediction from the 
+actual value), but their behavior varies depending on the type of data being 
+dealt with. For one, the squared error terms means the MSPE is more sensitive 
+to outliers. In other words, outliers may artificially inflate the MSPE, 
+especially for linear models that tend to over-generalize behavior as a simple 
+trend line. MAPE, therefore, performs a lot more robustly when gauging general 
+performance, but fails in another sense. 
+<!-- This following part is what my research has indicated, and it makes sense, 
+but maybe it shouldn't be included --> Mathematically, the absolute value function 
+isn't differentiable for all x (it's undefined at the origin). Therefore, given its 
+differentiability, the MSPE is preferred for optimization problems in general as 
+extrema can be found without iterative methods.
 
 
 ## Approaches Deployed in DSLD
 <!-- go over all the approaches we use in the fairML & EDFair wrappers -->
 <!-- compare their performance against each other across all metrics 
-previously describes -->
+previously described -->
 
