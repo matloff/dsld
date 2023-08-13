@@ -408,6 +408,23 @@ curve(1/(1+exp(-2*x)),-4,4,add=TRUE)
 
 The curves are no longer parallel; they even cross.
 
-
 ### German credit data
+
+This is a built-in dataset to the **fairml** package, which is included
+by **dsld*.  Let's take a brief look at the data.
+
+```{r}
+gct <- german.credit
+head(gct)
+names(gct)
+```
+
+Let's predict credit risk.  To keep the example simple, let's just use a few predictors, with S = gender.
+
+```{r}
+gct <- gct[,c('Credit_history','Credit_amount','Present_employment_since',
+   'Credit_risk','Gender')]
+w <- dsldLogit(gct,'Credit_risk','Gender',gct[2,1:3],yesYVal='GOOD')
+summary(w)
+```
 
