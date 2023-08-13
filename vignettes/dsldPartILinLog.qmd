@@ -423,8 +423,8 @@ Let's predict credit risk.  To keep the example simple, let's just use a few pre
 
 ```{r}
 gct <- gct[,c('Credit_history','Credit_amount','Present_employment_since',
-   'Credit_risk','Gender')]
-w <- dsldLogit(gct,'Credit_risk','Gender',gct[2,1:3],yesYVal='GOOD')
+   'Credit_risk','Foreign_worker')]
+w <- dsldLogit(gct,'Credit_risk','Foreign_worker',gct[2,1:3],yesYVal='GOOD')
 summary(w)
 ```
 
