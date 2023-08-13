@@ -86,6 +86,11 @@ even for experienced probabilistic modelers.
 * Unseen variables, such as age in the above example, can be just as
 harmful in CI contexts as in observational data.
 
+* Causal analysis is just as much at the mercy of sample size as is
+classical statistical analysis.  Absence of a link may be due to
+insufficient data, and nonlinks at the population level may appear by
+random chance from small datasets.
+
 * Most important, for any given dataset, there is no unique DAG;
 [Following mathematical parlance, CI DAG terminology says we have an
 *equivalence class* of DAGs with the same fit to the
