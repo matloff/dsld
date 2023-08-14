@@ -42,6 +42,38 @@ each one.
 #### S-Correlation
 <!-- correlation between S-feature and output -->
 
+#### Demographic Parity
+Demographic parity is a fairness metric that measures if a classifier model's 
+predictions are dependent on a sensitive attribute. Demographic parity 
+essentially compares if the same proportion of each sub-group within the 
+sensitive feature is classified at equal rates for each of the possible 
+outcomes.
+
+For example, let's consider the COMPAS dataset again. If the proportion of 
+African-Americans who are predicted to recidivate is different than the 
+proportion of Asian-Americans, then we can consider this model to fail to be 
+demographically par. Of course, exactness is something to be decided by the 
+user--what constitutes a signficant difference will vary on the data, context, 
+etc.
+
+<!-- the followng paragraphs' accuracy will need to be double-checked -->
+The measure may seem a bit restrictive or aggressive at first, but keep in mind 
+its main use-cases. Typically, demographic parity performs well as a measure 
+for fairness in contexts surrounding historical biases skewing the dataset 
+itself. In order to prevent a self-reinforcing cycle (such as in the case of 
+COMPAS predicting African-Americans to recidivate more --> kept in jail longer 
+--> have a more difficult time adjusting to society post-jail --> more likely 
+to commit crime), we'll try to minimize the bias of the model used to predict 
+on that dataset as a compensatory measure, even if it comes at the risk of 
+losing even more utility.
+
+That last point is crucial: the restrictiveness of demographic parity as a 
+fairness metric will mean a lower-reward tradeoff with utility--more will need 
+to be sacrificed in performance to achieve fairness. Of course, if this metric 
+is used in the first place, the seriousness of the context the model will be 
+deployed in motivates the use of something as restrictive as demographic 
+parity.
+
 ### Utility Metrics
 <!-- compare all the utility metrics against one another... -->
 
