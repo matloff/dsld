@@ -1,57 +1,53 @@
-
-
 ## Determining Confounders
 
-By now we know how to adjust for a confounder in our data. But how would we go 
-about determining what can be a confounder in the first place?
+By now we know how to adjust for a confounder in our data. But how would
+we go about determining what can be a confounder in the first place?
 
-Confounders, by their very nature, are a relationship between variables. It just
-so happens that those relationships affect the relationships we want to see.
+Confounders, by their very nature, are a relationship between variables.
+It just so happens that those relationships affect the relationships we
+want to see.
 
-The easiest way to notice those relationships is to graph them. If a confounder
-C is affecting the relationship between Y and S, there should be a graphical
-trend between S and C. Luckily, DSLD provides a host of functions that let you 
-visually explore these trends. 
-<!--
-### What A Confounder Looks Like
-Conceptual and Graphical Examples
-How does graphing a confounder change how we look at the relationship between variables
-Essentially, if we want to see the relationship between Y and S, but S and C look like they're correlated, there's a problem
--->
+The easiest way to notice those relationships is to graph them. If a
+confounder C is affecting the relationship between Y and S, there should
+be a graphical trend between S and C. Luckily, DSLD provides a host of
+functions that let you visually explore these trends.
+
 ### Graphical Examples
+
 If you suspect that a couple variables may confound with your sensitive
-variable, a quick way to view all of them at once is to plot them in a 3D
-scatter plot.
+variable, a quick way to view all of them at once is to plot them in a
+3D scatter plot.
+
 ```{r, eval=FALSE}
 data("law.school.admissions")
 dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1", 
                 yNames=c("ugpa", "lsat","age"), xlim=c(2,4), maxPoints = 1500)
 ```
 
-![](graphTab/lawscatterplot3d.png)
-As an example, this is the law.school.admissions data set, a survey of students
-attending law school in 1991. In this scatter plot, we graphed a student's race 
-against their age, their current gpa, and their lsat score. 
-Most notably, you can see that the youngest people, those aged 30-40, are 
-predominately white. This may mean that age confounds with race to some extent,
-or it may not. But with this you have a good jumping-off point for further 
-analysis.
+![](graphTab/lawscatterplot3d.png){width="80%"}
 
+As an example, this is the law.school.admissions data set, a survey of
+students attending law school in 1991. In this scatter plot, we graphed
+a student's race against their age, their current gpa, and their lsat
+score. Most notably, you can see that the youngest people, those aged
+30-40, are predominately white. This may mean that age confounds with
+race to some extent, or it may not. But with this you have a good
+jumping-off point for further analysis.
 
 ### Tabular Example
 
-Going back to the svcensus data, let's suppose that we suspect that 
-gender influences an employee's wage. Let's suppose that we find a 
-trend in the svcensus data that shows a gender pay gap -- what other
-variables could influence this trend?
+Going back to the svcensus data, let's suppose that we suspect that
+gender influences an employee's wage. Let's suppose that we find a trend
+in the svcensus data that shows a gender pay gap -- what other variables
+could influence this trend?
 
-Another way to search for possible confounders is by using the function 
-dsldFrequencyByS, which requires 2 input columns, with the latter being 
-the sensitive variable. This function aims to analyze categorical (not 
+Another way to search for possible confounders is by using the function
+dsldFrequencyByS, which requires 2 input columns, with the latter being
+the sensitive variable. This function aims to analyze categorical (not
 numeric) columns by printing out a list of frequencies.
 
-Let's say we want to analyze the relationship between education level and 
-gender -- we can do this by calling the dsld function:
+Let's say we want to analyze the relationship between education level
+and gender -- we can do this by calling the dsld function:
 
 ```{r}
 library(dsld)
@@ -59,40 +55,43 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
 
-Notice the difference between the number of females with an education level 
-of 16 (the highest reported in this data) and the number of males with the 
-same education level: there are almost 7500 more males with this education 
-level! 
+Notice the difference between the number of females with an education
+level of 16 (the highest reported in this data) and the number of males
+with the same education level: there are almost 7500 more males with
+this education level!
 <!-- Needs more (quantitative) proof to show that this is a significant 
 difference -->
 
-From this, we can see that it's not so easy to claim a causal relationship 
-between gender and wage that is free of external influence. It is possible 
-that males may generally have higher wages due to more males having a higher 
-education than females -- in other words, education is a possible confounder.
+From this, we can see that it's not so easy to claim a causal
+relationship between gender and wage that is free of external influence.
+It is possible that males may generally have higher wages due to more
+males having a higher education than females -- in other words,
+education is a possible confounder.
 
-But we can't just look at a list of frequencies and conclude our analysis -- 
-it is also important to look at prediction accuracy. The function 
-dsldTakeALookAround gives us a tabular view of what variables can accurately 
-predict the response variable (in our case, 'wageinc') *and* how much 
-correlation exists between these variables and the sensitive variable (in our 
-case, 'gender').
+But we can't just look at a list of frequencies and conclude our
+analysis -- it is also important to look at prediction accuracy. The
+function dsldTakeALookAround gives us a tabular view of what variables
+can accurately predict the response variable (in our case, 'wageinc')
+*and* how much correlation exists between these variables and the
+sensitive variable (in our case, 'gender').
 
 We can call the function like so:
+
 ```{r}
 library(dsld)
 data(svcensus)
 dsldTakeALookAround(svcensus, "wageinc", "gender")
 ```
 
-Take note of the values in the last column, which show the prediction accuracy 
-(for 'gender') of each feature combination. If we look at 'educ' in the second 
-row, we can see that education level has a high prediction accuracy for wageinc, 
-but it *also* has the highest (tied with some other combinations) prediction 
-accuracy for gender -- this could be indicative of a trend between education 
-and gender that can effect our prediction of wage.
+Take note of the values in the last column, which show the prediction
+accuracy (for 'gender') of each feature combination. If we look at
+'educ' in the second row, we can see that education level has a high
+prediction accuracy for wageinc, but it *also* has the highest (tied
+with some other combinations) prediction accuracy for gender -- this
+could be indicative of a trend between education and gender that can
+effect our prediction of wage.
 
+```{=html}
 <!-- Need to discuss these results more, as the values for prediction accuracy of 
 gender are all clustered together to some extent -->
-
-
+```
