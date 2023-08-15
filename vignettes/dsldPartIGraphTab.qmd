@@ -2,6 +2,16 @@
 
 ## Determining Confounders
 
+By now we know how to adjust for a confounder in our data. But how would we go 
+about determining what can be a confounder in the first place?
+
+Confounders, by their very nature, are a relationship between variables. It just
+so happens that those relationships affect the relationships we want to see.
+
+The easiest way to notice those relationships is to graph them. If a confounder
+C is affecting the relationship between Y and S, there should be a graphical
+trend between S and C.
+
 <!--
 ### What A Confounder Looks Like
 Conceptual and Graphical Examples
