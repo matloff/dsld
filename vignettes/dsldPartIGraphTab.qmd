@@ -10,16 +10,33 @@ so happens that those relationships affect the relationships we want to see.
 
 The easiest way to notice those relationships is to graph them. If a confounder
 C is affecting the relationship between Y and S, there should be a graphical
-trend between S and C.
-
+trend between S and C. Luckily, DSLD provides a host of functions that let you 
+visually explore these trends. 
 <!--
 ### What A Confounder Looks Like
 Conceptual and Graphical Examples
 How does graphing a confounder change how we look at the relationship between variables
 Essentially, if we want to see the relationship between Y and S, but S and C look like they're correlated, there's a problem
 -->
-### Graphical Example
-Some example(s) using dsld Scatterplot3D or densityByS
+### Graphical Examples
+If you suspect that a couple variables may confound with your sensitive
+variable, a quick way to view all of them at once is to plot them in a 3D
+scatter plot.
+```{r, eval=FALSE}
+data("law.school.admissions")
+dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1", 
+                yNames=c("ugpa", "lsat","age"), xlim=c(2,4), maxPoints = 1500)
+```
+
+![](graphTab/lawscatterplot3d.png)
+As an example, this is the law.school.admissions data set, a survey of students
+attending law school in 1991. In this scatter plot, we graphed a student's race 
+against their age, their current gpa, and their lsat score. 
+Most notably, you can see that the youngest people, those aged 30-40, are 
+predominately white. This may mean that age confounds with race to some extent,
+or it may not. But with this you have a good jumping-off point for further 
+analysis.
+
 
 ### Tabular Example
 
