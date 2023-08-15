@@ -83,6 +83,7 @@ data(svcensus)
 dsldTakeALookAround(svcensus, "wageinc", "gender")
 ```
 
+<!--
 Take note of the values in the last column, which show the prediction
 accuracy (for 'gender') of each feature combination. If we look at
 'educ' in the second row, we can see that education level has a high
@@ -90,7 +91,7 @@ prediction accuracy for wageinc, but it *also* has the highest (tied
 with some other combinations) prediction accuracy for gender -- this
 could be indicative of a trend between education and gender that can
 effect our prediction of wage.
-
+-->
 ```{=html}
 <!-- Need to discuss these results more, as the values for prediction accuracy of 
 gender are all clustered together to some extent -->
