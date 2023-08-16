@@ -18,13 +18,13 @@ If you suspect that a couple variables may confound with your sensitive
 variable, a quick way to view all of them at once is to plot them in a
 3D scatter plot.
 
-```{r, eval=FALSE}
+```{r}
 data("law.school.admissions")
 dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1", 
-                yNames=c("ugpa", "lsat","age"), xlim=c(2,4), maxPoints = 1500)
+  yNames=c("ugpa", "lsat","age"), xlim=c(2,4), maxPoints = 1500, pointSize = 4)
 ```
 
-![](graphTab/lawscatterplot3d.png){width="80%"}
+<!-- ![](graphTab/lawscatterplot3d.png){width="80%"} -->
 
 As an example, this is the law.school.admissions data set, a survey of
 students attending law school in 1991. In this scatter plot, we graphed
