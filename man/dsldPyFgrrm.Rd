@@ -3,20 +3,20 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{dsldPyFggrm}
 \description{
-    The function takes in a list of Python arguments corresponding to the 
-    arguments of the R function. These Python arguments are converted to R 
-    arguments that are then passed into the R function. This way, the Python 
-    user can call the function similar to how an R user would call the function.
-    
-    The R function, dsldFgrrm(), generates a list in R. In the python 
-    environment, this list is printed.
+  The function takes in a list of Python arguments corresponding to the 
+  arguments of the R function. These Python arguments are converted to R 
+  arguments that are then passed into the R function. This way, the Python 
+  user can call the function similar to how an R user would call the function.
+  
+  The R function, dsldFgrrm(), generates a list in R. In the python 
+  environment, this list is printed.
 
-    For more information on the R function itself, please refer to its man page, 
-    which you can access through the command ?dsldFgrrm
+  For more information on the R function itself, please refer to its man page, 
+  which you can access through the command ?dsldFgrrm
 }
-}
+
 \usage{
-dsldPyFgrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lamda = 0, save = False)
+  dsldPyFgrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama", family = "binomial", lamda = 0, save = False)
 }
 \arguments{
   \item{data}{
@@ -59,25 +59,26 @@ dsldPyFgrrm(data, yData, xData, sName, unfairness, definition = "sp-komiyama", f
 \examples{
   # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python 
 
-#Example 1
+    #Example 1
 
 
-python
-from dsldFgrrm_Py_R import dsldPyFgrrm
-import rpy2.robjects as robjects
-robjects.r("library(survival)")
-robjects.r['data']('flchain')
-data = robjects.r('flchain')
-prepData = '''flchain = flchain[complete.cases(flchain), ]'''
-robjects.r(prepData)
+    python
+    from dsldFgrrm_Py_R import dsldPyFgrrm
+    import rpy2.robjects as robjects
+    robjects.r("library(survival)")
+    robjects.r['data']('flchain')
+    data = robjects.r('flchain')
+    prepData = '''flchain = flchain[complete.cases(flchain), ]'''
+    robjects.r(prepData)
 
-robjects.r('yData = cbind(time = flchain$futime + 1, status = flchain$death)')
-yData = robjects.r('yData')
+    robjects.r('yData = cbind(time = flchain$futime + 1, status = flchain$death)')
+    yData = robjects.r('yData')
 
-robjects.r('xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus","chapter")]')
-xData = robjects.r('xData')
+    robjects.r('xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus","chapter")]')
+    xData = robjects.r('xData')
 
-#Calling the function
-m = dsldPyFgrrm(data, yData, xData, ["age", "sex"], 0.05, family="cox")
-print(robjects.r['summary'](m))
+    #Calling the function
+    m = dsldPyFgrrm(data, yData, xData, ["age", "sex"], 0.05, family="cox")
+    print(robjects.r['summary'](m))
+}
 
