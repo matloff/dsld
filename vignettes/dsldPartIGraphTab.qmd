@@ -36,18 +36,16 @@ jumping-off point for further analysis.
 
 ### Tabular Example
 
-Going back to the svcensus data, let's suppose that we suspect that
-gender influences an employee's wage. Let's suppose that we find a trend
-in the svcensus data that shows a gender pay gap -- what other variables
-could influence this trend?
+Sometimes our intuition may tell us that some feature may be a confounder 
+when that may not be the case. For example, suppose we suspect that an 
+employee's education level influences the causal effect that gender may 
+have on wage.
 
-Another way to search for possible confounders is by using the function
-dsldFrequencyByS, which requires 2 input columns, with the latter being
+One way to further affirm/deny this claim is by using the function
+dsldFrequencyByS. It requires 2 input columns, with the latter being
 the sensitive variable. This function aims to analyze categorical (not
-numeric) columns by printing out a list of frequencies.
-
-Let's say we want to analyze the relationship between education level
-and gender -- we can do this by calling the dsld function:
+numeric) columns by printing out a list of frequencies. Since education 
+level is categorical, we can call the function as follows:
 
 ```{r}
 library(dsld)
@@ -55,44 +53,11 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
 
-Notice the difference between the number of females with an education
-level of 16 (the highest reported in this data) and the number of males
-with the same education level: there are almost 7500 more males with
-this education level!
-<!-- Needs more (quantitative) proof to show that this is a significant 
-difference -->
+If our table had produced raw counts instead of percentages, we would see 
+a major difference in the number of males vs females with an education level 
+of 16, but displaying percentages shows us that this difference is only due to 
+the fact that there are more males than females in the data. Since the percentages 
+are similar, there is nothing that indicates education to be a possible confounder.
 
-From this, we can see that it's not so easy to claim a causal
-relationship between gender and wage that is free of external influence.
-It is possible that males may generally have higher wages due to more
-males having a higher education than females -- in other words,
-education is a possible confounder.
 
-But we can't just look at a list of frequencies and conclude our
-analysis -- it is also important to look at prediction accuracy. The
-function dsldTakeALookAround gives us a tabular view of what variables
-can accurately predict the response variable (in our case, 'wageinc')
-*and* how much correlation exists between these variables and the
-sensitive variable (in our case, 'gender').
 
-We can call the function like so:
-
-```{r}
-library(dsld)
-data(svcensus)
-dsldTakeALookAround(svcensus, "wageinc", "gender")
-```
-
-<!--
-Take note of the values in the last column, which show the prediction
-accuracy (for 'gender') of each feature combination. If we look at
-'educ' in the second row, we can see that education level has a high
-prediction accuracy for wageinc, but it *also* has the highest (tied
-with some other combinations) prediction accuracy for gender -- this
-could be indicative of a trend between education and gender that can
-effect our prediction of wage.
--->
-```{=html}
-<!-- Need to discuss these results more, as the values for prediction accuracy of 
-gender are all clustered together to some extent -->
-```
