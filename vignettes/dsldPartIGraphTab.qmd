@@ -59,5 +59,8 @@ of 16, but displaying percentages shows us that this difference is only due to
 the fact that there are more males than females in the data. Since the percentages 
 are similar, there is nothing that indicates education to be a possible confounder.
 
-
+<!-- Not sure if this is worded right 
+{If you are receieving warnings when calling dsldTakeALookAround, consider using a 
+holdout set with a larger size}(.column-margin)
+-->
 
