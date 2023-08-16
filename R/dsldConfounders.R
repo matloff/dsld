@@ -253,6 +253,9 @@ dsldFrequencyByS <- function(data, cName, sName) {
     # get a lookup for every s level against every ylevel
     freqLookup <- table(data[[sName]], data[[cName]])
     
+    # convert counts to percentages
+    freqLookup <- freqLookup/rowSums(freqLookup)
+    
     # convert to dataframe
     frequencies <- as.data.frame.matrix(freqLookup)
     names(frequencies) <- c(
