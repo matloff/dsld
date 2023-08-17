@@ -41,6 +41,16 @@ each one.
 
 #### S-Correlation
 <!-- correlation between S-feature and output -->
+Given a linear model, it is important to understand how much a feature relates
+to the outcome feature. Even more so, when the examined feature is a protected
+class like race, gender, and age. It is possible that the feature we examine, S,
+may be strongly, slightly, or weakly correlated with the outcome feature, Y.
+Understanding how S and Y are correlated is meaningful because then we can see
+the effects S has on the prediction model. S-correlation can also be a reason 
+to delve into determining why the S feature has such an effect on Y feature.
+
+
+
 
 #### Demographic Parity
 Demographic parity is a fairness metric that measures if a classifier model's 
