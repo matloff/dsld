@@ -8,7 +8,7 @@ The easiest way to notice those relationships is to graph them. If a confounder 
 
 ### Graphical Examples
 
-If you suspect that a couple variables may confound with your sensitive variable, a quick way to view all of them at once is to plot them in a 3D scatter plot.
+If you suspect that a couple variables may confound with your sensitive variable, a quick way to view many of them at once is to plot them in a 3D scatter plot.
 
 ```{r, eval=FALSE}
 library(dsld)
@@ -31,7 +31,7 @@ dsld::dsldDensityByS(law.school.admissions, cName = "age", sName = "race1")
 
 ![](graphTab/lawdensity.png){width="80%"}
 
-As you can see, the conclusion we drew from the scatter plot example is a lot less justifiable. The distribution of the ages across all races resemble one another, with most people born in the early 19**60**s. There is no one group that particularly older or younger than the other.
+As you can see, it became a lot harder to justify that age and race are related in some way. The distribution of the ages across all races resemble one another, with most people born in the early 19**60**s. There is no one group that particularly older or younger than the other.
 
 It turns out that it isn't really the case that the white students are older; rather, there are more older white students because there are just more white students. Because of this, it is safe to assume that age doesn't confound with race to a significant degree.
 
