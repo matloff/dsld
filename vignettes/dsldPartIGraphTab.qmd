@@ -1,70 +1,121 @@
 ## Determining Confounders
 
-By now we know how to adjust for a confounder in our data. But how would we go about determining what can be a confounder in the first place?
+By now we know how to adjust for a confounder in our data. But how 
+would we go about determining what can be a confounder in the first 
+place?
 
-Confounders, by their very nature, are a relationship between variables. It just so happens that those relationships affect the relationships we want to see.
+Confounders, by their very nature, are a relationship between variables. 
+It just so happens that those relationships affect the relationships we 
+want to see.
 
-The easiest way to notice those relationships is to graph them. If a confounder C is affecting the relationship between Y and S, there should be a graphical trend between S and C. Luckily, DSLD provides a host of functions that let you visually explore these trends.
+The easiest way to notice those relationships is to graph them. If a 
+confounder C is affecting the relationship between Y and S, there 
+should be a graphical trend between S and C. Luckily, DSLD provides a 
+host of functions that let you visually explore these trends.
 
 ### Graphical Examples
 
-If you suspect that a couple variables may confound with your sensitive variable, a quick way to view all of them at once is to plot them in a 3D scatter plot.
+If you suspect that a couple variables may confound with your sensitive 
+variable, a quick way to view all of them at once is to plot them in a 
+3D scatter plot.
 
 ```{r, eval=FALSE}
-library(dsld)
 data(law.school.admissions)
-dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1", 
+dsldScatterPlot3D(law.school.admissions, sName = "race1", 
   yNames=c("ugpa", "lsat","age"), xlim=c(2,4), maxPoints = 1500, pointSize = 4)
 ```
 
 ![](graphTab/lawscatterplot3d.png){width="80%"}
 
-As an example, this is the law.school.admissions data set, a survey of students attending law school in 1991. In this scatter plot, we graphed a student's race against their current gpa, their lsat score, and their age- or more accurately, their birth year. Most notably, you can see that the oldest people, those born in the years 19**30**-19**40**, are predominately white. This may mean that age confounds with race to some extent, or it may not. But with this you have a good jumping-off point for further analysis.
+As an example, this is the **law.school.admissions** data set, a survey of 
+students attending law school in 1991. In this scatter plot, we graphed 
+a student's race against their current gpa, their lsat score, and their 
+age -- or more accurately, their birth year. Most notably, you can see 
+that the oldest people, those born in the years 19**30**-19**40**, are 
+predominately white. This may mean that age confounds with race to some 
+extent, or it may not. But with this you have a good jumping-off point 
+for further analysis.
 
-In some cases, it can be difficult to notice a trend like the above when you are looking at three axes at the same time. It may be more helpful to plot the densities of a single variable according to different levels of a sensitive variable.
+In some cases, it can be difficult to notice a trend like the above when 
+you are looking at three axes at the same time. It may be more helpful 
+to plot the densities of a single variable according to different levels 
+of a sensitive variable.
 
 ```{r, eval=FALSE}
-library(dsld)
 data(law.school.admissions)
-dsld::dsldDensityByS(law.school.admissions, cName = "age", sName = "race1")
+dsldDensityByS(law.school.admissions, cName = "age", sName = "race1")
 ```
 
 ![](graphTab/lawdensity.png){width="80%"}
 
-As you can see, the conclusion we drew from the scatter plot example is a lot less justifiable. The distribution of the ages across all races resemble one another, with most people born in the early 19**60**s. There is no one group that particularly older or younger than the other.
+As you can see, the conclusion we drew from the scatter plot example is 
+a lot less justifiable. The distribution of the ages across all races 
+resemble one another, with most people born in the early 19**60**s. There 
+is no one group that particularly older or younger than the other.
 
-It turns out that it isn't really the case that the white students are older; rather, there are more older white students because there are just more white students. Because of this, it is safe to assume that age doesn't confound with race to a significant degree.
+It turns out that it isn't really the case that the white students are 
+older; rather, there are more older white students because there are just 
+more white students. Because of this, it is safe to assume that age doesn't 
+confound with race to a significant degree.
 
-By graphing densities of ages rather than the data points themselves, you can better control for an uneven distribution of a certain group.
+By graphing densities of ages rather than the data points themselves, you 
+can better control for an uneven distribution of a certain group.
 
-However, to use this function, you would need an idea of what variables to plot the densities for in the first place. Luckily, you could just plot every variable in a data set against a sensitive variable one by one and see if there is any confounding among any of them.
+However, to use this function, you would need an idea of what variables to 
+plot the densities for in the first place. Luckily, you could just plot 
+every variable in a data set against a sensitive variable one by one and 
+see if there is any confounding among any of them.
 
 ```{r, eval=FALSE}
-dsld::dsldConfounders(law.school.admissions, "race1")
+data(law.school.admissions)
+dsldConfounders(law.school.admissions, "race1")
 ```
 
-This will allow you to explore every variable in law.school.admissions and see if any of them to confound with race1.
+This will allow you to explore every variable in **law.school.admissions** 
+and see if any of them to confound with race1.
 
-### Tabular Example
+### Tabular Examples
 
-Sometimes our intuition may tell us that some feature may be a confounder when that may not be the case. For example, suppose we suspect that an employee's education level influences the causal effect that gender may have on wage.
+Sometimes our intuition may tell us that some feature may be a confounder 
+when that may not be the case. For example, suppose we suspect that an 
+employee's education level influences the causal effect that gender 
+[From the **svcensus** data]{.column-margin}
+may have on wage.
 
-One way to further affirm/deny this claim is by using the function dsldFrequencyByS. It requires 2 input columns, with the latter being the sensitive variable. This function aims to analyze categorical (not numeric) columns by printing out a list of frequencies. Since education level is categorical, we can call the function as follows:
+One way to further affirm/deny this claim is by using the function 
+**dsldFrequencyByS()**. 
+[You can also run **dsldConfounders()** and find this same result.]{.column-margin}
+It requires 2 input columns, with the latter being the 
+sensitive variable. This function aims to analyze categorical (not numeric) 
+columns by printing out a list of frequencies. Since education level is 
+categorical, we can call the function as follows:
 
 ```{r}
-library(dsld)
 data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
 
-If our table had produced raw counts instead of proportions, we would see a major difference in the number of males vs females with an education level of 16, but displaying proportions shows us that this difference is only due to the fact that there are more males than females in the data. Since the proportions are similar, we cannot confidently claim education to be a possible confounder.
+If our table had produced raw counts instead of proportions, we would see a 
+major difference in the number of males vs females with an education level 
+of 16, but displaying proportions shows us that this difference is only due 
+to the fact that there are more males than females in the data. Since the 
+proportions are similar, we cannot confidently claim education to be a 
+possible confounder.
 
-On the other hand, we *do* see more interesting results if we look at *occupation* instead of *education*:
+On the other hand, we *do* see more interesting results if we look at 
+*occupation* instead of *education*:
 
 ```{r}
-library(dsld)
 data(svcensus)
 dsldFrequencyByS(svcensus, "occ", "gender")
 ```
 
-Notice the difference between the proportion of males in occupation 106 vs females in that same occupation -- a difference of approximately 11%. The difference in frequencies here are much greater than with the 'educ' example, which suggests that there is a difference in the occupations that men and women tend to be in; since different occupations can have different wages, it is possible that this difference in men occupations vs women occupations could be affecting the relationship between gender and wage. In this example, occupation may be a confounder; more investigation will be needed to further support (or disprove) this claim.
+Notice the difference between the proportion of males in occupation 106 vs 
+females in that same occupation -- a difference of approximately 11%. The 
+difference in frequencies here are much greater than with the 'educ' example, 
+which suggests that there is a difference in the occupations that men and 
+women tend to be in; since different occupations can have different wages, it 
+is possible that this difference in men occupations vs women occupations 
+could be affecting the relationship between gender and wage. In this example, 
+occupation may be a confounder; more investigation will be needed to further 
+support (or disprove) this claim.
