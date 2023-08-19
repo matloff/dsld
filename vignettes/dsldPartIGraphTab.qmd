@@ -13,68 +13,78 @@ confounder C is affecting the relationship between Y and S, there
 should be a graphical trend between S and C. Luckily, DSLD provides a 
 host of functions that let you visually explore these trends.
 
-<!--
-### Graphical Examples
+### Confounders in Law School Admissions
 
-If you suspect that some variables might confound with your sensitive 
-variable, a quick way to view many of them at once is to plot them in a 
-3D scatter plot.
+Suppose we are investigating the claim that LSAT exams are racially biased due 
+to their dependence on family income. We will be using the 
+**law.school.admissions** data set, a survey of students attending law school in 
+1991.
 
-```{r, eval=FALSE}
-data(law.school.admissions)
-dsldScatterPlot3D(law.school.admissions, sName = "race1", 
-  yNames=c("ugpa", "lsat","age"), xlim=c(2,4), maxPoints = 1500, pointSize = 4)
-```
-
-![](graphTab/lawscatterplot3d.png){width="80%"}
-
-As an example, this is the **law.school.admissions** data set, a survey of 
-students attending law school in 1991. In this scatter plot, we graphed 
-a student's race against their current gpa, their lsat score, and their 
-age -- or more accurately, their birth year. Most notably, you can see 
-that the oldest people, those born in the years 19**30**-19**40**, are 
-predominately white. This may mean that age confounds with race to some 
-extent, or it may not. But with this you have a good jumping-off point 
-for further analysis.
-
-In some cases, it can be difficult to notice a trend like the above when 
-you are looking at three axes at the same time. It may be more helpful 
-to plot the densities of a single variable according to different levels 
-of a sensitive variable.
+We have to look at the relationship between race and LSAT scores, as well as the 
+relationship between race and family income. A quick way to view multiple variables 
+(and their relation to the sensitive variable) at once is to plot them in a 3D 
+scatter plot:
 
 ```{r, eval=FALSE}
 data(law.school.admissions)
-dsldDensityByS(law.school.admissions, cName = "age", sName = "race1")
+dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','age'), 'race1')
 ```
 
-![](graphTab/lawdensity.png){width="80%"}
+![](graphTab/lawscatterplot3d2.png){width="80%"}
 
-As you can see, it became a lot harder to justify that age and race are 
-related in some way. The distribution of the ages across all races resemble 
-one another, with most people born in the early 19**60**s. There is no one 
-group that is particularly older or younger than the other.
 
-It turns out that it isn't really the case that the white students are 
-older; rather, there are more older white students because there are just 
-more white students. Because of this, it is safe to assume that age doesn't 
-confound with race to a significant degree.
+There are a couple things you can gather from this. The age axis doesn't say
+much. It looks like there are more white students born during the 1930s than 
+other groups of students, but that is also true across all ages. On the family 
+income axis, there are 5 levels- the lowest one is mostly populated with black 
+and Hispanic students, while the upper two levels are almost entirely made up of
+white students. On the LSAT axis, most of those with a lower score happen to be 
+non-white, across all income levels. 
 
-By graphing densities of ages rather than the data points themselves, you 
-can better control for an uneven distribution of a certain group.
+It is important to note that we cannot draw any concrete conclusions from this
+graph alone- for one thing, having such a large majority of students being white
+can make it hard to notice any hidden trends. We are only this graph to look for anything that may affect our analysis between race and LSAT scores. That being
+said, we can say that it's possible that family income may be a confounder.
 
-However, to use this function, you would need an idea of what variables to 
-plot the densities for in the first place. Luckily, you could just plot 
-every variable in a data set against a sensitive variable one by one and 
-see if there is any confounding among any of them.
+To further support our claim that race may be affecting LSAT results, we can 
+look at the density plot of LSAT scores against different races.
 
 ```{r, eval=FALSE}
 data(law.school.admissions)
-dsldConfounders(law.school.admissions, "race1")
+dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
 ```
 
-This will allow you to explore every variable in **law.school.admissions** 
-and see if any of them to confound with race1.
--->
+![](graphTab/lawdensitylsat.png){width="80%"}
+
+
+Each curve represents the distribution of LSAT scores for each race, with the
+peak of each curve representing the most common scores. From this, its easy
+to see the racial bias of the LSAT.
+
+Recall that the scatter plot also indicated a potential trend between family 
+income and race. We can zoom in on this relationship by generating another 
+density plot:
+
+```{r, eval=FALSE}
+data(law.school.admissions)
+dsldDensityByS(law.school.admissions, cName = "fam_inc", sName = "race1")
+```
+
+![](graphTab/lawdensityfam.png){width="80%"}
+
+
+White students have larger peaks at income levels 3, 4, and 5, indicating that
+a larger proportion of white students are in the higher income brackets than 
+non-white students. Conversely, a larger proportion of black and Hispanic
+students occupy the lower income bracket levels.
+
+[If we wanted to investigate other potential confounders, we can call 
+**dsldConfounders()** with 'race1' as our sensitive variable.]{.column-margin}
+
+This suggests that family income could be confounding the potential causal 
+relationship between race and LSAT scores, meaning that we should account for 
+family income in our models. As always, further investigation is necessary 
+to determine how much family income impacts the relationship we are analyzing.
 
 ### Confounders in Engineering Wages
 
@@ -128,61 +138,5 @@ confounder is a major error.
 
 :::
 
-### Confounders in Law School Admissions
 
-Suppose we are investigating the claim that LSAT exams are racially biased due 
-to their dependence on family income. We will be using the 
-**law.school.admissions** data set, a survey of students attending law school in 
-1991.
-
-We have to look at the relationship between race and LSAT scores, as well as the 
-relationship between race and family income. A quick way to view multiple variables 
-(and their relation to the sensitive variable) at once is to plot them in a 3D 
-scatter plot:
-
-```{r, eval=FALSE}
-data(law.school.admissions)
-dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','age'), 'race1')
-```
-
-![](graphTab/lawscatterplot3d1.png){width="80%"}
-<!-- Interpet scatterplot -->
-
-Then, we can look at the density plot of LSAT scores to different ethniticies
-(in this case, ethnicities are different levels, or groups, of our sensitive 
-variable: race) to further support our claim that race may be affecting LSAT 
-results (i.e. a causal relationship exists between the two variables).
-
-```{r, eval=FALSE}
-data(law.school.admissions)
-dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
-```
-
-![](graphTab/lawdensitylsat.png){width="80%"}
-<!-- Interpret -->
-
-Recall that the scatter plot also indicated a potential trend between family 
-income and race. We can zoom in on this relationship by generating another 
-density plot:
-
-```{r, eval=FALSE}
-data(law.school.admissions)
-dsldDensityByS(law.school.admissions, cName = "fam_inc", sName = "race1")
-```
-
-![](graphTab/lawdensityfam.png){width="80%"}
-<!-- Interpret -->
-
-Notice that most of the white students have a family income level of 4. By 
-contrast, other races have their peak densities at income level 3. 
-<!-- Can we add a note that at higher income levels, White density curve is 
-higher than black and that the opposite is true for lower income levels? -->
-
-[If we wanted to investigate other potential confounders, we can call 
-**dsldConfounders()** with 'race1' as our sensitive variable.]{.column-margin}
-
-This suggests that family income could be confounding the potential causal 
-relationship between race and LSAT scores, meaning that we should account for 
-family income in our models. As always, further investiagation is necessary 
-to determine how much family income impacts the relationship we are analyzing.
 
