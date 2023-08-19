@@ -61,7 +61,7 @@
     # capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
     # employing similar commands shown in the examples.
         
-    # The examples are conducted using the 'pef' dataset. 
+    # The examples are conducted using the 'svcensus' dataset. 
 
     # Example 1: We investigate the predictive accuracy for a continuous Y,'wageinc', using the default arguments for maxFeatureSetSize = 4
     data(svcensus)
