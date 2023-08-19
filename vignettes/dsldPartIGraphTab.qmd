@@ -85,10 +85,9 @@ employee's education level influences the causal effect that gender
 may have on wage.
 
 One way to further affirm/deny this claim is by using the function 
-**dsldFrequencyByS()**. 
+**dsldFrequencyByS()**, 
 [You can also run **dsldConfounders()** and find this same result.]{.column-margin}
-It requires 2 input columns, with the latter being the 
-sensitive variable. This function aims to analyze categorical (not numeric) 
+which aims to analyze categorical (not numeric) 
 columns by printing out a list of frequencies. Since education level is 
 categorical, we can call the function as follows:
 
@@ -114,10 +113,11 @@ difference in frequencies here are much greater than with the 'educ' example,
 which suggests that there is a difference in the occupations that men and 
 women tend to be in; since different occupations correlate with different wages, 
 it is possible that this difference in occupations that men have compared with 
-what women have 
-could be affecting the relationship between gender and wage. In this example, 
-occupation may be a confounder; more investigation will be needed to further 
-support (or disprove) this claim.
+what women have could be affecting the relationship between gender and wage. 
+
+Since occupation may have a substantial impact on the relationship between gender 
+and wage, we should not omit occupation from any models that we generate for this 
+relationship.
 
 ::: {.callout-note}
 #### Including vs Omitting a Confounder C
@@ -145,8 +145,8 @@ data(law.school.admissions)
 dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','age'), 'race1')
 ```
 
-![](graphTab/lawscatterplot3d.png){width="80%"}
-<!-- Interpet scatterplot and replace img -->
+![](graphTab/lawscatterplot3d1.png){width="80%"}
+<!-- Interpet scatterplot -->
 
 Then, we can look at the density plot of LSAT scores to different ethniticies
 (in this case, ethnicities are different levels, or groups, of our sensitive 
@@ -158,7 +158,8 @@ data(law.school.admissions)
 dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
 ```
 
-<!-- Interpret and img -->
+![](graphTab/lawdensitylsat.png){width="80%"}
+<!-- Interpret -->
 
 Recall that the scatter plot also indicated a potential trend between family 
 income and race. We can zoom in on this relationship by generating another 
@@ -169,7 +170,8 @@ data(law.school.admissions)
 dsldDensityByS(law.school.admissions, cName = "fam_inc", sName = "race1")
 ```
 
-<!-- Interpret and img -->
+![](graphTab/lawdensityfam.png){width="80%"}
+<!-- Interpret -->
 
 Notice that most of the white students have a family income level of 4. By 
 contrast, other races have their peak densities at income level 3. 
