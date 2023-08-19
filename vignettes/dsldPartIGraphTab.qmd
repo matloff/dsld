@@ -10,7 +10,7 @@ want to see.
 
 The easiest way to notice those relationships is to graph them. If a 
 confounder C is affecting the relationship between Y and S, there 
-should be a graphical trend between S and C. Luckily, DSLD provides a 
+should be a graphical trend between S and C. Luckily, **dsld** provides a 
 host of functions that let you visually explore these trends.
 
 ### Confounders in Law School Admissions
@@ -43,8 +43,9 @@ non-white, across all income levels.
 It is important to note that we cannot draw any concrete conclusions from this
 graph alone--for one thing, having such a large majority of students being white
 can make it hard to notice any hidden trends. We are only this graph to look for 
-anything that may affect our analysis between race and LSAT scores. That being
-said, we can say that it's possible that family income may be a confounder.
+anything that may affect our analysis between race and LSAT scores. The scatter 
+plot also indicates a (possibly confounding) relationship between family income 
+and race/LSAT results--more on this later.
 
 To further support our claim that race may be affecting LSAT results, we can 
 look at the density plot of LSAT scores against different races.
