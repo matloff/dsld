@@ -217,15 +217,8 @@ dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALS
 #' @export
 #'
 dsldFrequencyByS <- function(data, cName, sName) {
-    comment <- "
     # ensure libraries #
     getSuggestedLib('gt')
-
-    frequencies <- data %>%
-        group_by(sName) %>%
-        summarize(Frequency = n()) %>%
-        gt()
-    "
 
     # type validation #
     if (!class(data[, sName]) %in% c("factor", "character")) {
