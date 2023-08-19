@@ -27,38 +27,52 @@
 }
 
 \usage{
-    dsldTakeALookAround <- function(data,yName,sName, maxFeatureSetSize = (ncol(data) - 2))
+    dsldTakeALookAround <- function(data,yName,sName, 
+                                    maxFeatureSetSize = (ncol(data) - 2), 
+                                    holdout = floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{
-    \item{data}{dataset in dataframe form}
-    \item{yName}{as in qeML functions, the response variable}
-    \item{sName}{name of the sensitive variable, an R factor}
-    \item{maxFeatureSetSize}{maximum number of combinations of features to be included in the dataframe; 
-    default argument set as: maxFeatureSetSize = (ncol(data) - 2)}
+    \item{data}{
+        dataset in dataframe form
+    }
+    \item{yName}{
+        as in qeML functions, the response variable
+    }
+    \item{sName}{
+        name of the sensitive variable, an R factor
+    }
+    \item{maxFeatureSetSize}{
+        maximum number of combinations of features to be included in the dataframe; 
+        default argument set as: maxFeatureSetSize = (ncol(data) - 2)
+    }
+    \item{holdout}{
+        If not NULL, form a holdout set of the specified size. After fitting to the 
+        remaining data, evaluate accuracy on the test set.
+    }
 }
 
 \author{
-    N. Matloff, A. Ashok, S. Martha, A. Mittal
+    N. Matloff, A. Ashok, S. Martha, A. Mittal, T. Abdullah
 }
 
 \examples{
-#   The dsldTakeALookAround function aims to provide a seamless experience, requiring minimal effort to utilize its
-#   capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
-#   employing similar commands shown in the examples.
-    
-#   The examples are conducted using the 'pef' dataset. 
+    # The dsldTakeALookAround function aims to provide a seamless experience, requiring minimal effort to utilize its
+    # capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
+    # employing similar commands shown in the examples.
+        
+    # The examples are conducted using the 'pef' dataset. 
 
-#   Example 1: We investigate the predictive accuracy for a continuous Y,'wageinc', using the default arguments for maxFeatureSetSize = 4
-    data(pef)
-    dsldTakeALookAround(pef, 'wageinc', 'gender', 4)
+    # Example 1: We investigate the predictive accuracy for a continuous Y,'wageinc', using the default arguments for maxFeatureSetSize = 4
+    data(svcensus)
+    dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
 
-#   Example 2:  We investigate the predictive accuracy for a categorical Y, 'educ', using the default arguments for maxFeatureSetSize = 4
-    data(pef)
-    dsldTakeALookAround(pef, 'educ', 'occ')
+    # Example 2:  We investigate the predictive accuracy for a categorical Y, 'educ', using the default arguments for maxFeatureSetSize = 4
+    data(svcensus)
+    dsldTakeALookAround(svcensus, 'educ', 'occ')
 
-#   Example 3:  We investigate the predictive accuracy for a continuous Y, 'wageinc', using the maxFeatureSetSize = 1
-    data(pef)
-    dsldTakeALookAround(pef, 'wageinc', 'gender', 1)
+    # Example 3:  We investigate the predictive accuracy for a continuous Y, 'wageinc', using the maxFeatureSetSize = 1
+    data(svcensus)
+    dsldTakeALookAround(svcensus, 'wageinc', 'gender', 1)
 }
 
