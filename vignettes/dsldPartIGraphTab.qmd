@@ -13,6 +13,7 @@ confounder C is affecting the relationship between Y and S, there
 should be a graphical trend between S and C. Luckily, DSLD provides a 
 host of functions that let you visually explore these trends.
 
+<!--
 ### Graphical Examples
 
 If you suspect that some variables might confound with your sensitive 
@@ -73,8 +74,9 @@ dsldConfounders(law.school.admissions, "race1")
 
 This will allow you to explore every variable in **law.school.admissions** 
 and see if any of them to confound with race1.
+-->
 
-### Tabular Examples
+### Confounders in Engineering Wages
 
 Sometimes our intuition may tell us that some feature may be a confounder 
 when that may not be the case. For example, suppose we suspect that an 
@@ -95,12 +97,8 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
 
-If our table had produced raw counts instead of proportions, we would see a 
-major difference in the number of males vs females with an education level 
-of 16, but displaying proportions shows us that this difference is only due 
-to the fact that there are more males than females in the data. Since the 
-proportions are similar, we cannot confidently claim education to be a 
-possible confounder.
+The similar frequency values between men and women suggest that we *cannot* 
+confidently claim education to be a possible confounder.
 
 On the other hand, we *do* see more interesting results if we look at 
 *occupation* instead of *education*:
@@ -114,8 +112,75 @@ Notice the difference between the proportion of males in occupation 106 vs
 females in that same occupation -- a difference of approximately 11%. The 
 difference in frequencies here are much greater than with the 'educ' example, 
 which suggests that there is a difference in the occupations that men and 
-women tend to be in; since different occupations can have different wages, it 
-is possible that this difference in men occupations vs women occupations 
+women tend to be in; since different occupations correlate with different wages, 
+it is possible that this difference in occupations that men have compared with 
+what women have 
 could be affecting the relationship between gender and wage. In this example, 
 occupation may be a confounder; more investigation will be needed to further 
 support (or disprove) this claim.
+
+::: {.callout-note}
+#### Including vs Omitting a Confounder C
+
+Other than possible overfitting, there is no harm in including a C when in fact 
+it has little or no confounding effect, whereas omitting a C that IS a 
+confounder is a major error.
+
+:::
+
+### Confounders in Law School Admissions
+
+Suppose we are investigating the claim that LSAT exams are racially biased due 
+to their dependence on family income. We will be using the 
+**law.school.admissions** data set, a survey of students attending law school in 
+1991.
+
+We have to look at the relationship between race and LSAT scores, as well as the 
+relationship between race and family income. A quick way to view multiple variables 
+(and their relation to the sensitive variable) at once is to plot them in a 3D 
+scatter plot:
+
+```{r, eval=FALSE}
+data(law.school.admissions)
+dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','age'), 'race1')
+```
+
+![](graphTab/lawscatterplot3d.png){width="80%"}
+<!-- Interpet scatterplot and replace img -->
+
+Then, we can look at the density plot of LSAT scores to different ethniticies
+(in this case, ethnicities are different levels, or groups, of our sensitive 
+variable: race) to further support our claim that race may be affecting LSAT 
+results (i.e. a causal relationship exists between the two variables).
+
+```{r, eval=FALSE}
+data(law.school.admissions)
+dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
+```
+
+<!-- Interpret and img -->
+
+Recall that the scatter plot also indicated a potential trend between family 
+income and race. We can zoom in on this relationship by generating another 
+density plot:
+
+```{r, eval=FALSE}
+data(law.school.admissions)
+dsldDensityByS(law.school.admissions, cName = "fam_inc", sName = "race1")
+```
+
+<!-- Interpret and img -->
+
+Notice that most of the white students have a family income level of 4. By 
+contrast, other races have their peak densities at income level 3. 
+<!-- Can we add a note that at higher income levels, White density curve is 
+higher than black and that the opposite is true for lower income levels? -->
+
+[If we wanted to investigate other potential confounders, we can call 
+**dsldConfounders()** with 'race1' as our sensitive variable.]{.column-margin}
+
+This suggests that family income could be confounding the potential causal 
+relationship between race and LSAT scores, meaning that we should account for 
+family income in our models. As always, further investiagation is necessary 
+to determine how much family income impacts the relationship we are analyzing.
+
