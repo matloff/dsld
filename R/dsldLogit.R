@@ -58,7 +58,7 @@ dsldLogit <- function(data, yName, sName, sComparisonPts, yesYVal) {
   dsldModel <- list()
   
   data[[yName]] <- ifelse(data[[yName]] == yesYVal, 1, 0)
- 
+  
   if (!is.data.frame(sComparisonPts)) {
     stop(paste("Error: sComparisonPts must be a dataframe"))
   } 
@@ -236,20 +236,23 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
     rowData <- subset(df, row == i)
     charVec <- as.character(rowData$level)
     combinationMatrix <- combn(charVec, 2)
-    
     for (j in 1:dim(combinationMatrix)[2]) {
       val <- combinationMatrix[, j]
       a <- val[1]
       b <- val[2]
-      aData <- subset(rowData, level == a) # error, needs fix
+      aData <- subset(rowData, level == a) 
+      a3 <- aData[3]
       bData <- subset(rowData, level == b)
+      b3 <- bData[3]
       indexVal <- sprintf("%s - %s", a, b)
+      aVal <- sprintf("LEVEL: %s", a)
+      bVal <- sprintf("LEVEL: %s", b)
       estimatedDiff <- aData$prediction - bData$prediction
       standardError <- sqrt(((aData$standardError) ^ 2) +
                               ((bData$standardError) ^ 2))
-      tempDF <- data.frame(indexVal, i, estimatedDiff,
+      tempDF <- data.frame(indexVal, i, a3,b3, estimatedDiff,
                            standardError)
-      names(tempDF) <- c("Factors Compared", "New Data Row", "Estimates",
+      names(tempDF) <- c("Factors Compared", "New Data Row", aVal,bVal, "Difference in Estimates",
                          "Standard Errors")
       pairwiseDF <- rbind(pairwiseDF, tempDF)
     }
