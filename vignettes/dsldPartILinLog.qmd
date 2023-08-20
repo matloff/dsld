@@ -1,5 +1,5 @@
 
-# Part I:  Adjustment for Confounders
+# Part I:  Adjustment for Confounders  
 
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
@@ -337,18 +337,25 @@ whose name stems from it having a linear component in the formula.
 ### General form of the model
 
 Just as linear models are the most commonly used for numeric Y, in the
-the binary-Y case the go-to standard is the logistic model.  Let's first
-consider a very simple prediction problem, in which Y is gender, say 1
-for male, 0 for female, and X is simply income, using the **svcensus**
-data.
+binary-Y case the go-to standard is the logistic model.  To introduce
+it, let's first consider a very simple prediction problem, in which Y is
+gender, say 1 for male, 0 for female, and X is simply income, using the
+**svcensus** data.
 
-Note mean Y is now the probability that Y = 1.  That's because the
-average of a bunch of 1s and 0s is the proportion of 1s.
+::: {.callout-note}
 
-Now suppose that within each gender, X has a normal (Gaussian)
-distribution, the familiar "bell-shaped" curve, with the same standard
-deviation for each gender.  Then it turns out that one can show
-mathematically that
+Note that mean Y is now the probability that Y = 1.  That's because the
+average of a bunch of 1s and 0s is the proportion of 1s.  In the data
+1,0,1,1 for instance, the mean is (1+0+1+1) / 4 = 3/4, and indeed 3/4 of
+those numbers are 1s.
+
+:::
+
+Now consider a simple setting in which we are predicting Y = gender from
+a single variable X = income (no C here).  Suppose that within each
+gender, X has a normal (Gaussian) distribution, the familiar
+"bell-shaped" curve, with the same standard deviation for each gender.
+Then it turns out that one can show mathematically that
 
 probability male =
 $$
@@ -370,7 +377,7 @@ predictor variables have a multivariate normal distribution, one can
 show that mean Y as a function of the features is linear in the
 features, etc.]{.column-margin} Say we predict gender from age and wage
 income.  If the latter two variables have a *bivariate normal*
-distribution (two-dimensional histogram has a 3-D bell shape) with the
+distribution (two-dimensional histogram, has a 3-D bell shape) with the
 same variance matrices within each gender, it turns out that we again
 get a logistic form:
 
@@ -392,12 +399,15 @@ binary Y:
 model when our predictors have monotonic relations with Y.
 
 The point is that the logistic (popularly referred to as "logit") is
-often a good model in general.
+[Some books motivate the logistic approach as the *log-odds* ratio,
+meaning in this example that the logarithm of the ratio (probability
+male) / (probability female) is linear in age and income.]{.column-margin} 
+often a good model for binary-Y settings in general.
 
 ### We no longer have a no-interactions case
 
 In the first linear model example above, predicting wage income from age
-and gender, the model implied a uniform gender, independent of age.  The
+and gender, the model implied a uniform gender gap, independent of age.  The
 male and female regression lines were parallel.  That's not possible in
 the logit case:
 
@@ -406,25 +416,46 @@ curve(1/(1+exp(-x)),-4,4)
 curve(1/(1+exp(-2*x)),-4,4,add=TRUE)
 ```
 
-The curves are no longer parallel; they even cross.
+The curves are no longer parallel; they even cross.  They typically
+don't cross in applied settings, but they are always nonparallel.
+
+The implication of this is the same as in the linear case.  We cannot
+speak of "the" impact of S on Y, as it will be the same at different
+levels of the X and C variables.  Our calls to the software will then
+need to specify our desired levels.
+
 
 ### German credit data
 
 This is a built-in dataset to the **fairml** package, which is included
-by **dsld*.  Let's take a brief look at the data.
+by **dsld**.  Let's take a brief look at the data.
 
 ```{r}
+data(german.credit)
 gct <- german.credit
 head(gct)
 names(gct)
 ```
 
-Let's predict credit risk.  To keep the example simple, let's just use a few predictors, with S = gender.
+Column 20 of the data, **Credit_risk**, is the assessment made by the
+lender, recorded as 'GOOD' or 'BAD'.  Is the lender prejudiced against
+women?  We might try to investigate that via a logistic model in which Y
+is credit risk, S is gender and we include a few possible confounders.
+(Again, let's keep things simple in this example.)
 
 ```{r}
 gct <- gct[,c('Credit_history','Credit_amount','Present_employment_since',
-   'Credit_risk','Foreign_worker')]
-w <- dsldLogit(gct,'Credit_risk','Foreign_worker',gct[2,1:3],yesYVal='GOOD')
+   'Credit_risk','Gender')]
+w <- dsldLogit(gct,'Credit_risk','Gender',gct[2,1:3],yesYVal='GOOD')
 summary(w)
 ```
+
+As noted, there is no no-interaction case in logit settings, so we need
+to specify one or more examples at which we wish to gauge the impact, if
+any, of S on Y.  Here we are using row 2 of our data (excluding Y and S)
+for that purpose. 
+
+Also, we need to tell the software what values of the credit risk
+variable should be consider Y = 1 and Y = 0; we use the **yesYVal**
+argument for that, saying we want 'GOOD' to play the Y = 1 role.
 
