@@ -167,3 +167,9 @@ extrema can be found without iterative methods.
 <!-- compare their performance against each other across all metrics 
 previously described -->
 
+### Explicitly Deweighted Features
+
+### Ridge Penalty
+
+### Nonconvex Optimization with Fairness Constraints
+
