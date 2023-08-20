@@ -6,6 +6,14 @@ How do we adjust for confounders?  The most common approach involves
 ]{.column-margin} linear models, with which we express the mean Y for
 given values of the X, C and S variables in a linear form.  
 
+::: {.callout-note}
+### Important term: the *regression function*
+The relation of mean Y to the X, C and S variables is formally called
+the *regression function* of Y on those variables. Our current model
+will assume this relation as linear, but the term *regression function*
+is general.
+:::
+
 ## Linear model example: a simple gender wage gap analysis
 
 Consider the **svcensus** data example in @sec-census above,
@@ -343,12 +351,11 @@ gender, say 1 for male, 0 for female, and X is simply income, using the
 **svcensus** data.
 
 ::: {.callout-note}
-
+### Probability is a special case of a mean
 Note that mean Y is now the probability that Y = 1.  That's because the
 average of a bunch of 1s and 0s is the proportion of 1s.  In the data
 1,0,1,1 for instance, the mean is (1+0+1+1) / 4 = 3/4, and indeed 3/4 of
 those numbers are 1s.
-
 :::
 
 Now consider a simple setting in which we are predicting Y = gender from
@@ -446,16 +453,77 @@ is credit risk, S is gender and we include a few possible confounders.
 ```{r}
 gct <- gct[,c('Credit_history','Credit_amount','Present_employment_since',
    'Credit_risk','Gender')]
-w <- dsldLogit(gct,'Credit_risk','Gender',gct[2,1:3],yesYVal='GOOD')
+compData <- gct[c(2,22,222,3,33,55,555),1:3]
+w <- dsldLogit(gct,'Credit_risk','Gender',compData,yesYVal='GOOD')
 summary(w)
 ```
 
 As noted, there is no no-interaction case in logit settings, so we need
 to specify one or more examples at which we wish to gauge the impact, if
-any, of S on Y.  Here we are using row 2 of our data (excluding Y and S)
+any, of S on Y.  Here we are using rows 2-4 of our data (excluding Y and S)
 for that purpose. 
 
 Also, we need to tell the software what values of the credit risk
 variable should be consider Y = 1 and Y = 0; we use the **yesYVal**
 argument for that, saying we want 'GOOD' to play the Y = 1 role.
+
+Women seem to be faring better than, or at least equal to, men.  If
+anything, it is the men who are discrimination victims.  But again, the
+size of the gender gap seems to depend a lot on the other factors.
+Let's take a look at those comparison cases:
+
+```{r}
+compData
+```
+
+No salient pattern here, but there is a suggestion that among those who
+have been with their present employer, women do better than men.  Not an
+easy question at all, and further investigation would be needed.  One
+key point: 
+
+::: {.callout-note}
+### Role of the software
+The software cannot make your decisions for you.  It merely plays a
+supporting, and there are no neat formulas to follow.
+:::
+
+## Machine Learning Approaches
+
+We referred to the quantities $\beta_i$ above as "parameters."  The
+linear and logistic models are thus called *parametric* models.  In each
+case, the regression function is modeled as linear, "S curve-shaped" and
+so on, that can be described with just a few quantities.
+
+But these models make assumptions, such as assuming the regression
+function is approximately linear.  It would also be nice to conduct
+analyses that don't rely on such assumptions.
+
+*Machine learning* (ML) algorithms typically do not assume the regression
+function has any particular form.  They are thus "safer," though on the
+other hand they are less interpretable than, say, that $\beta_2$
+quantity in our no-interactions linear model above. 
+
+ML is mainly concerned with prediction, while we here are interested in
+estimation of effect sizes.  However, ML algorithms either directly or
+indirectly do their prediction by estimating the regression function, as
+we do here, so they can be quite useful.
+
+### The k-Nearest Neighbor algorithm
+
+We'll focus here on the k-NN algorithm, as it is the simplest to
+explain.  Say we are predicting people's weights, knowing only their
+heights.  We have training data, on which we know both the height and
+weight of each person.  Faced with a new case of a person 70 inches
+tall, we find the people in our training set whose heights are closest to
+70 inches, and average their weights.  That average is our predicted
+weight for the new person.
+
+How is "close to" defined?  Should we look at the closest 5 people, the
+closest 50, or what?  That number is k, the number of nearest neighbors.
+It's chosen by the analyst, just like the analyst chooses the number of
+bins in plotting a histogram.  Typically k is chosen by trying several
+different values of k, then using the one that best predicts in the
+holdout set.
+
+
 
