@@ -30,6 +30,46 @@ The end result of this modified modeling process is a tool that allows users to:
 <!-- introduce running example + context... this example should most likely 
 come from COMPAS -->
 
+
+## Approaches Deployed in DSLD
+<!-- go over all the approaches we use in the fairML & EDFair wrappers -->
+<!-- compare their performance against each other across all metrics 
+previously described -->
+
+### Explicitly Deweighted Features
+
+### Ridge Penalty
+
+### Fairness Constraints
+<!-- accuracy of this information may need to be double-checked -->
+Another major approach in assuring a fair machine learning model relies on 
+enforcing an additional constraint while training the model. Base-level ML 
+algorithms rely on minimizing a certain error (i.e. RMSE (Root Mean Square 
+Error), etc.). With this class of fair ML models, a constraint is placed on the 
+training itself, ensuring the model optimizes not just for utility, but also 
+a given definition of fairness.
+
+More simply put, an additional fairness parameter is introduced into the 
+optimization problem, forcing whichever optimization algorithm is picked to 
+weigh a tradeoff between utility **and** fairness when calculating coefficients 
+or weights. This has the effect of balancing the model to be both fair and 
+useful to users, but there is a nuance underneath this.
+
+As we will explain in more detail further in this book, the definition of fair 
+and fairness with respect to ML algorithms will vary from context to context 
+and research paper to research paper. While we provide a plethora of different 
+metrics that can be used to gauge fairness, there is no **single correct** 
+**metric**; each will have their own use-case. It's up to the reader to decide 
+which constraint/metric will optimize the model for their needs.
+
+#### Nonconvex Optimization with Fairness Constraints
+<!-- this will be for the Komiyama paper -->
+
+#### Other Constraints (paper three, we'll update title later)
+<!-- this will be for the Zafar paper -->
+
+
+
 ## Measurements of Fairness & Utility
 Different algorithms and approaches attempt to reduce bias as indicated through 
 different metrics. In the following subsection, our aim is to explain what each 
@@ -160,16 +200,4 @@ but maybe it shouldn't be included --> Mathematically, the absolute value functi
 isn't differentiable for all x (it's undefined at the origin). Therefore, given its 
 differentiability, the MSPE is preferred for optimization problems in general as 
 extrema can be found without iterative methods.
-
-
-## Approaches Deployed in DSLD
-<!-- go over all the approaches we use in the fairML & EDFair wrappers -->
-<!-- compare their performance against each other across all metrics 
-previously described -->
-
-### Explicitly Deweighted Features
-
-### Ridge Penalty
-
-### Nonconvex Optimization with Fairness Constraints
 
