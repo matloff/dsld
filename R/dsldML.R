@@ -5,8 +5,6 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
    qeMLftnName,opts=NULL)
 {
 
-browser()
-
    if (!inherits(yName,'name')) stop('specify yName via quote()')
 
    data <- get(dataName)
