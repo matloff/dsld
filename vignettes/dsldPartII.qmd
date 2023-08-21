@@ -14,11 +14,6 @@ is reduced utility (predictive power over the dataset). Thus, a means of
 balancing this tradeoff between fairness and utility becomes essential in any 
 future implementations of machine learning.
 
-While there exists a plethora of methods for ensuring a fair machine learning 
-model, the primary approaches utilized in the `dsld` package are:
-    1. Engineering the data itself before modeling through deweighting
-    2. Minimizing the impact of sensitive features in the model itself
-
 The end result of this modified modeling process is a tool that allows users to:
     1. Compare a fair model against one with no fairness implemented; the 
        effective result is a means of uncovering if biases exist within the 
@@ -26,19 +21,36 @@ The end result of this modified modeling process is a tool that allows users to:
     2. Reduce the impact of any inherent discrimination within the data (of 
        course only to the level that is specified).
 
+
 ## Example
 <!-- introduce running example + context... this example should most likely 
 come from COMPAS -->
+Let's take a look back at the COMPAS dataset from before to best compare the 
+range of approaches to measuring and ensuring fairness in machine learning 
+model deployment. [more background here...]
 
 
 ## Approaches Deployed in DSLD
 <!-- go over all the approaches we use in the fairML & EDFair wrappers -->
 <!-- compare their performance against each other across all metrics 
 previously described -->
+While there exists a plethora of methods for ensuring a fair machine learning 
+model, the primary approaches utilized in the `dsld` package are:
+    1. Engineering the data itself before modeling through deweighting
+    2. Minimizing the impact of sensitive features in the model itself
+
+Each of these methods have their strengths and weaknesses. It will be up to 
+users to decide first which *metric* of fairness makes the most sense within 
+their domain, and then based on the performances we record below, choose an 
+appropriate model that best balances that measurement of fairness with the 
+utility they would like. Again, it should be stressed that how you measure 
+fairness and utility will determine the approach taken in balancing the two 
+with regards to the model itself.
+
 
 ### Explicitly Deweighted Features
 
-### Ridge Penalty
+
 
 ### Fairness Constraints
 <!-- accuracy of this information may need to be double-checked -->
@@ -62,12 +74,20 @@ metrics that can be used to gauge fairness, there is no **single correct**
 **metric**; each will have their own use-case. It's up to the reader to decide 
 which constraint/metric will optimize the model for their needs.
 
+
+### Ridge Penalty
+<!-- this will be for the Scutari paper -->
+description...
+
+
 #### Nonconvex Optimization with Fairness Constraints
 <!-- this will be for the Komiyama paper -->
+description...
+
 
 #### Other Constraints (paper three, we'll update title later)
 <!-- this will be for the Zafar paper -->
-
+description...
 
 
 ## Measurements of Fairness & Utility
@@ -76,8 +96,11 @@ different metrics. In the following subsection, our aim is to explain what each
 of these metrics tell users and which algorithms perform best with respect to 
 each one.
 
+
 ### Fairness Metrics
 <!-- compare all the fairness metrics against one another... -->
+reiterate points about measuring fairness...
+
 
 #### S-Correlation
 <!-- correlation between S-feature and output -->
@@ -90,7 +113,6 @@ and Y are correlated is meaningful because then we can see the effects S has on
 the prediction model. S-correlation can also be a reason to delve into 
 determining why the S feature has such an effect on Y feature.
 
-
 The function dsldTakeALookAround calculates the S-Correlation through a
 non-parametric test, known as the Kendall rank correlation. The strength of 
 associativity is measured by the pattern of accordance/discordance 
@@ -99,6 +121,7 @@ Kendall's rank correlation is that it can be used with ordinal or continuous
 data. It is also viable with smaller sets of data compared to other methods.
 For more information on how Kendall rank correlation is calculated, click
 [here](https://arxiv.org/abs/2206.04019).
+
 
 #### Demographic Parity
 Demographic parity is a fairness metric that measures if a classifier model's 
@@ -132,30 +155,31 @@ is used in the first place, the seriousness of the context the model will be
 deployed in motivates the use of something as restrictive as demographic 
 parity.
 
+
 ### Utility Metrics
 <!-- compare all the utility metrics against one another... -->
+points on measuring utility, maybe a brief background...
+
 
 #### Test Accuracies (Misclassification Error)
 <!-- accuracy results on test sets -->
+most likely will be some form of RMSE or maybe squared error...
+
 
 #### ROC Curves
-
 [![ROC Curve](partII/rocCurve.png)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic){width=50%}
 An ROC curve (receiver operating characteristic curve) is a graph that plots
 the model's behavior at various classification thresholds. The graph aids in 
 visually identifying optimal thresholds by avoiding confusion matrices.
 
-
 The graph plots the true positive rate (sensitivity) on the y-axis and the 
 false positive rate (selectivity) on the x axis. For each threshold, its true 
 positive rate and false positive rate are calculated.
-
 
 A model that perfectly classifies each sample is plotted at (0, 1). A point at
 (1,1), (.75, .75), (.5, .5) etc. means that the proportion of correctly 
 classified samples is equal to the the proportion of incorrectly classified
 samples. A point at (1, 0) incorrectly classifies each sample.
-
 
 Say, we are trying to classify a group of people as infected or not infected
 to prevent an outbreak. So, initially we set our threshold to be "Lets consider
@@ -163,13 +187,11 @@ everyone to be infected." Then our threshold correctly identified a person who
 is infected as infected. But it also incorrectly calculated all non-infected 
 peopl as infected. So, this threshold is plotted at (1, 1). 
 
-
 If we change our threshold to "a person with a high body temperature is 
 considered infected" then our point will move on the graph. This may correctly 
 identify most people who are infected, but it may also misidentify a few people
 who are not infected as infected, and vice-versa. So we can arbitrarily say 
 that this threshold is plotted at (.1, .8).
-
 
 We can keep changing our threshold level and we will get different points on
 the graph. It is up to the user to determine what true positive rate he wants 
