@@ -14,7 +14,7 @@ will assume this relation as linear, but the term *regression function*
 is general.
 :::
 
-## Linear model example: a simple gender wage gap analysis
+## Linear model example: a simple gender wage gap analysis 
 
 Consider the **svcensus** data example in @sec-census above,
 investigating a possible gender pay gap.  So Y is wage and S is gender.
@@ -526,13 +526,17 @@ different values of k, then using the one that best predicts in the
 holdout set.
 
 
-### The Law School Admissions dataset
+## The Law School Admissions dataset
 
-This is the dataset **law.school.admissions**, includein **dsld** via
-**fairml**.  It's quite well-known in the ML world, but its full
-provenance is unclear.  For instance, the age variables skews to
-middle-aged and older, seemingly not consistent with the data's
-description on Kaggle.  Thus it should be kept in mind that this is just
+This is the dataset **law.school.admissions**, included in **dsld** via
+[Possible the 'age' variable is birth year.  The data are from 1991, so
+an 'age' value of 69 would mean born in 1969, now age
+22.]{.column-margin} **fairml**.  It's quite well-known in the ML world,
+but its full provenance is unclear.  For instance, the age variable
+skews far to middle-aged and older, seemingly not consistent with the
+data's description on Kaggle.  
+
+Thus it should be kept in mind that this is just
 an illustration of methodology, and firm conclusions about the legal
 education process should not be drawn.  The data concern students who
 were admitted to law school, so in spite of the title, it's not about
@@ -557,6 +561,8 @@ law students was raised in.
 * **cluster**:  Level of prestige of the law school.
 
 * **bar**:  After law school, did this person pass the bar examination?
+
+Here's what the data looks like:
 
 ```{r}
 data(law.school.admissions)
