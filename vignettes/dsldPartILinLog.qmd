@@ -603,12 +603,12 @@ is exactly 0.)  Don't be fooled by words like "significant."
 
 So family income is not an important factor after all.  Nevertheless,
 [Note the retrospective view--using later events to "predict" the past.
-This is valid, but may seem odd at first.]{.column-margin}
-there are concerning racial differences here.  Two very similar people,
-attending the same quality law school, with the same undergraduate
+This is valid, but may seem odd at first.]{.column-margin} there are
+concerning racial differences here.  Two very similar people&mdash;who
+attended the same quality law school, with the same undergraduate
 grades, the same law school grades, even having the same bar passage
-status, will have LSAT scores differing on average by almost 6 points if
-one person is Black and the other is white.
+status&mdash;will have LSAT scores differing on average by almost 6
+points if one person is Black and the other is white.
 
 Again, one must be very cautious in drawing conclusions as to causes, as
 *hidden confounders* may be at work here.  For instance, though we have
