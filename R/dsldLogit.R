@@ -195,7 +195,7 @@ dsldGetData <- function(dsldGLM) {
 #' @param dsldGLM: output from dsldLogistic() function
 #' @param newData: new test cases to be provided; required for
 #'      full-interactions case
-
+                       
 dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
   # get sName and yName from the output of dsldLogistic #
   sName <- dsldGLM[[1]]$sName
@@ -227,7 +227,6 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
     tempDF <- data.frame(level = i, row = 1:nrow(xNew), prediction = pred, standardError = se)
     df <- rbind(df, tempDF)
   }
-  
   # compute difference in estimates between each pair factor level for each row
   uniqueElements <- sort(unique(df$row))
   pairwiseDF <- data.frame()
@@ -245,21 +244,19 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
       bData <- subset(rowData, level == b)
       b3 <- bData[3]
       indexVal <- sprintf("%s - %s", a, b)
-      aVal <- sprintf("LEVEL: %s", a)
-      bVal <- sprintf("LEVEL: %s", b)
       estimatedDiff <- aData$prediction - bData$prediction
       standardError <- sqrt(((aData$standardError) ^ 2) +
                               ((bData$standardError) ^ 2))
       tempDF <- data.frame(indexVal, i, a3,b3, estimatedDiff,
                            standardError)
-      names(tempDF) <- c("Factors Compared", "New Data Row", aVal,bVal, "Difference in Estimates",
+      names(tempDF) <- c("Factors Compared", "New Data Row", 'Factor A','Factor B', "Difference in Estimates",
                          "Standard Errors")
       pairwiseDF <- rbind(pairwiseDF, tempDF)
     }
   }
   return(pairwiseDF)
 }
-
+                       
 # ---------------------------- Test runs  -------------------------------------#
 # newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), lsat = c(25,25), fam_inc = c(3,3), ugpa = c(3.5, 3.5), race1 = c('asian', 'black')) 
 # dat1 <- dsldDiffS(log1, newData) # run with interactions 
