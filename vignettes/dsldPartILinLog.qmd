@@ -526,4 +526,44 @@ different values of k, then using the one that best predicts in the
 holdout set.
 
 
+### The Law School Admissions dataset
 
+This is the dataset **law.school.admissions**, includein **dsld** via
+**fairml**.  It's quite well-known in the ML world, but its full
+provenance is unclear.  For instance, the age variables skews to
+middle-aged and older, seemingly not consistent with the data's
+description on Kaggle.  Thus it should be kept in mind that this is just
+an illustration of methodology, and firm conclusions about the legal
+education process should not be drawn.  The data concern students who
+were admitted to law school, so in spite of the title, it's not about
+the admissions process itself.
+
+The main variables of interest here are:
+
+* **decile1**, **decile2**:  Student's standing after Year 1 and Year 3
+of law school.
+
+* **fam_inc**: Apparently the income level of the family in which the
+law students was raised in.
+
+* **lsat**: Score on the LSAT, a major law school admissions test.
+
+* **ugpa**:  Undergraduate GPA.
+
+* **gender**:  Gender.
+
+* **race1**:  Primary racial group.
+
+* **cluster**:  Level of prestige of the law school.
+
+* **bar**:  After law school, did this person pass the bar examination?
+
+There has been concern that the LSAT is heavily influenced by family
+income, thus unfair, especially to Black and Latino students.  Let's
+investigate using **dsld**.
+
+```{r}
+
+```
+
+```
