@@ -116,6 +116,7 @@ columns by printing out a list of frequencies. Since education level is
 categorical, we can call the function as follows:
 
 ```{r}
+library(dsld)
 data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
@@ -127,6 +128,7 @@ On the other hand, we *do* see more interesting results if we look at
 *occupation* instead of *education*:
 
 ```{r}
+library(dsld)
 data(svcensus)
 dsldFrequencyByS(svcensus, "occ", "gender")
 ```
