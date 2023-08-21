@@ -604,16 +604,24 @@ is exactly 0.)  Don't be fooled by words like "significant."
 So family income is not an important factor after all.  Nevertheless,
 [Note the retrospective view--using later events to "predict" the past.
 This is valid, but may seem odd at first.]{.column-margin} there are
-concerning racial differences here.  Two very similar people&mdash;who
+very concerning racial differences here.  Two very similar people&mdash;who
 attended the same quality law school, with the same undergraduate
 grades, the same law school grades, even having the same bar passage
 status&mdash;will have LSAT scores differing on average by almost 6
 points if one person is Black and the other is white.
 
-Again, one must be very cautious in drawing conclusions as to causes, as
-*hidden confounders* may be at work here.  For instance, though we have
-data on undergraduate GPA, we don't know the quality of the undergraduate
-institution.  And as noted, it's not clear how exactly this data was collected.
-But the results here raise serious concerns.
+Again, one must be very cautious in drawing conclusions as to causes,
+not only because of the questionable quality of the dataset but also
+because *hidden confounders* may be at work here.  For instance, though
+we have data on undergraduate GPA, we don't know the quality of the
+undergraduate institution.  But the results here raise serious concerns.
+
+And what about passage of the bar exam?
+
+```{r}
+comparisonPts <- lsa[c(2,22,222,2222),-c(8,11)]
+w <- dsldLogit(lsa,'bar','race1',comparisonPts,TRUE)
+summary(w)
+```
 
 
