@@ -83,14 +83,22 @@ each one.
 <!-- correlation between S-feature and output -->
 Given a linear model, it is important to understand how much a feature relates
 to the outcome feature. Even more so, when the examined feature is a protected
-class like race, gender, and age. It is possible that the feature we examine, S,
-may be strongly, slightly, or weakly correlated with the outcome feature, Y.
-Understanding how S and Y are correlated is meaningful because then we can see
-the effects S has on the prediction model. S-correlation can also be a reason 
-to delve into determining why the S feature has such an effect on Y feature.
+class like race, gender, and age. A way to measure this association is through
+S-correlation. It is possible that the feature we examine, S, may be strongly, 
+slightly, or weakly associated with the outcome feature, Y. Understanding how S 
+and Y are correlated is meaningful because then we can see the effects S has on 
+the prediction model. S-correlation can also be a reason to delve into 
+determining why the S feature has such an effect on Y feature.
 
 
-
+The function dsldTakeALookAround calculates the S-Correlation through a
+non-parametric test, known as the Kendall rank correlation. The strength of 
+associativity is measured by the pattern of accordance/discordance 
+(i.e: agreement/disagreement) of pairs of observations. A benefit of using
+Kendall's rank correlation is that it can be used with ordinal or continuous
+data. It is also viable with smaller sets of data compared to other methods.
+For more information on how Kendall rank correlation is calculated, click
+[here](https://arxiv.org/abs/2206.04019).
 
 #### Demographic Parity
 Demographic parity is a fairness metric that measures if a classifier model's 
@@ -132,7 +140,7 @@ parity.
 
 #### ROC Curves
 
-[![ROC Curve](partII/rocCurve.png)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
+[![ROC Curve](partII/rocCurve.png)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic){width=50%}
 An ROC curve (receiver operating characteristic curve) is a graph that plots
 the model's behavior at various classification thresholds. The graph aids in 
 visually identifying optimal thresholds by avoiding confusion matrices.
