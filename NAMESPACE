@@ -8,9 +8,10 @@ export(
    dsldFreqPCoord,
    dsldTakeALookAround, dsldConditDisparity, dsldUtilFairness,
    dsldScatterPlot3D,
-   dsldLinear, dsldLogit, dsldGetData, dsldCheckData, dsldDiffSLog, dsldDiffSLin,
-   dsldConfounders, dsldDensityByS, dsldFrequencyByS,
-   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN
+   dsldLinear, dsldLogit, dsldGetData, dsldCheckData, dsldDiffSLog, 
+   dsldDiffSLin, dsldConfounders, dsldDensityByS, dsldFrequencyByS,
+   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF, 
+   dsldQeFairRidgeLog, dsldQeFairKNN, dsldML
 )
 
 S3method(summary, dsldLM)
