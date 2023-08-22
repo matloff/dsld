@@ -487,14 +487,7 @@ compData
 
 No salient pattern here, but there is a suggestion that among those who
 have been with their present employer, women do better than men.  Not an
-easy question at all, and further investigation would be needed.  One
-key point: 
-
-::: {.callout-note}
-### Role of the software
-The software cannot make your decisions for you.  It merely plays a
-supporting, and there are no neat formulas to follow.
-:::
+easy question at all, and further investigation would be needed.  
 
 ## Machine Learning Approaches
 
