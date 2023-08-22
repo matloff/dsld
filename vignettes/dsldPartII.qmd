@@ -160,11 +160,67 @@ parity.
 <!-- compare all the utility metrics against one another... -->
 points on measuring utility, maybe a brief background...
 
-
 #### Test Accuracies (Misclassification Error)
 <!-- accuracy results on test sets -->
-most likely will be some form of RMSE or maybe squared error...
+For classification settings, 
+[Reminder: classification settings are prediction applications where Y is 
+categorical]{.column-margin}
+one simple method to measure the utility of a model 
+is to measure how well it can predict something via test accuracy. Normally, 
+test accuracy can be defined as follows:
+$$
+Accuracy = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}}
+$$
 
+However, when using the **dsld** package for classification settings, the 
+**TestAcc** attribute refers to the *error rate*, or how *inaccurate* our 
+prediction is.
+[For example, if our Y was gender (from **svcensus**) and our model 
+produced a **TestAcc** 
+between 0.6 and 0.7, our prediction was incorrect around 60-70% of the 
+time.]{.column-margin} 
+Accuracy and error rate are complements of each other:
+$$
+Error Rate = 1 - Accuracy
+$$
+
+For a two-class (binary) classification scenario (i.e. negative and positive, as 
+in diagnoses), we can make use of more descriptive terms:
+* True Positives (TP): Number of instances from the positive class predicted 
+correctly (i.e. as positive)
+* True Negatives (TN): Number of instances from the negative class predicted 
+correctly (i.e. as negative)
+* False Positives (FP): Type I Error - Number of instances from negative class 
+predicted incorrectly (i.e. as positive)
+* False Negatives (FN): Type II Error - Number of instances from positive class 
+predicted incorrectly (i.e. as negative)
+
+Thus, we can redefine our accuracy and error rate formulas as follows:
+$$
+Accuracy = \frac{\text{TP}+\text{TN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
+Error Rate = 1 - Accuracy
+$$
+
+The advantage of test accuracy as a utility metric is its simplicity and 
+intuitiveness compared to other metrics. However, test accuracy can be limited as 
+a utility metric when used in scenarios involving imbalanced classes (i.e. 
+substantially more instances of one class over another). In this scenario, a high 
+accuracy score may be misleading if it only signifies that the majority class had 
+a high prediction accuracy, while the minority class had a low accuracy. Depending 
+on the scenario, a low minority class prediction accuracy could indicate a poor 
+model--test accuracy alone would not inform the user of this potential failure. 
+For this reason, test accuracy is less straightforward with scenarios involving 
+several classes, where imbalance is more likely.
+
+Another issue lies with decision boundaries/thresholds, which are used to assign 
+instances to a particular class based on its value (i.e. if the threshold is 0.5, 
+a value of 0.6 is assigned to Y = 1, while 0.4 is assigned to Y = 0)--some **dsld** 
+functions allow for the user to enter a threshold of their choosing. In cases where 
+instances fall close to this threshold (i.e. 0.5001), these instances could be 
+misclassified, thus affecting the Test Accuracy.
+
+If our problem is a regression setting as opposed to a classification setting, it 
+may fare better to use a different metric (see the below section on MSPE & MAPE).
 
 #### ROC Curves
 [![ROC Curve](partII/rocCurve.png)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic){width=50%}
