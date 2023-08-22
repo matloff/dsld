@@ -26,11 +26,13 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
    if (sComparisonPts=='rand5') 
       sComparisonPts <- data[sample(1:nrow(data),5),-c(ycol,scol)]
 
-   # for (sl in slevels) {
-   #    predict(qeOut[[sl]],sComparisonPts)
-   # }
-   preds <- sapply(qeOut,function(qeo) predict(qeo,sComparisonPts))
-   cbind(sComparisonPts,preds)
+   tmp <- sComparisonPts
+   for (sl in slevels) {
+      tmp[[sl]] <- as.vector(predict(qeOut[[sl]],sComparisonPts))
+   }
+   ### preds <- sapply(qeOut,function(qeo) predict(qeo,sComparisonPts))
+   ### cbind(sComparisonPts,as.data.frame(preds))
+   tmp
 
 }
 
