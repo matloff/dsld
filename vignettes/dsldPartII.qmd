@@ -195,12 +195,16 @@ $Error Rate = 1 - Accuracy$.
 
 For a two-class (binary) classification scenario (i.e. negative and positive, as 
 in diagnoses), we can make use of more descriptive terms:
+
 * True Positives (TP): Number of instances from the positive class predicted 
 correctly (i.e. as positive)
+
 * True Negatives (TN): Number of instances from the negative class predicted 
 correctly (i.e. as negative)
+
 * False Positives (FP): Type I Error - Number of instances from negative class 
 predicted incorrectly (i.e. as positive)
+
 * False Negatives (FN): Type II Error - Number of instances from positive class 
 predicted incorrectly (i.e. as negative)
 
@@ -208,6 +212,8 @@ Thus, we can redefine our accuracy and error rate formulas (for binary
 classification) as follows:
 $$
 Accuracy = \frac{\text{TP}+\text{TN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
+$$
+$$
 Error Rate = \frac{\text{FP}+\text{FN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
 $$
 
