@@ -436,7 +436,8 @@ don't cross in applied settings, but they are always nonparallel.
 The implication of this is the same as in the linear case.  We cannot
 speak of "the" impact of S on Y, as it will be the same at different
 levels of the X and C variables.  Our calls to the software will then
-need to specify our desired levels.
+need to specify our desired levels.  And, again, separate logit models
+will be run for each level of S.
 
 
 ### German credit data
@@ -637,5 +638,19 @@ summary(w)
 ```
 
 Black and white students having the same traits appear to have passed
-the bar exam at the same rates.
+the bar exam at the same rates.   
+
+We might also do a little check of the appropriateness of the logistic
+model for this data.  One rough approach might be to use 
+**dsldConditDisparity()***, as we did in the linear case:
+
+```{r}
+# Y needs to be numeric, in this case 0,1
+lsab <- lsa
+lsab$bar <- ifelse(lsab$bar=='TRUE',1,0)
+dsldConditDisparity(lsab,'bar','race1','lsat','lsab$age > 0')
+```
+
+Looks pretty good.
+
 
