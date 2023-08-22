@@ -14,7 +14,7 @@ will assume this relation as linear, but the term *regression function*
 is general.
 :::
 
-## Linear model example: a simple gender wage gap analysis 
+## Linear model example: a simple gender wage gap analysis   
 
 Consider the **svcensus** data example in @sec-census above,
 investigating a possible gender pay gap.  So Y is wage and S is gender.
@@ -34,12 +34,14 @@ Our linear model would thus be
 
 > mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
 
+where W is
+wage, A is age and M is an indicator variable, with M = 1 for men and M
+= 0 for women.  The parameters $\beta$~i~ are estimated by fitting the
+model to the data:
 [The column svcensus$gender is an R factor. Our function **dsldLinear**
 calls R's **lm**, which replaces that column by a dummy variable
-**gendermale**, our M above.]{.column-margin} where W is wage, A is age
-and M is an indicator variable, with M = 1 for men and M = 0 for women.
-The parameters $\beta$~i~ are estimated by fitting the model to the
-data:
+**gendermale**, our M above.  If a factor has f levels, i.e. represents
+f categories, R will create f-1 dummies.]{.column-margin} 
 
 ```{r}
 svcensus1 <- 
@@ -49,16 +51,19 @@ coef(z)  # print the estimated coefficients b_i
 ```
 
 Let's use b~i~ to denote our estimated $\beta$~i~.  So for instance b~1~
-[Always keep in mind that statistical quantities are only estimated,
-since we work only with sample data from some population, real or
-conceptual.  Hence the need for standard errors, confidence intervals
-and so on.]{.column-margin} 
-= 489.5728 is our estimate of the unknown population parameter
-$\beta_1$.
+= 489.5728 is our estimate of the unknown population parameter $\beta_1$.  
+[The b~i~ are computed using *least squares*, which find the
+b~i~ that minimize the sum of the square of the differences between the
+observed Y and fitted Y.]{.column-margin} 
 
 ### Interpretation of $\beta$~2~
 
-Lots in the output to discuss, which we will gradually cover below.  For now, note that the estimate b~2~ turns out to be about $13,000, which is the (estimated) wage gap, if any.  Here's why:
+Lots in the output to discuss, which we will gradually cover below.  For
+now, note that the estimate b~2~ turns out to be about $13,000, which is
+the (estimated) wage gap, if any.  Here's why: [Always keep in mind that
+statistical quantities are only estimated, since we work only with
+sample data from some population, real or conceptual.  Hence the need
+for standard errors, confidence intervals and so on.]{.column-margin} 
 
 Under the model, the mean wage for, say, 36-year-old men is
 
@@ -379,11 +384,13 @@ curve(1/(1+exp(-x)),-4,4)
 
 The estimates b~i~ of the population values $\beta_i$ are obtained via a
 method generalizing the least-squares method used in the linear case.
+
 [There is a similar situation for the linear case.  If Y and the
 predictor variables have a multivariate normal distribution, one can
 show that mean Y as a function of the features is linear in the
-features, etc.]{.column-margin} Say we predict gender from age and wage
-income.  If the latter two variables have a *bivariate normal*
+features, etc.]{.column-margin} The exact form of the logistic model
+stems from the following setting.  Say we predict gender from age and
+wage income.  If the latter two variables have a *bivariate normal*
 distribution (two-dimensional histogram, has a 3-D bell shape) with the
 same variance matrices within each gender, it turns out that we again
 get a logistic form:
@@ -571,8 +578,10 @@ names(law.school.admissions)
 lsa <- law.school.admissions
 ```
 
+### Is the LSAT fair?
+
 There has been concern that the LSAT is heavily influenced by family
-income, thus unfair, especially to Black and Latino students, and might
+income, thus unfair, especially to black and Latino students, and might
 otherwise have racial issues.  Let's investigate, using **dsld**.
 
 ```{r}
@@ -593,6 +602,16 @@ the next 20%, the mean difference in LSAT score rises by only about 1/3
 of 1 point--on a test where scores are typically in the 20s, 30s and
 40s.
 
+So family income is not an important factor after all.  Nevertheless,
+[Note the retrospective view--using later events to "predict" the past.
+This is valid, but may seem odd at first.]{.column-margin} there are
+very concerning racial differences here.  Two very similar
+people&mdash;who attended the same quality law school, with the same
+undergraduate grades, the same law school grades, even having the same
+bar passage status&mdash;will have LSAT scores differing on average by
+almost 6 points if one person is black and the other is white.  And thus
+the significance test was highly misleading.
+
 ::: {.callout-note}
 ### The folly of significance testing
 In almost all cases, significance tests don't address the issue of
@@ -601,20 +620,13 @@ enough to be considered important.  (Virtually no quantity in real life
 is exactly 0.)  Don't be fooled by words like "significant."
 :::
 
-So family income is not an important factor after all.  Nevertheless,
-[Note the retrospective view--using later events to "predict" the past.
-This is valid, but may seem odd at first.]{.column-margin} there are
-very concerning racial differences here.  Two very similar people&mdash;who
-attended the same quality law school, with the same undergraduate
-grades, the same law school grades, even having the same bar passage
-status&mdash;will have LSAT scores differing on average by almost 6
-points if one person is Black and the other is white.  
-
 Again, one must be very cautious in drawing conclusions as to causes,
 not only because of the questionable quality of the dataset but also
 because *hidden confounders* may be at work here.  For instance, though
 we have data on undergraduate GPA, we don't know the quality of the
 undergraduate institution.  But the results here raise serious concerns.
+
+### Is the bar exam fair?
 
 And what about passage of the bar exam?  Does race play a role?
 
@@ -624,4 +636,6 @@ w <- dsldLogit(lsa,'bar','race1',comparisonPts,'TRUE')
 summary(w)   
 ```
 
+Black and white students having the same traits appear to have passed
+the bar exam at the same rates.
 
