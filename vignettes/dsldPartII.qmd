@@ -204,7 +204,8 @@ predicted incorrectly (i.e. as positive)
 * False Negatives (FN): Type II Error - Number of instances from positive class 
 predicted incorrectly (i.e. as negative)
 
-Thus, we can redefine our accuracy and error rate formulas as follows:
+Thus, we can redefine our accuracy and error rate formulas (for binary 
+classification) as follows:
 $$
 Accuracy = \frac{\text{TP}+\text{TN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
 Error Rate = \frac{\text{FP}+\text{FN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
