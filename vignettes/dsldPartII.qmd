@@ -158,14 +158,25 @@ parity.
 
 ### Utility Metrics
 <!-- compare all the utility metrics against one another... -->
-points on measuring utility, maybe a brief background...
+Utility metrics are used to inform the user of how accurate and/or reliable 
+a model is with regards to its performance. This (usually quantitative) 
+information can be used to further modify/optimize a model for its usecase, or 
+to help the user make a choice in comparing different models for selection.
+
+We can choose what utility metric to use based on the problem we are trying to 
+solve. [Reminder: classification settings are prediction applications where Y is 
+categorical, while regression settings are prediction applications where Y 
+is continuous an/or ordinal]{.column-margin}
+For classification settings, we may want to determine how well a model can 
+classify instances into different classes. For regression settings, we may want 
+to instead look at how different our predicted values are to the actual values.
+
+Usually, a utility metric has its intended usecase in one of the above settings, 
+not necessarily both.
 
 #### Test Accuracies (Misclassification Error)
 <!-- accuracy results on test sets -->
-For classification settings, 
-[Reminder: classification settings are prediction applications where Y is 
-categorical]{.column-margin}
-one simple method to measure the utility of a model 
+For classification settings, one simple method to measure the utility of a model 
 is to measure how well it can predict something via test accuracy. Normally, 
 test accuracy can be defined as follows:
 $$
