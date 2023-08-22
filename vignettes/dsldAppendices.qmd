@@ -113,3 +113,5 @@ mandatory for proper use.
 
 ## Appendix C: Standard Errors via the Bootstrap
 
+## Appendix D: Installing the Software
+
