@@ -1,5 +1,5 @@
 
-# Part I:  Adjustment for Confounders 
+# Part I:  Adjustment for Confounders   
 
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
@@ -301,18 +301,18 @@ discrimination uses age 40 as the definition of "older," let's use that
 as an example:
 
 ```{r}
-age <- svcensus$age
+svc <- svcensus
+age <- svc$age
 age <- ifelse(age >= 40,'40+','under40')
 age <- as.factor(age)
 head(age)
-svcensus$age <- age
+svc$age <- age
 ```
 
 Now let's make our "super factor," using a function from **qeML**:
 
 ```{r}
-AgeGend <- cartesianFactor('svcensus',c('age','gender')) 
-svc <- svcensus
+AgeGend <- cartesianFactor('svc',c('age','gender')) 
 svc$AgeGend <- AgeGend
 head(svc)
 ```
@@ -533,12 +533,28 @@ closest 50, or what?  That number is k, the number of nearest neighbors.
 It's chosen by the analyst, just like the analyst chooses the number of
 bins in plotting a histogram.  Typically k is chosen by trying several
 different values of k, then using the one that best predicts in the
-holdout set.
+holdout set.  Once we've settled on k, we might use the full dataset, no
+holdout.
 
 ```{R}
-w <- dsldML('svcensus',quote(wageinc),'gender',qeMLftnName='qeKNN',opts=list(k=15))
+w <- dsldML('svcensus',quote(wageinc),'gender',
+   qeMLftnName='qeKNN',opts=list(k=50))  
 print(w)  
 ```
+
+The first three arguments are as usual.  The fourth states that the ML
+[The use of R's **quote** function here is due to a nuance
+in the way R handles nested quotes.]{.column-margin}
+algorithm we wish to use is kNN; the **qeML** package also includes
+random forests, boosting and neural networks.  The **opts** argument
+states which non-default values we wish to use for arguments to the ML
+function; the default k actually is 25.
+
+As before, we see a substantial gender wage gap, but now we can feel
+more confident about it, since this analysis is unencumbered by
+assumptions on the form of the regression function.  On the other hand,
+there is no easy way to obtain standard errors; one approach is to use
+the *bootstrap* (Appendix C).
 
 ## The Law School Admissions dataset
 
