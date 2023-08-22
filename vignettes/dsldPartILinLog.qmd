@@ -312,17 +312,18 @@ Now let's make our "super factor," using a function from **qeML**:
 
 ```{r}
 AgeGend <- cartesianFactor('svcensus',c('age','gender')) 
-svcensus$AgeGend <- AgeGend
-head(svcensus)
+svc <- svcensus
+svc$AgeGend <- AgeGend
+head(svc)
 ```
 
 We no longer need the original age and gender columns, so we'll delete
 them and then try some analysis:
 
 ```{r}
-svcensus$age <- NULL
-svcensus$gender <- NULL
-w <- dsldLinear(svcensus,'wageinc','AgeGend')
+svc$age <- NULL
+svc$gender <- NULL
+w <- dsldLinear(svc,'wageinc','AgeGend')
 summary(w)
 ```
 
@@ -521,10 +522,11 @@ we do here, so they can be quite useful.
 We'll focus here on the k-NN algorithm, as it is the simplest to
 explain.  Say we are predicting people's weights, knowing only their
 heights.  We have training data, on which we know both the height and
-weight of each person.  Faced with a new case of a person 70 inches
-tall, we find the people in our training set whose heights are closest to
-70 inches, and average their weights.  That average is our predicted
-weight for the new person.
+weight of each person.  Faced with a new case of a person 70.2 inches
+tall but with unknown weight, we find the people in our training set
+whose heights are close to 70.2 inches, and average their weights.  That
+average is our predicted weight for the new person, as well as our
+estimate for the value of the regression function at height = 70.2.
 
 How is "close to" defined?  Should we look at the closest 5 people, the
 closest 50, or what?  That number is k, the number of nearest neighbors.
@@ -533,6 +535,10 @@ bins in plotting a histogram.  Typically k is chosen by trying several
 different values of k, then using the one that best predicts in the
 holdout set.
 
+```{R}
+w <- dsldML('svcensus',quote(wageinc),'gender',qeMLftnName='qeKNN',opts=list(k=15))
+print(w)  
+```
 
 ## The Law School Admissions dataset
 
