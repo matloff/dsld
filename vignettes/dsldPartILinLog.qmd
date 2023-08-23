@@ -567,7 +567,7 @@ assumptions on the form of the regression function.  On the other hand,
 there is no easy way to obtain standard errors; one approach is to use
 the *bootstrap* (Appendix C).
 
-## The Law School Admissions dataset
+## The Law School Admissions dataset {#law-school}
 
 This is the dataset **law.school.admissions**, included in **dsld** via
 [Possible the 'age' variable is birth year.  The data are from 1991, so

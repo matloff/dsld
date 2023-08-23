@@ -1,4 +1,4 @@
-## Determining Confounders
+## Deciding on a Set of Confounders
 
 By now we know how to adjust for a confounder in our data. But how 
 would we go about determining what can be a confounder in the first 
@@ -16,30 +16,19 @@ these trends.
 
 ### Confounders in Law School Admissions
 
-Suppose we are investigating the relationship between LSAT exams scores and race.
-However, there is a big claim that the LSAT and other school admission exams
-are heavily dependent on family income, which is impacted by race. So in this 
-scenario, we want to graphically see the effects of the C, family income, on the 
-relationship between Y, lsat score, and S, race. We will be using the 
-**law.school.admissions** data set, a survey of students attending law schools
-in the US in 1991.
+Suppose we are investigating the relationship between LSAT exams scores and race 
+(refer to @law-school above). We want to graphically explore the effects of the C, family income, on the relationship between Y, lsat score, and S, race.
 
-We have to look at the relationship between race and LSAT scores, as well as the 
-relationship between race and family income. A quick way to view multiple variables 
-(and their relation to the sensitive variable) at once is to plot them in a 3D 
-scatter plot:
+We have to look at both the relationship between race and LSAT scores and the relationship between race and family income. A quick way to view multiple variables (and their relation to the sensitive variable) at once is to plot them in a 3D scatter plot:
 
 ```{r, eval=FALSE}
 data(law.school.admissions)
 dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','age'), 'race1')
 ```
 
-![](graphTab/lawscatterplot3d2.png){width="80%"}
+![](graphTab/lawscatterplot3d2.png){width="90%"}
 
-The age axis is not very informative in this scenario--it looks like there are 
-more white students born during the 1930s than 
-other groups of students, but that is also true across all years. On the family 
-income axis, there are 5 levels--the lowest one is mostly populated with black 
+The lowest quintile of family income is mostly populated with Black 
 and Hispanic students, while the upper two levels are almost entirely made up of
 white students. On the LSAT axis, most of those with a lower score happen to be 
 non-white, across all income levels. 
@@ -93,11 +82,9 @@ account for family income in our models.
 
 ::: {.callout-note}
 #### Including vs Omitting a Confounder C
-
 Other than possible overfitting, there is no harm in including a C when in fact 
 it has little or no confounding effect, whereas omitting a C that IS a 
 confounder is a major error.
-
 :::
 
 ### Confounders in Engineering Wages
