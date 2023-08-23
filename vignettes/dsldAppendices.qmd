@@ -21,10 +21,10 @@ not record patient age, there would be no age bias in our analysis.
 
 In many cases, RCTs are infeasible or impossible (we cannot "assign"
 race).  *Causal inference* CI can be viewed both as a way to deal with
-unseen variables in observational studies, and as a graphical
-alternative to traditional statistical relational analysis.  Though CI
-takes on many forms, our discussion here will focus on 
-*directed acyclic graphs* (DAGs).  
+unseen variables in observational studies, and in its graphical forms,
+as a descriptive alternative to traditional statistical relational
+analysis.  Though CI takes on many forms, our discussion here will focus
+on *directed acyclic graphs* (DAGs).  
 
 ### DAGS
 
@@ -89,17 +89,18 @@ harmful in CI contexts as in observational data.
 * Causal analysis is just as much at the mercy of sample size as is
 classical statistical analysis.  Absence of a link may be due to
 insufficient data, and nonlinks at the population level may appear by
-random chance from small datasets.
+random chance from small datasets.   
 
-* Most important, for any given dataset, there is no unique DAG; [CMU
-professor C. Shalizi has
-[lamented](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf)
-bluntly that in such cases one should not present just one DAG without
-mentioning the equivalent ones, simply as a matter of "scientific
-honesty," yet "This is often what people seem to do." ]{.column-margin}
-typically many DAGs can fit the dataset equally well, and they can be in
-conflict with each other.  One might say that A causes B, while another,
-equally credible in terms of data fit, might have B causing A.
+* Most important, for any given dataset, there is typically no unique
+DAG; [CMU professor C. Shalizi has [bluntly 
+noted](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf) that
+in cases of nonuniqueness, presenting just one DAG without mentioning
+the equivalent ones, "...[which] is often what people seem to do," might
+be viewed as "lying by omission.  Recognizing the nonuniqueness is
+"simply a matter of scientific honesty."]{.column-margin} typically many
+DAGs can fit the dataset equally well, and they can be in conflict with
+each other.  One DAG might say that A causes B, while another, equally
+credible in terms of data fit, might have B causing A.
 
 This last point is of course very concerning.  In recent years, there
 has been much handwringing in science about the Replication Crisis, in

@@ -274,12 +274,9 @@ So we see that the original wage gap figure of about $13,000 was
 incorrect, underestimating it by about 15%.
 
 We see in this example that misspecifying a linear model can have a
-major impact on its accuracy.  Further issues of model assumptions are
-beyond the scope of this book, but the interested reader is referred one
-of the most popular applied linear models books, *Regression Modeling
-Strategies: With Applications to Linear Models, Logistic and Ordinal
-Regression, and Survival Analysis*, by Prof. Frank Harrell, Jr. of the
-Vanderbilt University School of Medicine.
+major impact on its accuracy.  As usual, though, we will try to keep things
+simple, and thus use only the original linear model in our subsequent
+examples below.
 
 ### Other assumptions
 
