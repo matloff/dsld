@@ -91,13 +91,15 @@ classical statistical analysis.  Absence of a link may be due to
 insufficient data, and nonlinks at the population level may appear by
 random chance from small datasets.
 
-* Most important, for any given dataset, there is no unique DAG;
-[Following mathematical parlance, CI DAG terminology says we have an
-*equivalence class* of DAGs with the same fit to the
-data.]{.column-margin} typically many DAGs can fit the dataset equally
-well, and they can be in conflict with each other.  One might say that A
-causes B, while another, equally credible in terms of data fit, might
-have B causing A.
+* Most important, for any given dataset, there is no unique DAG; [CMU
+professor C. Shalizi has
+[lamented](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf)
+bluntly that in such cases one should not present just one DAG without
+mentioning the equivalent ones, simply as a matter of "scientific
+honesty," yet "This is often what people seem to do." ]{.column-margin}
+typically many DAGs can fit the dataset equally well, and they can be in
+conflict with each other.  One might say that A causes B, while another,
+equally credible in terms of data fit, might have B causing A.
 
 This last point is of course very concerning.  In recent years, there
 has been much handwringing in science about the Replication Crisis, in
