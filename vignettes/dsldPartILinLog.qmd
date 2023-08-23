@@ -1,5 +1,5 @@
 
-# Part I:  Adjustment for Confounders   
+# Part I:  Adjustment for Confounders 
 
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
