@@ -17,21 +17,28 @@ these trends.
 ### Confounders in Law School Admissions
 
 Suppose we are investigating the relationship between LSAT exams scores and race 
-(refer to @law-school above). We want to graphically explore the effects of the C, family income, on the relationship between Y, lsat score, and S, race.
+(refer to @law-school above). We want to graphically explore the effects of the 
+C, family income, on the relationship between Y, lsat score, and S, race.
 
-We have to look at both the relationship between race and LSAT scores and the relationship between race and family income. A quick way to view multiple variables (and their relation to the sensitive variable) at once is to plot them in a 3D scatter plot:
+We have to look at both the relationship between race and LSAT scores and the 
+relationship between race and family income. We may also want to look at the
+effects of GPA as well. A quick way to view multiple variables (and their
+relation to the sensitive variable) at once is to plot them in a 3D scatter plot:
 
 ```{r, eval=FALSE}
 data(law.school.admissions)
-dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','age'), 'race1')
+dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','ugpa'), 'race1',
+                  pointSize = 4)
 ```
 
 ![](graphTab/lawscatterplot3d2.png){width="90%"}
 
-The lowest quintile of family income is mostly populated with Black 
+There are a couple things you can gather from a graph like this. Looking at the
+fam_inc axis, the lowest quintile of family income is mostly populated with Black 
 and Hispanic students, while the upper two levels are almost entirely made up of
-white students. On the LSAT axis, most of those with a lower score happen to be 
-non-white, across all income levels. 
+white students. Interestingly on the lsat axis, most of those with a lower score 
+happen to be non-white, across all income levels. On the other hand, the ugpa
+axis has a similar trend to that of the lsat axis, albeit to a much weaker extent.
 
 It is important to note that we cannot draw any concrete conclusions from this
 graph alone. For one thing, having such a large majority of students being white
