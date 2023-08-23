@@ -34,7 +34,7 @@ data(law.school.admissions)
 dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','age'), 'race1')
 ```
 
-![](graphTab/lawscatterplot3d2.png){width="80%"}
+![](graphTab/lawscatterplot3d2.png){width="90%"}
 
 The age axis is not very informative in this scenario--it looks like there are 
 more white students born during the 1930s than 
