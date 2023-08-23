@@ -314,13 +314,18 @@ head(age)
 svc$age <- age
 ```
 
-Now let's make our "super factor," using a function from **qeML**:
+Now let's make our "super factor," using a function from **qeML**:  
 
 ```{r}
 AgeGend <- cartesianFactor('svc',c('age','gender')) 
 svc$AgeGend <- AgeGend
 head(svc)
 ```
+
+We have only three education codes here, with 14 and 16 representing a
+Master's degree and 16 a PhD, and 'zzzOther' denoting all others.  Since
+this dataset consists of Silicon Valley programmers and engineers, the
+vast majority of "others" have a Bachelor's degree.
 
 We no longer need the original age and gender columns, so we'll delete
 them and then try some analysis:
@@ -535,6 +540,7 @@ holdout set.  Once we've settled on k, we might use the full dataset, no
 holdout.
 
 ```{R}
+set.seed(9999)
 w <- dsldML('svcensus',quote(wageinc),'gender',
    qeMLftnName='qeKNN',opts=list(k=50))  
 print(w)  
@@ -547,6 +553,16 @@ algorithm we wish to use is kNN; the **qeML** package also includes
 random forests, boosting and neural networks.  The **opts** argument
 states which non-default values we wish to use for arguments to the ML
 function; the default k actually is 25.
+
+The comparison cases are by default a random sample of 5 rows of the
+training set.  In order to obtain consistent results each time this book
+is processed by Quarto, we've called R's **set.seed** function.
+
+It's important to keep in mind that the output here is not simply for 5
+persons; each row represents a subpopulation.  Thus for instance we
+estimate among *all* Silicon Valley techies of age 37.4, with a
+Bachelor's degree or less, in occupation 101, and having worked 52
+weeks, women average wage is 48,914 and for men it's 61,156.
 
 As before, we see a substantial gender wage gap, but now we can feel
 more confident about it, since this analysis is unencumbered by
@@ -674,8 +690,9 @@ dsldConditDisparity(lsab,'bar','race1','lsat','lsab$age > 0')
 Looks pretty good.
 
 ```{R}
-# w <- dsldML('lsa',quote(bar),'race1',qeMLftnName='qeKNN',opts=list(k=50))  
-# print(w)  
+w <- dsldML('lsa',quote(bar),'race1',qeMLftnName='qeKNN',
+   opts=list(k=50,yesYVal='TRUE'))  
+print(w)  
 ```
 
 
