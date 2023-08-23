@@ -104,14 +104,14 @@ reiterate points about measuring fairness...
 
 #### S-Correlation
 <!-- correlation between S-feature and output -->
-Given a linear model, it is important to understand how much a feature relates
-to the outcome feature. Even more so, when the examined feature is a protected
-class like race, gender, and age. A way to measure this association is through
-S-correlation. It is possible that the feature we examine, S, may be strongly, 
-slightly, or weakly associated with the outcome feature, Y. Understanding how S 
-and Y are correlated is meaningful because then we can see the effects S has on 
-the prediction model. S-correlation can also be a reason to delve into 
-determining why the S feature has such an effect on Y feature.
+In order to ensure an ML model isn't discriminating, it may be a meaningful 
+measure of fairness to see how much a sensitive feature like race, gender, or 
+age relates to the predictions the model is making. A way to measure this sort 
+of association is called S-correlation. Measuring how strongly S (sensitive 
+feature) and Y (response variable) are correlated allows us to understand the 
+how much the model has trained to discriminate. An added benefit of 
+S-Correlation is a warning that the data itself may be biased if there exists 
+a strong correlation between S and Y.
 
 The function dsldTakeALookAround calculates the S-Correlation through a
 non-parametric test, known as the Kendall rank correlation. The strength of 
