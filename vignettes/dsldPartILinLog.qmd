@@ -674,8 +674,7 @@ dsldConditDisparity(lsab,'bar','race1','lsat','lsab$age > 0')
 Looks pretty good.
 
 ```{R}
-# w <- dsldML('lsa',quote(bar),'race1',
-#    qeMLftnName='qeKNN',opts=list(k=50))  
+# w <- dsldML('lsa',quote(bar),'race1',qeMLftnName='qeKNN',opts=list(k=50))  
 # print(w)  
 ```
 

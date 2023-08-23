@@ -28,7 +28,12 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
 
    tmp <- sComparisonPts
    for (sl in slevels) {
-      tmp[[sl]] <- as.vector(predict(qeOut[[sl]],sComparisonPts))
+      preds <- predict(qeOut[[sl]],sComparisonPts)
+      if (qeOut[[1]]$classif) {
+         if (is.null(preds$probs)) stope('ML function does not return "probs"')
+         preds <- preds$probs
+      }
+      tmp[[sl]] <- preds
    }
    ### preds <- sapply(qeOut,function(qeo) predict(qeo,sComparisonPts))
    ### cbind(sComparisonPts,as.data.frame(preds))

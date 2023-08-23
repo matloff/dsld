@@ -104,3 +104,12 @@ limitRange <-
       data[data[, yNames[3]] >= zlim[1] & data[, yNames[3]] <= zlim[2], ]
     return(data)
   }
+
+# generates a "cartesian product" of factor levels from input factors
+
+cartFactorLvls <- function(factorNames) 
+{
+   theLevels <- lapply(factorNames,function(fName) levels(get(fName)))
+   expand.grid(theLevels)
+}
+
