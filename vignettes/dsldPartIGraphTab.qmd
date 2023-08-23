@@ -129,9 +129,9 @@ dsldFrequencyByS(svcensus, "occ", "gender")
 
 Notice the difference between the proportion of males in occupation 106 vs 
 females in that same occupation--a difference of approximately 11%. The 
-difference in frequencies here are much greater than with the 'educ' example, 
+difference in frequencies here is much greater than with the 'educ' example, 
 which suggests that there is a difference in the occupations that men and 
-women tend to be in; since different occupations correlate with different wages, 
+women tend to be in. Since different occupations correlate with different wages, 
 it is possible that this difference in occupations that men have compared with 
 what women have could be affecting the relationship between gender and wage. 
 
