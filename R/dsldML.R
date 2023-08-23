@@ -32,7 +32,7 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
       if (qeOut[[1]]$classif) {
          if (is.null(preds$probs)) stope('ML function does not return "probs"')
          preds <- preds$probs
-      }
+      } else preds <- as.vector(preds)
       tmp[[sl]] <- preds
    }
    ### preds <- sapply(qeOut,function(qeo) predict(qeo,sComparisonPts))
