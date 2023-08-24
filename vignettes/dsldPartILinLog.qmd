@@ -359,7 +359,7 @@ age, as it does not reveal the negative impact of age well beyond 40.
 It may be worth trying a finer discretization of age, say, 35-, 
 35-55 and 55+.
 
-## Logistic model example: German credit data
+## The Logistic model 
 
 The *logistic* model is an example of a *generalized linear model*,
 whose name stems from it having a linear component in the formula.
@@ -457,7 +457,7 @@ need to specify our desired levels.  And, again, separate logit models
 will be run for each level of S.
 
 
-### German credit data
+### Example: German credit data
 
 This is a built-in dataset to the **fairml** package, which is included
 by **dsld**.  Let's take a brief look at the data.
@@ -726,4 +726,69 @@ reduced value, or in the view of many, no value at all, on significance
 testing.
 
 :::
+
+# Deciding on a set of confounders C
+
+Recall our previous example of the German credit data, which consisted
+of a total of 21 variables:
+
+```{r}
+names(german.credit)  
+```
+
+Excluding Y = credit risk and S = gender, that gives us 19 variables to
+choose among for our confounders.  Yet there may be good reasons to not
+use them all:
+
+* It may result in overfitting, resulting in large standard errors.
+
+* It is unwieldy, difficult to interpret.  Many treatments of these
+  issues speak of a desire for a "parsimonious" model.
+
+* There is a concern regarding duplication.  It may be that, say, some
+  pair of confounders suffices, and adding further confounders does
+  nothing to further clarify discrimination effects.
+
+This last point is especially important.  We do not merely have 19
+choices for confounders; we must choose from the set of all possible
+groups of confounders: singletons, pairs, triplets and so on.  There are
+$2^{19}$ possibilities here, about half a million.
+
+Many, many approaches to this *variable selection* or *feature
+[*Causal discovery* methods may be considered part of this "genre" too.
+See Appendix B.]{.column-margin}
+selection* problem have been proposed over the years.  The **qeML**
+package includes five of them (see the documentation), and there are
+myriad others.
+
+Here we will use a method called *Feature Ordering by Conditional
+Independence* (FOCI), implement in a CRAN package of the same name, and
+wrapped in **qeML** by **qeFOCI** and related functions.  Here are the
+key aspects of the method:
+
+* It is *stepwise*:  It add features one at time. If a feature does not
+  improve prediction beyond the set already selected, this feature is
+  not added.
+
+* The criterion for selecting the feature X~j~ is that Y and X~j~ are
+  not independent, given the earlier-selected features.
+
+* There are no *tuning parameters*, values similar to, for instance, k
+  in k-NN, that the user must set.
+
+* There are no distributional assumptions.
+
+```{r}
+library(dsld)
+library(qeML)
+data(german.credit)
+gcNoS <- german.credit[,-21]
+gcNoY <- german.credit[,-20]
+gcNoY$Gender <- as.numeric(gcNoY$Gender)
+gcNoS$Credit_risk <- as.numeric(gcNoS$Credit_risk)
+qeFOCI(gcNoY,'Gender')$sel
+qeFOCI(gcNoS,'Credit_risk')$sel
+
+```
+
 
