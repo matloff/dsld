@@ -78,10 +78,13 @@ is well beyond the scope of this course, but we urge users and consumers
 of CI to keep the following points in mind:
 
 ::: {.callout-note}
-### Caution with DAGS
+### Caution with causal methods, especially DAGS
+
 * The definition of *cause* is of course central to proper use of CI
-DAGs, and "wrapping one's head around" the definition can be a challenge
-even for experienced probabilistic modelers.
+  DAGs.  It does *not* mean what one ordinarily thinks of as causal ("The
+  sidewalk was icy, so the man slipped and fell"), and it can become quite
+  complex; "wrapping one's head around" the definition can be a
+  challenge even for experienced probabilistic modelers.
 
 * Unseen variables, such as age in the above example, can be just as
 harmful in CI contexts as in observational data.
