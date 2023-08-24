@@ -625,6 +625,20 @@ z <- dsldLinear(lsa,'lsat','race1')
 summary(z)
 ```
 
+[Note the retrospective view--using later events to "predict" the past.
+This is valid, but may seem odd at first.]{.column-margin} 
+There are very concerning racial differences here.  Two very similar
+people&mdash;who attended the same quality law school, with the same
+undergraduate grades, the same law school grades, even having the same
+bar passage status&mdash;will have LSAT scores differing on average by
+almost 6 points if one person is black and the other is white.  
+
+Again, one must be very cautious in drawing conclusions as to causes,
+not only because of the questionable quality of the dataset but also
+because *hidden confounders* may be at work here.  For instance, though
+we have data on undergraduate GPA, we don't know the quality of the
+undergraduate institution.  But the results here raise serious concerns.
+
 
 ### Is the bar exam fair?
 
@@ -680,19 +694,12 @@ why:
 Family income in this dataset is measured by quintiles.  So
 this estimated coefficient says that, for example, if we compare people
 who grew up in the bottom 20% of income with those who were raised in
-the next 20%, the mean difference in LSAT score rises by only about 1/3
+the next 20%, the mean LSAT score rises by only about 1/3
 of 1 point--on a test where scores are typically in the 20s, 30s and
 40s.
 
-So family income is not an important factor after all.  Nevertheless,
-[Note the retrospective view--using later events to "predict" the past.
-This is valid, but may seem odd at first.]{.column-margin} there are
-very concerning racial differences here.  Two very similar
-people&mdash;who attended the same quality law school, with the same
-undergraduate grades, the same law school grades, even having the same
-bar passage status&mdash;will have LSAT scores differing on average by
-almost 6 points if one person is black and the other is white.  And thus
-the significance test was highly misleading.
+So family income is not an important factor after all,
+and the significance test was highly misleading.
 
 
 ::: {.callout-note}
@@ -703,8 +710,3 @@ enough to be considered important.  (Virtually no quantity in real life
 is exactly 0.)  Don't be fooled by words like "significant."
 :::
 
-Again, one must be very cautious in drawing conclusions as to causes,
-not only because of the questionable quality of the dataset but also
-because *hidden confounders* may be at work here.  For instance, though
-we have data on undergraduate GPA, we don't know the quality of the
-undergraduate institution.  But the results here raise serious concerns.
