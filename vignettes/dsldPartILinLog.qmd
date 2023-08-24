@@ -696,17 +696,20 @@ consider the b~i~, the estimated coefficients in our linear model
 for the LSAT above.
 
 In particular, look at the one for family income, 0.3009.  The p-value
-is essentially 0, which in an academic research journal would
-classically be termed "very highly significant," with a 3-star insignia
-But actually, the impact of family income is not very large.  Here's
-why:
+[Part of the outputted material in this book also shows p-values and
+stars.  This comes from R itself, not the **dsld**
+code.]{.column-margin} is essentially 0, which in an academic research
+journal would classically be termed "very highly significant," with a
+3-star insignia But actually, the impact of family income is not very
+large.  Here's why:
 
 Family income in this dataset is measured by quintiles.  So
 this estimated coefficient says that, for example, if we compare people
 who grew up in the bottom 20% of income with those who were raised in
 the next 20%, the mean LSAT score rises by only about 1/3
 of 1 point--on a test where scores are typically in the 20s, 30s and
-40s.
+40s.  The 95% confidence interval, (0.2304,0.3714), again indicates that
+the effect size here is very small.
 
 So family income is not an important factor after all,
 and the significance test was highly misleading.
