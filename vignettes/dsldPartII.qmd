@@ -36,7 +36,7 @@ model deployment. [more background here...]
 previously described -->
 While there exists a plethora of methods for ensuring a fair machine learning 
 model, the primary approaches utilized in the `dsld` package rely on fairness 
-constraints, each with their own strengths and weaknesses. As such, itt will be 
+constraints, each with their own strengths and weaknesses. As such, it will be 
 up to users to decide first which *metric* of fairness makes the most sense 
 within their domain, and then based on the performances we record below, choose 
 an appropriate model that best balances that measurement of fairness with the 
