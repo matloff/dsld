@@ -362,7 +362,8 @@ It may be worth trying a finer discretization of age, say, 35-,
 ## The Logistic model 
 
 The *logistic* model is an example of a *generalized linear model*,
-whose name stems from it having a linear component in the formula.
+whose name stems from it having a linear component in the formula, as
+will be seen below.
 
 ### General form of the model
 
@@ -405,12 +406,14 @@ method generalizing the least-squares method used in the linear case.
 [There is a similar situation for the linear case.  If Y and the
 predictor variables have a multivariate normal distribution, one can
 show that mean Y as a function of the features is linear in the
-features, etc.]{.column-margin} The exact form of the logistic model
-stems from the following setting.  Say we predict gender from age and
-wage income.  If the latter two variables have a *bivariate normal*
-distribution (two-dimensional histogram, has a 3-D bell shape) with the
-same variance matrices within each gender, it turns out that we again
-get a logistic form:
+features, etc.]{.column-margin} In the case of multiple predictor
+variables, the logistic form can again be motivated by considering
+within-group distributions:
+
+Say we predict gender from age and wage income.  If the latter two
+variables have a *bivariate normal* distribution (two-dimensional
+histogram has a 3-D bell shape) with the same variance matrices within
+each gender, it turns out that we again get a logistic form:
 
 probability male =
 $$
@@ -430,9 +433,6 @@ binary Y:
 model when our predictors have monotonic relations with Y.
 
 The point is that the logistic (popularly referred to as "logit") is
-[Some books motivate the logistic approach as the *log-odds* ratio,
-meaning in this example that the logarithm of the ratio (probability
-male) / (probability female) is linear in age and income.]{.column-margin} 
 often a good model for binary-Y settings in general.
 
 ### We no longer have a no-interactions case
@@ -452,9 +452,15 @@ don't cross in applied settings, but they are always nonparallel.
 
 The implication of this is the same as in the linear case.  We cannot
 speak of "the" impact of S on Y, as it will be the same at different
-levels of the X and C variables.  Our calls to the software will then
-need to specify our desired levels.  And, again, separate logit models
-will be run for each level of S.
+levels of the X and C variables.  So there is no direct analog of the
+no-interactions case for linear models, in which we could speak of
+$\beta_2$ is being "the" gender pay gap, frre.
+
+Some books motivate the logistic approach as the *log-odds* ratio,
+meaning in this example that the logarithm of the ratio (probability
+male) / (probability female) is linear in age and income.  So here we
+can set an analog of that linear $\beta_2$, albeit on a much
+less-interpretable scale.
 
 
 ### Example: German credit data
