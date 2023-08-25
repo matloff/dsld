@@ -492,10 +492,14 @@ Also, we need to tell the software what values of the credit risk
 variable should be consider Y = 1 and Y = 0; we use the **yesYVal**
 argument for that, saying we want 'GOOD' to play the Y = 1 role.
 
-Women seem to be faring better than, or at least equal to, men.  If
-anything, it is the men who are discrimination victims.  But again, the
-size of the gender gap seems to depend a lot on the other factors.
-Let's take a look at those comparison cases:
+At first glance, it appears that women are faring better than, or at
+least equal to, men.  If anything, it is the men who are discrimination
+victims.  But upon closer inspection, confidence intervals are rather iffy.
+For case 555, say, the confidence interval for the difference is
+$-0.0707 \pm 1.96 \times 0.0679$, or (-0.2038,0.0624).
+
+And again, the size of the gender gap seems to depend a lot on the other
+factors.  Let's take a look at those comparison cases:
 
 ```{r}
 compData
@@ -778,10 +782,14 @@ key aspects of the method:
 
 * There are no distributional assumptions.
 
+The stepwise aspect is key By contrast, a random forests algorithm may
+measure importance of a variable according to the number of trees in
+which it is used for a node split.  This is of interest, but it may
+result in too much duplication.
+
+Let's give it a try:
+
 ```{r}
-library(dsld)
-library(qeML)
-data(german.credit)
 gcNoS <- german.credit[,-21]
 gcNoY <- german.credit[,-20]
 gcNoY$Gender <- as.numeric(gcNoY$Gender)
