@@ -92,15 +92,16 @@ insufficient data, and nonlinks at the population level may appear by
 random chance from small datasets.   
 
 * Most important, for any given dataset, there is typically no unique
-DAG; [CMU professor C. Shalizi has [bluntly 
+[CMU professor C. Shalizi has [bluntly
 noted](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf) that
 in cases of nonuniqueness, presenting just one DAG without mentioning
 the equivalent ones, "...[which] is often what people seem to do," might
 be viewed as "lying by omission.  Recognizing the nonuniqueness is
-"simply a matter of scientific honesty."]{.column-margin} typically many
-DAGs can fit the dataset equally well, and they can be in conflict with
-each other.  One DAG might say that A causes B, while another, equally
-credible in terms of data fit, might have B causing A.
+"simply a matter of scientific honesty."]{.column-margin} 
+DAG.  typically many DAGs can fit the dataset equally well, and they can
+be in conflict with each other.  One DAG might say that A causes B,
+while another, equally credible in terms of data fit, might have B
+causing A.
 
 This last point is of course very concerning.  In recent years, there
 has been much handwringing in science about the Replication Crisis, in
