@@ -9,9 +9,18 @@ given values of the X, C and S variables in a linear form.
 ::: {.callout-note}
 ### Important term: the *regression function*
 The relation of mean Y to the X, C and S variables is formally called
-the *regression function* of Y on those variables. Our current model
+the *regression function* of Y on those variables. Our first model
+below, which expreses mean income as a function of age and gender,
 will assume this relation as linear, but the term *regression function*
 is general.
+
+Indeed, one commonality between statistics and machine learning (ML)
+methods is that both types of analysis typically involve estimation of
+the regression function, even though they differ in the uses to which
+they put such estimates:  In statistics, the goal can be either effect
+estimation (e.g. the impact of gender on wages) or prediction, while the
+latter is almost always the goal of ML.
+
 :::
 
 ## Linear model example: a simple gender wage gap analysis   
@@ -196,7 +205,7 @@ summary(z)
 So the gender pay gap is estimated to be -13156.88 at age 36, -13039.27
 [The classical approach to choosing between the no-interaction and
 with-interaction models is of course to test the hypothesis $H_0:
-\beta_3=0$.  As noted in Appendix A, modern practice discourages such
+\beta_3=0$.  As noted earlier, modern practice discourages such
 approaches, which can be misleading.]{.column-margin}
 at age 43, only about $100.  The estimated gap between ages 36 and 53,
 not shown, is larger, close to $300, but it seems there is not much
@@ -350,7 +359,7 @@ age, as it does not reveal the negative impact of age well beyond 40.
 It may be worth trying a finer discretization of age, say, 35-, 
 35-55 and 55+.
 
-## Logistic model example: German credit data
+## The Logistic model 
 
 The *logistic* model is an example of a *generalized linear model*,
 whose name stems from it having a linear component in the formula.
@@ -448,7 +457,7 @@ need to specify our desired levels.  And, again, separate logit models
 will be run for each level of S.
 
 
-### German credit data
+### Example: German credit data
 
 This is a built-in dataset to the **fairml** package, which is included
 by **dsld**.  Let's take a brief look at the data.
@@ -483,10 +492,15 @@ Also, we need to tell the software what values of the credit risk
 variable should be consider Y = 1 and Y = 0; we use the **yesYVal**
 argument for that, saying we want 'GOOD' to play the Y = 1 role.
 
-Women seem to be faring better than, or at least equal to, men.  If
-anything, it is the men who are discrimination victims.  But again, the
-size of the gender gap seems to depend a lot on the other factors.
-Let's take a look at those comparison cases:
+At first glance, it appears that women are faring better than, or at
+least equal to, men.  If anything, it is the men who are discrimination
+victims.  But upon closer inspection, confidence intervals are rather
+iffy.  For case 555, say, the confidence interval for the difference is
+$-0.0707 \pm 1.96 \times 0.0679$, or (-0.2038,0.0624).  The wide
+interval reflects the fact that our dataset is rather small, n = 1000.
+
+And again, the size of the gender gap seems to depend a lot on the other
+factors.  Let's take a look at those comparison cases:
 
 ```{r}
 compData
@@ -510,7 +524,8 @@ analyses that don't rely on such assumptions.
 *Machine learning* (ML) algorithms typically do not assume the regression
 function has any particular form.  They are thus "safer," though on the
 other hand they are less interpretable than, say, that $\beta_2$
-quantity in our no-interactions linear model above. 
+quantity in our no-interactions linear model above.  Nor are standard
+errors available for regression function values at given points.
 
 ML is mainly concerned with prediction, while we here are interested in
 estimation of effect sizes.  However, ML algorithms either directly or
@@ -519,14 +534,15 @@ we do here, so they can be quite useful.
 
 ### The k-Nearest Neighbor algorithm
 
-We'll focus here on the k-NN algorithm, as it is the simplest to
-explain.  Say we are predicting people's weights, knowing only their
-heights.  We have training data, on which we know both the height and
-weight of each person.  Faced with a new case of a person 70.2 inches
-tall but with unknown weight, we find the people in our training set
-whose heights are close to 70.2 inches, and average their weights.  That
-average is our predicted weight for the new person, as well as our
-estimate for the value of the regression function at height = 70.2.
+We'll focus here on the k-Nearest Neighbor (k-NN) algorithm, as it is
+the simplest to explain.  Say we are predicting people's weights,
+knowing only their heights.  We have training data, on which we know
+both the height and weight of each person.  Faced with a new case of a
+person 70.2 inches tall but with unknown weight, we find the people in
+our training set whose heights are close to 70.2 inches, and average
+their weights.  That average is our predicted weight for the new person,
+as well as our estimate for the value of the regression function at
+height = 70.2.
 
 How is "close to" defined?  Should we look at the closest 5 people, the
 closest 50, or what?  That number is k, the number of nearest neighbors.
@@ -614,51 +630,30 @@ lsa <- law.school.admissions
 
 ### Is the LSAT fair?
 
-There has been concern that the LSAT is heavily influenced by family
-income, thus unfair, especially to black and Latino students, and might
-otherwise have racial issues.  Let's investigate, using **dsld**.
+There has been concern that the LSAT and other similar tests are biased
+against black and Latino students, and might otherwise have racial
+issues.  Let's investigate, using **dsld**.
+
 
 ```{r}
 z <- dsldLinear(lsa,'lsat','race1')
 summary(z)
 ```
 
-Quite a bit here. First, let's consider the b~i~, the estimated
-coefficients.  In particular, look at the one for family income, 0.3009.
-The p-value is essentially 0, which classically would be termed "very
-highly significant."  But actually, the impact of family income is not
-very large.  Here's why:
-
-Family income in this dataset is measured by quintiles.  So
-this estimated coefficient says that, for example, if we compare people
-who grew up in the bottom 20% of income with those who were raised in
-the next 20%, the mean difference in LSAT score rises by only about 1/3
-of 1 point--on a test where scores are typically in the 20s, 30s and
-40s.
-
-So family income is not an important factor after all.  Nevertheless,
 [Note the retrospective view--using later events to "predict" the past.
-This is valid, but may seem odd at first.]{.column-margin} there are
-very concerning racial differences here.  Two very similar
+This is valid, but may seem odd at first.]{.column-margin} 
+There are very concerning racial differences here.  Two very similar
 people&mdash;who attended the same quality law school, with the same
 undergraduate grades, the same law school grades, even having the same
 bar passage status&mdash;will have LSAT scores differing on average by
-almost 6 points if one person is black and the other is white.  And thus
-the significance test was highly misleading.
-
-::: {.callout-note}
-### The folly of significance testing
-In almost all cases, significance tests don't address the issue of
-interest, which is whether some population quantity is substantial
-enough to be considered important.  (Virtually no quantity in real life
-is exactly 0.)  Don't be fooled by words like "significant."
-:::
+almost 6 points if one person is black and the other is white.  
 
 Again, one must be very cautious in drawing conclusions as to causes,
 not only because of the questionable quality of the dataset but also
 because *hidden confounders* may be at work here.  For instance, though
 we have data on undergraduate GPA, we don't know the quality of the
 undergraduate institution.  But the results here raise serious concerns.
+
 
 ### Is the bar exam fair?
 
@@ -684,12 +679,125 @@ lsab$bar <- ifelse(lsab$bar=='TRUE',1,0)
 dsldConditDisparity(lsab,'bar','race1','lsat','lsab$age > 0')
 ```
 
-Looks pretty good.
+Looks pretty good.  But we can go further, using k-NN analysis, as it
+makes no assumptions about the form of the regression function:
+
 
 ```{R}
 w <- dsldML('lsa',quote(bar),'race1',qeMLftnName='qeKNN',
    opts=list(k=50,yesYVal='TRUE'))  
 print(w)  
+```
+
+The pattern here seems to be a bit uneven, but again, black and white
+test takers seem to be on par with each other.
+
+## Case study: problems with significance testing
+
+There is concern that the LSAT and other similar tests may be
+heavily influenced by family income, thus unfair, especially to 
+underrepresented minorities.  To investigate this, let's
+consider the b~i~, the estimated coefficients in our linear model
+for the LSAT above.
+
+In particular, look at the one for family income, 0.3009.  The p-value
+[Part of the outputted material in this book also shows p-values and
+stars.  This comes from R itself, not the **dsld**
+code.]{.column-margin} is essentially 0, which in an academic research
+journal would classically be termed "very highly significant," with a
+3-star insignia But actually, the impact of family income is not very
+large.  Here's why:
+
+Family income in this dataset is measured by quintiles.  So
+this estimated coefficient says that, for example, if we compare people
+who grew up in the bottom 20% of income with those who were raised in
+the next 20%, the mean LSAT score rises by only about 1/3
+of 1 point--on a test where scores are typically in the 20s, 30s and
+40s.  The 95% confidence interval, (0.2304,0.3714), again indicates that
+the effect size here is very small.
+
+So family income is not an important factor after all,
+and the significance test was highly misleading.
+
+
+::: {.callout-note}
+### The folly of significance testing
+In almost all cases, significance tests don't address the issue of
+interest, which is whether some population quantity is substantial
+enough to be considered important.  (Virtually no quantity in real life
+is exactly 0.)  Don't be fooled by words like "significant."
+[Modern statistical practice](https://tinyurl.com/2s7x6h2v) places
+reduced value, or in the view of many, no value at all, on significance
+testing.
+
+:::
+
+# Deciding on a set of confounders C
+
+Recall our previous example of the German credit data, which consisted
+of a total of 21 variables:
+
+```{r}
+names(german.credit)  
+```
+
+Excluding Y = credit risk and S = gender, that gives us 19 variables to
+choose among for our confounders.  Yet there may be good reasons to not
+use them all:
+
+* It may result in overfitting, resulting in large standard errors.
+
+* It is unwieldy, difficult to interpret.  Many treatments of these
+  issues speak of a desire for a "parsimonious" model.
+
+* There is a concern regarding duplication.  It may be that, say, some
+  pair of confounders suffices, and adding further confounders does
+  nothing to further clarify discrimination effects.
+
+This last point is especially important.  We do not merely have 19
+choices for confounders; we must choose from the set of all possible
+groups of confounders: singletons, pairs, triplets and so on.  There are
+$2^{19}$ possibilities here, about half a million.
+
+Many, many approaches to this *variable selection* or *feature
+[*Causal discovery* methods may be considered part of this "genre" too.
+See Appendix B.]{.column-margin}
+selection* problem have been proposed over the years.  The **qeML**
+package includes five of them (see the documentation), and there are
+myriad others.
+
+Here we will use a method called *Feature Ordering by Conditional
+Independence* (FOCI), implement in a CRAN package of the same name, and
+wrapped in **qeML** by **qeFOCI** and related functions.  Here are the
+key aspects of the method:
+
+* It is *stepwise*:  It add features one at time. If a feature does not
+  improve prediction beyond the set already selected, this feature is
+  not added.
+
+* The criterion for selecting the feature X~j~ is that Y and X~j~ are
+  not independent, given the earlier-selected features.
+
+* There are no *tuning parameters*, values similar to, for instance, k
+  in k-NN, that the user must set.
+
+* There are no distributional assumptions.
+
+The stepwise aspect is key By contrast, a random forests algorithm may
+measure importance of a variable according to the number of trees in
+which it is used for a node split.  This is of interest, but it may
+result in too much duplication.
+
+Let's give it a try:
+
+```{r}
+gcNoS <- german.credit[,-21]
+gcNoY <- german.credit[,-20]
+gcNoY$Gender <- as.numeric(gcNoY$Gender == 'Male')
+gcNoS$Credit_risk <- as.numeric(gcNoS$Credit_risk == 'GOOD')
+qeFOCI(gcNoY,'Gender')$sel
+qeFOCI(gcNoS,'Credit_risk')$sel
+
 ```
 
 

@@ -35,31 +35,31 @@ model deployment. [more background here...]
 <!-- compare their performance against each other across all metrics 
 previously described -->
 While there exists a plethora of methods for ensuring a fair machine learning 
-model, the primary approaches utilized in the `dsld` package are:
-    1. Engineering the data itself before modeling through deweighting
-    2. Minimizing the impact of sensitive features in the model itself
-
-Each of these methods have their strengths and weaknesses. It will be up to 
-users to decide first which *metric* of fairness makes the most sense within 
-their domain, and then based on the performances we record below, choose an 
-appropriate model that best balances that measurement of fairness with the 
+model, the primary approaches utilized in the `dsld` package rely on fairness 
+constraints, each with their own strengths and weaknesses. As such, it will be 
+up to users to decide first which *metric* of fairness makes the most sense 
+within their domain, and then based on the performances we record below, choose 
+an appropriate model that best balances that measurement of fairness with the 
 utility they would like. Again, it should be stressed that how you measure 
 fairness and utility will determine the approach taken in balancing the two 
 with regards to the model itself.
 
-
-### Explicitly Deweighted Features
-
-
-
-### Fairness Constraints
 <!-- accuracy of this information may need to be double-checked -->
-Another major approach in assuring a fair machine learning model relies on 
-enforcing an additional constraint while training the model. Base-level ML 
-algorithms rely on minimizing a certain error (i.e. RMSE (Root Mean Square 
-Error), etc.). With this class of fair ML models, a constraint is placed on the 
-training itself, ensuring the model optimizes not just for utility, but also 
-a given definition of fairness.
+So, what are fairness constraints? In simple terms, we can treat Machine 
+Learning as an optimization problem. We want to find a set of weights that 
+somewhow minimizes the amount of error, or cost as it's commonly referred as, 
+that the model produces during testing. This cost function that's used to gauge 
+how well/poorly the model is performing provides the feedback necessary to 
+make adjustments to the weights as needed.
+
+Fairness constraints come into play by enforcing an additional parameter to 
+consider with this cost function during model training. Instead of simply 
+saying "minimize the RMSE (Root Mean Square Error)" or whatever utility metric 
+chosen (MAPE, MSPE, etc.), this class of fair ML models *also* includes a 
+fairness metric to calculate cost. In effect, this produces a final set of 
+weights that optimizes not for the best performance [as with most base ML 
+models], but for the best **balance** of performance between utility and a 
+given definition of fairness.
 
 More simply put, an additional fairness parameter is introduced into the 
 optimization problem, forcing whichever optimization algorithm is picked to 
@@ -74,18 +74,33 @@ metrics that can be used to gauge fairness, there is no **single correct**
 **metric**; each will have their own use-case. It's up to the reader to decide 
 which constraint/metric will optimize the model for their needs.
 
+<!-- following part may be too technical, might move to margin -->
+<!-- there is also some redundancy, some parts will have to be merged with above -->
+The final set of weights produced is not only not always deterministic (random 
+initialization w/ gradient descent means global optimal is not always converged 
+on), but is also variable across approaches. The reason for this is each 
+approach considers a different definition (and therefore metric) of fairness. 
+This will be explained in depth later in this section, but it's important to 
+note that depending on how **you** define fairness with the context of your 
+data, the best approach will vary.
+
+
+### Explicitly Deweighted Features
+<!-- this will be for the Matloff paper -->
+description...
+
 
 ### Ridge Penalty
 <!-- this will be for the Scutari paper -->
 description...
 
 
-#### Nonconvex Optimization with Fairness Constraints
+### Nonconvex Optimization with Fairness Constraints
 <!-- this will be for the Komiyama paper -->
 description...
 
 
-#### Other Constraints (paper three, we'll update title later)
+### Other Constraints (paper three, we'll update title later)
 <!-- this will be for the Zafar paper -->
 description...
 
@@ -104,14 +119,14 @@ reiterate points about measuring fairness...
 
 #### S-Correlation
 <!-- correlation between S-feature and output -->
-Given a linear model, it is important to understand how much a feature relates
-to the outcome feature. Even more so, when the examined feature is a protected
-class like race, gender, and age. A way to measure this association is through
-S-correlation. It is possible that the feature we examine, S, may be strongly, 
-slightly, or weakly associated with the outcome feature, Y. Understanding how S 
-and Y are correlated is meaningful because then we can see the effects S has on 
-the prediction model. S-correlation can also be a reason to delve into 
-determining why the S feature has such an effect on Y feature.
+In order to ensure an ML model isn't discriminating, it may be a meaningful 
+measure of fairness to see how much a sensitive feature like race, gender, or 
+age relates to the predictions the model is making. A way to measure this sort 
+of association is called S-correlation. Measuring how strongly S (sensitive 
+feature) and Y (response variable) are correlated allows us to understand the 
+how much the model has trained to discriminate. An added benefit of 
+S-Correlation is a warning that the data itself may be biased if there exists 
+a strong correlation between S and Y.
 
 The function dsldTakeALookAround calculates the S-Correlation through a
 non-parametric test, known as the Kendall rank correlation. The strength of 

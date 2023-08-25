@@ -68,7 +68,12 @@ coef(w)
 ```
 
 Here, even correcting for age, education and so on, we still find a
-substantial gender pay gap.  Gender does matter, on its own.
+substantial gender pay gap.  Gender does seem to matter, on its own.
+
+It should be noted that if the **bnlearn** function **hc* is used
+instead of **iamb**, there is indeed a link from 'gender' to 'wageinc',
+but appeapparently at the cost of other anomalies.  For example, there
+is no arc, or path of arcs, from 'wkswrkd' to 'wageinc'.
 
 CI DAGs are of course quite visually appealing, but as pointed out by
 the developers of such methodology, the graphs can be very misleading.
@@ -78,10 +83,13 @@ is well beyond the scope of this course, but we urge users and consumers
 of CI to keep the following points in mind:
 
 ::: {.callout-note}
-### Caution with DAGS
+### Caution with causal methods, especially DAGS
+
 * The definition of *cause* is of course central to proper use of CI
-DAGs, and "wrapping one's head around" the definition can be a challenge
-even for experienced probabilistic modelers.
+  DAGs.  It does *not* mean what one ordinarily thinks of as causal ("The
+  sidewalk was icy, so the man slipped and fell"), and it can become quite
+  complex; "wrapping one's head around" the definition can be a
+  challenge even for experienced probabilistic modelers.
 
 * Unseen variables, such as age in the above example, can be just as
 harmful in CI contexts as in observational data.
@@ -102,6 +110,8 @@ DAG.  typically many DAGs can fit the dataset equally well, and they can
 be in conflict with each other.  One DAG might say that A causes B,
 while another, equally credible in terms of data fit, might have B
 causing A.
+
+![](TwoEquivDAGs.png){width=100%}
 
 This last point is of course very concerning.  In recent years, there
 has been much handwringing in science about the Replication Crisis, in

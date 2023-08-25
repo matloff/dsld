@@ -30,7 +30,8 @@ rplotly is used to create a plotly widget to aid in displaying graph
 '''
 dsld    = importr("dsld")
 qeML    = importr("qeML")
-forcats = importr('forcats') #Where is this used?
+fairml = importr("fairml")
+forcats = importr('forcats')
 rplotly = importr("plotly")
 
 # TODO: Fix error: function displays error msg even when input is fine
@@ -77,8 +78,6 @@ def validateInputSP3D(sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
         print('Error: opacity must be an int type. Entered type:', type(opacity))
         exit(ERROR)
     
-    
-    
 def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL, sortedBy = "Name", numGroups = 8, maxPoints = R_NULL, xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL, colors = ["Paired"], opacity = "1", pointSize = "8"):
     # ************************** ARGUMENTS *******************************************
     
@@ -121,34 +120,12 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
         sGroups_r = robjects.StrVector(sGroups)    # Convert variable name to R character vector
 
     sortedBy_r = robjects.StrVector([sortedBy])
-
     numGroups_r = robjects.IntVector([numGroups])
-
-    if maxPoints == R_NULL:
-        maxPoints_r = maxPoints
-    else:
-        maxPoints_r = robjects.IntVector([maxPoints])
-
-    if xlim == R_NULL:
-        xlim_r = xlim
-    else:
-        xlim_r = robjects.IntVector([int(x) for x in xlim])
-
-    if ylim == R_NULL:
-        ylim_r = ylim
-    else:
-        ylim_r = robjects.IntVector([int(x) for x in ylim])
-
-    if zlim == R_NULL:
-        zlim_r = zlim
-    else:
-        zlim_r = robjects.IntVector([int(x) for x in zlim])
-
-    if main == R_NULL:
-        main_r = main
-    else:
-        main_r = robjects.StrVector([main])    # Convert variable name to R character vector
-
+    maxPoints_r = maxPoints if (maxPoints == R_NULL) else robjects.IntVector([maxPoints])
+    xlim_r = xlim if (xlim == R_NULL) else r.objects.IntVector([int(x) for x in xlim])
+    ylim_r = ylim if (ylim == R_NULL) else r.objects.IntVector([int(x) for x in ylim])
+    zlim_r = zlim if (zlim == R_NULL) else r.objects.IntVector([int(x) for x in zlim])
+    main_r = main if (main == R_NULL) else r.objects.strVector([main])
     colors_r = robjects.StrVector(colors)
     opacity_r = robjects.StrVector([opacity])
     pointSize_r = robjects.StrVector([pointSize])
@@ -157,23 +134,33 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     # ************************** END ARGUMENTS *******************************************
     
     # ************************** RETURN VALUE *******************************************
-    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
-    # Convert the plot to a Plotly widget and display it
+    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, ylim_r, yyim_r, zlym_r, main_r, colors_r, opacity_r, pointSize_r)
+    # Convyrt the plot to a Plotly widget and display it
     plot_widget = rplotly.as_widget(scatter_plot)
     display(plot_widget)
     # ************************** END FUNCTION *******************************************
 
+    robjects.r['data']('pef')
 #************************** OS SHELL FUNCTIONALITY *************************************
 # TODO: OS Shell functionality is INCOMPLETE
-if __name__ == "__main__":
-    #args = sys.argv
-    cmd, data, sName, yNames, sGroups, sortedBy, numGroups, maxPoints, xlim, ylim, zlim, main, colors, opacity, pointSize = sys.argv
-    # cmd, data = sys.argv
-    data = pd.read_csv()
-    # print(data)
-    # dsldPyScatterPlot3D(data)
-    dsldPyScatterPlot3D(data, sName, yNames.split(','), sGroups.split(','), sortedBy, int(numGroups), maxPoints, xlim.split(','), ylim.split(','), zlim.split(','), main, colors.split(','), opacity, pointSize)
+# if __name__ == "__main__":
+#     #args = sys.argv
+#     cmd, data, sName, yNames, sGroups, sortedBy, numGroups, maxPoints, xlim, ylim, zlim, main, colors, opacity, pointSize = sys.argv
+#     # cmd, data = sys.argv
+#     data = pd.read_csv()
+#     # print(data)
+#     # dsldPyScatterPlot3D(data)
+#     dsldPyScatterPlot3D(data, sName, yNames.split(','), sGroups.split(','), sortedBy, int(numGroups), maxPoints, xlim.split(','), ylim.split(','), zlim.split(','), main, colors.split(','), opacity, pointSize)
 #************************** END OS SHELL *******************************************
+
+
+#Example 1
+# robjects.r['data']('law.school.admissions')
+# data = robjects.r('law.school.admissions')
+# dsldPyScatterPlot3D(data, yNames=['ugpa', 'lsat', 'age'], sName='race1')
+
+
+
 
 '''
 # Need to install.packages("plotly") in R
@@ -184,10 +171,10 @@ if __name__ == "__main__":
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
     import rpy2.robjects as robjects
     # Must import qeML library into R environment
-    robjects.r['data']('pef')
     data = robjects.r('pef')
     dsldPyScatterPlot3D(data, "sex")
     dsldPyScatterPlot3D(data, 4)
+
 
 # Other Examples:
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['occ', 'wageinc', 'wkswrkd'])
