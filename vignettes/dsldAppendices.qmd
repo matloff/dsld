@@ -55,8 +55,8 @@ There are a couple of undirected arcs, e.g. between gender and [Though
 again we omit a detailed treatment of CI DAGs here, we note that that
 field defines a confounder of two variables as a variable that is an
 "ancestor" to both, education being a confounder for income and
-occupation.]{.column-margin} occupation--found to be relations, but not
-found to be causal, using available data.
+occupation.]{.column-margin} occupation--found to be relations, but 
+with indeterminate direction, using available data.
 
 More interesting, though, is the lack of a causal arc from gender to
 wage income.  This is in stark contrast to what **dsldLinear** suggests:
@@ -70,20 +70,19 @@ coef(w)
 Here, even correcting for age, education and so on, we still find a
 substantial gender pay gap.  Gender does seem to matter, on its own.
 
-It should be noted that if the **bnlearn** function **hc* is used
-instead of **iamb**, there is indeed a link from 'gender' to 'wageinc',
-but appeapparently at the cost of other anomalies.  For example, there
-is no arc, or path of arcs, from 'wkswrkd' to 'wageinc'.
+It should be noted that if the **bnlearn** function **hc** is used
+instead of **iamb** (not shown), there is indeed a link from 'gender' to
+'wageinc', but apparently at the cost of other anomalies.  For example,
+there is no arc, or path of arcs, from 'wkswrkd' to 'wageinc'.
 
-CI DAGs are of course quite visually appealing, but as pointed out by
-the developers of such methodology, the graphs can be very misleading.
-Using DAGs effectively requires deep understanding of the concepts.
-A treatment of these concepts
-is well beyond the scope of this course, but we urge users and consumers
-of CI to keep the following points in mind:
+CI DAGs are of course quite visually appealing, and many people find
+causal concepts helpful in their thoughts processes regarding the data.
+But as pointed out by the developers of such methodology, the graphs can
+be very misleading.  Using DAGs effectively requires deep understanding
+of the concepts.  A treatment of these concepts is well beyond the scope
+of this course, but we urge users and consumers of CI to keep the
+following points in mind:
 
-::: {.callout-note}
-### Caution with causal methods, especially DAGS
 
 * The definition of *cause* is of course central to proper use of CI
   DAGs.  It does *not* mean what one ordinarily thinks of as causal ("The
@@ -95,35 +94,45 @@ of CI to keep the following points in mind:
 harmful in CI contexts as in observational data.
 
 * Causal analysis is just as much at the mercy of sample size as is
-classical statistical analysis.  Absence of a link may be due to
-insufficient data, and nonlinks at the population level may appear by
-random chance from small datasets.   
+  classical statistical analysis, indeed even more so, since the causal
+  version in effect estimates many more parameters.  Absence of a link
+  may be due to insufficient data, and nonlinks at the population level
+  may appear as "links" in our graph by random chance in small datasets.   
+
+* Most important, DAGs have a highly concerning uniqueness problem:
+
+::: {.callout-note}
+### DAGS are not unique
 
 * Most important, for any given dataset, there is typically no unique
-[CMU professor C. Shalizi has [bluntly
-noted](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf) that
-in cases of nonuniqueness, presenting just one DAG without mentioning
-the equivalent ones, "...[which] is often what people seem to do," might
-be viewed as "lying by omission.  Recognizing the nonuniqueness is
-"simply a matter of scientific honesty."]{.column-margin} 
-DAG.  typically many DAGs can fit the dataset equally well, and they can
-be in conflict with each other.  One DAG might say that A causes B,
-while another, equally credible in terms of data fit, might have B
-causing A.
+  DAG: [CMU professor C. Shalizi has [bluntly
+  noted](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf)
+  that in cases of nonuniqueness, presenting just one DAG without
+  mentioning the equivalent ones, "...[which] is often what people seem
+  to do," might be viewed as "lying by omission."  Recognizing the
+  nonuniqueness is "simply a matter of scientific
+  honesty."]{.column-margin} DAG.  Typically many DAGs can fit the
+  dataset equally well, and they can be in conflict with each other.
+  One DAG might say that A causes B, while another, equally credible in
+  terms of data fit, might have B causing A, while a third says A and B
+  are independent.
 
-![](TwoEquivDAGs.png){width=100%}
+  M. Scutari, author of **bnlearn**, shows an example in his Cambridge lectures:
 
-This last point is of course very concerning.  In recent years, there
-has been much handwringing in science about the Replication Crisis, in
-which scientists try to replicate the findings of an earlier published
-paper, and discover serious problems with the earlier results.  Imagine
-the replication problems that can arise if authors of a paper present
-just one of many equally-credible DAGs, as is usually the case.
+  ![](TwoEquivDAGs.png){width=100%}
+
+  The nonuniqueness is of course very concerning.  In recent years, there
+  has been much handwringing in science about the Replication Crisis, in
+  which scientists try to replicate the findings of an earlier published
+  paper, and discover serious problems with the earlier results.
+  Imagine the replication problems that can arise if authors of a paper
+  present just one of many equally-credible DAGs, as is usually the
+  case.
+:::
 
 DAGs can indeed lead to valuable insight, but can be misleading as well.
 A healthy skepticism and a solid understanding of the concepts are
-mandatory for proper use.
-:::
+mandatory for avoiding misleading or invalid results. 
 
 ## Appendix C: Standard Errors via the Bootstrap
 
