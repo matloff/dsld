@@ -494,9 +494,10 @@ argument for that, saying we want 'GOOD' to play the Y = 1 role.
 
 At first glance, it appears that women are faring better than, or at
 least equal to, men.  If anything, it is the men who are discrimination
-victims.  But upon closer inspection, confidence intervals are rather iffy.
-For case 555, say, the confidence interval for the difference is
-$-0.0707 \pm 1.96 \times 0.0679$, or (-0.2038,0.0624).
+victims.  But upon closer inspection, confidence intervals are rather
+iffy.  For case 555, say, the confidence interval for the difference is
+$-0.0707 \pm 1.96 \times 0.0679$, or (-0.2038,0.0624).  The wide
+interval reflects the fact that our dataset is rather small, n = 1000.
 
 And again, the size of the gender gap seems to depend a lot on the other
 factors.  Let's take a look at those comparison cases:
@@ -792,8 +793,8 @@ Let's give it a try:
 ```{r}
 gcNoS <- german.credit[,-21]
 gcNoY <- german.credit[,-20]
-gcNoY$Gender <- as.numeric(gcNoY$Gender)
-gcNoS$Credit_risk <- as.numeric(gcNoS$Credit_risk)
+gcNoY$Gender <- as.numeric(gcNoY$Gender == 'Male')
+gcNoS$Credit_risk <- as.numeric(gcNoS$Credit_risk == 'GOOD')
 qeFOCI(gcNoY,'Gender')$sel
 qeFOCI(gcNoS,'Credit_risk')$sel
 
