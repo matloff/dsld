@@ -1,7 +1,7 @@
 
 # Appendices {.appendix}
 
-## Appendix A: Fast Lane to Statistics
+## Appendix A: Standard Errors and Statistical Inference
 
 
 ## Appendix B: A Note on Causal Inference {#sec-causal}
