@@ -480,62 +480,42 @@ male) / (probability female) is linear in age and income.
 > $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ W
 
 So here we do have a formulation in which the impact of wage is the same
+[Note that a log-odds measure can take on any value betwen $-\infty$ and
+$\infty$.]{.column-margin}
 for any age level, albeit on a much less-interpretable scale.  
 
+### Example: mortgage data
 
+This dataset and its documentation are included in the **SortedEffects**
+package.  The issue here is whether racism played a role in mortgage
+denials in the Boston area.  As this is a binary outcome, we might
+consider a logit model.
 
-### Example: German credit data
-
-This is a built-in dataset to the **fairml** package, which is included
-by **dsld**.  Let's take a brief look at the data.
-
-```{r}
-data(german.credit)
-gct <- german.credit
-head(gct)
-names(gct)
-```
-
-Column 20 of the data, **Credit_risk**, is the assessment made by the
-lender, recorded as 'GOOD' or 'BAD'.  Is the lender prejudiced against
-women?  We might try to investigate that via a logistic model in which Y
-is credit risk, S is gender and we include a few possible confounders.
-(Again, let's keep things simple in this example.)
+The data in this case must be prepped in terms of R factors.  As it is a
+good example of data preparation, we include that process here.
 
 ```{r}
-gct <- gct[,c('Credit_history','Credit_amount','Present_employment_since',
-   'Credit_risk','Gender')]
-compData <- gct[c(2,22,222,3,33,55,555),1:3]
-w <- dsldLogit(gct,'Credit_risk','Gender',compData,yesYVal='GOOD')
-summary(w)
+library(SortedEffects)
+mtg <- mortgage
+names(mtg)
+# change binaries to factors
+for (i in c(1,3,6:12,14:16)) mtg[,i] <- as.factor(mtg[,i])
+# change integer-coded categorical variable to factor
+mtg[,6] <- as.factor(mtg[,6])
 ```
 
-As noted, there is no no-interaction case in logit settings, so we need
-to specify one or more examples at which we wish to gauge the impact, if
-any, of S on Y.  Here we are using rows 2-4 of our data (excluding Y and S)
-for that purpose. 
-
-Also, we need to tell the software what values of the credit risk
-variable should be consider Y = 1 and Y = 0; we use the **yesYVal**
-argument for that, saying we want 'GOOD' to play the Y = 1 role.
-
-At first glance, it appears that women are faring better than, or at
-least equal to, men.  If anything, it is the men who are discrimination
-victims.  But upon closer inspection, confidence intervals are rather
-iffy.  For case 555, say, the confidence interval for the difference is
-$-0.0707 \pm 1.96 \times 0.0679$, or (-0.2038,0.0624).  The wide
-interval reflects the fact that our dataset is rather small, n = 1000.
-
-And again, the size of the gender gap seems to depend a lot on the other
-factors.  Let's take a look at those comparison cases:
+Let's try a no-interactions model:
 
 ```{r}
-compData
+z <- dsldLogit(mtg,'deny','black',yesYVal='1') 
+summary(z)
 ```
 
-No salient pattern here, but there is a suggestion that among those who
-have been with their present employer, women do better than men.  Not an
-easy question at all, and further investigation would be needed. 
+So, being Black resulted in an average increase in log-odds of about
+0.6409.  A 95% confidence interval is 0.6409 $\pm$ 1.96 x 0.1836 =
+(0.2810,1.0008).  By comparison, being self-employed, for instance, has
+a similar estimated coefficient of about 0.6355.
+
 
 ## Machine Learning Approaches
 
@@ -658,7 +638,7 @@ lsa <- law.school.admissions
 ### Is the LSAT fair?
 
 There has been concern that the LSAT and other similar tests are biased
-against black and Latino students, and might otherwise have racial
+against Black and Latino students, and might otherwise have racial
 issues.  Let's investigate, using **dsld**.
 
 
@@ -673,7 +653,7 @@ There are very concerning racial differences here.  Two very similar
 people&mdash;who attended the same quality law school, with the same
 undergraduate grades, the same law school grades, even having the same
 bar passage status&mdash;will have LSAT scores differing on average by
-almost 6 points if one person is black and the other is white.  
+almost 6 points if one person is Black and the other is white.  
 
 Again, one must be very cautious in drawing conclusions as to causes,
 not only because of the questionable quality of the dataset but also
@@ -716,7 +696,7 @@ w <- dsldML('lsa',quote(bar),'race1',qeMLftnName='qeKNN',
 print(w)  
 ```
 
-The pattern here seems to be a bit uneven, but again, black and white
+The pattern here seems to be a bit uneven, but again, Black and white
 test takers seem to be on par with each other.
 
 ## Case study: problems with significance testing
