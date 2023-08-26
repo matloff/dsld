@@ -400,6 +400,11 @@ $f(t) = 1 / [1 + e^{-t}]$, which has the shape of an S-curve:
 curve(1/(1+exp(-x)),-4,4)
 ```
 
+So at least the model retains a linear component, with much the same
+interpretability.  For instance, if $\beta_2 > 0$, then the usual
+monotonicity relation holds, i.e. the higher the income, the greater
+the probability that the person is male.
+
 The estimates b~i~ of the population values $\beta_i$ are obtained via a
 method generalizing the least-squares method used in the linear case.
 
@@ -429,18 +434,29 @@ binary Y:
 
 * Its value is between 0 and 1, appropriate for modeling a probability.
 
-* The expression $1 / [1 + e^{-t}]$ is increasing in t, which we wish to
-model when our predictors have monotonic relations with Y.
+* As noted earlier, the expression $1 / [1 + e^{-t}]$ is increasing in
+  t, which we wish to model when our predictors have monotonic relations
+  with Y.
 
 The point is that the logistic (popularly referred to as "logit") is
 often a good model for binary-Y settings in general.
 
 ### We no longer have a no-interactions case
 
-In the first linear model example above, predicting wage income from age
-and gender, the model implied a uniform gender gap, independent of age.  The
-male and female regression lines were parallel.  That's not possible in
-the logit case:
+In our earlier linear model, predicting wage income from age and
+gender, 
+
+> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+
+recall that here $\beta$~2~ has the nice interpretation of there being a
+uniform gender gap, independent of age.   Similar statements hold for
+$\beta_1$; a 1-year increase in age, for instance, on average
+is associated with a $\beta_1$ increase in mean income, identically for
+either gender.
+
+Geometrically, if we were to plot separate male and female regression
+lines against age, the male and female r lines would be parallel.  That's
+not possible in the logit case, as logit curves cannot be parallel:
 
 ```{r}
 curve(1/(1+exp(-x)),-4,4)
@@ -458,9 +474,14 @@ $\beta_2$ is being "the" gender pay gap, frre.
 
 Some books motivate the logistic approach as the *log-odds* ratio,
 meaning in this example that the logarithm of the ratio (probability
-male) / (probability female) is linear in age and income.  So here we
-can set an analog of that linear $\beta_2$, albeit on a much
-less-interpretable scale.
+male) / (probability female) is linear in age and income.  
+
+> log [probability male / probability female] =
+> $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ W
+
+So here we do have a formulation in which the impact of wage is the same
+for any age level, albeit on a much less-interpretable scale.  
+
 
 
 ### Example: German credit data
