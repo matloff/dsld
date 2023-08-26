@@ -35,7 +35,7 @@ model deployment. [more background here...]
 <!-- compare their performance against each other across all metrics 
 previously described -->
 While there exists a plethora of methods for ensuring a fair machine learning 
-model, the primary approaches utilized in the `dsld` package rely on fairness 
+model, the primary approaches utilized in the **dsld** package rely on fairness 
 constraints, each with their own strengths and weaknesses. As such, it will be 
 up to users to decide first which *metric* of fairness makes the most sense 
 within their domain, and then based on the performances we record below, choose 
@@ -319,3 +319,38 @@ isn't differentiable for all x (it's undefined at the origin). Therefore, given 
 differentiability, the MSPE is preferred for optimization problems in general as 
 extrema can be found without iterative methods.
 
+## Testing
+
+We are (purely hypothetically) investigating racial bias in the COMPAS data with 
+regards to recidivism. We are trying to predict two_year_recid (which is a 
+classification setting), with race as our sensitive variable. Since this is a 
+classification setting, the only utility metric we can use (out of the above listings) 
+for this scenario is Test Accuracy (misclassification error). For both fairness metrics 
+(S Correlation and Demographic Parity), we will try to find the best balance between 
+fairness and utility, using the approaches implemented in various models from this 
+package.
+
+### Testing: S Correlation
+
+Suppose that decile_score and v_decile_score are the proxies to our sensitive variable 
+(race).[Based on results from **dsldDensityByS**]{.column-margin}
+
+We will start by looking at the Random Forests model using **dsldQeFairRF**, which 
+can output S Correlation and Misclassification Error without extra calculation from 
+the user. This function uses the *explicitly deweighted features* strategy, so by 
+adjusting the deweight values for decile_score and v_decile_score, we should be able 
+to adjust fairness and utility.
+
+We can use the **replicMeans** (included in **qeML**) to run several trials of our model 
+to increase the reliability of our results:
+
+```{r}
+data(compas)
+regtools::replicMeans(5,"{rf1 <- dsldQeFairRF(compas, 'two_year_recid', deweightPars = list(decile_score=0.1, v_decile_score=0.1), sName = 'race'); c(rf1$corrsens, rf1$testAcc)}")
+regtools::replicMeans(5,"{rf2 <- dsldQeFairRF(compas, 'two_year_recid', deweightPars = list(decile_score=1, v_decile_score=1), sName = 'race'); c(rf2$corrsens, rf2$testAcc)}")
+```
+
+This example demonstrates the tradeoff between utility and fairness: as we increase the 
+deweight values, our utility also increases (since the misclassification error decreases).
+On the other hand, S Correlation increases, which indicates that fairness is *decreasing*
+since we are trying to increase fairness by reducing the impact of S proxies.
