@@ -688,7 +688,7 @@ And what about passage of the bar exam?  Does race play a role?
 
 ```{r}
 comparisonPts <- lsa[c(2,22,222,2222),-c(8,11)]
-w <- dsldLogit(lsa,'bar','race1',comparisonPts,'TRUE')
+w <- dsldLogit(lsa,'bar','race1',comparisonPts,yesYVal= 'TRUE')
 summary(w)   
 ```
 
