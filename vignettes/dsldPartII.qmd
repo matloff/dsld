@@ -354,3 +354,5 @@ This example demonstrates the tradeoff between utility and fairness: as we incre
 deweight values, our utility also increases (since the misclassification error decreases).
 On the other hand, S Correlation increases, which indicates that fairness is *decreasing*
 since we are trying to increase fairness by reducing the impact of S proxies.
+
+### Testing: Demographic Parity
