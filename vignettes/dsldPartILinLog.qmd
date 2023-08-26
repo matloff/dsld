@@ -741,10 +741,11 @@ testing.
 
 # Deciding on a set of confounders C
 
-Recall our previous example of the German credit data, which consisted
-of a total of 21 variables:
+The German credit dataset, included in the **fairml** package and thus
+with **dsld**, consists of a total of 21 variables:
 
 ```{r}
+data(german.credit)
 names(german.credit)  
 ```
 
@@ -767,44 +768,16 @@ groups of confounders: singletons, pairs, triplets and so on.  There are
 $2^{19}$ possibilities here, about half a million.
 
 Many, many approaches to this *variable selection* or *feature
-[*Causal discovery* methods may be considered part of this "genre" too.
-See Appendix B.]{.column-margin}
-selection* problem have been proposed over the years.  The **qeML**
-package includes five of them (see the documentation), and there are
-myriad others.
+selection* [A nice overview of such methodology, and implementations in
+R and Python, are given in [Parr *et
+al*](https://explained.ai/rf-importance).]{.column-margin} problem have
+been proposed over the years.  The **qeML** package includes five of
+them (see the documentation), and there are myriad others.
 
-Here we will use a method called *Feature Ordering by Conditional
-Independence* (FOCI), implement in a CRAN package of the same name, and
-wrapped in **qeML** by **qeFOCI** and related functions.  Here are the
-key aspects of the method:
-
-* It is *stepwise*:  It add features one at time. If a feature does not
-  improve prediction beyond the set already selected, this feature is
-  not added.
-
-* The criterion for selecting the feature X~j~ is that Y and X~j~ are
-  not independent, given the earlier-selected features.
-
-* There are no *tuning parameters*, values similar to, for instance, k
-  in k-NN, that the user must set.
-
-* There are no distributional assumptions.
-
-The stepwise aspect is key By contrast, a random forests algorithm may
-measure importance of a variable according to the number of trees in
-which it is used for a node split.  This is of interest, but it may
-result in too much duplication.
-
-Let's give it a try:
-
-```{r}
-gcNoS <- german.credit[,-21]
-gcNoY <- german.credit[,-20]
-gcNoY$Gender <- as.numeric(gcNoY$Gender == 'Male')
-gcNoS$Credit_risk <- as.numeric(gcNoS$Credit_risk == 'GOOD')
-qeFOCI(gcNoY,'Gender')$sel
-qeFOCI(gcNoS,'Credit_risk')$sel
-
-```
-
+Our specific purpose here, though, it to find possible confounders.
+In essence, that means find variables C such that C is correlated with
+both Y and S.  One way to approach that is that do separate predictions
+of Y and S, and see which features turn out to predict both well.  The
+function **dsldCHunting** does this, using the ML algorithm random
+forests.
 
