@@ -219,18 +219,27 @@ make use of that methodology.
 So, let's get started.  One key point first, though:
 
 ::: {.callout-note}
-### Role of the software
+### Notes on modeling, the role of the software, etc.
 
 This book makes use of the **dsld** software, but is definitely not a
 user manual for that package.  Instead, it is a guide to the statistical
 principles, with the software playing a supporting role.
 
+Any statistical model is approximate.  [The pioneering statistician
+George Box famously said, "All models are wrong, but some are
+useful."]{.column-margin} Similarly, in the real world, it is almost
+never the case that some variable A has 0.000000 effect on variable B, yet
+that is exactly the question addressed by significance tests.  Modern
+statistical thinking shies away from p-values, and asks instead whether
+A has an effect on B that is substantial enough to be of interest.
+
 A related point is that, unlike some readers may have experienced in
 some statistics courses, real-world statistical analysis is not
 conducted in a formulaic, "Step 1, Step 2,..." manner.  Instead,
 decisions on say, which model to use, must be made by you, the analyst,
-based on your overall assessment of the available information.
-The software cannot make your decisions for you.  
+based on your overall assessment of the available information.  The
+software cannot make your decisions for you.  
+
 
 :::
 
