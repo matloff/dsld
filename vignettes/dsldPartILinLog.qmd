@@ -492,23 +492,11 @@ columns.]{.column-margin} package.  The issue here is whether racism
 played a role in mortgage denials in the Boston area.  As this is a
 binary outcome, we might consider a logit model.   
 
-The data in this case must be prepped in terms of R factors.  As it is a
-good example of data preparation, we include that process here.
-
-```{r}
-library(SortedEffects)
-mtg <- mortgage
-names(mtg)
-# change binaries to factors
-for (i in c(1,3,6:12,14:16)) mtg[,i] <- as.factor(mtg[,i])
-# change integer-coded categorical variable to factor
-mtg[,6] <- as.factor(mtg[,6])
-```
-
 Let's try a no-interactions model:
 
 ```{r}
-z <- dsldLogit(mtg,'deny','black',yesYVal='1') 
+data(mortgageSE)
+z <- dsldLogit(mortgageSE,'deny','black',yesYVal='1') 
 summary(z)
 ```
 
@@ -743,7 +731,8 @@ testing.
 ## Deciding on a set of confounders C
 
 One may have specific confounders in mind for a particular analysis, but
-it is often unclear as to which to use.  This section addresses that problem.
+it is often unclear as to which to use, or for that matter, why not use
+them all?  This section addresses that problem.
 
 ### The problem
 
@@ -756,8 +745,14 @@ names(german.credit)
 ```
 
 Excluding Y = credit risk and S = gender, that gives us 19 variables to
-choose among for our confounders.  Yet there may be good reasons to not
-use them all:
+choose among for our confounders.  Which ones should we use?
+
+Technically, almost any variable is a confounder.  The impact may quite
+minuscule, but through a long chain of relations among many variables,
+there will usually be at least some connection, though possibly very
+faint.
+
+Well, then, why not use them all?
 
 * It may result in overfitting, resulting in large standard errors.
 
@@ -773,10 +768,11 @@ choices for confounders; we must choose from the set of all possible
 groups of confounders: singletons, pairs, triplets and so on.  There are
 $2^{19}$ possibilities here, about half a million.
 
-Our specific purpose here is to find possible confounders.
-In essence, that means find variables C such that C is correlated with
-both Y and S.  One way to approach that is that do separate predictions
-of Y and S, and see which features turn out to predict both well.  
+Our specific purpose here is to find a reasonable set of  confounders.
+In essence, that means find variables C such that C is substantially
+correlated with both Y and S.  One way to approach that is that do
+separate predictions of Y and S, and see which features turn out to
+predict both well.  
 
 ### Variable selection methodology
 
@@ -789,18 +785,19 @@ them (see the documentation), and there are myriad others.
 
 One widely-used method is *permutation*, which we will use here.  To
 gauge the importance of a variable V in the context of using some ML
-algorithm, we do runs through the data, first with the original dataset,
-and then with the V column changed through arandom shuffling of the
+algorithm, we do two runs through the data, first with the original dataset,
+and then with the V column changed through a random shuffling of the
 values in that column.  In that second run, our predictive accuracy
 should be compromised, and the importance measure is taken to be the
-proportional increase in error rate.
+proportional increase in error rate.  The larger the increase, the
+more important we deem the variable.
 
 ### The dsldCHunting() function
 
 This function serves as an aid to selecting confounders, using the 
 following approach.  Denote our dataset by **d**.
 
-* Two columnwise subsets of **d* are formed, **dNoS** and **doNoY**,
+* Two columnwise subsets of **d** are formed, **dNoS** and **doNoY**,
   deleting the respective column.
 
 * We fit a random forests model to **dNoS**, predicting Y, resulting in
@@ -819,9 +816,12 @@ correlated with both Y and S, as desired.
 Here is an example, using the mortgage data.
 
 ```{r}
-# data(mortgageSE)
-# dsldCHunting(mortgageSE,'deny','black')
+data(mortgageSE)
+dsldCHunting(mortgageSE,'deny','black')
 ```
+
+The importance measures are printed out (the ranking is what matters),
+followed by the "top-i" sets in common.
 
 As usual, there are no magic formulas to use here.  The analyst is given
 a choice.  One might use just two confounders, 'p_irat' and 'loan_val';
