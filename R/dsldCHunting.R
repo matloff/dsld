@@ -20,11 +20,18 @@ dsldCHunting <- function(data,yName,sName)
 
    impY <- qeRF(dataNoS,yName)$importance
    impS <- qeRF(dataNoY,sName)$importance
-   if (is.numeric(y)) impY1 <- impY[,1] else 
-      if(is.factor(y)) impY1 <- impY[,length(levels(y))+1] else 
-         stop('Y must be numeric or an R factor')
-   if (is.factor(s)) impS1 <- impS[,length(levels(s))+1] else 
-         stop('S must be numeric or an R factor')
+
+   nlevsY <- length(levels(y))
+   if (is.numeric(y) || nlevsY == 2) 
+       impY1 <- impY[, 1]
+   else if (is.factor(y)) {
+       impY1 <- impY[, nlevsY+1]
+   }
+   else stop("Y must be numeric or an R factor")
+   if (!is.factor(s)) stop("S must be an R factor")
+   nlevsS <- length(levels(s))
+   if (nlevsS == 2) impS1 <- impS[,1] else impS1 <- impS[,nlevsS+1]
+
    impY1 <- sort(impY1,decreasing=TRUE)
    impS1 <- sort(impS1,decreasing=TRUE)
    res <- list(impForY=impY1,impForS=impS1)
