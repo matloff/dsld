@@ -819,8 +819,8 @@ correlated with both Y and S, as desired.
 Here is an example, using the mortgage data.
 
 ```{r}
-data(mortgageSE)
-dsldCHunting(mortgageSE,'deny','black')
+# data(mortgageSE)
+# dsldCHunting(mortgageSE,'deny','black')
 ```
 
 As usual, there are no magic formulas to use here.  The analyst is given
