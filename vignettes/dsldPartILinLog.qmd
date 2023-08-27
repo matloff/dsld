@@ -816,4 +816,15 @@ following approach.  Denote our dataset by **d**.
 By taking the intersection, we are focusing on variables that are
 correlated with both Y and S, as desired.
 
+Here is an example, using the mortgage data.
+
+```{r}
+data(mortgageSE)
+dsldCHunting(mortgageSE,'deny','black')
+```
+
+As usual, there are no magic formulas to use here.  The analyst is given
+a choice.  One might use just two confounders, 'p_irat' and 'loan_val';
+for a set of three, the software suggests 'p_irat', 'loan_val' and 'hse_inc',
+and so on.
 
