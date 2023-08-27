@@ -178,6 +178,10 @@ and fair ML on the other.  Here is a side-by-side comparison:
   harm        comes from society      comes from an algorithm
   side info   adjust for confounders  limit impact of proxies 
 
+Part I, on confounder adjustment, focuses on discrimination examples but
+is applicable to confounder adjustment applications in general.  Part
+II, on fair ML, is more specific to discrimination settings.
+
 ## Summary of symbols
 
 We'll use X to denote the rest of the variables, i.e. those that are 
