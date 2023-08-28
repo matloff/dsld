@@ -356,3 +356,29 @@ On the other hand, S Correlation increases, which indicates that fairness is *de
 since we are trying to increase fairness by reducing the impact of S proxies.
 
 ### Testing: Demographic Parity
+
+<!-- Writing pending -->
+```{r, eval=FALSE}
+fairTest <- function(deVal = 1) {
+    data(compas)
+    data <- compas
+    yName <- 'two_year_recid'
+    sName <- 'race'
+    
+    train <- data[1:4500,]
+    test <- data[4501:nrow(data),]
+    model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName, 
+                                deweightPars = list(decile_score=deVal, 
+                                                    v_decile_score=deVal))
+    prediction <- predict(model, test)$probs
+    yes <- prediction[,1] > .5
+    out <- cbind(yes, test['race'])
+    
+    AA <- out[out['race'] == 'African-American',]
+    C <- out[out['race'] == 'Caucasian',]
+    
+    c(mean(AA[,1]), mean(C[,1]), model$testAcc)
+}
+
+replicMeans(5,"{c(fairTest(1),fairTest(.1))}")
+```
