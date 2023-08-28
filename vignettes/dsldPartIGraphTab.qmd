@@ -14,6 +14,55 @@ sensitive variable S, there should be a graphical trend between S and C.
 Luckily, **dsld** provides a host of functions that let you visually explore 
 these trends.
 
+### Confounders in Engineering Wages
+
+Sometimes our intuition may tell us that some feature may be a confounder 
+when that may not be the case. For example, suppose we suspect that an 
+employee's
+[From the **svcensus** data]{.column-margin} 
+education level influences the relationship between gender and wage.
+
+One way to further explore this scenario is by using the function 
+**dsldFrequencyByS()**, 
+[You can also run **dsldConfounders()** and find this same result.]{.column-margin}
+which aims to analyze categorical (not numeric) 
+columns by printing out a list of frequencies. Since education level is 
+categorical, we can call the function as follows:
+
+```{r}
+library(dsld)
+data(svcensus)
+dsldFrequencyByS(svcensus, "educ", "gender")
+```
+
+The similar frequency values between men and women suggest that we *cannot* 
+confidently claim education to be a possible confounder.
+
+On the other hand, we *do* see more interesting results if we look at 
+*occupation* instead of *education*:
+
+```{r}
+library(dsld)
+data(svcensus)
+dsldFrequencyByS(svcensus, "occ", "gender")
+```
+
+Notice the difference between the proportion of males in occupation 106 vs 
+females in that same occupation--a difference of approximately 11%. The 
+difference in frequencies here is much greater than with the 'educ' example, 
+which suggests that there is a difference in the occupations that men and 
+women tend to be in. Since different occupations correlate with different wages, 
+it is possible that this difference in occupations that men have compared with 
+what women have could be affecting the relationship between gender and wage. 
+
+<!-- Remove this paragraph? -->
+Since occupation may have a substantial impact on the relationship between gender 
+and wage, it may be detrimental to omit occupation from any models that we generate 
+for this relationship.
+
+As always, further investigation is necessary to determine the extent of the impact 
+that employee occupations have on the relationship we are analyzing.
+
 ### Confounders in Law School Admissions
 
 Suppose we are investigating the relationship between LSAT exams scores and race 
@@ -25,6 +74,7 @@ relationship between race and family income. We may also want to look at the
 effects of GPA as well. A quick way to view multiple variables (and their
 relation to the sensitive variable) at once is to plot them in a 3D scatter plot:
 
+<!-- Placement pending -->
 ```{r, eval=FALSE}
 data(law.school.admissions)
 dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','ugpa'), 'race1',
@@ -83,62 +133,15 @@ students occupy the lower income bracket levels.
 [If we wanted to investigate other potential confounders, we can call 
 **dsldConfounders()** with 'race1' as our sensitive variable.]{.column-margin}
 
-This suggests that family income could be confounding the potential causal 
-relationship between race and LSAT scores, meaning it may be necessary to 
-account for family income in our models.
+<!-- remove this paragraph? -->
+This suggests that family income could be confounding the potential 
+relationship between race and LSAT scores.
 
 ::: {.callout-note}
-#### Including vs Omitting a Confounder C
-Other than possible overfitting, there is no harm in including a C when in fact 
-it has little or no confounding effect, whereas omitting a C that IS a 
-confounder is a major error.
+### Everything is a Confounder
+
+Everything is a confounder to *some* degree, so it is up to the analyst to decide 
+when a feature is confounding enough to be considered in a model.
+
 :::
-
-### Confounders in Engineering Wages
-
-Sometimes our intuition may tell us that some feature may be a confounder 
-when that may not be the case. For example, suppose we suspect that an 
-employee's
-[From the **svcensus** data]{.column-margin} 
-education level influences the causal effect that gender may have on wage.
-
-One way to further affirm/deny this claim is by using the function 
-**dsldFrequencyByS()**, 
-[You can also run **dsldConfounders()** and find this same result.]{.column-margin}
-which aims to analyze categorical (not numeric) 
-columns by printing out a list of frequencies. Since education level is 
-categorical, we can call the function as follows:
-
-```{r}
-library(dsld)
-data(svcensus)
-dsldFrequencyByS(svcensus, "educ", "gender")
-```
-
-The similar frequency values between men and women suggest that we *cannot* 
-confidently claim education to be a possible confounder.
-
-On the other hand, we *do* see more interesting results if we look at 
-*occupation* instead of *education*:
-
-```{r}
-library(dsld)
-data(svcensus)
-dsldFrequencyByS(svcensus, "occ", "gender")
-```
-
-Notice the difference between the proportion of males in occupation 106 vs 
-females in that same occupation--a difference of approximately 11%. The 
-difference in frequencies here is much greater than with the 'educ' example, 
-which suggests that there is a difference in the occupations that men and 
-women tend to be in. Since different occupations correlate with different wages, 
-it is possible that this difference in occupations that men have compared with 
-what women have could be affecting the relationship between gender and wage. 
-
-Since occupation may have a substantial impact on the relationship between gender 
-and wage, it may be detrimental to omit occupation from any models that we generate 
-for this relationship.
-
-As always, further investigation is necessary to determine the extent of the impact 
-that employee occupations have on the relationship we are analyzing.
 
