@@ -1,7 +1,13 @@
 
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+
 # Appendices {.appendix}
 
 ## Appendix A: Standard Errors and Statistical Inference
+
+Once one has obtained a statistical estimator, say of a linear
+regression coefficient,
 
 
 ## Appendix B: A Note on Causal Inference {#sec-causal}
