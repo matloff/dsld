@@ -129,8 +129,9 @@ between race and LSAT score.  Note however, that these graphs do not do much to
 answer the question of whether, in this case, that relationship is substantial.
 The formal analysis we did earlier indicates that it is not.
 
-To further support our claim that race may be affecting LSAT results, we
-can look at the density plot of LSAT scores against different races.
+Returning to the question of whether race have a substantial impact on
+results, we can look at the density plot of LSAT scores against
+different races.
 
 ```{r, eval=FALSE}
 data(law.school.admissions)
