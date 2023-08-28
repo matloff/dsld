@@ -1,32 +1,65 @@
-## Deciding on a Set of Confounders
 
-By now we know how to adjust for a confounder in our data. But how 
-would we go about determining what can be a confounder in the first 
-place?
+## Deciding on a set of confounders C  
 
-Confounders, by their very nature, are a relationship between variables. 
-It just so happens that those relationships affect the relationships we 
-want to see.
+One may have specific confounders in mind for a particular analysis, but
+it is often unclear as to which to use, or for that matter, why not use
+them all?  This section addresses those issues.
 
-The easiest way to notice those relationships is to graph them. If a 
-confounder C is affecting the relationship between response variable Y and 
-sensitive variable S, there should be a graphical trend between S and C. 
-Luckily, **dsld** provides a host of functions that let you visually explore 
-these trends.
+We will address that second question first: Why not use all our
+variables, other than Y and S, as confounders?  We will see that if we
+have a large number of variables, there is good reason select only a
+subset of potential confounders.  
 
-### Confounders in Engineering Wages
+How might we do so?  We will first recommend some graphical and tabular
+methods aimed at preliminary exploration toward this end, and then
+present a **dsld* function that users may find useful for more
+systematic selection of confounders.
 
-Sometimes our intuition may tell us that some feature may be a confounder 
-when that may not be the case. For example, suppose we suspect that an 
-employee's
-[From the **svcensus** data]{.column-margin} 
-education level influences the relationship between gender and wage.
+### The problem 
 
-One way to further explore this scenario is by using the function 
-**dsldFrequencyByS()**, 
-[You can also run **dsldConfounders()** and find this same result.]{.column-margin}
-which aims to analyze categorical (not numeric) 
-columns by printing out a list of frequencies. Since education level is 
+The German credit dataset, included in the **fairml** package and thus
+with **dsld**, consists of a total of 21 variables:
+
+```{r}
+data(german.credit)
+names(german.credit)  
+```
+
+Excluding Y = credit risk and S = gender, that gives us 19 variables to
+choose among for our confounders.  Which ones should we use?
+
+Technically, almost any variable is a confounder.  The impact may quite
+minuscule, but through a long chain of relations among many variables,
+there will usually be at least some connection, though possibly very
+faint.
+
+Well, then, why not use them all?
+
+* It may result in overfitting, resulting in large standard errors.
+
+* It is unwieldy, difficult to interpret.  Many treatments of these
+  issues speak of a desire for a "parsimonious" model.
+
+* There is a concern regarding duplication.  It may be that, say, some
+  pair of confounders suffices, and adding further confounders does
+  nothing to further clarify discrimination effects.
+
+Concerning this last point:  We do not merely have 19
+choices for confounders; we must choose from the set of all possible
+groups of confounders: singletons, pairs, triplets and so on.  There are
+$2^{19}$ possibilities here, about half a million.
+
+Our specific purpose here is to find a reasonable set of  confounders.
+In essence, that means find variables C such that C is substantially
+correlated with both Y and S.  One way to approach that is that do
+separate predictions of Y and S, and see which features turn out to
+predict both well.  
+
+### Exploratory example:  engineering wages
+
+One useful tool here is the function **dsldFrequencyByS()**, which aims
+to analyze categorical (not numeric) columns by printing out a list of
+frequencies. Since education level in the **svcensus* data is
 categorical, we can call the function as follows:
 
 ```{r}
@@ -35,8 +68,8 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "educ", "gender")
 ```
 
-The similar frequency values between men and women suggest that we *cannot* 
-confidently claim education to be a possible confounder.
+The similar frequency values between men and women suggests
+not using education as a confounder.
 
 On the other hand, we *do* see more interesting results if we look at 
 *occupation* instead of *education*:
@@ -47,32 +80,29 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "occ", "gender")
 ```
 
-Notice the difference between the proportion of males in occupation 106 vs 
-females in that same occupation--a difference of approximately 11%. The 
-difference in frequencies here is much greater than with the 'educ' example, 
-which suggests that there is a difference in the occupations that men and 
-women tend to be in. Since different occupations correlate with different wages, 
-it is possible that this difference in occupations that men have compared with 
-what women have could be affecting the relationship between gender and wage. 
+Notice the difference between the proportion of males in occupation 106
+[One might consider conducting formal statistical inference in this
+comparison, but the relevance to the issue of our ultimate statistical
+analysis of Y is unclear.  At any rate, here we are merely doing an
+exploratory analysis anyway.]{.column-margin} vs females in that same
+occupation--a difference of approximately 11%.  The difference in
+frequencies here is much greater than with the 'educ' example, which
+suggests using occupation as a confounder.  Since different occupations
+correlate with different wages, it is possible that this difference in
+occupations that men have compared with what women have could be
+affecting the relationship between gender and wage. 
 
-<!-- Remove this paragraph? -->
-Since occupation may have a substantial impact on the relationship between gender 
-and wage, it may be detrimental to omit occupation from any models that we generate 
-for this relationship.
+### Exploratory example: Law school admissions data
 
-As always, further investigation is necessary to determine the extent of the impact 
-that employee occupations have on the relationship we are analyzing.
+Suppose we are investigating the relationship between LSAT exams scores
+and race, and wish to graphically explore the effects of the C, family
+income, on the relationship between Y = LSAT score, and S = race.
 
-### Confounders in Law School Admissions
-
-Suppose we are investigating the relationship between LSAT exams scores and race 
-(refer to @law-school above). We want to graphically explore the effects of the 
-C, family income, on the relationship between Y, lsat score, and S, race.
-
-We have to look at both the relationship between race and LSAT scores and the 
-relationship between race and family income. We may also want to look at the
-effects of GPA as well. A quick way to view multiple variables (and their
-relation to the sensitive variable) at once is to plot them in a 3D scatter plot:
+We have to look at both the relationship between race and LSAT scores
+and the relationship between race and family income. We may also want to
+look at the effects of GPA as well. A quick way to view multiple
+variables (and their relation to the sensitive variable) at once is to
+plot them in a 3D scatter plot:
 
 <!-- Placement pending -->
 ```{r, eval=FALSE}
@@ -83,24 +113,24 @@ dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','ugpa'), 'race1',
 
 ![](graphTab/lawscatterplot3d2.png){width="90%"}
 
-There are a couple things you can gather from a graph like this. Looking at the
-fam_inc axis, the lowest quintile of family income is mostly populated with Black 
-and Hispanic students, while the upper two levels are almost entirely made up of
-white students. Interestingly on the lsat axis, most of those with a lower score 
-happen to be non-white, across all income levels. On the other hand, the ugpa
-axis has a similar trend to that of the lsat axis, albeit to a much weaker extent.
+Looking at the fam_inc axis, the lowest quintile of family income is
+[This is a **plotly** interactive graph.  To fully understand this
+function, the reader should execute the function outside of Quarto,
+trying features such as move, rotate, show annotation etc.]{.column-margin}
+mostly populated by Black and Hispanic students, while the upper two
+levels are almost entirely made up of white students. Interestingly on
+the lsat axis, most of those with a lower score happen to be non-white,
+across all income levels. On the other hand, the ugpa axis has a similar
+trend to that of the lsat axis, albeit to a much weaker extent.
 
-It is important to note that we cannot draw any concrete conclusions from this
-graph alone. For one thing, having such a large majority of students being white
-can make it hard to notice any hidden trends. We are only using this graph to 
-look for anything that may affect our analysis of the relationship between race 
-and LSAT scores. That being said, we can also say that it's possible that family 
-income may confouding said relationship, only because the different levels look 
-fairly different in terms of the races of the students that populate it--more on 
-this later.
+Once again, this analysis is merely exploratory, but the graph lends
+some credence to claims that family income may confound the relationship
+between race and LSAT score.  Note however, that these graphs do not do much to 
+answer the question of whether, in this case, that relationship is substantial.
+The formal analysis we did earlier indicates that it is not.
 
-To further support our claim that race may be affecting LSAT results, we can 
-look at the density plot of LSAT scores against different races.
+To further support our claim that race may be affecting LSAT results, we
+can look at the density plot of LSAT scores against different races.
 
 ```{r, eval=FALSE}
 data(law.school.admissions)
@@ -140,8 +170,63 @@ relationship between race and LSAT scores.
 ::: {.callout-note}
 ### Everything is a Confounder
 
-Everything is a confounder to *some* degree, so it is up to the analyst to decide 
-when a feature is confounding enough to be considered in a model.
+Everything is a confounder to *some* degree, so it is up to the analyst
+to decide when a feature is confounding enough to be considered in a
+model.
 
 :::
+
+### Variable selection methodology
+
+Many, many approaches to this *variable selection* or *feature
+selection* [A nice overview of such methodology, and implementations in
+R and Python, are given in [Parr *et
+al*](https://explained.ai/rf-importance).]{.column-margin} problem have
+been proposed over the years.  The **qeML** package includes five of
+them (see the documentation), and there are myriad others.
+
+One widely-used method is *permutation*, which we will use here.  To
+gauge the importance of a variable V in the context of using some ML
+algorithm, we do two runs through the data, first with the original dataset,
+and then with the V column changed through a random shuffling of the
+values in that column.  In that second run, our predictive accuracy
+should be compromised, and the importance measure is taken to be the
+proportional increase in error rate.  The larger the increase, the
+more important we deem the variable.
+
+### The dsldCHunting() function
+
+This function serves as an aid to selecting confounders, using the 
+following approach.  Denote our dataset by **d**.
+
+* Two columnwise subsets of **d** are formed, **dNoS** and **doNoY**,
+  deleting the respective column.
+
+* We fit a random forests model to **dNoS**, predicting Y, resulting in
+  variable importance measure **vY**.
+
+* We fit a random forests model to **dNoY**, predicting S, resulting in
+  variable importance measure **vS**.
+
+* We sort each of the two 'v' measures, from largest to smallest.
+
+* For each i, we take the intersection of the top-i 'v' measures in each set.
+
+By taking the intersection, we are focusing on variables that are
+correlated with both Y and S, as desired.
+
+Here is an example, using the mortgage data.
+
+```{r}
+data(mortgageSE)
+dsldCHunting(mortgageSE,'deny','black')
+```
+
+The importance measures are printed out (the ranking is what matters),
+followed by the "top-i" sets in common.
+
+As usual, there are no magic formulas to use here.  The analyst is given
+a choice.  One might use just two confounders, 'p_irat' and 'loan_val';
+for a set of three, the software suggests 'p_irat', 'loan_val' and 'hse_inc',
+and so on.
 
