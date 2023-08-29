@@ -394,5 +394,6 @@ fairTest <- function(deVal = 1) {
     c(mean(AA[,1]), mean(C[,1]), model$testAcc)
 }
 
-replicMeans(500,"{c(fairTest(1),fairTest(.1))}")
+# output the mean of 500 trials of no deweighting and deweighting decile scores at 10%
+replicMeans(100,"{c(fairTest(1),fairTest(.1))}")
 ```
