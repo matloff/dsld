@@ -111,29 +111,36 @@ of these metrics tell users and which algorithms perform best with respect to
 each one.
 
 ::: {.callout-note}
-### True-False Positives and Negatives
+### True-False Positives and Negatives {#classification-terms}
 Over the following sections, you may see the terms like True-Positive rate 
 (TPR) or False-Negative rate (FPR), etc. These terms will primarily come in 
 the context of binary classifiers as a means of measuring performance or even 
 fairness. The definitions are as follows:
- - **True** means that the actual result and the preedicted result are the same
- - **False** means that the actual result is the opposite of the predicted 
-   result
- - **Positive** refers to the act of a positive prediction, a `1`; this is 
+
+* **True** means that the actual result and the predicted result are the same
+* **False** means that the actual result is the opposite of the predicted result
+* **Positive** refers to the act of a positive prediction, a `1`; this is 
    simply assigning one of two outcomes to the positive class on an arbitrary 
    basis
- - **Negative** refers to the act of a negative prediction, a `0`
+* **Negative** refers to the act of a negative prediction, a `0`
+* **True Positives (TP)**: Number of instances from the positive class predicted 
+   correctly (i.e. as positive)
+* **True Negatives (TN)**: Number of instances from the negative class predicted 
+   correctly (i.e. as negative)
+* **False Positives (FP)**: Type I Error - Number of instances from negative class 
+   predicted incorrectly (i.e. as positive)
+* **False Negatives (FN)**: Type II Error - Number of instances from positive class 
+   predicted incorrectly (i.e. as negative)
 
-So, True-Positive would be a correctly predicted positive outcome, while False-
-Negative would be an incorrectly predicted negative outcome (predicted `0`, 
-actual was `1`). The rate appended to the end means a ratio with regards to all 
+The rate appended to the end means a ratio with regards to all 
 positives or negatives.
 
 Aliases for the above terms are as follows:
- - **TPR** is also *sensitivity*, *recall*, or *hit rate*
- - **FPR** is also *fall-out* or *false-alarm ratio*
- - **TNR** is also *specificity*
- - **FNR** is also *miss rate*
+
+* **TPR** is also *sensitivity*, *recall*, or *hit rate*
+* **FPR** is also *fall-out* or *false-alarm ratio*
+* **TNR** is also *specificity*
+* **FNR** is also *miss rate*
 :::
 
 
@@ -234,22 +241,9 @@ Accuracy and error rate are complements of each other, so
 $Error Rate = 1 - Accuracy$.
 
 For a two-class (binary) classification scenario (i.e. negative and positive, as 
-in diagnoses), we can make use of more descriptive terms:
-
-* True Positives (TP): Number of instances from the positive class predicted 
-correctly (i.e. as positive)
-
-* True Negatives (TN): Number of instances from the negative class predicted 
-correctly (i.e. as negative)
-
-* False Positives (FP): Type I Error - Number of instances from negative class 
-predicted incorrectly (i.e. as positive)
-
-* False Negatives (FN): Type II Error - Number of instances from positive class 
-predicted incorrectly (i.e. as negative)
-
-Thus, we can redefine our accuracy and error rate formulas (for binary 
-classification) as follows:
+in diagnoses), we can make use of True-False Positives and Negatives to redefine 
+our accuracy and error rate formulas as follows:
+[See @classification-terms for definitions]{.column-margin}
 $$
 Accuracy = \frac{\text{TP}+\text{TN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
 $$
