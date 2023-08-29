@@ -345,9 +345,45 @@ We can use the **replicMeans** (included in **qeML**) to run several trials of o
 to increase the reliability of our results:
 
 ```{r}
-data(compas)
-regtools::replicMeans(5,"{rf1 <- dsldQeFairRF(compas, 'two_year_recid', deweightPars = list(decile_score=0.1, v_decile_score=0.1), sName = 'race'); c(rf1$corrsens, rf1$testAcc)}")
-regtools::replicMeans(5,"{rf2 <- dsldQeFairRF(compas, 'two_year_recid', deweightPars = list(decile_score=1, v_decile_score=1), sName = 'race'); c(rf2$corrsens, rf2$testAcc)}")
+numTrials = 5
+deweightPars01 = list(out_custody=0.1, c_jail_out=0.1)
+deweightPars1 = list(out_custody=1, c_jail_out=1)
+```
+```{r, eval=FALSE}
+# S Correlation
+sCorrTest <- function(deweightList) {
+    data(compas)
+    data <- compas
+    yName <- 'two_year_recid'
+    sName <- 'race'
+
+    model <- dsldQeFairRF(compas, 'two_year_recid', deweightPars = deweightList,
+                        sName = 'race')
+    
+    c(model$corrsens, model$testAcc)
+}
+
+sRes <- regtools::replicMeans(numTrials,"{c(sCorrTest(deweightPars01),
+                                    sCorrTest(deweightPars1))}")
+# logic for print statement
+if (sRes[1] > sRes[8]) {
+    sFairnessDir <- "increased"
+} else {
+    sFairnessDir <- "decreased"
+}
+if (sRes[7] > sRes[14]) {
+    sUtilityDir <- "increased"
+} else {
+    sUtilityDir <- "decreased"
+}
+
+print(sRes[1:6])
+print(paste("Deweight0.1 TestAcc:",sRes[7]))
+print(sRes[8:13])
+print(paste("Deweight1 TestAcc:",sRes[14]))
+# summary
+print(paste("Based on S Correlation, as Deweight increased, fairness", 
+            sFairnessDir, "and utility", sUtilityDir))
 ```
 
 This example demonstrates the tradeoff between utility and fairness: as we increase the 
@@ -357,43 +393,72 @@ since we are trying to increase fairness by reducing the impact of S proxies.
 
 ### Testing: Demographic Parity
 
-<!-- Writing pending -->
+<!-- Results inconclusive -->
 ```{r, eval=FALSE}
-fairTest <- function(deVal = 1) {
+# Demographic Parity
+demoTest <- function(deweightList, threshold = .5) {
     data(compas)
     data <- compas
     yName <- 'two_year_recid'
     sName <- 'race'
     
-    # deweight decile_score and v_decile_score
-    deweightPars = list(
-      decile_score=deVal, 
-    v_decile_score=deVal)
-    
     train <- data[1:4500,]
     test <- data[4501:nrow(data),]
     model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName, 
-                                deweightPars=deweightPars)
+                                deweightPars=deweightList)
     
     # model's probability from 0 to 1 that the person recidivated
     prediction <- predict(model, test)$probs
     
-    # if that probability is above .5, we call it a yes
-    yes <- prediction[,1] > .5
+    # if that probability is above thdemoReshold, we call it a yes
+    yes <- prediction[,1] > threshold
     
     # output of those who recidivated and their race
     out <- cbind(yes, test['race'])
     
-    # vector of only African-Americans
+    # create separate vectors for each group in 'race'
     AA <- out[out['race'] == 'African-American',]
-    # vector of only Caucasians
     C <- out[out['race'] == 'Caucasian',]
+    AS <- out[out['race'] == 'Asian',]
+    H <- out[out['race'] == 'Hispanic',]
+    NAT <- out[out['race'] == 'Native American',]
+    O <- out[out['race'] == 'Other',]
     
     # for each race, return the proportion of which the model classified as will
     # recidivate, along with model's test accuracy
-    c(mean(AA[,1]), mean(C[,1]), model$testAcc)
+    c(mean(AA[,1]), mean(C[,1]), mean(AS[,1]), mean(H[,1]), mean(NAT[,1]), 
+      mean(O[,1]), model$testAcc)
 }
 
-# output the mean of 500 trials of no deweighting and deweighting decile scores at 10%
-replicMeans(100,"{c(fairTest(1),fairTest(.1))}")
+# calculate the mean of 20 trials of no deweighting and deweighting 
+# out_custody and c_jail_out at 10%
+demoRes <- replicMeans(numTrials,"{c(demoTest(deweightPars01),
+                                 demoTest(deweightPars1))}")
+
+# determine sample variance in recividism proportions across races
+var01 <- var(demoRes[1:6]) # deweight = 0.1
+var1 <- var(demoRes[8:13]) # deweight = 1
+
+# logic for print statement
+if (var01 > var1) {
+    dFairnessDir <- "increased"
+} else {
+    dFairnessDir <- "decreased"
+}
+if (demoRes[7] > demoRes[14]) {
+    dUtilityDir <- "increased"
+} else {
+    dUtilityDir <- "decreased"
+}
+
+# print the full vector for reference
+print(demoRes)
+
+# print variance and test accuracies: fairness and utility scores
+print(paste("Deweight0.1 Var:", var01, "TestAcc:", demoRes[7]))
+print(paste("Deweight1 Var:", var1, "TestAcc:", demoRes[14]))
+
+# summary
+print(paste("Based on Demo Parity, as Deweight increased, fairness", 
+            dFairnessDir, "and utility", dUtilityDir))
 ```
