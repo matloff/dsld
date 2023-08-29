@@ -117,7 +117,7 @@ Looking at the fam_inc axis, the lowest quintile of family income is
 [This is a **plotly** interactive graph.  To fully understand this
 function, the reader should execute the function outside of Quarto,
 trying features such as move, rotate, show annotation etc.]{.column-margin}
-mostly populated by Black and Hispanic students, while the upper two
+mostly populated by Black and Latino students, while the upper two
 levels are almost entirely made up of white students. Interestingly on
 the lsat axis, most of those with a lower score happen to be non-white,
 across all income levels. On the other hand, the ugpa axis has a similar
@@ -134,50 +134,58 @@ results, we can look at the density plot of LSAT scores against
 different races.
 
 ```{r, eval=FALSE}
+# requires 'webshot' package
 data(law.school.admissions)
 dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
 ```
 
-![](graphTab/lawdensitylsat.png){width="80%"}
+![](graphTab/lawdensitylsat.png){width="120%"}
 
-Each curve represents the distribution of LSAT scores for each race, with the
-peak of each curve representing the most common scores. From this, its easy
-to see the possibility of racial bias in the LSAT. But again, this bias may be
-confounded.
+Each curve represents the distribution of LSAT scores for each race.
+From this, its easy to see the possibility of racial bias in the LSAT.
+But again, this bias may be confounded.
 
-Recall that the scatter plot also indicated a potential trend between family 
-income and race. We can zoom in on this relationship by generating another 
-density plot:
+Recall that the scatter plot also suggested some trend between family
+income and race. We can investigate this possible relationship by
+generating another density plot:
 
 ```{r, eval=FALSE}
 data(law.school.admissions)
 dsldDensityByS(law.school.admissions, cName = "fam_inc", sName = "race1")
 ```
 
-![](graphTab/lawdensityfam.png){width="80%"}
+![](graphTab/lawdensityfam.png){width="120%"}
 
-White students have larger peaks at income levels 3, 4, and 5, indicating that
-a larger proportion of white students are in the higher income brackets than 
-non-white students. Conversely, a larger proportion of black and Hispanic
-students occupy the lower income bracket levels.
+White students have larger peaks at income levels 3, 4, and 5,
+indicating that [Recall that the **fam_inc** variable is measured in
+terms of quintiles, 1 through 5.  This is the reason behind the
+seemingly-odd alignment of, say, the Black and Latino
+curves.]{.column-margin} a larger proportion of white students are in
+the higher income brackets than non-white students. Conversely, a larger
+proportion of black and Latino students occupy the lower income bracket
+levels.
 
 [If we wanted to investigate other potential confounders, we can call 
 **dsldConfounders()** with 'race1' as our sensitive variable.]{.column-margin}
 
-<!-- remove this paragraph? -->
 This suggests that family income could be confounding the potential 
-relationship between race and LSAT scores.
+relationship between race and LSAT scores.  But, as noted, our earlier analysis indicated that the degree of this relationship is very small.
 
 ::: {.callout-note}
-### Everything is a Confounder
+### Almost anything is a Confounder
 
-Everything is a confounder to *some* degree, so it is up to the analyst
-to decide when a feature is confounding enough to be considered in a
-model.
+Once one accounts for links of two variables, then links of links and so
+on, virtually everything in practice is a confounder to *some* degree,
+so it is up to the analyst to decide when a feature is confounding
+enough to be considered for inclusion in a model.
 
 :::
 
 ### Variable selection methodology
+
+The above graphical and tabular approaches may suffice to determine
+one's confounders in some applications.  We now present more formal,
+systematic methods.
 
 Many, many approaches to this *variable selection* or *feature
 selection* [A nice overview of such methodology, and implementations in
