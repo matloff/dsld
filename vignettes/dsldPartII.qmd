@@ -348,6 +348,7 @@ We can use the **replicMeans** (included in **qeML**) to run several trials of o
 to increase the reliability of our results:
 
 ```{r}
+data(compas)
 numTrials = 20
 deweightPars01 = list(out_custody=0.1, c_jail_out=0.1)
 deweightPars1 = list(out_custody=1, c_jail_out=1)
@@ -355,11 +356,6 @@ deweightPars1 = list(out_custody=1, c_jail_out=1)
 ```{r, eval=FALSE}
 # S Correlation
 sCorrTest <- function(deweightList) {
-    data(compas)
-    data <- compas
-    yName <- 'two_year_recid'
-    sName <- 'race'
-
     model <- dsldQeFairRF(compas, 'two_year_recid', deweightPars = deweightList,
                         sName = 'race')
     
@@ -400,20 +396,16 @@ since we are trying to increase fairness by reducing the impact of S proxies.
 ```{r, eval=FALSE}
 # Demographic Parity
 demoTest <- function(deweightList, threshold = .5) {
-    data(compas)
     data <- compas
-    yName <- 'two_year_recid'
-    sName <- 'race'
-    
     train <- data[1:4500,]
     test <- data[4501:nrow(data),]
-    model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName, 
-                                deweightPars=deweightList)
+    model <- dsld::dsldQeFairRF(data = train, yName = 'two_year_recid', 
+                                sName = 'race', deweightPars = deweightList)
     
     # model's probability from 0 to 1 that the person recidivated
-    prediction <- predict(model, test)$probs
+    prediction <- predict(model,test)$probs
     
-    # if that probability is above thdemoReshold, we call it a yes
+    # if that probability is above threshold, we call it a yes
     yes <- prediction[,1] > threshold
     
     # output of those who recidivated and their race
@@ -435,7 +427,7 @@ demoTest <- function(deweightList, threshold = .5) {
 
 # calculate the mean of 20 trials of no deweighting and deweighting 
 # out_custody and c_jail_out at 10%
-demoRes <- replicMeans(numTrials,"{c(demoTest(deweightPars01),
+demoRes <- regtools::replicMeans(numTrials,"{c(demoTest(deweightPars01),
                                  demoTest(deweightPars1))}")
 
 # determine sample variance in recividism proportions across races
