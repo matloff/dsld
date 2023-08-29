@@ -116,6 +116,7 @@ Over the following sections, you may see the terms like True-Positive rate
 (TPR) or False-Negative rate (FPR), etc. These terms will primarily come in 
 the context of binary classifiers as a means of measuring performance or even 
 fairness. The definitions are as follows:
+<!-- Must fix list formatting -->
  - **True** means that the actual result and the preedicted result are the same
  - **False** means that the actual result is the opposite of the predicted 
    result
