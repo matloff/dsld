@@ -27,37 +27,6 @@ dsldCheckData <- function(data1, data2, yName) {
   return(data2)
 }
 ### -------------------------- DSLD Linear -------------------------------------
-#' ::: Descripton :::
-#' @brief The dsldLinear function fits a linear model to the response variable,
-#'      yName, using all other available covariates in the user provided
-#'      dataset. The user may select for full interactions across the sensitive
-#'      variable, sName, in which case the function will fit m separate models,
-#'      where m is the number of levels of sName.
-#'
-#'      The function produces an instance of the `dsldLM` class (an S3
-#'      object).
-#'
-#'      The output of dsldLinear will store a list of useful traits pertaining
-#'      the linear model; the following useful information will be stored:
-#'          1. yName & sName; [character] @ yName, @ sName
-#'          2. Model; [character] @ model
-#'          3. (Full Interactions only) New data input by user;
-#'             [dataframe] @ data
-#'          3. Summary Output of model; [character] @ summary
-#'          4. Coef of beta parameters; [character] @ coef
-#'          5. Data used in the model (useful to see for interactions);
-#'             [dataframe] @ data
-#'
-#' ::: Arguments :::
-#' @param data: dataset used to train the model [dataframe]
-#' @param yName: name of the response column [character]
-#' @param sName: name of the sensitive column [character]
-#' @param interactions: specifies whether or not to consider interactions;
-#'      Defaults to FALSE [boolean]
-#' @param newData: new test cases to compute Y | X ; REQUIRED when
-#'      interactions = TRUE [dataframe]
-#' @param sandwich: whether or not to use sandwich variance estimator; defaults
-#'      to FALSE [logical]
 
 dsldLinear <- function(data, yName, sName, interactions = FALSE, 
                        sComparisonPts = NULL, useSandwich = FALSE) {
@@ -162,24 +131,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
   return(dsldModel)
 }
 
-# -------------------- Test Run dsldLinear ------------------------------------#
-# data(svcensus)
-# newData <- data.frame(age = c(18,60), educ = c("zzzOther",'zzzOther'),wkswrkd = c(50,50), occ = c("106", "106"))  
-# lin1 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData); lin1   
-# lin11 <- dsldLinear(svcensus,'wageinc','gender', interactions = TRUE, newData, useSandwich = TRUE); lin11   
-# lin2 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE); lin2
-# lin22 <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE, useSandwich = TRUE); lin22
-# -----------------------------------------------------------------------------#
-
 # ----------------------- Auxiliary Functions ---------------------------------#
-
-#' ::: Description ::
-#' @brief coef() is a polymorphic method that takes in an object of the
-#'      'dsldLM' class. The function provides m regression coefficients
-#'      of the model, where m is the number of levels of sName.
-#'
-#' ::: Arguments :::
-#' @param dsldLM: an instance of the dsldLM s3 object.
 
 coef.dsldLM <- function(dsldLM) {
   # merge & return coefficients #
@@ -201,14 +153,6 @@ vcov.dsldLM <- function(dsldLM) {
 # vcov(lin1)
 # vcov(lin11)
 
-#' ::: Description ::
-#' @brief the dsldGetData() function takes in an object of the 'dsldLM'
-#'      class. The function provides m dataset(s) used to train the linear
-#'      model, where m is the number of levels of sName.
-#'
-#' ::: Arguments :::
-#' @param dsldLM: an instance of the dsldLM s3 object.
-
 dsldGetData <- function(dsldLM) {
   # merge & return datasets #
   mergedData <- lapply(dsldLM, function(x) x$data)
@@ -216,37 +160,7 @@ dsldGetData <- function(dsldLM) {
 }
 
 
-# dsldGetData(lin1)
-# dsldGetData(lin11)
-
 #------------------------- dsldDiffS function ---------------------------------#
-#' ::: Description ::
-#' @brief The dsldDiffS() function helps users quantify possible evidence of
-#'      discrimination between S levels. For the no-interactions case,
-#'      dsldDiffS compares differences in regression coefficients between each
-#'      pairs of S levels. For the full-interactions case, dsldDiffS now
-#'      requires an argument, in data-frame form, of new test cases where
-#'      difference in mean Y at that X value will be compared between each pair
-#'      of S levels.
-#'
-#'      For no-interaction case, dsldDiffS returns a data frame with 4 columns:
-#'      1. Pairs of S level names
-#'      2. Estimates of the differences
-#'      3. Associated standard errors
-#'      4. P-values
-#'      There will be one row for each pair of S levels.
-#'
-#'      For full-interactions case, dsldDiffs returns a data frame with 3
-#'      columns:
-#'      1. Col. number of diffs argument
-#'      2. Estimate of the difference in mean Y at that X value
-#'      3. Associated std. err.
-#'      There will be one row for each pair of S levels.
-#'
-#' ::: Arguments :::
-#' @param dsldLM: output from dsldLinear() function
-#' @param newData: new test cases to be provided; required for
-#'      full-interactions case
 
 dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
   library(regtools)
@@ -435,15 +349,6 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
 # dsldDiffSLin(lin1, educ_data) # run with interactions 
 # dsldDiffSLin(lin11, educ_data)
 # -----------------------------------------------------------------------------#
-
-#' ::: Description ::
-#' @brief summary() is a polymorphic method that takes in an object of the 'dsldLM' 
-#'      class. The function provides m summaries of the model, where m is the number 
-#'      of levels of sName. Additionally, the summary function also report differences 
-#'      across S levels.
-#' 
-#' ::: Arguments :::
-#' @param dsldLM: an instance of the dsldLM s3 object that output summary objects.
 
 summary.dsldLM <- function(dsldLM) {
   diffS <- list()
