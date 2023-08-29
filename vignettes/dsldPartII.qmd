@@ -395,65 +395,67 @@ since we are trying to increase fairness by reducing the impact of S proxies.
 <!-- Results inconclusive -->
 ```{r, eval=FALSE}
 # Demographic Parity
-demoTest <- function(deweightList, threshold = .5) {
+demoTest <- function(deval, threshold = .5) {
     data <- compas
+    yName <- 'two_year_recid'
+    sName <- 'race'
+    
+    # deweight decile_score and v_decile_score
+    deweightPars = list(
+      decile_score=deval, 
+      v_decile_score=deval)
+    
     train <- data[1:4500,]
     test <- data[4501:nrow(data),]
-    model <- dsld::dsldQeFairRF(data = train, yName = 'two_year_recid', 
-                                sName = 'race', deweightPars = deweightList)
+    model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName, 
+                                deweightPars=deweightPars)
     
     # model's probability from 0 to 1 that the person recidivated
-    prediction <- predict(model,test)$probs
+    prediction <- predict(model, test)$probs
     
-    # if that probability is above threshold, we call it a yes
+    # if that probability is above .5, we call it a yes
     yes <- prediction[,1] > threshold
     
     # output of those who recidivated and their race
     out <- cbind(yes, test['race'])
     
-    # create separate vectors for each group in 'race'
-    AA <- out[out['race'] == 'African-American',]
-    C <- out[out['race'] == 'Caucasian',]
-    AS <- out[out['race'] == 'Asian',]
-    H <- out[out['race'] == 'Hispanic',]
-    NAT <- out[out['race'] == 'Native American',]
-    O <- out[out['race'] == 'Other',]
+    # split the data by race
+    split <- split(out, out$race)
     
-    # for each race, return the proportion of which the model classified as will
-    # recidivate, along with model's test accuracy
-    c(mean(AA[,1]), mean(C[,1]), mean(AS[,1]), mean(H[,1]), mean(NAT[,1]), 
-      mean(O[,1]), model$testAcc)
+    # get the mean (the proportion) for each race of those who are classified
+    # as recidivated
+    props <- mapply(function(x) mean(x[[1]]), split)
+    props["Variance"] <- var(props)
+    props["TestAcc"] <- model$testAcc
+    props
 }
 
-# calculate the mean of 20 trials of no deweighting and deweighting 
+# calculate the mean of 10 trials of no deweighting and deweighting 
 # out_custody and c_jail_out at 10%
-demoRes <- regtools::replicMeans(numTrials,"{c(demoTest(deweightPars01),
-                                 demoTest(deweightPars1))}")
-
-# determine sample variance in recividism proportions across races
-var01 <- var(demoRes[1:6]) # deweight = 0.1
-var1 <- var(demoRes[8:13]) # deweight = 1
-
-# logic for print statement
-if (var01 > var1) {
-    dFairnessDir <- "increased"
-} else {
-    dFairnessDir <- "decreased"
-}
-if (demoRes[7] > demoRes[14]) {
-    dUtilityDir <- "increased"
-} else {
-    dUtilityDir <- "decreased"
-}
-
-# print the full vector for reference
-print(demoRes)
-
-# print variance and test accuracies: fairness and utility scores
-print(paste("Deweight0.1 Var:", var01, "TestAcc:", demoRes[7]))
-print(paste("Deweight1 Var:", var1, "TestAcc:", demoRes[14]))
-
-# summary
-print(paste("Based on Demo Parity, as Deweight increased, fairness", 
-            dFairnessDir, "and utility", dUtilityDir))
+regtools::replicMeans(10,"{demoTest(1)}")
+regtools::replicMeans(10, "{demoTest(0)}")
+```
+With no devaluing:
+```
+African-American            Asian        Caucasian         Hispanic  Native American            Other 
+       0.5420749        0.2500000        0.3226087        0.3608333        0.5000000        0.2653333 
+        Variance          TestAcc 
+       0.0148852        0.2293333 
+attr(,"stderr")
+African-American            Asian        Caucasian         Hispanic  Native American            Other 
+    0.0025936599     0.0000000000     0.0019498006     0.0017786456     0.0000000000     0.0057777778 
+        Variance          TestAcc 
+    0.0003246924     0.0052357325 
+```
+With devaluing decile_score and v_decile_score at 0:
+```
+African-American            Asian        Caucasian         Hispanic  Native American            Other 
+       0.5420749        0.2500000        0.3226087        0.3608333        0.5000000        0.2653333 
+        Variance          TestAcc 
+       0.0148852        0.2293333 
+attr(,"stderr")
+African-American            Asian        Caucasian         Hispanic  Native American            Other 
+    0.0025936599     0.0000000000     0.0019498006     0.0017786456     0.0000000000     0.0057777778 
+        Variance          TestAcc 
+    0.0003246924     0.0052357325 
 ```
