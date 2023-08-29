@@ -347,42 +347,53 @@ utility.
 We can use the **replicMeans** (included in **qeML**) to run several trials of our model 
 to increase the reliability of our results:
 
-```{r}
-data(compas)
-numTrials = 20
-deweightPars01 = list(out_custody=0.1, c_jail_out=0.1)
-deweightPars1 = list(out_custody=1, c_jail_out=1)
-```
 ```{r, eval=FALSE}
 # S Correlation
-sCorrTest <- function(deweightList) {
-    model <- dsldQeFairRF(compas, 'two_year_recid', deweightPars = deweightList,
-                        sName = 'race')
-    
-    c(model$corrsens, model$testAcc)
+sCorrTest <- function(deval) {
+  data <- compas
+  yName <- 'two_year_recid'
+  sName <- 'race'
+  
+  # deweight decile_score and v_decile_score
+  deweightPars = list(
+    decile_score=deval, 
+    v_decile_score=deval)
+
+  model <- dsld::dsldQeFairRF(data=data, yName=yName, sName=sName, 
+                              deweightPars=deweightPars)
+  
+  out <- model$corrsens
+  out["MeanCorr"] <- mean(out)
+  out["MisclassRate"] <- model$testAcc
+  out
 }
 
-sRes <- regtools::replicMeans(numTrials,"{c(sCorrTest(deweightPars01),
-                                    sCorrTest(deweightPars1))}")
-# logic for print statement
-if (sRes[1] > sRes[8]) {
-    sFairnessDir <- "increased"
-} else {
-    sFairnessDir <- "decreased"
-}
-if (sRes[7] > sRes[14]) {
-    sUtilityDir <- "increased"
-} else {
-    sUtilityDir <- "decreased"
-}
-
-print(sRes[1:6])
-print(paste("Deweight0.1 TestAcc:",sRes[7]))
-print(sRes[8:13])
-print(paste("Deweight1 TestAcc:",sRes[14]))
-# summary
-print(paste("Based on S Correlation, as Deweight increased, fairness", 
-            sFairnessDir, "and utility", sUtilityDir))
+regtools::replicMeans(10,"sCorrTest(1)")
+regtools::replicMeans(10, "sCorrTest(0)")
+```
+With no deweighting:
+```
+race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
+           0.31260577            0.22855780            0.22077149            0.27627794            0.05367125            0.20062722 
+             MeanCorr          MisclassRate 
+           0.21541858            0.22085470 
+attr(,"stderr")
+race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
+          0.011304666           0.007417867           0.009277864           0.009299085           0.006092305           0.012518375 
+             MeanCorr          MisclassRate 
+          0.006572506           0.004375237 
+```
+With deweighting decile_score and v_decile_score at 0:
+```
+race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
+           0.27442840            0.20755925            0.20262451            0.23755422            0.04913453            0.18316868 
+             MeanCorr          MisclassRate 
+           0.19241160            0.20752137 
+attr(,"stderr")
+race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
+          0.012086371           0.009300634           0.010561315           0.011335209           0.006898007           0.012497858 
+             MeanCorr          MisclassRate 
+          0.008340477           0.004981765 
 ```
 
 This example demonstrates the tradeoff between utility and fairness: as we increase the 
@@ -426,36 +437,36 @@ demoTest <- function(deval, threshold = .5) {
     # as recidivated
     props <- mapply(function(x) mean(x[[1]]), split)
     props["Variance"] <- var(props)
-    props["TestAcc"] <- model$testAcc
+    props["MisclassRate"] <- model$testAcc
     props
 }
 
 # calculate the mean of 10 trials of no deweighting and deweighting 
 # out_custody and c_jail_out at 10%
-regtools::replicMeans(10,"{demoTest(1)}")
-regtools::replicMeans(10, "{demoTest(0)}")
+regtools::replicMeans(10,"demoTest(1)")
+regtools::replicMeans(10, "demoTest(0)")
 ```
-With no devaluing:
+With no deweighting:
 ```
 African-American            Asian        Caucasian         Hispanic  Native American            Other 
        0.5420749        0.2500000        0.3226087        0.3608333        0.5000000        0.2653333 
-        Variance          TestAcc 
+        Variance          MisclassRate 
        0.0148852        0.2293333 
 attr(,"stderr")
 African-American            Asian        Caucasian         Hispanic  Native American            Other 
     0.0025936599     0.0000000000     0.0019498006     0.0017786456     0.0000000000     0.0057777778 
-        Variance          TestAcc 
+        Variance     MisclassRate 
     0.0003246924     0.0052357325 
 ```
-With devaluing decile_score and v_decile_score at 0:
+With deweighting decile_score and v_decile_score at 0:
 ```
 African-American            Asian        Caucasian         Hispanic  Native American            Other 
        0.5420749        0.2500000        0.3226087        0.3608333        0.5000000        0.2653333 
-        Variance          TestAcc 
+        Variance          MisclassRate 
        0.0148852        0.2293333 
 attr(,"stderr")
 African-American            Asian        Caucasian         Hispanic  Native American            Other 
     0.0025936599     0.0000000000     0.0019498006     0.0017786456     0.0000000000     0.0057777778 
-        Variance          TestAcc 
+        Variance     MisclassRate 
     0.0003246924     0.0052357325 
 ```
