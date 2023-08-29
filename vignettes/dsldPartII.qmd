@@ -437,7 +437,7 @@ demoTest <- function(deval, threshold = .5) {
     
     # get the mean (the proportion) for each race of those who are classified
     # as recidivated
-    out <- mapply(function(x) mean(x[[1]]), split)
+    out <- sapply(split, function(x) mean(x[[1]]))
     out["Variance"] <- var(out)
     out["MisclassRate"] <- model$testAcc
     out
