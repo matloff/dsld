@@ -1,24 +1,3 @@
-#' @examples 
-#' library(dsld)
-#' data(svcensus)
-#' dsldConfounders(svcensus, "educ")
-
-
-# ----------------------- Dispatching w/ Confounders ----------------------- #
-#' ::: Description :::
-#' @brief a dispatching function that allows users to pass in a dataframe they
-#'      want to analyze in the context of finding confounders for numeric and
-#'      categorical variables. Dispatches frequency by sensitive var or density
-#'      by sensitive var against every column in the dataframe as appropriate.
-#'
-#' ::: Arguments :::
-#' @param data: dataset, an R dataframe
-#' @param sName: name of the sensitive variable, an R factor
-#' @param graphType: type of graph to display, an R character; defaults to
-#'      "plotly", but can be one of ("plotly", "plot")
-#' @param fill: whether or not to fill curve space, an R logical; defaults to
-#'      FALSE, not applicable to categorical data
-#'
 dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
     # Error checking
     if (is.null(sName)) {
@@ -58,30 +37,19 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
     }
 }
 
+# ---- test ----
+# library(dsld)
+# data(svcensus)
+# dsldConfounders(svcensus, "educ")
 
-# ----------------------- Auxiliary for Numeric ----------------------- #
-#' @examples
-#' library(dsld)
-#' data(svcensus)
-#' dsld::dsldDensityByS(svcensus, "wageinc", "educ")
-#'
-#' ::: Description :::
-#' @brief Graphs densities of a response variable, grouped by a sensitive
-#'      variable
-#'
-#' ::: Arguments :::
-#' @param data: A dataframe with 1 numerical column and a factor column
-#' @param cName: A name or index of the numerical column
-#' @param sName: A name or index of the factor column
-#'
-#' @export
-#'
+
 dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALSE) {
     if (!class(data[, sName]) %in% c("factor", "character"))
         stop(paste("sName should be of factor or character data type. Consider setting this as a cName instead"))
 
     numGroups <- length(levels(unique(data[, sName])))
     
+    # the string of the columns to use for labels
     cNameStr <- names(data[cName])
     sNameStr <- names(data[sName])
     
@@ -199,23 +167,13 @@ dsldDensityByS <- function(data, cName, sName, graphType = "plotly", fill = FALS
     }
 }
 
-# ----------------------- Auxiliary for Categorical ----------------------- #
-#' @examples
-#' library(dsld)
-#' data(svcensus)
-#' dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
-#'
-#' ::: Description :::
-#' @brief Extracts frequencies of a combination of levels, grouped by a
-#'      sensitive variable and the response variable.
-#'
-#' ::: Arguments :::
-#' @param data: A dataframe with 1 numerical column and a factor column
-#' @param cName: A name or index of the categorical column
-#' @param sName: A name or index of the factor column
-#'
-#' @export
-#'
+# ---- test ----
+# library(dsld)
+# data(svcensus)
+# dsld::dsldDensityByS(svcensus, "wageinc", "educ")
+
+
+
 dsldFrequencyByS <- function(data, cName, sName) {
     # type validation #
     if (!class(data[, sName]) %in% c("factor", "character")) {
@@ -253,5 +211,8 @@ dsldFrequencyByS <- function(data, cName, sName) {
 
     return(frequencies)
 }
-
+# ---- test ----
+# library(dsld)
+# data(svcensus)
+# dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 
