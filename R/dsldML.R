@@ -1,6 +1,16 @@
 
 # like dsldLinear and dsldLogit, but for machine learning prediction algorithms
 
+# args:
+
+#    dataName (must be quoted!), yName (must be called from quote()),
+#    sName as usual 
+
+#    sComparisonPts as in the with-interactions case of dsldLinear()
+
+#    qeMLftnName is, e.g. 'qeKNN'); opts is an R list of optional arguments
+#    for that function
+
 dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
    qeMLftnName,opts=NULL)
 {
@@ -12,6 +22,8 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
    scol <- which(names(data) == sName)
    slevels <- levels(data[,scol])
 
+   # called from lapply(), calling the QE function on the subset of data
+   # corresponding to the specified level of the sensitive variable S
    do1Slevel <- function(sLevel) 
    {
       subData <- data[data[,scol]==sLevel,]
@@ -28,6 +40,8 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
 
    tmp <- sComparisonPts
    for (sl in slevels) {
+      # predicted values are the values of the estimated regression
+      # function, just what we want
       preds <- predict(qeOut[[sl]],sComparisonPts)
       if (qeOut[[1]]$classif) {
          if (is.null(preds$probs)) stope('ML function does not return "probs"')
@@ -35,8 +49,7 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
       } else preds <- as.vector(preds)
       tmp[[sl]] <- preds
    }
-   ### preds <- sapply(qeOut,function(qeo) predict(qeo,sComparisonPts))
-   ### cbind(sComparisonPts,as.data.frame(preds))
+
    tmp
 
 }

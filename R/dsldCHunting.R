@@ -4,9 +4,12 @@
 
 # we want to find variables C that are correlated with both Y and S
 
-# based on qeRF, which uses the 'randomForests' package
+# based on qeRF, which uses the 'randomForests' package; its output
+# includes a variable importance measure
 
-# note: using permutation method, measuring deterioration in accuracy
+# importance here uses the permutation method, measuring deterioration
+# in prediction accuracy resulting from shuffling the given data column;
+# the greater the deterioration, the more important the variable
 
 dsldCHunting <- function(data,yName,sName) 
 {
@@ -21,6 +24,9 @@ dsldCHunting <- function(data,yName,sName)
    impY <- qeRF(dataNoS,yName)$importance
    impS <- qeRF(dataNoY,sName)$importance
 
+   # the 'importance' output format has several different cases, which
+   # must be dealt with separately in extracting the actual importance
+   # vector
    nlevsY <- length(levels(y))
    if (is.numeric(y) || nlevsY == 2) 
        impY1 <- impY[, 1]
@@ -32,12 +38,17 @@ dsldCHunting <- function(data,yName,sName)
    nlevsS <- length(levels(s))
    if (nlevsS == 2) impS1 <- impS[,1] else impS1 <- impS[,nlevsS+1]
 
+   # larger values mean higher importance
    impY1 <- sort(impY1,decreasing=TRUE)
    impS1 <- sort(impS1,decreasing=TRUE)
+
+   # start assembling output
    res <- list(impForY=impY1,impForS=impS1)
    nmsY <- names(impY1)
    nmsS <- names(impS1)
    res$inCommon <- list()
+   # for each i, find the "top i" set of confounders, defined as being
+   # highly correlated with both Y and S
    for (i in 1:min(10,ncol(data)-2)) {
       res$inCommon[[i]] <- intersect(nmsY[1:i],nmsS[1:i])
    }
