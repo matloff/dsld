@@ -365,20 +365,34 @@ fairTest <- function(deVal = 1) {
     yName <- 'two_year_recid'
     sName <- 'race'
     
+    # deweight decile_score and v_decile_score
+    deweightPars = list(
+      decile_score=deVal, 
+    v_decile_score=deVal)
+    
     train <- data[1:4500,]
     test <- data[4501:nrow(data),]
     model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName, 
-                                deweightPars = list(decile_score=deVal, 
-                                                    v_decile_score=deVal))
+                                deweightPars=deweightPars)
+    
+    # model's probability from 0 to 1 that the person recidivated
     prediction <- predict(model, test)$probs
+    
+    # if that probability is above .5, we call it a yes
     yes <- prediction[,1] > .5
+    
+    # output of those who recidivated and their race
     out <- cbind(yes, test['race'])
     
+    # vector of only African-Americans
     AA <- out[out['race'] == 'African-American',]
+    # vector of only Caucasians
     C <- out[out['race'] == 'Caucasian',]
     
+    # for each race, return the proportion of which the model classified as will
+    # recidivate, along with model's test accuracy
     c(mean(AA[,1]), mean(C[,1]), model$testAcc)
 }
 
-replicMeans(5,"{c(fairTest(1),fairTest(.1))}")
+replicMeans(500,"{c(fairTest(1),fairTest(.1))}")
 ```
