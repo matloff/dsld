@@ -254,6 +254,9 @@ on ROC curves.
 If our problem is a regression setting as opposed to a classification setting, it 
 may fare better to use a different metric (see the below section on MSPE & MAPE).
 
+<!-- Commenting out ROC curves until we can find away to either reduce it to a margin 
+note or remove it entirely -->
+<!--
 #### ROC Curves
 [![ROC Curve](partII/rocCurve.png)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic){width=50%}
 An ROC curve (receiver operating characteristic curve) is a graph that plots
@@ -286,7 +289,7 @@ the graph. It is up to the user to determine what true positive rate he wants
 for the model and make a risk assessment on who is free to socialize and who
 is required to quarantine. The ROC curve is a diagnostic tool to help the user
 choose which threshold he wants to use.
-
+-->
 
 #### MSPE & MAPE
 <!-- Mean Squared Prediction Error & Mean Absolute Prediction Error -->
