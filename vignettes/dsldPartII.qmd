@@ -31,12 +31,9 @@ model deployment. [more background here...]
 
 
 ## Approaches Deployed in DSLD
-<!-- go over all the approaches we use in the fairML & EDFair wrappers -->
-<!-- compare their performance against each other across all metrics 
-previously described -->
 While there exists a plethora of methods for ensuring a fair machine learning 
 model, the primary approaches utilized in the **dsld** package rely on fairness 
-constraints, each with their own strengths and weaknesses. As such, it will be 
+constraints; each metric has its strengths and weaknesses. As such, it will be 
 up to users to decide first which *metric* of fairness makes the most sense 
 within their domain, and then based on the performances we record below, choose 
 an appropriate model that best balances that measurement of fairness with the 
@@ -44,10 +41,9 @@ utility they would like. Again, it should be stressed that how you measure
 fairness and utility will determine the approach taken in balancing the two 
 with regards to the model itself.
 
-<!-- accuracy of this information may need to be double-checked -->
 So, what are fairness constraints? In simple terms, we can treat Machine 
 Learning as an optimization problem. We want to find a set of weights that 
-somewhow minimizes the amount of error, or cost as it's commonly referred as, 
+somewhow minimizes the amount of error, or cost as it's commonly referred to as, 
 that the model produces during testing. This cost function that's used to gauge 
 how well/poorly the model is performing provides the feedback necessary to 
 make adjustments to the weights as needed.
@@ -74,15 +70,18 @@ metrics that can be used to gauge fairness, there is no **single correct**
 **metric**; each will have their own use-case. It's up to the reader to decide 
 which constraint/metric will optimize the model for their needs.
 
-<!-- following part may be too technical, might move to margin -->
-<!-- there is also some redundancy, some parts will have to be merged with above -->
-The final set of weights produced is not only not always deterministic (random 
-initialization w/ gradient descent means global optimal is not always converged 
-on), but is also variable across approaches. The reason for this is each 
-approach considers a different definition (and therefore metric) of fairness. 
-This will be explained in depth later in this section, but it's important to 
-note that depending on how **you** define fairness with the context of your 
-data, the best approach will vary.
+::: {.callout-note}
+#### Side-Note: Determinism
+The following paragraph reads a bit more technical, though it is *not* 
+necessary for users to understand in order to deploy a fair ML model.
+
+The final set of weights produced by some of these algorithims is not always 
+deterministic. In other words, repeated attempts with the same model and 
+parameters may lead to varying degrees of success depending on the type of 
+optimization being used. Iterative optimization methods (such as gradient 
+descent) will be the main culprits with this non-determinism. Some closed-form 
+algorithms (i.e. Ridge Regression) will not be affected by this.
+:::
 
 
 ### Explicitly Deweighted Features
@@ -110,6 +109,32 @@ Different algorithms and approaches attempt to reduce bias as indicated through
 different metrics. In the following subsection, our aim is to explain what each 
 of these metrics tell users and which algorithms perform best with respect to 
 each one.
+
+::: {.callout-note}
+### True-False Positives and Negatives
+Over the following sections, you may see the terms like True-Positive rate 
+(TPR) or False-Negative rate (FPR), etc. These terms will primarily come in 
+the context of binary classifiers as a means of measuring performance or even 
+fairness. The definitions are as follows:
+ - **True** means that the actual result and the preedicted result are the same
+ - **False** means that the actual result is the opposite of the predicted 
+   result
+ - **Positive** refers to the act of a positive prediction, a `1`; this is 
+   simply assigning one of two outcomes to the positive class on an arbitrary 
+   basis
+ - **Negative** refers to the act of a negative prediction, a `0`
+
+So, True-Positive would be a correctly predicted positive outcome, while False-
+Negative would be an incorrectly predicted negative outcome (predicted `0`, 
+actual was `1`). The rate appended to the end means a ratio with regards to all 
+positives or negatives.
+
+Aliases for the above terms are as follows:
+ - **TPR** is also *sensitivity*, *recall*, or *hit rate*
+ - **FPR** is also *fall-out* or *false-alarm ratio*
+ - **TNR** is also *specificity*
+ - **FNR** is also *miss rate*
+:::
 
 
 ### Fairness Metrics
