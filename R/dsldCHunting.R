@@ -18,6 +18,9 @@ dsldCHunting <- function(data,yName,sName)
    scol <- which(names(data) == sName)
    y <- data[,ycol]
    s <- data[,scol]
+   if (!is.factor(y) || !is.factor(s)) 
+      stop('Y and S must be R factors')
+
    dataNoS <- data[,-scol]  # for predicting Y
    dataNoY <- data[,-ycol]  # for predicting S
 
