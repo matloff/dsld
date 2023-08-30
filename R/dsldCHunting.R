@@ -11,7 +11,12 @@
 # in prediction accuracy resulting from shuffling the given data column;
 # the greater the deterioration, the more important the variable
 
-dsldCHunting <- function(data,yName,sName) 
+# 'intersectDepth' specifies the number of prediction sets for each of Y
+# and S to examine for intersection; in datasets with many predictors,
+# this probably should be set to a larger value, or else each
+# intersection may be null
+
+dsldCHunting <- function(data,yName,sName,intersectDepth=10) 
 {
 
    ycol <- which(names(data) == yName)
@@ -52,7 +57,7 @@ dsldCHunting <- function(data,yName,sName)
    res$inCommon <- list()
    # for each i, find the "top i" set of confounders, defined as being
    # highly correlated with both Y and S
-   for (i in 1:min(10,ncol(data)-2)) {
+   for (i in 1:min(intersectDepth,ncol(data)-2)) {
       res$inCommon[[i]] <- intersect(nmsY[1:i],nmsS[1:i])
    }
    res
