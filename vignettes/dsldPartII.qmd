@@ -202,6 +202,8 @@ is used in the first place, the seriousness of the context the model will be
 deployed in motivates the use of something as restrictive as demographic 
 parity.
 
+#### Equal Opportunity
+
 #### Equalized Odds
 <!-- equalized odds definition, meaning, intuition here -->
 
