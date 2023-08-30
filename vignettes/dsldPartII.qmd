@@ -202,6 +202,9 @@ is used in the first place, the seriousness of the context the model will be
 deployed in motivates the use of something as restrictive as demographic 
 parity.
 
+#### Equalized Odds
+<!-- equalized odds definition, meaning, intuition here -->
+
 
 ### Utility Metrics
 <!-- compare all the utility metrics against one another... -->
@@ -309,6 +312,11 @@ for the model and make a risk assessment on who is free to socialize and who
 is required to quarantine. The ROC curve is a diagnostic tool to help the user
 choose which threshold he wants to use.
 -->
+
+
+#### F1-Score
+<!-- F1 background, harmonic mean, intuition, usage -->
+
 
 #### MSPE & MAPE
 <!-- Mean Squared Prediction Error & Mean Absolute Prediction Error -->
