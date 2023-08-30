@@ -1,22 +1,4 @@
-#' ::: Description :::
-#' @brief Plots Y against X, with restrictions `condits` placed upon the dataset
-#'      prior to predictive modeling on the dataset with `qeFtn` to extract 
-#'      patterns.
-#'
-#' ::: Arguments :::
-#' @param data: dataset
-#' @param yName: as in qeML functions, predictive variable
-#' @param xName: name of a numeric column
-#' @param sName: name of the sensitive variable, an R factor
-#' @param condits: an R vector; each component is a
-#'     character string for an R logical expression
-#'     representing a desired condition; these must NOT
-#'     involve sName
-#' @param qeFtn: reg function (defaults only), defaults to qeKNN
-#' @param minS: minimum size for an S group to be retained in the analysis, defaults to 50
-#' @param yLim: a 2-element vector specifying the lower and upper vertical plot limits, defaults to fit data
-#' @param useLoess: if TRUE, do Loess smoothing on the regression values, defaults to TRUE
-#' 
+
 dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
                                 minS=50, yLim=NULL, useLoess=TRUE)
 {
