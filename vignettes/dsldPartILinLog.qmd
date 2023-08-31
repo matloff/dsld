@@ -579,7 +579,7 @@ assumptions on the form of the regression function.  On the other hand,
 there is no easy way to obtain standard errors; one approach is to use
 the *bootstrap* (Appendix C).
 
-## The Law School Admissions dataset {#law-school}
+## Example:  The Law School Admissions dataset {#law-school}
 
 This is the dataset **law.school.admissions**, included in **dsld** via
 [Possible the 'age' variable is birth year.  The data are from 1991, so
@@ -727,4 +727,30 @@ reduced value, or in the view of many, no value at all, on significance
 testing.
 
 :::
+
+## Example: COMPAS dataset
+
+Recall that COMPAS is a tool developed to help judges decide on
+sentences in criminal trials, which it does by predicting whether the
+defendant is likely to recidivate.  Northpointe, the creator of the
+tool, disagrees.
+
+Let's investigate this, by predicting Y = the COMPAS score, with S =
+race and C = the remaining variables.  Does S have much effect on Y?
+
+```{r}
+data(compas1)
+w <- dsldLinear(compas1,'decile_score','race')
+summary(w)
+
+```
+
+A 95% confidence interval for the mean difference between Black and
+Caucasian risk scores, holding age, juvenile felony count and so on
+constant, is 0.4680 $\pm$ 1.96 x 0.0623 = (0.3459,0.5902).  Since the
+risk of recidivism is given in deciles, the value is 1,2,...,10, we see
+that the tool does indeed appear to be biased against Black defendants.
+Though the effect is rather small, around 0.6 of a decile point or less,  
+and as usual, one must keep in mind the possibility of unseen confounders,
+it is still a matter of serious concern.
 
