@@ -132,10 +132,11 @@ fairness. The definitions are as follows:
 * **False Negatives (FN)**: Type II Error - Number of instances from positive class 
    predicted incorrectly (i.e. as negative)
 
-The rate appended to the end means a ratio with regards to all 
-positives or negatives.
+The rate appended to the end means a ratio with regards to all positives or 
+negatives.
 
-Aliases for the above terms are as follows:
+Aliases for the common rates (defined as the ratio of TP (true positives) over 
+P (all positives), FP over N (all negatives), etc.) are as follows:
 
 * **TPR** is also *sensitivity*, *recall*, or *hit rate*
 * **FPR** is also *fall-out* or *false-alarm ratio*
@@ -318,6 +319,47 @@ choose which threshold he wants to use.
 
 #### F1-Score
 <!-- F1 background, harmonic mean, intuition, usage -->
+One utility metric trending in recent times, especially popular with the ML 
+research world, is F1-Score. The F1-Score is defined as the harmonic mean of 
+precision and recall. In more simple terms, the F1-Score essentially balances 
+the performance of a classifier model with respect to precision--a ratio of how 
+many of the positive predictions are correct $\frac{TP}{TP + FP}$--and recall--
+aka TPR (true positive rate), aka the ratio of correctly predicted positive 
+outcomes, given by $\frac{TP}{TP + FN}$.
+
+The full formula for F1-Score is given therefore by 
+$F_1 = \frac{2}{\text{precision}^{-1} + \text{recall}^{-1}}$
+
+To unpack this, let's first consider harmonic mean. Harmonic mean is simply 
+another form of averaging a set of numbers. While people are most familiar with 
+the arithmetic mean, $\frac{\sum_{i=0}^{n}x_i}{n}$, the harmonic mean offers 
+some behaviors that make it more attractive in machine learning.
+
+::: {.callout-note}
+##### Harmonic Means
+For anyone curious, the formula for harmonic mean is 
+$\frac{n}{\sum_{i=0}^{n}\frac{1}{x_i}}$. It essentially takes reciprocal of the 
+arithmetic mean of the reciprocals of the set. This is not relevant, however, 
+to understanding F1 and its uses, so don't worry too much about the formula if 
+you don't understand it.
+:::
+
+1. It's weighting on the smaller of the two (precision or recall) effectively 
+stops researchers from adjusting hyperparameters to boost performance of either 
+precision or recall without accounting for the other.
+
+2. Mathematically, the F1-Score will always be less than the arithmetic 
+mean except for when precision and recall are requivalent
+
+3. The inherent tradeoff between precision and recall also means models will 
+be forced to make an intelligent decisions. Take, for example, a dataset 
+with binary outcomes where one of the possible outcomes far outnumbers the 
+other. A model that blindly predicts this outcome would perform relatively 
+well under test accuracy, but against F1-Score this model would (rightly so) 
+be rejected.
+
+F1-Score essentially restrains models from biasing one side of this precision-
+recall tradeoff, ensuring a more performant model in the face of deployment.
 
 
 #### MSPE & MAPE
