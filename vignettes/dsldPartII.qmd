@@ -418,120 +418,94 @@ utility.
 We can use the **replicMeans** (included in **qeML**) to run several trials of our model 
 to increase the reliability of our results:
 
+```{r}
+# set up train and test sets
+data <- fairml::compas
+yName <- 'two_year_recid'
+sName <- 'race'
+
+partition <- sample(1:nrow(data))[1:round(nrow(data) * 0.3)]
+# partition the data
+train <- data[-partition, ]
+test <- data[ partition, ]
+
+```
+
 ```{r, eval=FALSE}
 # S Correlation
 sCorrTest <- function(deval) {
-  data <- compas
-  yName <- 'two_year_recid'
-  sName <- 'race'
-  
-  # deweight decile_score and v_decile_score
+  sink()
+    # deweight decile_score and v_decile_score
   deweightPars = list(
     decile_score=deval, 
     v_decile_score=deval)
-
+  
+  sink(nullfile())
   model <- dsld::dsldQeFairRF(data=data, yName=yName, sName=sName, 
                               deweightPars=deweightPars)
+  sink()
   
   out <- model$corrsens
   out["MeanCorr"] <- mean(out)
   out["MisclassRate"] <- model$testAcc
   out
 }
-
 # calculate the mean of 10 trials of no deweighting and deweighting 
 # decile_score and v_decile_score at 0%
-regtools::replicMeans(10,"sCorrTest(1)")
-regtools::replicMeans(10, "sCorrTest(0)")
-```
-With no deweighting:
-```
-race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
-           0.31260577            0.22855780            0.22077149            0.27627794            0.05367125            0.20062722 
-             MeanCorr          MisclassRate 
-           0.21541858            0.22085470 
-attr(,"stderr")
-race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
-          0.011304666           0.007417867           0.009277864           0.009299085           0.006092305           0.012518375 
-             MeanCorr          MisclassRate 
-          0.006572506           0.004375237 
-```
-With deweighting decile_score and v_decile_score at 0:
-```
-race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
-           0.27442840            0.20755925            0.20262451            0.23755422            0.04913453            0.18316868 
-             MeanCorr          MisclassRate 
-           0.19241160            0.20752137 
-attr(,"stderr")
-race.African-American            race.Asian        race.Caucasian         race.Hispanic  race.Native American            race.Other 
-          0.012086371           0.009300634           0.010561315           0.011335209           0.006898007           0.012497858 
-             MeanCorr          MisclassRate 
-          0.008340477           0.004981765 
+suppressWarnings({
+  print(apply(replicate(10, sCorrTest(1)), 1, mean))
+  print(apply(replicate(10, sCorrTest(0)), 1, mean))
+})
 ```
 
-This example demonstrates the tradeoff between utility and fairness: as we increase the 
-deweight values, our utility also increases (since the misclassification error decreases).
-On the other hand, S Correlation increases, which indicates that fairness is *decreasing*
-since we are trying to increase fairness by reducing the impact of S proxies.
+This example demonstrates the tradeoff between utility and fairness: as we 
+increase the deweight values, our utility also increases (since the 
+misclassification error decreases). On the other hand, S Correlation increases, 
+which indicates that fairness is *decreasing* since we are trying to increase 
+fairness by reducing the impact of S proxies.
 
 ### Testing: Demographic Parity
 
 <!-- Results inconclusive -->
-```{r, eval=FALSE}
-# Demographic Parity
-demoTest <- function(deval, threshold = .5) {
-    data <- compas
-    yName <- 'two_year_recid'
-    sName <- 'race'
-    
-    # deweight decile_score and v_decile_score
-    deweightPars = list(
-      decile_score=deval, 
-      v_decile_score=deval)
-    
-    train <- data[1:4500,]
-    test <- data[4501:nrow(data),]
-    model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName, 
-                                deweightPars=deweightPars)
-    
-    # model's probability from 0 to 1 that the person recidivated
-    prediction <- predict(model, test)$probs
-    
-    # if that probability is above .5, we call it a yes
-    yes <- prediction[,1] > threshold
-    
-    # those who recidivated and their race
-    raceRecid <- cbind(yes, test['race'])
-    
-    # split the data by race
-    split <- split(raceRecid, raceRecid$race)
-    
-    # get the mean (the proportion) for each race of those who are classified
-    # as recidivated
-    out <- sapply(split, function(x) mean(x[[1]]))
-    out["Variance"] <- var(out)
-    out["MisclassRate"] <- model$testAcc
-    out
-}
 
-# calculate the mean of 10 trials of no deweighting and deweighting 
-# decile_score and v_decile_score at 0%
-regtools::replicMeans(10,"demoTest(1)")
-regtools::replicMeans(10, "demoTest(0)")
+```{r}
+# FUNC can be any of the fairness measures that the fairness package provides
+fairTest <- function(deval, FUNC, cutoff = .5) {
+  sink()
+  # deweight decile_score and v_decile_score
+  deweightPars = list(
+    decile_score=deval, 
+    v_decile_score=deval)
+
+  sink(nullfile())
+  model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName,
+                              deweightPars=deweightPars)
+  
+  # model's probability from 0 to 1 that the person recidivated
+  test$probs <- predict(model, test)$probs[,2]
+  
+  dem <- FUNC(test, yName, sName, 'probs', 
+                              outcome_base = "Yes", base="Caucasian",
+                              cutoff = cutoff)
+  sink()
+  MisclassRate <- model$testAcc
+  dem$Metric <- cbind(dem$Metric, MisclassRate)
+  dem$Metric
+}
 ```
-With no deweighting:
+
+```{r}
+# Demographic Parity
+suppressWarnings({
+  print(apply(replicate(10, fairTest(1, fairness::dem_parity)), c(1,2), mean))
+  print(apply(replicate(10, fairTest(0, fairness::dem_parity)), c(1,2), mean))
+})
 ```
-African-American            Asian        Caucasian         Hispanic  Native American            Other         Variance     MisclassRate 
-      0.54221902       0.25000000       0.32195652       0.35916667       0.50000000       0.27466667       0.01450702       0.22377778 
-attr(,"stderr")
-African-American            Asian        Caucasian         Hispanic  Native American            Other         Variance     MisclassRate 
-    0.0019337966     0.0000000000     0.0018742778     0.0026205503     0.0000000000     0.0035555556     0.0002159642     0.0050462878 
-```
-With deweighting decile_score and v_decile_score at 0:
-```
-African-American            Asian        Caucasian         Hispanic  Native American            Other         Variance     MisclassRate 
-      0.53804035       0.25000000       0.32782609       0.37250000       0.50000000       0.30666667       0.01294614       0.23177778 
-attr(,"stderr")
-African-American            Asian        Caucasian         Hispanic  Native American            Other         Variance     MisclassRate 
-    0.0016386861     0.0000000000     0.0019117255     0.0025000000     0.0000000000     0.0056218270     0.0001329524     0.0052592593 
+
+```{r}
+# Equalized Odds
+suppressWarnings({
+  print(apply(replicate(10, fairTest(1, fairness::equal_odds)), c(1,2), mean))
+  print(apply(replicate(10, fairTest(0, fairness::equal_odds)), c(1,2), mean))
+})
 ```
