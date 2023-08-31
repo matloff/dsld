@@ -419,28 +419,26 @@ We can use the **replicMeans** (included in **qeML**) to run several trials of o
 to increase the reliability of our results:
 
 ```{r}
-# set up train and test sets
+# set up base variables
 data <- fairml::compas
 yName <- 'two_year_recid'
 sName <- 'race'
-
-partition <- sample(1:nrow(data))[1:round(nrow(data) * 0.3)]
-# partition the data
-train <- data[-partition, ]
-test <- data[ partition, ]
-
 ```
 
 ```{r, eval=FALSE}
 # S Correlation
 sCorrTest <- function(deval) {
-  sink()
+  partition <- sample(1:nrow(data))[1:round(nrow(data) * 0.3)]
+  # partition the data
+  train <- data[-partition, ]
+  test <- data[ partition, ]
+  
     # deweight decile_score and v_decile_score
   deweightPars = list(
     decile_score=deval, 
     v_decile_score=deval)
   
-  sink(nullfile())
+  sink(); sink(nullfile())
   model <- dsld::dsldQeFairRF(data=data, yName=yName, sName=sName, 
                               deweightPars=deweightPars)
   sink()
@@ -466,46 +464,20 @@ fairness by reducing the impact of S proxies.
 
 ### Testing: Demographic Parity
 
-<!-- Results inconclusive -->
-
-```{r}
-# FUNC can be any of the fairness measures that the fairness package provides
-fairTest <- function(deval, FUNC, cutoff = .5) {
-  sink()
-  # deweight decile_score and v_decile_score
-  deweightPars = list(
-    decile_score=deval, 
-    v_decile_score=deval)
-
-  sink(nullfile())
-  model <- dsld::dsldQeFairRF(data=train, yName=yName, sName=sName,
-                              deweightPars=deweightPars)
-  
-  # model's probability from 0 to 1 that the person recidivated
-  test$probs <- predict(model, test)$probs[,2]
-  
-  dem <- FUNC(test, yName, sName, 'probs', 
-                              outcome_base = "Yes", base="Caucasian",
-                              cutoff = cutoff)
-  sink()
-  MisclassRate <- model$testAcc
-  dem$Metric <- cbind(dem$Metric, MisclassRate)
-  dem$Metric
-}
-```
-
-```{r}
+```{r, eval=FALSE}
 # Demographic Parity
-suppressWarnings({
-  print(apply(replicate(10, fairTest(1, fairness::dem_parity)), c(1,2), mean))
-  print(apply(replicate(10, fairTest(0, fairness::dem_parity)), c(1,2), mean))
-})
+dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+             nReps = 5)
+deweightPars = list(decile_score=0, priors_count=0)
+dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+             nReps = 5, deweightPars = deweightPars)
 ```
 
-```{r}
+```{r, eval=FALSE}
 # Equalized Odds
-suppressWarnings({
-  print(apply(replicate(10, fairTest(1, fairness::equal_odds)), c(1,2), mean))
-  print(apply(replicate(10, fairTest(0, fairness::equal_odds)), c(1,2), mean))
-})
+dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+             nReps = 5)
+deweightPars = list(decile_score=0, priors_count=0)
+dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+             nReps = 5, deweightPars = deweightPars)
 ```
