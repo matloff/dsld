@@ -11,7 +11,7 @@ export(
    dsldLinear, dsldLogit, dsldGetData, dsldCheckData, dsldDiffSLog, dsldDiffSLin,
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
    dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF, 
-   dsldQeFairRidgeLog, dsldQeFairKNN, dsldML, dsldCHunting
+   dsldQeFairRidgeLog, dsldQeFairKNN, dsldML, dsldCHunting, dsldFairTest
 )
 
 S3method(summary, dsldLM)
