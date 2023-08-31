@@ -12,7 +12,7 @@ subset of potential confounders.
 
 How might we do so?  We will first recommend some graphical and tabular
 methods aimed at preliminary exploration toward this end, and then
-present a **dsld* function that users may find useful for more
+present a **dsld** function that users may find useful for more
 systematic selection of confounders.
 
 ### The problem 
@@ -33,7 +33,9 @@ minuscule, but through a long chain of relations among many variables,
 there will usually be at least some connection, though possibly very
 faint.
 
-Well, then, why not use them all?
+Well, then, why not use them all?  That is what we've done in our
+earlier examples.  But there are several issues to consider not using
+the full set of variable,s i.e. every variable other than Y and S:
 
 * It may result in overfitting, resulting in large standard errors.
 
@@ -224,6 +226,8 @@ following approach.  Denote our dataset by **d**.
 By taking the intersection, we are focusing on variables that are
 correlated with both Y and S, as desired.
 
+### Example:  Boston mortgage data
+
 Here is an example, using the mortgage data.
 
 ```{r}
@@ -238,4 +242,39 @@ As usual, there are no magic formulas to use here.  The analyst is given
 a choice.  One might use just two confounders, 'p_irat' and 'loan_val';
 for a set of three, the software suggests 'p_irat', 'loan_val' and 'hse_inc',
 and so on.
+
+### Example:  Employer bias test
+
+In the paper "Are Emily and Greg More Employable Than Lakisha and Jamal?
+A Field Experiment on Labor Market Discrimination" (*Am. Econ. Rev.,
+Sept. 2004), researcher "test" employers by sending CVs with
+"white-sounding" and "Black-sounding" names, checking for bias.  The
+resulting data is **lak* in **dsld**.
+
+```{r}
+data(lak)
+dim(lak)
+names(lak)
+```
+
+We'll take Y to be **call**, which records whether the "applicant"
+received a call back in response to submitting the CV.  S will be race,
+which now leaves us with 63 - 2 = 61 potential confounders!
+
+Actually, it's even worse.  Many rows of the dataset contain missing
+values (coded NA in R).  The version here uses only intact rows, of
+which there are 447.  (The original data had 4870 rows.)  A rough rule
+of thumb commonly cited in statistics is that in regression estimation,
+the number of features should be less than the square of the number of
+data points; by this or almost any other measure, 61 predictors is well
+beyond the capacity of 4447 data points.  And, as noted, that number of
+variables is unwieldy.  Let's see what we can do to reduce that.
+
+```{r}
+dsldCHunting(lak,'call','race',25)
+```
+
+We are seeking variables that are correlated both with Y and S, yet
+there appear to be many that correlate with just one of these.  But
+still, in the end we see a few that meet our goals.
 
