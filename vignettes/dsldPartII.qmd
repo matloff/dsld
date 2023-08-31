@@ -466,18 +466,18 @@ fairness by reducing the impact of S proxies.
 
 ```{r, eval=FALSE}
 # Demographic Parity
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
              nReps = 5)
 deweightPars = list(decile_score=0, priors_count=0)
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
              nReps = 5, deweightPars = deweightPars)
 ```
 
 ```{r, eval=FALSE}
 # Equalized Odds
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
              nReps = 5)
 deweightPars = list(decile_score=0, priors_count=0)
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
              nReps = 5, deweightPars = deweightPars)
 ```
