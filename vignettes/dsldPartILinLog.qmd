@@ -690,41 +690,96 @@ test takers seem to be on par with each other.
 
 ## Case study: problems with significance testing
 
+In 2016, the American Statistical Association released its first-ever
+position paper, to warn of the problems of significance testing and
+"p-values."  Though the issues had been well known for years, it was
+"significant" that the ASA finally took a stand.  Let's use the law
+school data to illustrate.
+
 There is concern that the LSAT and other similar tests may be
 heavily influenced by family income, thus unfair, especially to 
 underrepresented minorities.  To investigate this, let's
 consider the b~i~, the estimated coefficients in our linear model
 for the LSAT above.
 
-In particular, look at the one for family income, 0.3009.  The p-value
-[Part of the outputted material in this book also shows p-values and
-stars.  This comes from R itself, not the **dsld**
-code.]{.column-margin} is essentially 0, which in an academic research
-journal would classically be termed "very highly significant," with a
-3-star insignia But actually, the impact of family income is not very
-large.  Here's why:
+In particular, look at the coefficient for family income, 0.3009.  The
+p-value is essentially 0, which in an academic research journal would
+classically be heralded with much fanfare, termed "very highly
+significant," with a 3-star insignia.  Indeed, the latter is seen in the
+output above.  (This comes from R, not **dlsd**.) But actually, the
+impact of family income is not very large.  Here's why:
 
 Family income in this dataset is measured by quintiles.  So
-this estimated coefficient says that, for example, if we compare people
-who grew up in the bottom 20% of income with those who were raised in
-the next 20%, the mean LSAT score rises by only about 1/3
-of 1 point--on a test where scores are typically in the 20s, 30s and
-40s.  The 95% confidence interval, (0.2304,0.3714), again indicates that
-the effect size here is very small.
+[Mathematically, testing for a 0 effect is equivalent to checking
+whether the CI contains 0.  But this is missing the point of the CI,
+which is to (a) give us an idea of the effect *size*, and (b) to
+indicate how accurate our estimate is of that size.  Aspect (a) is given
+by the location of the center of the interval, while (b) is seen from
+the CI's radius.]{.column-margin} this estimated coefficient says that,
+for example, if we compare people who grew up in the bottom 20% of
+income with those who were raised in the next 20%, the mean LSAT score
+rises by only about 1/3 of 1 point--on a test where scores are typically
+in the 20s, 30s and 40s.  The 95% confidence interval (CI),
+(0.2304,0.3714), again indicates that the effect size here is very
+small.
 
 So family income is not an important factor after all,
 and the significance test was highly misleading.
 
+Some who read this may object, "Sure, there sometimes may be a
+difference between statistical significance and practical significance.
+But I just want to check whether my model fits the data."  Actually,
+it's the same problem.
+
+For instance, suppose we are considering adding an interaction term
+between race and undergraduate GPA to our above model.  For simplicity,
+let's use R's linear model function, **lm()**, direcctly:
+
+```{r}
+w <- lm(lsat ~ .,lsa)  # predict lsat from all other variables
+w1 <- lm(lsat ~ .+race1:ugpa,lsa)  # add interaction 
+summary(w1)
+typx <- lsa[1,-5]  # set up an example case
+predict(w,typx)  # estimated regression function value
+predict(w1,typx)  # estimated regression function value
+```
+
+Indeed, the Black and white interaction terms are "very highly
+significant."  But that does mean we should use the more complex model?
+
+Recall that many ML algorithms, including standard linear regression,
+use the estimated regression function value as its predicted value.  So
+we see here that adding in term interaction term changed the estimated
+value of the regession function by only about 0.02 out of a 40.23
+baseline.  So, we may well prefer the simpler, no-interaction model.
+
+Again, we must not take small p-values literally.
 
 ::: {.callout-note}
-### The folly of significance testing
-In almost all cases, significance tests don't address the issue of
+### The basic problem with significance testing
+
+This central issue in the above examples, and essentially in any other
+testing situation, is that *the test is not answering the question of
+interest to us.*  
+
+We wish to know whether family income plays a substantial role in the
+LSAT, not whether they is any relation at all, no matter how meaningless
+Similarly, we wish to know whether the interaction between race and GPA
+is substantial enough to include it in our model, not whether there is
+any interaction at all, no matter how tiny.
+
+The question at hand in research studies is rarely, if ever, whether a
+quantity is 0.000... to infinitely many decimal places.  Indeed, in most
+cases our measuring instrument is not this accurate in the first place;
+there will always be systemic bias or missingness, unobserved variables
+and so on.
+
+Thus in almost all cases, significance tests don't address the issue of
 interest, which is whether some population quantity is substantial
-enough to be considered important.  (Virtually no quantity in real life
-is exactly 0.)  Don't be fooled by words like "significant."
-[Modern statistical practice](https://tinyurl.com/2s7x6h2v) places
-reduced value, or in the view of many, no value at all, on significance
-testing.
+enough to be considered important.  Analysts should not be misled by
+words like "significant." [Modern statistical
+practice](https://tinyurl.com/2s7x6h2v) places reduced value, or in the
+view of many, no value at all, on significance testing.
 
 :::
 
