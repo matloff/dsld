@@ -758,7 +758,7 @@ Again, we must not take small p-values literally.
 ::: {.callout-note}
 ### The basic problem with significance testing
 
-This central issue in the above examples, and essentially in any other
+The central issue in the above examples, and essentially in any other
 testing situation, is that *the test is not answering the question of
 interest to us.*  
 
