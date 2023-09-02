@@ -733,7 +733,7 @@ it's the same problem.
 
 For instance, suppose we are considering adding an interaction term
 between race and undergraduate GPA to our above model.  For simplicity,
-let's use R's linear model function, **lm()**, direcctly:
+let's use R's linear model function, **lm()**, directly:
 
 ```{r}
 w <- lm(lsat ~ .,lsa)  # predict lsat from all other variables
