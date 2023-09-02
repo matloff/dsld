@@ -7,18 +7,17 @@ Comparison of conditions for sensitive groups via ML algorithsm.
 }
 
 \usage{
-(dataName,yName,sName,sComparisonPts="rand5",qeMLftnName,opts=NULL)
+    dsldML(dataName,yName,sName,sComparisonPts="rand5",qeMLftnName,opts=NULL)
 }
 
 \arguments{
-    \item{dataName}{Quote name of the data frame comprising the input
-    data.
+    \item{dataName}{Quoted name of the data frame comprising the input data.
     }
     \item{yName}{
     Name of Y, expressed via the \code{quote} function.
     }
     \item{sName}{
-    Quote name of the sensitive variable S, an R factor.
+    Quoted name of the sensitive variable S, an R factor.
     }
     \item{sComparisonPts}{
     Data frame of one or more data points at which the regression
@@ -47,7 +46,7 @@ print(w)
 
 \details{
 
-The specified \code{qeML} function will be on the indicated data once
+The specified \code{qeML} function will be called on the indicated data once
 for each level of the sensitive variable.  For each such level, estimated
 regression function values will be obtained for each row in
 \code{sComparisonPts}.
