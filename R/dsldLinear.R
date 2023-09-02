@@ -42,7 +42,7 @@ dsldLinear <- function (data, yName, sName, interactions = FALSE,
         }
         if (sComparisonPts == 'typical') {
            # assemble a row like data[1,] but with numeric elements 
-           # replaced by their respective data means; key will be
+           # replaced by their respective data medians; key will be
            # finding the num cols in order to call qeML::newDFRow
            ycol <- which(names(data) == yName)          
            scol <- which(names(data) == sName)          
@@ -51,7 +51,7 @@ dsldLinear <- function (data, yName, sName, interactions = FALSE,
            for (i in 1:ncol(dta)) {      
               if (i != ycol) {
                  if (is.numeric(dta[,i]))
-                    typList[[ names(dta)[i] ]] <- mean(dta[,i])
+                    typList[[ names(dta)[i] ]] <- median(dta[,i])
               }
            }
            sComparisonPts <- newDFRow(dta,yName,typList)
