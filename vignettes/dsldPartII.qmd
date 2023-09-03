@@ -147,7 +147,7 @@ P (all positives), FP over N (all negatives), etc.) are as follows:
 
 ### Fairness Metrics
 <!-- compare all the fairness metrics against one another... -->
-reiterate points about measuring fairness...
+<!-- TODO: reiterate points about measuring fairness... -->
 
 
 #### S-Correlation
@@ -203,10 +203,14 @@ is used in the first place, the seriousness of the context the model will be
 deployed in motivates the use of something as restrictive as demographic 
 parity.
 
+<!--
 #### Equal Opportunity
 
+TODO, but ONLY IF we figure out the testing for this 
+-->
+
 #### Equalized Odds
-<!-- equalized odds definition, meaning, intuition here -->
+<!-- TODO: equalized odds definition, meaning, intuition here -->
 
 
 ### Utility Metrics
@@ -228,10 +232,11 @@ Usually, a utility metric has its intended usecase in one of the above settings,
 not necessarily both.
 
 #### Test Accuracies (Misclassification Error)
-<!-- accuracy results on test sets -->
+
 For classification settings, one simple method to measure the utility of a model 
 is to measure how well it can predict something via test accuracy. Normally, 
 test accuracy can be defined as follows:
+
 $$
 Accuracy = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}}
 $$
@@ -250,6 +255,7 @@ For a two-class (binary) classification scenario (i.e. negative and positive, as
 in diagnoses), we can make use of True-False Positives and Negatives to redefine 
 our accuracy and error rate formulas as follows:
 [See @classification-terms for definitions]{.column-margin}
+
 $$
 Accuracy = \frac{\text{TP}+\text{TN}}{\text{TP}+\text{TN}+\text{FP}+\text{FN}}
 $$
@@ -318,7 +324,7 @@ choose which threshold he wants to use.
 
 
 #### F1-Score
-<!-- F1 background, harmonic mean, intuition, usage -->
+
 One utility metric trending in recent times, especially popular with the ML 
 research world, is F1-Score. The F1-Score is defined as the harmonic mean of 
 precision and recall. In more simple terms, the F1-Score essentially balances 
@@ -399,23 +405,29 @@ We are (purely hypothetically) investigating racial bias in the COMPAS data with
 regards to recidivism. We are trying to predict two_year_recid (which is a 
 classification setting), with race as our sensitive variable. Since this is a 
 classification setting, the only utility metric we can use (out of the above listings) 
-for this scenario is Test Accuracy (misclassification error). For both fairness metrics 
-(S Correlation and Demographic Parity), we will try to find the best balance between 
-fairness and utility, using the approaches implemented in various models from this 
+for this scenario is Test Accuracy (misclassification error). For each fairness metric, 
+we will try to find the best balance between 
+fairness and utility using some of the approaches implemented in the models from this 
 package.
 
-### Testing: S Correlation
+<!-- TODO: Note on general strat of deval = 1 and deval = 0 to find best balance by presenting 
+the 2 extremes and noting the trends -->
 
-Suppose that out_custody and c_jail_out are the proxies to our sensitive variable 
-(race).[Based on results from **dsldCHunting**]{.column-margin}
+We will consider decile_score and priors_count to be the proxies to our sensitive 
+variable (race).[Based on results from **dsldConfounders**]{.column-margin}
 
-We will start by looking at the Random Forests model using **dsldQeFairRF**, which 
-can output S Correlation and Misclassification Error without extra calculation from 
-the user. This function uses the *explicitly deweighted features* strategy, so by 
+We will look at the Random Forests model using **dsldQeFairRF**. This 
+function uses the *explicitly deweighted features* strategy, so by 
 adjusting the deweight values for proxies, we should be able to adjust fairness and 
 utility.
 
-We can use the **replicMeans** (included in **qeML**) to run several trials of our model 
+<!-- TODO: Note on custom framework (S Corr) vs Fairness pkg functions -->
+
+### Testing: S Correlation
+
+<!-- TODO: Short intro (maybe mention custom framework/function) -->
+
+We can use the **replicate** function to run several trials of our model 
 to increase the reliability of our results:
 
 ```{r}
@@ -425,18 +437,16 @@ yName <- 'two_year_recid'
 sName <- 'race'
 ```
 
-```{r, eval=FALSE}
-# S Correlation
+```{r}
+############## S Correlation ##############
 sCorrTest <- function(deval) {
   partition <- sample(1:nrow(data))[1:round(nrow(data) * 0.3)]
   # partition the data
   train <- data[-partition, ]
   test <- data[ partition, ]
   
-    # deweight decile_score and v_decile_score
-  deweightPars = list(
-    decile_score=deval, 
-    v_decile_score=deval)
+  # deweight decile_score and priors_count
+  deweightPars = list(decile_score=deval,priors_count=deval)
   
   sink(); sink(nullfile())
   model <- dsld::dsldQeFairRF(data=data, yName=yName, sName=sName, 
@@ -449,9 +459,11 @@ sCorrTest <- function(deval) {
   out
 }
 # calculate the mean of 10 trials of no deweighting and deweighting 
-# decile_score and v_decile_score at 0%
+# decile_score and priors_count at 0%
 suppressWarnings({
+  # Deweight Value = 1
   print(apply(replicate(10, sCorrTest(1)), 1, mean))
+  # Deweight Value = 0
   print(apply(replicate(10, sCorrTest(0)), 1, mean))
 })
 ```
@@ -462,22 +474,45 @@ misclassification error decreases). On the other hand, S Correlation increases,
 which indicates that fairness is *decreasing* since we are trying to increase 
 fairness by reducing the impact of S proxies.
 
+<!-- TODO: Note (callout box?) on spread of Misclassification Error, warning that 
+the trend shown in Utility may not be an accurate trend -->
+
 ### Testing: Demographic Parity
 
-```{r, eval=FALSE}
-# Demographic Parity
-dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
-             nReps = 5)
-deweightPars = list(decile_score=0, priors_count=0)
-dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
-             nReps = 5, deweightPars = deweightPars)
+<!-- TODO: Short intro (maybe mention use of Fairness pkg instead of custom 
+framework/function) -->
+
+```{r}
+############ Demographic Parity #############
+dem1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+             nReps = 10, deweightPars = list(decile_score=1, priors_count=1))
+dem0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+             nReps = 10, deweightPars = list(decile_score=0, priors_count=0))
+# Deweight Value = 1
+print(dem1)
+# Deweight Value = 0
+print(dem0)
 ```
 
-```{r, eval=FALSE}
-# Equalized Odds
-dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
-             nReps = 5)
-deweightPars = list(decile_score=0, priors_count=0)
-dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
-             nReps = 5, deweightPars = deweightPars)
+<!-- TODO: Summarize Results -->
+<!-- Same trends as S Correlation -->
+
+### Testing: Equalized Odds
+
+<!-- TODO: Short intro -->
+
+```{r}
+############## Equalized Odds ###############
+dem1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+             nReps = 10, deweightPars = list(decile_score=1, priors_count=1))
+dem0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+             nReps = 10, deweightPars = list(decile_score=0, priors_count=0))
+# Deweight Value = 1
+print(dem1)
+# Deweight Value = 0
+print(dem0)
 ```
+
+<!-- TODO: Summarize Results -->
+<!-- OPPOSITE trends compared to S Corr and Demo Parity due to possible 
+unreliability in misclassification error -->
