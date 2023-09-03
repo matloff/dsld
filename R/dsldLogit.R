@@ -28,33 +28,6 @@ dsldCheckData <- function(data1, data2, yName) {
 }
 
 ### ------------------------ DSLDLogit -----------------------------------------
-#' ::: Descripton :::
-#' @brief The dsldLogit function fits a logistic model to the response variable,
-#'      yName, using all other available covariates in the user provided
-#'      dataset. The user may select for full interactions across the sensitive
-#'      variable, sName, in which case the function will fit m separate models,
-#'      where m is the number of levels of sName.
-#'
-#'      The function produces an instance of the `dsldLM` class (an S3
-#'      object).
-#'
-#'      The output of dsldLogistic will store a list of useful traits pertaining
-#'      the Logistic model; the following useful information will be stored:
-#'          1. yName & sName; [character] @ yName, @ sName
-#'          2. Model; [character] @ model
-#'          3. (Full Interactions only) New data input by user;
-#'             [dataframe] @ data
-#'          3. Summary Output of model; [character] @ summary
-#'          4. Coef of beta parameters; [character] @ coef
-#'          5. Data used in the model (useful to see for interactions);
-#'             [dataframe] @ data
-#'
-#' ::: Arguments :::
-#' @param data: dataset used to train the model [dataframe]
-#' @param yName: name of the response column [character]
-#' @param sName: name of the sensitive column [character]
-#' @param sComparisonPts: new test cases to compute Y | X 
-
 dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal) {
   
   dsldModel <- list()
@@ -149,14 +122,6 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
 # ------------------------------------------------------------------------------
 
 # ----------------------- Auxiliary Functions ---------------------------------#
-#' ::: Description ::
-#' @brief coef() is a polymorphic method that takes in an object of the
-#'      'dsldGLM' class. The function provides m regression coefficients
-#'      of the model, where m is the number of levels of sName.
-#'
-#' ::: Arguments :::
-#' @param dsldGLM: an instance of the dsldGLM s3 object.
-#'
 coef.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldGLM, function(x) x$coef)
@@ -165,14 +130,6 @@ coef.dsldGLM <- function(dsldGLM) {
 
 # coef(log1) 
 
-#' ::: Description ::
-#' @brief vcov() is a polymorphic method that takes in an object of the
-#'      'dsldLM' class. The function provides m variance-covariance coeffs
-#'      of the model, where m is the number of levels of sName.
-#'
-#' ::: Arguments :::
-#' @param dsldGLM: an instance of the dsldGLM s3 object.
-#'
 vcov.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldGLM, function(x) vcov(x$model))
@@ -181,14 +138,6 @@ vcov.dsldGLM <- function(dsldGLM) {
 
 # vcov(log1)
 
-#' ::: Description ::
-#' @brief the dsldGetData() function takes in an object of the 'dsldGLM'
-#'      class. The function provides m dataset(s) used to train the Logistic
-#'      model, where m is the number of levels of sName.
-#'
-#' ::: Arguments :::
-#' @param dsldGLM: an instance of the dsldGLM s3 object.
-#'
 dsldGetData <- function(dsldGLM) {
   # merge & return datasets #
   mergedData <- lapply(dsldGLM, function(x) x$data)
@@ -198,34 +147,6 @@ dsldGetData <- function(dsldGLM) {
 # dsldGetData(log1)
 
 #------------------------- dsldDiffSLog function ------------------------------#
-#' ::: Description ::
-#' @brief The dsldDiffS() function helps users quantify possible evidence of
-#'      discrimination between S levels. For the no-interactions case,
-#'      dsldDiffS compares differences in regression coefficients between each
-#'      pairs of S levels. For the full-interactions case, dsldDiffS now
-#'      requires an argument, in data-frame form, of new test cases where
-#'      difference in mean Y at that X value will be compared between each pair
-#'      of S levels.
-#'
-#'      For no-interaction case, dsldDiffS returns a data frame with 4 columns:
-#'      1. Pairs of S level names
-#'      2. Estimates of the differences
-#'      3. Associated standard errors
-#'      4. P-values
-#'      There will be one row for each pair of S levels.
-#'
-#'      For full-interactions case, dsldDiffs returns a data frame with 3
-#'      columns:
-#'      1. Col. number of diffs argument
-#'      2. Estimate of the difference in mean Y at that X value
-#'      3. Associated std. err.
-#'      There will be one row for each pair of S levels.
-#'
-#' ::: Arguments :::
-#' @param dsldGLM: output from dsldLogistic() function
-#' @param newData: new test cases to be provided; required for
-#'      full-interactions case
-
 dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
   # get sName and yName from the output of dsldLogistic #
   sName <- dsldGLM[[1]]$sName
@@ -394,15 +315,6 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
 # dsldDiffSLog(log2, newData) # run with interactions 
 # -----------------------------------------------------------------------------#
 
-#' ::: Description ::
-#' @brief summary() is a polymorphic method that takes in an object of the 'dsldGLM' 
-#'      class. The function provides m summaries of the model, where m is the number 
-#'      of levels of sName. Additionally, the summary function also report differences 
-#'      across S levels.
-#' 
-#' ::: Arguments :::
-#' @param dsldGLM: an instance of the dsldGLM s3 object that output summary objects.
-#'
 summary.dsldGLM <- function(dsldGLM) {
   diffS <- list()
   # get sName and yName from the output of dsldLogistic #
