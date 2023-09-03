@@ -214,7 +214,7 @@ TODO, but ONLY IF we figure out the testing for this
 
 
 ### Utility Metrics
-<!-- compare all the utility metrics against one another... -->
+
 Utility metrics are used to inform the user of how accurate and/or reliable 
 a model is with regards to its performance. This (usually quantitative) 
 information can be used to further modify/optimize a model for its usecase, or 
@@ -496,6 +496,8 @@ print(dem0)
 
 <!-- TODO: Summarize Results -->
 <!-- Same trends as S Correlation -->
+<!-- TODO: Note (callout box?) on the small sample sizes of Native American and Asian groups 
+in this dataset, potentually causing unusual trends in these groups -->
 
 ### Testing: Equalized Odds
 
