@@ -1,17 +1,4 @@
-#' ::: Description :::
-#' @brief This function returns a dataframe containing 4 columns:
-#' 1. Character string consisting of the names of the given feature set. 
-#' 2. Prediction accuracy for yName of this feature set. 
-#' 3. Prediction accuracy for yName of this feature set plus sName. 
-#' 4. Prediction accuracy for sName of this feature set.
-#'
-#' ::: Arguments :::
-#' @param data: dataset given in dataframe format
-#' @param yName: as in qeML functions, response variable
-#' @param sName: name of the sensitive variable, an R factor
-#' @param maxFeatureSetSize: maximum number of combinations of features to be included; default argument set as: maxFeatureSetSize = (ncol(data) - 2)
-#' @param holdout if not NULL, form a holdout set of the specified size. After fitting to the remaining data, evaluate accuracy on the test set
-#'
+### -------------------------- dsldTakeALookAround ---------------------------
 dsldTakeALookAround <- function(data, yName, sName, 
                                 maxFeatureSetSize = (ncol(data) - 2), 
                                 holdout = floor(min(1000,0.1*nrow(data))))
@@ -21,8 +8,9 @@ dsldTakeALookAround <- function(data, yName, sName,
 
     # args checking #
     if (maxFeatureSetSize > (ncol(data) - 2)) { 
-        stop("maxFeatureSetSize too large!")                            # Send error message if user enters invalid maxFeatureSetSize
+        stop("maxFeatureSetSize too large!")                                                  # Send error message if user enters invalid maxFeatureSetSize
     }
+  
     if (!is.data.frame(data)) {
         stop("data must be a dataframe.")
     }
@@ -110,5 +98,3 @@ dsldTakeALookAround <- function(data, yName, sName,
 # Example 3:  We investigate the predictive accuracy for a continuous Y, 'wageinc', using the maxFeatureSetSize = 1
 # data(svcensus)
 # dsldTakeALookAround(svcensus, 'wageinc', 'gender', 1)
-
-
