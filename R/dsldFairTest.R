@@ -11,24 +11,27 @@ dsldFairTest <- function(data, yName, sName, qeFunc, fairFunc,
     test <- data[ partition, ]
     
     # avoid warning statements since these are used in the book
-    sink(); sink(nullfile())
+    sink(nullfile())
     
-    # right now this only works with dsldQeFairRF
-    model <- R.utils::doCall(qeFunc, data=train, yName=yName, sName=sName,
-                                deweightPars=deweightPars)
+    # use tryCatch so we can reset the sink if the qeFunc fails
+    model <- tryCatch(
+      # right now this only works with dsldQeFairRF
+      R.utils::doCall(qeFunc, data=train, yName=yName, sName=sName,
+                                deweightPars=deweightPars),
+      finally = sink()
+    )
     
-    sink()
     # model's prediction
     test$probs <- predict(model, test)$probs[,1]
     
     # perform fairness function metric
     dem <- fairFunc(test, yName, sName, 'probs', 
-                cutoff = cutoff)
+                cutoff = cutoff)$Metric
     
     # append test accuracy to the output
-    MisclassRate <- model$testAcc
-    dem$Metric <- cbind(dem$Metric, MisclassRate)
-    dem$Metric
+    dem <- cbind(dem, model$testAcc)
+    colnames(dem)[length(colnames(dem))] <- "Misclass Error"
+    dem
   }
   
   # repeats the calculation nreps times and averages the data tables
