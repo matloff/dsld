@@ -85,23 +85,19 @@ algorithms (i.e. Ridge Regression) will not be affected by this.
 
 
 ### Explicitly Deweighted Features
-<!-- this will be for the Matloff paper -->
-description...
+<!-- TODO: this will be for the Matloff paper -->
 
 
 ### Ridge Penalty
-<!-- this will be for the Scutari paper -->
-description...
+<!-- TODO: this will be for the Scutari paper -->
 
 
 ### Nonconvex Optimization with Fairness Constraints
-<!-- this will be for the Komiyama paper -->
-description...
+<!-- TODO: this will be for the Komiyama paper -->
 
 
 ### Other Constraints (paper three, we'll update title later)
-<!-- this will be for the Zafar paper -->
-description...
+<!-- TODO: this will be for the Zafar paper -->
 
 
 ## Measurements of Fairness & Utility
