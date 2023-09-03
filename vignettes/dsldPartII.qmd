@@ -514,3 +514,14 @@ print(dem0)
 <!-- TODO: Summarize Results -->
 <!-- OPPOSITE trends compared to S Corr and Demo Parity due to possible 
 unreliability in misclassification error -->
+
+
+
+
+<!-- TODO: If ALL of the above todo's have been addressed, we can expand the testing/conceptual 
+sections with any of the following options, in a rough top-down order of priority:
+- More fairness metrics
+- More models (besides qeFairRF)*
+- * ^ This will likely require a new COMPAS example with a continuous Y name as opposed to
+      the binary two_year_recid
+- More utility metrics
