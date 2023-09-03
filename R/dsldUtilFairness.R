@@ -1,17 +1,4 @@
-#' TODO: Modify function to use plotly instead of plot() to benefit Py users
-#'
-#' ::: Description :::
-#' @brief Depicts the utility and fairness against D
-#'          in graphical form
-#'
-#' ::: Arguments :::
-#' @param data: dataset, an R dataframe
-#' @param yName: name of the response column [character]
-#' @param cName: name of proxy variable to deweight [character]
-#' @param sName: name of the sensitive variable, an R factor [character]
-#' @param count: Number of times to run the qeKNN function call [numeric]
-#' @param deweight_increment: Increment to weight the proxy by [numeric]
-
+### -------------------------------- DsldUtilFairness ----------------------------------------
 dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_increment = 0.1) {
   getSuggestedLib('qeML')                                                        
   getSuggestedLib('regtools')
