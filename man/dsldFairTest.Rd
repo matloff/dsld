@@ -16,10 +16,10 @@ dsldFairTest(data, yName, sName, qeFunc, fairFunc, deweightPars=NULL,
     data frame
   }
   \item{yName}{
-    column name of the response variable
+    column name indicating a binary outcome variable
   }
   \item{sName}{
-    column name of the sensitive variable
+    column name of the sensitive variable (factor)
   }
   \item{qeFunc}{
     a function in the dsld package that starts with dsldQeFair

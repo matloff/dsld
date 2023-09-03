@@ -1,33 +1,29 @@
 dsldFairTest <- function(data, yName, sName, qeFunc, fairFunc, 
                          deweightPars=NULL, cutoff = .5, nReps = 1, 
-                         testProportion = 0.3) {
+                         testProportion = 0.3, t = FALSE) {
   dsld::getSuggestedLib("fairness")
   
   singleTest <- function() {
     # partition the data
     partition <- sample(1:nrow(data))[1:round(nrow(data) * testProportion)]
     train <- data[-partition, ]
+    if (t) train[,sName] <- unique(train[,sName])[1]
     test <- data[ partition, ]
-    
-    
-    # default deweight pars is every feature set to 1
-    if (is.null(deweightPars)) 
-      deweightPars <- Map(\(x) 1, colnames(data[,!names(data) %in% c(yName, sName)]))
     
     # avoid warning statements since these are used in the book
     sink(); sink(nullfile())
     
     # right now this only works with dsldQeFairRF
-    model <- qeFunc(data=train, yName=yName, sName=sName,
+    model <- R.utils::doCall(qeFunc, data=train, yName=yName, sName=sName,
                                 deweightPars=deweightPars)
     
+    sink()
     # model's prediction
     test$probs <- predict(model, test)$probs[,1]
     
     # perform fairness function metric
     dem <- fairFunc(test, yName, sName, 'probs', 
                 cutoff = cutoff)
-    sink()
     
     # append test accuracy to the output
     MisclassRate <- model$testAcc
