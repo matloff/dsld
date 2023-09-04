@@ -46,7 +46,7 @@ dsldLinear <- function (data, yName, sName, interactions = FALSE,
   dsldModel <- list()
   if (interactions) {
     if (is.null(sComparisonPts)) {
-      sComparisonPts = dsldGetRow5(svcensus,yName, sName)
+      sComparisonPts = dsldGetRow5(data,yName, sName)
     } else if (!is.data.frame(sComparisonPts)) {
       stop(paste("Error: sComparisonPts must be a dataframe"))
     } 
