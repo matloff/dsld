@@ -1,3 +1,13 @@
+### --------------------------- dsldGetRow5 ------------------------------------
+dsldGetRow5 <- function(data, yName, sName) {
+  rows <- sample(nrow(data), 5)
+  reducedData <- data[rows, ]
+  columns <- c(yName, sName)
+  newDat <- reducedData[, !(names(reducedData) %in% columns)]
+  result = sprintf("No user sComparisonPts supplied. The following rows are selected: %s,%s,%s,%s,%s", rows[1],rows[2],rows[3],rows[4],rows[5]); print(result)
+  return(newDat)
+}
+
 ### --------------------------- DSLDCheckData ----------------------------------
 dsldCheckData <- function(data1, data2, yName) {
   data1 <- data1[, !(names(data1) == yName), drop = FALSE]
@@ -27,83 +37,67 @@ dsldCheckData <- function(data1, data2, yName) {
   return(data2)
 }
 ### -------------------------- DSLD Linear -------------------------------------
-
-
 dsldLinear <- function (data, yName, sName, interactions = FALSE, 
-   sComparisonPts = NULL, useSandwich = FALSE) 
+                        sComparisonPts = NULL, useSandwich = FALSE) 
 {
-    if (useSandwich) {
-        library(sandwich)
+  if (useSandwich) {
+    library(sandwich)
+  }
+  dsldModel <- list()
+  if (interactions) {
+    if (is.null(sComparisonPts)) {
+      sComparisonPts = dsldGetRow5(svcensus,yName, sName)
+    } else if (!is.data.frame(sComparisonPts)) {
+      stop(paste("Error: sComparisonPts must be a dataframe"))
+    } 
+    
+    tempData <- data[, !(names(data) %in% sName)]
+    newData <- dsldCheckData(tempData, sComparisonPts, yName)
+    dataSplit <- split(data, data[[sName]])
+    
+    dataNames <- names(dataSplit)
+    for (name in dataNames) {
+      dsldDiffModel <- list()
+      diffData <- dataSplit[[name]]
+      drop <- c(sName)
+      diffData <- diffData[, !(names(diffData) %in% drop)]
+      diffModel <- lm(formula = as.formula(paste(yName, 
+                                                 "~ .")), data = diffData)
+      if (useSandwich) {
+        covMatrix <- sandwich(diffModel)
+      }
+      else {
+        covMatrix <- vcov(diffModel)
+      }
+      dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel),
+                         list(newData), list(summary(diffModel)), list(coef(diffModel)),
+                         list(covMatrix), list(diffData))
+      names(dsldDiffModel) <- c("yName", "sName", "model",
+                                "newData", "summary", "coef", "covarianceMatrix",
+                                "data")
+      class(dsldDiffModel) <- "dsldDiffModel"
+      dsldModel[[name]] <- dsldDiffModel
     }
-    dsldModel <- list()
-    if (interactions) {
-        if (is.null(sComparisonPts)) {
-            stop(paste("missing sComparisonPts argument"))
-        }
-        if (sComparisonPts == 'typical') {
-           # assemble a row like data[1,] but with numeric elements 
-           # replaced by their respective data medians; key will be
-           # finding the num cols in order to call qeML::newDFRow
-           ycol <- which(names(data) == yName)          
-           scol <- which(names(data) == sName)          
-           dta <- data[,-c(scol)]
-           typList <- list()
-           for (i in 1:ncol(dta)) {      
-              if (i != ycol) {
-                 if (is.numeric(dta[,i]))
-                    typList[[ names(dta)[i] ]] <- median(dta[,i])
-              }
-           }
-           sComparisonPts <- newDFRow(dta,yName,typList)
-        } else if (!is.data.frame(sComparisonPts)) {
-            stop(paste("Error: sComparisonPts must be a dataframe"))
-        }
-        tempData <- data[, !(names(data) %in% sName)]
-        newData <- dsldCheckData(tempData, sComparisonPts, yName)
-        dataSplit <- split(data, data[[sName]])
-        dataNames <- names(dataSplit)
-        for (name in dataNames) {
-            dsldDiffModel <- list()
-            diffData <- dataSplit[[name]]
-            drop <- c(sName)
-            diffData <- diffData[, !(names(diffData) %in% drop)]
-            diffModel <- lm(formula = as.formula(paste(yName, 
-                "~ .")), data = diffData)
-            if (useSandwich) {
-                covMatrix <- sandwich(diffModel)
-            }
-            else {
-                covMatrix <- vcov(diffModel)
-            }
-            dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel),
-                list(newData), list(summary(diffModel)), list(coef(diffModel)),
-                list(covMatrix), list(diffData))
-            names(dsldDiffModel) <- c("yName", "sName", "model",
-                "newData", "summary", "coef", "covarianceMatrix",
-                "data")
-            class(dsldDiffModel) <- "dsldDiffModel"
-            dsldModel[[name]] <- dsldDiffModel
-        }
+  }
+  else {
+    dsldDiffModel <- list()
+    diffModel <- lm(formula = as.formula(paste(yName, "~ .")),
+                    data = data)
+    if (useSandwich) {
+      covMatrix <- sandwich(diffModel)
     }
     else {
-        dsldDiffModel <- list()
-        diffModel <- lm(formula = as.formula(paste(yName, "~ .")),
-            data = data)
-        if (useSandwich) {
-            covMatrix <- sandwich(diffModel)
-        }
-        else {
-            covMatrix <- vcov(diffModel)
-        }
-        dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel),
-            list(summary(diffModel)), list(coef(diffModel)),
-            list(covMatrix), list(data))
-        names(dsldDiffModel) <- c("yName", "sName", "model",
-            "summary", "coef", "covarianceMatrix", "data")
-        dsldModel[[sName]] <- dsldDiffModel
+      covMatrix <- vcov(diffModel)
     }
-    class(dsldModel) <- "dsldLM"
-    return(dsldModel)
+    dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel),
+                       list(summary(diffModel)), list(coef(diffModel)),
+                       list(covMatrix), list(data))
+    names(dsldDiffModel) <- c("yName", "sName", "model",
+                              "summary", "coef", "covarianceMatrix", "data")
+    dsldModel[[sName]] <- dsldDiffModel
+  }
+  class(dsldModel) <- "dsldLM"
+  return(dsldModel)
 }
 
 # ----------------------- Auxiliary Functions ---------------------------------#
@@ -324,7 +318,7 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
 # dsldDiffSLin(lin1, educ_data) # run with interactions 
 # dsldDiffSLin(lin11, educ_data)
 # -----------------------------------------------------------------------------#
-
+                                
 summary.dsldLM <- function(dsldLM) {
   diffS <- list()
   
