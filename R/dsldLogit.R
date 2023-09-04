@@ -38,8 +38,7 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
     
     # raise error if user doesn't input sComparisonPts #
     if (is.null(sComparisonPts)) {
-      stop(paste("Please enter the sComparisonPts input to compare for ",
-                 "interactions in summary()"))
+      sComparisonPts = dsldGetRow5(svcensus,yName, sName)
     }
     if (!is.data.frame(sComparisonPts)) {
       stop(paste("Error: sComparisonPts must be a dataframe"))
@@ -47,26 +46,26 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
     
     tempData <- data[, !(names(data) %in% sName)]
     newData <- dsldCheckData(tempData, sComparisonPts, yName)
-
+    
     # split data into list of dataframes by each level of sName #
     dataSplit <- split(data, data[[sName]])
     dataNames <- names(dataSplit)
-  
+    
     # loop and create model for each level in sName #
     for (name in dataNames) {
       # initialize instance of dsldDiffModel #
       dsldDiffModel <- list()
-    
+      
       # get data for each specific S factor & drop sensitive column #
       diffData <- dataSplit[[name]]
       drop <- c(sName)
       diffData <- diffData[, !(names(diffData) %in% drop)]
-    
+      
       # create the model #
       diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
                        family = "binomial", data = diffData)
-    
-    # setup individual instance of dsldDiffModel 
+      
+      # setup individual instance of dsldDiffModel 
       dsldDiffModel <- c(
         dsldDiffModel,
         yName,
@@ -76,11 +75,11 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
         list(summary(diffModel)),
         list(coef(diffModel)),
         list(diffData)
-        )
+      )
       names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
-                              "summary", "coef", "data")
+                                "summary", "coef", "data")
       class(dsldDiffModel) <- "dsldDiffModel"
-
+      
       # add instance into output list: dsldModel #
       dsldModel[[name]] <- dsldDiffModel
     }
@@ -262,11 +261,11 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
     
     tempData <- dsldGLM[[1]]$data
     xNew <- dsldCheckData(tempData, sComparisonPts, yName)
-  
+    
     # get vector of all levels in sName #
     sNames <- names(dsldGLM)
     df <- data.frame()
-  
+    
     # loop through each level of S name to compute estimates and standard errors
     for (i in sNames) {
       data <- dsldGLM[[i]]$data
@@ -277,11 +276,11 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
       tempDF <- data.frame(level = i, row = 1:nrow(xNew), prediction = pred, standardError = se)
       df <- rbind(df, tempDF)
     }
-  
+    
     # compute difference in estimates between each pair factor level for each row
     uniqueElements <- sort(unique(df$row))
     pairwiseDF <- data.frame()
-
+    
     for (i in uniqueElements) {
       rowData <- subset(df, row == i)
       charVec <- as.character(rowData$level)
@@ -297,11 +296,11 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
         indexVal <- sprintf("%s - %s", a, b)
         estimatedDiff <- aData$prediction - bData$prediction
         standardError <- sqrt(((aData$standardError) ^ 2) +
-                              ((bData$standardError) ^ 2))
+                                ((bData$standardError) ^ 2))
         tempDF <- data.frame(indexVal, i, a3,b3, estimatedDiff,
-                           standardError)
+                             standardError)
         names(tempDF) <- c("Factors Compared", "New Data Row", 'Factor A','Factor B', "Difference in Estimates",
-                         "Standard Errors")
+                           "Standard Errors")
         pairwiseDF <- rbind(pairwiseDF, tempDF)
       }
     }
