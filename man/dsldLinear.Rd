@@ -9,15 +9,14 @@
 
 \usage{
 ## Fit linear model
-dsldLinear(data, yName, sName, interactions = FALSE, newData = NULL,
-    useSandwich = FALSE)
+dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
+           useSandwich = FALSE) 
 
 ## s3 polymorphic functionalities for class 'dsldLM'
 summary(dsldLM)                 # summary of all attributes
 coef(dsldLM)                    # coefficients of the underlying linear model
 vcov(dsldLM)
-dsldDiffS(dsldLM, newData)      # compare mean Y | X for additional data in
-                                # the full interactions case
+dsldDiffS(dsldLM, newData)      # compare mean Y | X for additional data in the full interactions case
 }
 
 \arguments{
@@ -35,7 +34,7 @@ dsldDiffS(dsldLM, newData)      # compare mean Y | X for additional data in
         a logical value indicating whether or not to fit interactions with the
         sensitive variable. Defaults to FALSE [logical]
     }
-    \item{newData}{
+    \item{sComparisonPts}{
         dataframe of new cases for which mean Y | X will be compared between
         each pairs of S levels. Defaults to NULL for the no-interactions case
         [dataframe]
@@ -55,7 +54,7 @@ dsldDiffS(dsldLM, newData)      # compare mean Y | X for additional data in
 data(svcensus) # load updated dataset w/ sName as 'gender'
 
 # Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, 
-#   newData [dataframe]
+# newData [dataframe]
 
 # compare early vs late career
 newData <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), 
@@ -105,7 +104,8 @@ summary(lin2)
         3. (Full Interactions only) New data input by user; [dataframe] @ data \cr
         3. Summary Output of model; [character] @ summary \cr
         4. Coef of beta parameters; [character] @ coef \cr
-        5. Data used in the model (useful to see for interactions); [dataframe]
+        5. Covariance matrix of the model; [character] @ vcov \cr
+        6. Data used in the model (useful to see for interactions); [dataframe]
            @ data
 
     Furthermore, summary() is a polymorphic method that takes in an object of
@@ -143,4 +143,3 @@ summary(lin2)
     fitted from dsldLinear. The user can input additional data if they'd like to
     make new comparisons IN addition to those from output of summary(dsldLM).
 }
-        
