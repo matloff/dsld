@@ -38,7 +38,7 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
     
     # raise error if user doesn't input sComparisonPts #
     if (is.null(sComparisonPts)) {
-      sComparisonPts = dsldGetRow5(svcensus,yName, sName)
+      sComparisonPts = dsldGetRow5(data,yName, sName)
     }
     if (!is.data.frame(sComparisonPts)) {
       stop(paste("Error: sComparisonPts must be a dataframe"))
