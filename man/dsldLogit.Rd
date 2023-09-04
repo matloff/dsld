@@ -69,7 +69,7 @@ summary(log1)
 # Users can also make additional comparisons with new data as well using
 # dsldDiffS to compare mean P(Y = 1|X) between each pair of S levels.
 xNew <- lsa[c(100,1000,120),-c(8,11)]
-dat1 <- dsldDiffS(log1, xNew)
+dat1 <- dsldDiffSLog(log1, xNew)
 
 # Example 2: ‘bar’ as yName; 'gender' as sName; interactions == FALSE;
 # newData = NULL
