@@ -1,7 +1,7 @@
 
 # Part II:  Fairness in Machine Learning
 
-## Motivation
+## Motivation & Background
 <!-- Don't know how accurate this is, please feel free to make edits -->
 In modern applications of machine learning as a predictive modeling tool, it 
 would be irresponsible to produce a model that biases one sensitive group over 
@@ -15,11 +15,20 @@ balancing this tradeoff between fairness and utility becomes essential in any
 future implementations of machine learning.
 
 The end result of this modified modeling process is a tool that allows users to:
-    1. Compare a fair model against one with no fairness implemented; the 
-       effective result is a means of uncovering if biases exist within the 
-       dataset itself, but also how much fairness is gained for utility lost.
-    2. Reduce the impact of any inherent discrimination within the data (of 
-       course only to the level that is specified).
+
+1. Compare a fair model against one with no fairness implemented; the 
+   effective result is a means of uncovering if biases exist within the 
+   dataset itself, but also how much fairness is gained for utility lost.
+2. Reduce the impact of any inherent discrimination within the data (of 
+   course, only to the level that is specified).
+
+There are two main parts to fair machine learning:
+
+1. **Measuring fairness**, a deeper question that it appears at first glance, 
+as we will later discuss
+2. **Reducing unfairness**, a section dealing more with balancing fairness with 
+utility for practical uses in the real world; the approaches we'll be discussing 
+for reducing unfairness will typically be on the algorithm-side
 
 
 ## Example
