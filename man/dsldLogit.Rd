@@ -9,14 +9,13 @@
 
 \usage{
 ## Fit logistic model
-dsldLogit(data, yName, sName, interactions = FALSE, newData = NULL)
+dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal)
 
 ## s3 polymorphic functionalities for class 'dsldGLM'
 summary(dsldGLM)                # summary of all attributes
-coef(dsldGLM)                   # coefficients of the underlying linear model
+coef(dsldGLM)                   # coefficients of the underlying GLM model
 vcov(dsldGLM)
-dsldDiffS(dsldGLM, newData) 	# compare mean Y | X for additional data in
-                                # the full interactions case
+dsldDiffS(dsldGLM, newData) 	# compare P (Y = 1|X) for additional data in the full interactions case
 }
 
 \arguments{
@@ -34,13 +33,13 @@ dsldDiffS(dsldGLM, newData) 	# compare mean Y | X for additional data in
         a logical value indicating whether or not to fit interactions with the
         sensitive variable. Defaults to FALSE [logical]
     }
-    \item{newData}{
-        dataframe of new cases for which mean Y | X will be compared between
+    \item{sComparisonPts}{
+        dataframe of new cases for which P(Y = 1| X) will be compared between
         each pairs of S levels. Defaults to NULL for the no-interactions case
         [dataframe]
     }
-    \item{dsldLogit}{
-        output of dsldLinear, an s3 object of class 'dsldGLM' [list]
+    \item{yesYVal}{
+        Y value to be considered "yes," to be coded 1 rather than 0.[character]
     }
 }
 
@@ -57,40 +56,19 @@ dsldDiffS(dsldGLM, newData) 	# compare mean Y | X for additional data in
 data(law.school.admissions) # predicting probability of passing the ‘bar’
 lsa <- law.school.admission # **abbreviated name** for ease of use
 
-lsa$bar <- as.integer(
-    as.logical(lsa$bar)
-) 	# convert from TRUE/FALSE into binary 0’s and 1’s
-
-# compare probability of passing the bar of low vs. high income 
-newData <- data.frame(
-    age = c(18, 18),
-    decile1 = c(5, 5),
-    decile3 = c(4, 4),
-    lsat = c(44, 44),
-    fam_inc = c(1, 5),
-    ugpa = c(3.8, 3.8),
-    race1 = c(‘black’, ‘black’)
-)
+# select subset of original data for sComparisonPts argument
+newData <- lsa[c(2,22,222,2222),-c(8,11)]
 
 log1 <- dsldLogit(lsa, 'bar', 'gender', interactions = TRUE,
-    newData) 	# we are predicting lsat score       
+    newData, yesYVal = 'TRUE') 	# we are predicting lsat score       
 
 # Extract individual regression coefficients AND compare differences in
-# P(Y | X) between each pairs of sName levels:
+# P(Y = 'TRUE'| X) between each pairs of sName levels:
 summary(log1)
             
 # Users can also make additional comparisons with new data as well using
-# dsldDiffS to compare mean P(Y|X) between each pair of S levels.
-xNew <- data.frame(
-    age = c(18, 18),
-    decile1 = c(5, 5),
-    decile3 = c(4, 4),
-    lsat = c(44, 44),
-    fam_inc = c(1, 5),
-    ugpa = c(3.8, 3.8),
-    race1 = c(‘white’, ‘white’)
-)
-
+# dsldDiffS to compare mean P(Y = 1|X) between each pair of S levels.
+xNew <- lsa[c(100,1000,120),-c(8,11)]
 dat1 <- dsldDiffS(log1, xNew)
 
 # Example 2: ‘bar’ as yName; 'gender' as sName; interactions == FALSE;
@@ -103,9 +81,6 @@ summary(log2)
 }
 
 \note{
-    ** yName must be a binary column in integer format in order for
-       dsldLogit() to run (see example). **
-
     The output of dsldDiffS is the same dataframe format as summary().
 }
 
