@@ -71,7 +71,7 @@ summary(lin1)
 xNew  <- data.frame(age = c(18, 60), educ = c("16", '16'), 
     occ = c("106", "106"), wkswrkd = c(50, 50)) # Note: educLevel = '16' 
                                                 # not educLevel = 'zzzOther'
-dat1 <- dsldDiffS(lin1, xNew)
+dat1 <- dsldDiffSLin(lin1, xNew)
 
 # Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; 
 #   newData = NULL
