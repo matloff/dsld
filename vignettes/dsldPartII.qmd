@@ -514,21 +514,21 @@ scorr <- function (model) model$corrsens
 dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 20)
                           Metric Misclass Error
 race.African-American 0.30380005      0.2164294
-race.Asian            0.19859936            NaN
 race.Caucasian        0.20623475            NaN
 race.Hispanic         0.27411083            NaN
-race.Native American  0.04276491            NaN
 race.Other            0.20974439            NaN
+race.Asian            0.19859936            NaN
+race.Native American  0.04276491            NaN
 
 # Deweight decile_score and priors_count
 dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 20, deweightPars = list(decile_score=0, priors_count=0))
                           Metric Misclass Error
 race.African-American 0.21539335      0.2234055
-race.Asian            0.16259914            NaN
 race.Caucasian        0.15130625            NaN
 race.Hispanic         0.19563113            NaN
-race.Native American  0.01459168            NaN
 race.Other            0.13279856            NaN
+race.Asian            0.16259914            NaN
+race.Native American  0.01459168            NaN
 ```
 
 This example demonstrates the tradeoff between utility and fairness: as the 
@@ -562,21 +562,21 @@ labeled *prop_parity* under the fairness package.
 dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 20)
                  Proportion Proportional Parity Group size Misclass Error
 African-American  0.5154766           1.0000000     884.20      0.2146071
-Asian             0.2225316           0.4324312       8.95            NaN
 Caucasian         0.3565180           0.6917514     613.95            NaN
 Hispanic          0.3132897           0.6082632     149.60            NaN
-Native American   0.3816667           0.7379000       4.35            NaN
 Other             0.3070574           0.5951850      94.95            NaN
+Asian             0.2225316           0.4324312       8.95            NaN
+Native American   0.3816667           0.7379000       4.35            NaN
 
 # Deweight decile_score and priors_count
 dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 20, deweightPars = list(decile_score=0, priors_count=0))
                  Proportion Proportional Parity Group size Misclass Error
 African-American  0.5030514           1.0000000     874.70      0.2218964
-Asian             0.2225991           0.4391436       9.10            NaN
 Caucasian         0.3800740           0.7556834     624.20            NaN
 Hispanic          0.3328865           0.6624944     149.85            NaN
-Native American   0.3657143           0.7320974       4.05            NaN
 Other             0.2912062           0.5796095      94.10            NaN
+Asian             0.2225991           0.4391436       9.10            NaN
+Native American   0.3657143           0.7320974       4.05            NaN
 ```
 
 We see a similar set of results to our S Correlation testing: in the transition from 
@@ -586,7 +586,9 @@ are to 1, the level of achievement of demographic parity increases (i.e. more fa
 For our demographic parity results, the distance from 1 is smaller at the deweight 
 value of 0, so our fairness is **increasing** according to demographic parity.
 
-<!-- TODO: explain why AA demo par is 1 i.e. relation to AA -->
+[The way the fairness package calculates the proportional parity column is by
+finding a factor that sets the proportion of the first level (African-Americans
+in this case) to 1.0, and scales the rest of the levels by that factor.]{.column-margin}
 
 ::: {.callout-note}
 ##### Randomness in Misclassification Error
@@ -607,21 +609,21 @@ Similar to our approach for measuring demographic parity, we will make use of th
 dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, nReps = 20)
                  Sensitivity Equalized odds Group size Misclass Error
 African-American   0.7655988      1.0000000     876.75      0.2140661
-Asian              0.8888889      1.1648472       9.25            NaN
 Caucasian          0.6917817      0.9040189     618.20            NaN
 Hispanic           0.6500930      0.8495973     151.80            NaN
-Native American    0.6491228      0.8461428       4.00            NaN
 Other              0.6981959      0.9116227      96.00            NaN
+Asian              0.8888889      1.1648472       9.25            NaN
+Native American    0.6491228      0.8461428       4.00            NaN
 
 # Deweight decile_score and priors_count
 dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, nReps = 20, deweightPars = list(decile_score=0, priors_count=0))
                  Sensitivity Equalized odds Group size Misclass Error
 African-American   0.7444010      1.0000000     882.70      0.2251708
-Asian              0.8333333      1.1208604       8.85            NaN
 Caucasian          0.6882518      0.9252327     612.80            NaN
 Hispanic           0.6654964      0.8942501     152.80            NaN
-Native American    0.5601852      0.7530386       4.00            NaN
 Other              0.6960300      0.9345101      94.85            NaN
+Asian              0.8333333      1.1208604       8.85            NaN
+Native American    0.5601852      0.7530386       4.00            NaN
 ```
 
 Similar to demographic parity, the closer our equal odds results are to 1, the more
