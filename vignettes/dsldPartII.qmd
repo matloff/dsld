@@ -131,6 +131,20 @@ different with respect to different sensitive sub-groups. For example, if a
 model predicts with higher accuracy if asian applicants will be accepted for a 
 loan or not, then we can conclude the model is guilty of disparate mistreatment.
 
+The contraint employed by Zafar et al. in their approach relies on binding the 
+covariance of the sensitive features to the predicted outcomes. In other words, 
+they have designed a model that constrains its behavior based on if the 
+predictions it makes is mimicking the behavior of the sensitive feature. By 
+doing so, they can effectively balance the amount of information the sensitive 
+attribute provides to the model by limiting the impact it *can* have on the 
+model's predictions.
+
+It's worth noting here that this approach has also enabled Zafar et al. to 
+optimize with respect to a minimum accuracy threshold, essentially allowing for 
+maximal fairness while meeting the minimum benchmark requirements. This is 
+especially useful for implementations of fair machine learning in the context 
+of business.
+
 
 ## Measurements of Fairness & Utility
 Different algorithms and approaches attempt to reduce bias as indicated through 
