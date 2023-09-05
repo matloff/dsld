@@ -145,6 +145,16 @@ maximal fairness while meeting the minimum benchmark requirements. This is
 especially useful for implementations of fair machine learning in the context 
 of business.
 
+::: {.callout-note}
+While we are yet to apply this approach in the dsld package, users are 
+encouraged to explore the fairML package if they deem this framework best 
+suites their needs.
+
+These are implemented under the functions `zlm`, `zlm.orig`, `zlrm`, and 
+`zlrm.orig`. This is for both linear & logistic regression, although the paper 
+defines approaches for SVMs as well.
+:::
+
 
 ## Measurements of Fairness & Utility
 Different algorithms and approaches attempt to reduce bias as indicated through 
