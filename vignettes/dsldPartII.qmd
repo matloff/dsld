@@ -500,30 +500,48 @@ the day, there is no definitive balance between fairness and utility).
 on different models. For **dsldQeFairRF**, we can simply call the *corrsens* attribute
 to get the S Correlations of the model with and without the deweighted features.
 
-```{r}
+```{r, eval = FALSE}
 # set up base variables
 data(compas)
 data <- compas
 yName <- 'two_year_recid'
 sName <- 'race'
-```
 
-```{r}
 ############## S Correlation ##############
 # The dsldQeFairRF model has a corrsens attribute that contains the 
 # s correlations of all the levels
 scorr <- function (model) model$corrsens
 
+# Deweights = 1
 dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 10)
+# Results
+                          Metric Misclass Error
+race.African-American 0.29496767      0.2166259
+race.Asian            0.15994065            NaN
+race.Caucasian        0.19855852            NaN
+race.Hispanic         0.29190186            NaN
+race.Native American  0.02544242            NaN
+race.Other            0.21154683            NaN
 
+##############################
+
+# Deweights = 0
 dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 10,
                    deweightPars = list(decile_score=0, priors_count=0))
+# Results
+                          Metric Misclass Error
+race.African-American 0.19991603      0.2288509
+race.Asian            0.12780363            NaN
+race.Caucasian        0.13936898            NaN
+race.Hispanic         0.19217361            NaN
+race.Native American  0.00970379            NaN
+race.Other            0.10438146            NaN
 ```
 
 This example demonstrates the tradeoff between utility and fairness: as the 
-deweight values transition from 1 to 0, our utility also **increases** (since the 
-misclassification error decreases). On the other hand, S Correlation increases, 
-which indicates that fairness is **decreasing** since we are trying to increase 
+deweight values transition from 1 to 0, our utility also **decreases** (since the 
+misclassification error increases). On the other hand, S Correlation decreases, 
+which indicates that fairness is **increasing** since we are trying to increase 
 fairness by reducing the impact of S proxies.
 
 ::: {.callout-note}
@@ -534,7 +552,7 @@ Recall that for each trial run, we produce a slightly different fairness and
 utility score, even with the exact same arguments. We try to alleviate the 
 impact of this error by increasing the number of repititions/trial runs, but 
 the randomness of Misclassification Error in particular cannot be fully 
-eliminated. This may result in unexpected trends in later runs of the function 
+eliminated. This may result in an indication of unexpected trends 
 that may not be entirely accurate. It also means that we cannot fully rely on 
 misclassification error alone to define utility, given the randomness.
 :::
@@ -546,24 +564,40 @@ has several functions for several fairness metrics, including demographic
 parity. Its important to note that the demographic parity we described earlier is 
 labeled *prop_parity* under the fairness package.
 
-```{r}
-############ Demographic Parity #############
-dem1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, 
+```{r, eval = FALSE}
+# Deweights = 1
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, 
              nReps = 10, deweightPars = list(decile_score=1, priors_count=1))
-dem0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, 
+# Results
+                 Proportion Proportional Parity Group size Misclass Error
+African-American  0.5091107           1.0000000      886.8      0.2124694
+Asian             0.2150000           0.4274612        9.1            NaN
+Caucasian         0.3479712           0.6841210      613.1            NaN
+Hispanic          0.3167917           0.6238221      151.1            NaN
+Native American   0.3250000           0.6484604        3.6            NaN
+Other             0.3188334           0.6274617       92.3            NaN
+
+##############################
+
+# Deweights = 0
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, 
              nReps = 10, deweightPars = list(decile_score=0, priors_count=0))
-# Deweight Value = 1
-print(dem1)
-# Deweight Value = 0
-print(dem0)
+# Results
+                 Proportion Proportional Parity Group size Misclass Error
+African-American  0.5008996           1.0000000      880.4      0.2222494
+Asian             0.3391667           0.6777102        6.6            NaN
+Caucasian         0.3641984           0.7271936      612.9            NaN
+Hispanic          0.3324559           0.6631030      156.5            NaN
+Native American   0.2108333           0.4259763        4.3            NaN
+Other             0.2908529           0.5809273       95.3            NaN
 ```
 
 We see a similar set of results to our S Correlation testing: in the transition from 
-deweight values = 1 to deweight values = 0, we see that the utility is **increasing** 
+deweight values = 1 to deweight values = 0, we see that the utility is **decreasing** 
 since the misclassification error is decreasing. For fairness, the closer our results 
 are to 1, the level of achievement of demographic parity increases (i.e. more fair).
-For our demographic parity results, the distance from 1 larger at the deweight 
-value of 0, so our fairness is **decreasing** according to demographic parity.
+For our demographic parity results, the distance from 1 is smaller at the deweight 
+value of 0, so our fairness is **increasing** according to demographic parity.
 
 <!-- TODO: explain why AA demo par is 1 i.e. relation to AA -->
 
@@ -581,22 +615,38 @@ we will be ignoring the results for these sub-groups in our analyses.
 Similar to our approach for measuring demographic parity, we will make use of the 
 *equal_odds* label with the **fairness** package to determine the equalized odds.
 
-```{r}
-############## Equalized Odds ###############
-eqod1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+```{r, eval = FALSE}
+# Deweights = 1
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
              nReps = 10, deweightPars = list(decile_score=1, priors_count=1))
-eqod0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+# Results
+                 Sensitivity Equalized odds Group size Misclass Error
+African-American   0.7752200      1.0000000      879.7      0.2266504
+Asian              0.9166667      1.1818755        8.2            NaN
+Caucasian          0.6887573      0.8888523      613.4            NaN
+Hispanic           0.6663525      0.8606362      156.2            NaN
+Native American    0.9000000      1.1604017        4.5            NaN
+Other              0.6970377      0.9007743       94.0            NaN
+
+##############################
+
+# Deweights = 0
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
              nReps = 10, deweightPars = list(decile_score=0, priors_count=0))
-# Deweight Value = 1
-print(eqod1)
-# Deweight Value = 0
-print(eqod0)
+# Results
+                 Sensitivity Equalized odds Group size Misclass Error
+African-American   0.7387521      1.0000000      877.4      0.2117359
+Asian              0.8250000      1.1125278        8.5            NaN
+Caucasian          0.6998496      0.9478001      614.7            NaN
+Hispanic           0.6632300      0.8986169      155.1            NaN
+Native American    0.3900000      0.5357268        4.3            NaN
+Other              0.6966142      0.9421963       96.0            NaN
 ```
 
 Similar to demographic parity, the closer our equal odds results are to 1, the more
 fair our model is. We see a similar trend as before, where the fairness is 
-**decreased** at a deweight value of 0. However, our utility also seems to be 
-**decreasing** based on the increasing misclassification error, which is unexpected 
+**increased** at a deweight value of 0. However, our utility *also* seems to be 
+**increasing** based on the decreasing misclassification error, which is unexpected 
 and likely due to random error.
 
 <!-- TODO: Conclusion showing the effectiveness of deweighting
