@@ -94,16 +94,9 @@ metrics that can be used to gauge fairness, there is no **single correct**
 which constraint/metric will optimize the model for their needs.
 
 
-### Explicitly Deweighted Features
-<!-- TODO: this will be for the Matloff paper -->
-
-
-### Ridge Penalty
-<!-- TODO: this will be for the Scutari paper -->
-
-
 ### Nonconvex Optimization with Fairness Constraints
-<!-- TODO: this will be for the Komiyama paper -->
+As introduced by Komiyama et al. in 2018, this approach to fair machine 
+learning defines a framework that **(1)**
 
 
 ### Flexible Fairness Classification
@@ -153,6 +146,16 @@ These are implemented under the functions `zlm`, `zlm.orig`, `zlrm`, and
 `zlrm.orig`. This is for both linear & logistic regression, although the paper 
 defines approaches for SVMs as well.
 :::
+
+
+### Ridge Penalty
+<!-- TODO: this will be for the Scutari paper -->
+
+
+
+### Explicitly Deweighted Features
+<!-- TODO: this will be for the Matloff paper -->
+
 
 
 ## Measurements of Fairness & Utility
