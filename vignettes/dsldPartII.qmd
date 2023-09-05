@@ -424,8 +424,8 @@ mean except for when precision and recall are requivalent
 be forced to make an intelligent decisions. Take, for example, a dataset 
 with binary outcomes where one of the possible outcomes far outnumbers the 
 other. A model that blindly predicts this outcome would perform relatively 
-well under test accuracy, but against F1-Score this model would (rightly so) 
-be rejected.
+well under test accuracy, but against F1-Score this model would likely perform 
+poorly.
 
 F1-Score essentially restrains models from biasing one side of this precision-
 recall tradeoff, ensuring a more performant model in the face of deployment.
