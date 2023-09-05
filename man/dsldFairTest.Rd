@@ -8,7 +8,7 @@
   the fairness measurement of the model.
 }
 \usage{
-dsldFairTest(data, yName, sName, qeFunc, fairFunc, deweightPars=NULL, 
+dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL, 
   cutoff = .5, nReps = 1, testProportion = 0.3)
 }
 \arguments{
@@ -21,15 +21,19 @@ dsldFairTest(data, yName, sName, qeFunc, fairFunc, deweightPars=NULL,
   \item{sName}{
     column name of the sensitive variable (factor)
   }
-  \item{qeFunc}{
+  \item{modelFunc}{
     a function in the dsld package that starts with dsldQeFair
   }
-  \item{fairFunc}{
-    a function in the fairness package.
+  \item{metricFunc}{
+    made for functions in the fairness package with the same call signatures as
+    dem_parity, prop_parity, equal_odds, etc.
+    User may instead pass in a function with a 'model' parameter, which is a reference
+    to the model object generated from the modelFunc e.g. 'function(model)\{\}'
   }
   \item{deweightPars}{
     values for de-emphasizing variables in a split, e.g. 'list(age=0.2,gender=0.5)'
-    Default set to a list of all the column names set to 1
+    Unused variables in the deweightPars are set to 1, and then all values are
+    scaled so the sum of all the deweights is 1.
   }
   \item{cutoff}{
     cutoff to generate predicted outcomes from predicted probabilities. 
@@ -44,10 +48,11 @@ dsldFairTest(data, yName, sName, qeFunc, fairFunc, deweightPars=NULL,
   }
 }
 \details{
-  As of August, the qeFunc arguement only works with dsldQeFairRF
+  As of 9/4/23, the qeFunc arguement only works with dsldQeFairRF and qeRFranger
 }
 \value{
-  a data frame containing the fairness metrics outputted from the model
+  a data frame containing the fairness metrics outputted from the model. The 
+  last column, Misclass Rate, is independent of the rows.
 }
 \author{
   Jonathan Tran
@@ -57,8 +62,9 @@ dsldFairTest(data, yName, sName, qeFunc, fairFunc, deweightPars=NULL,
   yName <- 'two_year_recid'
   sName <- 'race'
   
-  dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 2)
+  # Demographic/Statistical parity
+  dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 2)
   
-  deweightPars = list(decile_score=0, priors_count=0)
-  dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 2, deweightPars = deweightPars)
+  # S Correlation
+  dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, \(model) model$corrsens, nReps = 2)
 }

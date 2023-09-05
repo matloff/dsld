@@ -1,13 +1,12 @@
-dsldFairTest <- function(data, yName, sName, qeFunc, fairFunc, 
+dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc, 
                          deweightPars=NULL, cutoff = .5, nReps = 1, 
-                         testProportion = 0.3, t = FALSE) {
-  dsld::getSuggestedLib("fairness")
+                         testProportion = 0.3) {
+  dsld::getSuggestedLib("R.utils")
   
   singleTest <- function() {
     # partition the data
     partition <- sample(1:nrow(data))[1:round(nrow(data) * testProportion)]
     train <- data[-partition, ]
-    if (t) train[,sName] <- unique(train[,sName])[1]
     test <- data[ partition, ]
     
     # avoid warning statements since these are used in the book
@@ -15,23 +14,31 @@ dsldFairTest <- function(data, yName, sName, qeFunc, fairFunc,
     
     # use tryCatch so we can reset the sink if the qeFunc fails
     model <- tryCatch(
-      # right now this only works with dsldQeFairRF
-      R.utils::doCall(qeFunc, data=train, yName=yName, sName=sName,
-                                deweightPars=deweightPars),
+      # right now only tested to work with dsldQeFairRF and qeRFranger
+      # doCall used to work with unused args
+      R.utils::doCall(
+        modelFunc, data=train, yName=yName, sName=sName, deweightPars=deweightPars
+        ),
       finally = sink()
     )
     
     # model's prediction
     test$probs <- predict(model, test)$probs[,1]
     
-    # perform fairness function metric
-    dem <- fairFunc(test, yName, sName, 'probs', 
-                cutoff = cutoff)$Metric
+    # perform fairness function Metric or 
+    # user passed function with access to the model
+    Metric <- R.utils::doCall(
+      metricFunc, data=test, outcome=yName, group=sName, probs='probs', cutoff=cutoff,
+        model=model
+      )
+    # fairness object has a Metric column
+    if ("Metric" %in% names(Metric)) Metric <- Metric$Metric
     
     # append test accuracy to the output
-    dem <- cbind(dem, model$testAcc)
-    colnames(dem)[length(colnames(dem))] <- "Misclass Error"
-    dem
+    Metric <- cbind(Metric, NA)
+    Metric[1, ncol(Metric)] <- model$testAcc
+    colnames(Metric)[ncol(Metric)] <- "Misclass Error"
+    Metric
   }
   
   # repeats the calculation nreps times and averages the data tables
@@ -46,8 +53,7 @@ dsldFairTest <- function(data, yName, sName, qeFunc, fairFunc,
 # yName <- 'two_year_recid'
 # sName <- 'race'
 # 
-# dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 5)
+# dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 2)
 # 
-# deweightPars = list(decile_score=0, priors_count=0)
-# dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 5, deweightPars = deweightPars)
+# dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, \(model) model$corrsens, nReps = 2)
 
