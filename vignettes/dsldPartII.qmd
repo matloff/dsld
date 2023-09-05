@@ -430,6 +430,11 @@ poorly.
 F1-Score essentially restrains models from biasing one side of this precision-
 recall tradeoff, ensuring a more performant model in the face of deployment.
 
+Of course, there is no "one-size fits all", so ensure that this metric fits the 
+context of a model before using it. F1 also doesn't have a direct application 
+multiclass predictors (although macro-F1-Score exists, but that comes with its 
+own set of issues), so strictly this is a binary-classifier metric.
+
 
 #### MSPE & MAPE
 <!-- Mean Squared Prediction Error & Mean Absolute Prediction Error -->
