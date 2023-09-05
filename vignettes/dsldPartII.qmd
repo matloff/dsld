@@ -460,12 +460,11 @@ dealt with. For one, the squared error terms means the MSPE is more sensitive
 to outliers. In other words, outliers may artificially inflate the MSPE, 
 especially for linear models that tend to over-generalize behavior as a simple 
 trend line. MAPE, therefore, performs a lot more robustly when gauging general 
-performance, but fails in another sense. 
-<!-- This following part is what my research has indicated, and it makes sense, 
-but maybe it shouldn't be included --> Mathematically, the absolute value function 
-isn't differentiable for all x (it's undefined at the origin). Therefore, given its 
-differentiability, the MSPE is preferred for optimization problems in general as 
-extrema can be found without iterative methods.
+performance, but fails in another sense.Mathematically, the absolute value 
+function isn't differentiable for all x (it's undefined at the origin). 
+Therefore, given its differentiability, the MSPE is preferred for optimization 
+problems in general as extrema can be found without iterative methods.
+
 
 ## Testing
 <!-- TODO: Rewrite analyses to account for randomness
