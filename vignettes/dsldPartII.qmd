@@ -14,6 +14,24 @@ is reduced utility (predictive power over the dataset). Thus, a means of
 balancing this tradeoff between fairness and utility becomes essential in any 
 future implementations of machine learning.
 
+::: {.callout-note}
+#### Fairness-Utility Tradeoff
+There exists a tradeoff between the predictive power a model possesses and the 
+fairness of its predictions.
+
+This "law" of sorts is becomes intuitive when considering what it means to be 
+"fair". In order to ensure decisions aren't being made with respect to a 
+sensitive variable, we must reduce our consideration of or neglect to consider 
+entirely the sensitive feautre. In doing so, we lose the information it 
+provides, but we boost fairness.
+
+Due to this tradeoff, considering what balance of fairness-utility best suites 
+the context with which the model operates in becomes essential. You may hear 
+phrases along the lines of "business necessity clause", which simply implies 
+that as fair a model may be, for practical application a model must be accurate 
+to at least a minimum threshold. Otherwise, it isn't viable for deployment.
+:::
+
 The end result of this modified modeling process is a tool that allows users to:
 
 1. Compare a fair model against one with no fairness implemented; the 
@@ -73,20 +91,6 @@ and research paper to research paper. While we provide a plethora of different
 metrics that can be used to gauge fairness, there is no **single correct** 
 **metric**; each will have their own use-case. It's up to the reader to decide 
 which constraint/metric will optimize the model for their needs.
-
-<!-- gonna remove this for now, due to the lack of iterative methods we use -->
-<!-- ::: {.callout-note}
-#### Side-Note: Determinism
-The following paragraph reads a bit more technical, though it is *not* 
-necessary for users to understand in order to deploy a fair ML model.
-
-The final set of weights produced by some of these algorithims is not always 
-deterministic. In other words, repeated attempts with the same model and 
-parameters may lead to varying degrees of success depending on the type of 
-optimization being used. Iterative optimization methods (such as gradient 
-descent) will be the main culprits with this non-determinism. Some closed-form 
-algorithms (i.e. Ridge Regression) will not be affected by this.
-::: -->
 
 
 ### Explicitly Deweighted Features
@@ -158,8 +162,8 @@ each one.
 
 ::: {.callout-note}
 ### True-False Positives and Negatives {#classification-terms}
-Over the following sections, you may see the terms like True-Positive rate 
-(TPR) or False-Negative rate (FPR), etc. These terms will primarily come in 
+Over the following sections, you may see terms like True-Positive rate 
+(TPR), False-Negative rate (FPR), etc. These terms will primarily come in 
 the context of binary classifiers as a means of measuring performance or even 
 fairness. The definitions are as follows:
 
@@ -192,18 +196,17 @@ P (all positives), FP over N (all negatives), etc.) are as follows:
 
 
 ### Fairness Metrics
-<!-- TODO: reiterate points about measuring fairness... -->
 Fairness metrics are used to inform the user of the potential disparity in the 
 consistency of a model's predictions across different groups (e.g. demographic 
 groups). These groups are usually related to the sensitive variable S. Recall 
-from the introduction to this book that to minimize fairness, we must eliminate 
+from the introduction to this book that to minimize fairness, we must reduce 
 the impact of race from our predictions (as well as reduce the impact of any proxy 
 variables).
 
 Fairness metrics can detect potential biases in model predictions based on the 
 aforementioned sensitive variable(s). Many fairness metrics can be related back to 
 the aforementioned True-False Positives and Negatives, so it is important for the 
-reader to understand those concepts to understand how these different metrics work.
+reader to understand those concepts to understand how these different metrics work
 
 
 #### S-Correlation
