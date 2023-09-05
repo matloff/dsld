@@ -35,9 +35,17 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     # fairness object has a Metric column
     if ("Metric" %in% names(Metric)) Metric <- t(Metric$Metric)
     
+    # manually calculated test accuracy
+    predic <- apply(pred$probs, 1, which.max)
+    actual <- as.numeric(test[,yName])
+    print(cbind(predic, actual))
+    error <- mean(predic != actual)
+    # for some reason its flipped w/ binary outcome
+    if (length(levels(data[,yName])) == 2) error <- mean(predic == actual)
+    
     # append test accuracy to the output
     Metric <- cbind(Metric, NA)
-    Metric[1, ncol(Metric)] <- model$testAcc
+    Metric[1, ncol(Metric)] <- error
     colnames(Metric)[ncol(Metric)] <- "Misclass Error"
     Metric
   }

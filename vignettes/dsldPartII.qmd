@@ -502,8 +502,7 @@ to get the S Correlations of the model with and without the deweighted features.
 
 ```{r, eval = FALSE}
 # set up base variables
-data(compas)
-data <- compas
+data <- fairml::compas
 yName <- 'two_year_recid'
 sName <- 'race'
 
