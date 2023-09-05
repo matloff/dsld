@@ -96,13 +96,18 @@ which constraint/metric will optimize the model for their needs.
 
 ### Nonconvex Optimization with Fairness Constraints
 As introduced by Komiyama et al. in 2018, this approach to fair machine 
-learning defines a framework that **(1)**
+learning defines a framework that **(1)** allows users to set a level of 
+fairness to provably optimize accuracy for, **(2)** allows for numeric 
+sensitive features, and **(3)** accomodates multiple sensitive features 
+concurrently.
+
+
 
 
 ### Flexible Fairness Classification
 As introduced by Zafar et al. in 2019, this approach to fair machine learning 
 defines a framework that **(1)** accomodates multiple definitions of fairness 
-simultaneously, **(2)** reduces fairness with respect to a variable amount of 
+simultaneously, **(2)** reduces unfairness with respect to a variable amount of 
 sensitive features, and **(3)** is applicable to multiple ML algorithms.
 
 The authors of this approach specifically focused on the following key fairness 
