@@ -45,6 +45,7 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
   }
   \item{testProportion}{
     how much of the data to use as the testing set. The rest is used to train the model.
+    This proportion is not the same as any holdout argument used in the modelFunc.
   }
 }
 \details{

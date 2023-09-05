@@ -479,8 +479,9 @@ utility.
 
 <!-- TODO: Short intro (maybe mention custom framework/function) -->
 
-We can use the **replicate** function to run several trials of our model 
-to increase the reliability of our results:
+DSLD has a dsldFairTest function that allows us to invoke a test function
+on different models. For dsldQeFairRF, we can simply call the corrsens attribute
+to get the s correlations of a model with and without the deweighted features.
 
 ```{r}
 # set up base variables
@@ -491,9 +492,10 @@ sName <- 'race'
 
 ```{r}
 ############## S Correlation ##############
-scorr <- function (model) {
-  model$corrsens
-}
+# The dsldQeFairRF model has a corrsens attribute that contains the 
+# s correlations of all the levels
+scorr <- function (model) model$corrsens
+
 dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 10)
 
 dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 10,
@@ -513,12 +515,16 @@ the trend shown in Utility may not be an accurate trend -->
 
 <!-- TODO: Short intro (maybe mention use of Fairness pkg instead of custom 
 framework/function) -->
+The dsldFairTest function really shines with the *fairness* package, which
+has several functions for several fairness metrics, including demographic
+parity. Its important to note that the demographic parity we described earlier is 
+labeled prop_parity under the fairness package.
 
 ```{r}
 ############ Demographic Parity #############
-dem1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+dem1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, 
              nReps = 10, deweightPars = list(decile_score=1, priors_count=1))
-dem0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::dem_parity, 
+dem0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, 
              nReps = 10, deweightPars = list(decile_score=0, priors_count=0))
 # Deweight Value = 1
 print(dem1)

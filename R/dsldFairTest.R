@@ -23,7 +23,8 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     )
     
     # model's prediction
-    test$probs <- predict(model, test)$probs[,1]
+    pred <- predict(model, test)
+    if ("probs" %in% names(pred)) test$probs <- pred$probs[,1]
     
     # perform fairness function Metric or 
     # user passed function with access to the model
