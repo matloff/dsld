@@ -468,6 +468,9 @@ differentiability, the MSPE is preferred for optimization problems in general as
 extrema can be found without iterative methods.
 
 ## Testing
+<!-- TODO: Rewrite analyses to account for randomness
+Might need to switch eval to FALSE and paste in results instead
+May need to switch Utility metrics if possible -->
 
 We are (purely hypothetically) investigating racial bias in the COMPAS data with 
 regards to recidivism. We are trying to predict two_year_recid (which is a 
@@ -580,14 +583,14 @@ Similar to our approach for measuring demographic parity, we will make use of th
 
 ```{r}
 ############## Equalized Odds ###############
-dem1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+eqod1 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
              nReps = 10, deweightPars = list(decile_score=1, priors_count=1))
-dem0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
+eqod0 <- dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, 
              nReps = 10, deweightPars = list(decile_score=0, priors_count=0))
 # Deweight Value = 1
-print(dem1)
+print(eqod1)
 # Deweight Value = 0
-print(dem0)
+print(eqod0)
 ```
 
 Similar to demographic parity, the closer our equal odds results are to 1, the more
@@ -609,3 +612,4 @@ sections with any of the following options, in a rough top-down order of priorit
 - * ^ This will likely require a new COMPAS example with a continuous Y name as opposed to
       the binary two_year_recid
 - More utility metrics
+-->
