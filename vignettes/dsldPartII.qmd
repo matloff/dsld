@@ -101,6 +101,13 @@ fairness to provably optimize accuracy for, **(2)** allows for numeric
 sensitive features, and **(3)** accomodates multiple sensitive features 
 concurrently.
 
+The authors of this approach primarily focused on two methods for gauging 
+fairness: **demographic parity** and **s-correlation**. While we'll go more 
+into detail later about these metrics, it's important to note that the latter 
+metric motivates a part of their approach. Briefly put, s-correlation measures 
+the relationship between the sensitive feature (often referred as $S$) and the 
+predicted outcomes (often referred as $Y$).
+
 
 
 
