@@ -79,7 +79,8 @@ metrics that can be used to gauge fairness, there is no **single correct**
 **metric**; each will have their own use-case. It's up to the reader to decide 
 which constraint/metric will optimize the model for their needs.
 
-::: {.callout-note}
+<!-- gonna remove this for now, due to the lack of iterative methods we use -->
+<!-- ::: {.callout-note}
 #### Side-Note: Determinism
 The following paragraph reads a bit more technical, though it is *not* 
 necessary for users to understand in order to deploy a fair ML model.
@@ -90,7 +91,7 @@ parameters may lead to varying degrees of success depending on the type of
 optimization being used. Iterative optimization methods (such as gradient 
 descent) will be the main culprits with this non-determinism. Some closed-form 
 algorithms (i.e. Ridge Regression) will not be affected by this.
-:::
+::: -->
 
 
 ### Explicitly Deweighted Features
@@ -105,8 +106,30 @@ algorithms (i.e. Ridge Regression) will not be affected by this.
 <!-- TODO: this will be for the Komiyama paper -->
 
 
-### Other Constraints (paper three, we'll update title later)
+### Flexible Fairness Classification
 <!-- TODO: this will be for the Zafar paper -->
+As introduced by Zafar et al. in 2019, this approach to fair machine learning 
+defines a framework that **(1)** accomodates multiple definitions of fairness 
+simultaneously, **(2)** reduces fairness with respect to a variable amount of 
+sensitive features, and **(3)** is applicable to multiple ML algorithms.
+
+The authors of this approach specifically focused on the following key fairness 
+metrics in development:
+
+1. **Disparate Treatment**: if a change in a sensitive feature's value results 
+in a substantial change in the predicted outcome. For example, if changing the 
+gender results in someone being predicted as a violent crime risk then the 
+algorithm would be guilty of disparate treatment.
+2. **Disparate Impact**: if the overall result with respect to different 
+sensitive sub-groups is different. We also reference this metric as *demographic 
+parity*. For example, if Race was the sensitive feature and the white subgroup 
+would be given preferential treatment with respect to credit scores (i.e. higher 
+scores) than other subgroups, then the algorithm would be guilty of disparate 
+impact (in violation of demographic parity).
+3. **Disparate Mistreatment**: if the error rate in predictions is substantially 
+different with respect to different sensitive sub-groups. For example, if a 
+model predicts with higher accuracy if asian applicants will be accepted for a 
+loan or not, then we can conclude the model is guilty of disparate mistreatment.
 
 
 ## Measurements of Fairness & Utility
