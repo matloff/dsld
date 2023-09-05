@@ -102,7 +102,6 @@ algorithms (i.e. Ridge Regression) will not be affected by this.
 
 
 ### Flexible Fairness Classification
-<!-- TODO: this will be for the Zafar paper -->
 As introduced by Zafar et al. in 2019, this approach to fair machine learning 
 defines a framework that **(1)** accomodates multiple definitions of fairness 
 simultaneously, **(2)** reduces fairness with respect to a variable amount of 
