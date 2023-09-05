@@ -38,7 +38,6 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     # manually calculated test accuracy
     predic <- apply(pred$probs, 1, which.max)
     actual <- as.numeric(test[,yName])
-    print(cbind(predic, actual))
     error <- mean(predic != actual)
     # for some reason its flipped w/ binary outcome
     if (length(levels(data[,yName])) == 2) error <- mean(predic == actual)
