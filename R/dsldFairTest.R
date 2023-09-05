@@ -33,7 +33,7 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
         model=model
       )
     # fairness object has a Metric column
-    if ("Metric" %in% names(Metric)) Metric <- Metric$Metric
+    if ("Metric" %in% names(Metric)) Metric <- t(Metric$Metric)
     
     # append test accuracy to the output
     Metric <- cbind(Metric, NA)

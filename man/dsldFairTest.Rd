@@ -49,7 +49,7 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
   }
 }
 \details{
-  As of 9/4/23, the qeFunc arguement only works with dsldQeFairRF and qeRFranger
+  As of 9/5/23, the modelFunc arguement only works with dsldQeFairRF and qeRFranger
 }
 \value{
   whatever is returned from metricFunc based off the model. The 
