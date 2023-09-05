@@ -28,7 +28,7 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
     made for functions in the fairness package with the same call signatures as
     dem_parity, prop_parity, equal_odds, etc.
     User may instead pass in a function with a 'model' parameter, which is a reference
-    to the model object generated from the modelFunc e.g. 'function(model)\{\}'
+    to the model object generated from the modelFunc e.g. 'function(model)\{\}'.
   }
   \item{deweightPars}{
     values for de-emphasizing variables in a split, e.g. 'list(age=0.2,gender=0.5)'
@@ -51,7 +51,7 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
   As of 9/4/23, the qeFunc arguement only works with dsldQeFairRF and qeRFranger
 }
 \value{
-  a data frame containing the fairness metrics outputted from the model. The 
+  whatever is returned from metricFunc based off the model. The 
   last column, Misclass Rate, is independent of the rows.
 }
 \author{

@@ -491,33 +491,13 @@ sName <- 'race'
 
 ```{r}
 ############## S Correlation ##############
-sCorrTest <- function(deval) {
-  partition <- sample(1:nrow(data))[1:round(nrow(data) * 0.3)]
-  # partition the data
-  train <- data[-partition, ]
-  test <- data[ partition, ]
-  
-  # deweight decile_score and priors_count
-  deweightPars = list(decile_score=deval,priors_count=deval)
-  
-  sink(); sink(nullfile())
-  model <- dsld::dsldQeFairRF(data=data, yName=yName, sName=sName, 
-                              deweightPars=deweightPars)
-  sink()
-  
-  out <- model$corrsens
-  out["MeanCorr"] <- mean(out)
-  out["MisclassRate"] <- model$testAcc
-  out
+scorr <- function (model) {
+  model$corrsens
 }
-# calculate the mean of 10 trials of no deweighting and deweighting 
-# decile_score and priors_count at 0%
-suppressWarnings({
-  # Deweight Value = 1
-  print(apply(replicate(10, sCorrTest(1)), 1, mean))
-  # Deweight Value = 0
-  print(apply(replicate(10, sCorrTest(0)), 1, mean))
-})
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 10)
+
+dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 10,
+                   deweightPars = list(decile_score=0, priors_count=0))
 ```
 
 This example demonstrates the tradeoff between utility and fairness: as we 
