@@ -14,8 +14,8 @@ is reduced utility (predictive power over the dataset). Thus, a means of
 balancing this tradeoff between fairness and utility becomes essential in any 
 future implementations of machine learning.
 
-## Prediction
 
+### Prediction
 Machine learning is all about prediction. The for the compas data set for 
 example, we may want to predict whether or not a person would commit a crime 
 again.  We can do that by training a predictive model on the compas data set. 
@@ -177,9 +177,21 @@ What does this all mean? We've essentially managed to extract the data from
 $X$ that is completely distinct from the sensitive feature. So why not use 
 this to predict? In most cases where fair machine learning is necessary, the 
 response variable $Y$ normally has a strong relationship with $S$. By removing 
-essentially all the information $S$ provides from the dataset, 
-effectively stripping 
+essentially all the information $S$ provides from the dataset, its effectively 
+stripped of the majority of its predictive power. The practical implementation 
+of these residuals, therefore, is to combine it with the $S$ data in a limited 
+capacity. In other words, what's being done is splitting $X$ into its fair and 
+unfair datapoints,[Note: by datapoints, it's not necessarily referring to 
+distinct entries, but rather a decomposition of the same datapoint into a part 
+contributed by the sensitive feature and a part contributed by the other 
+features]{.column-margin} and then reintroducing the unfair portion to a 
+user-defined level of fairness.
 
+Ultimately, all users of Komiyama's approach need to understand is that it can 
+provably optimize for a given level of fairness. The research Komiyama et al. 
+have done have motivated further improvements on this class of 
+fairness-constrained modeling with machine learning, some which will be 
+introduced below.
 
 
 ### Flexible Fairness Classification
