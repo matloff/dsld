@@ -1,5 +1,5 @@
 # ------------------------ qeFairRidgeLin --------------------------------------
-dsldQeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
+dsldQeFairRidgeLin <- function(data,yName,sName,deweightPars=NULL,
                            holdout=floor(min(1000,0.1*nrow(data))))
 {
   
@@ -43,7 +43,7 @@ dsldQeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
   fairLinOut$yBar <- mean(tmp)
   fairLinOut$yName <- yName
   fairLinOut$deweightPars <- deweightPars
-  fairLinOut$sensNames <- sensNames
+  fairLinOut$sName <- sName
   fairLinOut$factorsInfo <- factorsInfo
   fairLinOut$trainRow1 <- getRow1(data1,yName)
   fairLinOut$trainRow1 <- trainRow1
@@ -62,9 +62,9 @@ dsldQeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL,
   
   fairLinOut$scaling <- scaling
   
-  if (!is.null(sensNames) && !is.null(holdout)) {
+  if (!is.null(sName) && !is.null(holdout)) {
     data2 <- data1
-    fairLinOut$corrs <- corrsens(data,yName,fairLinOut,sensNames)
+    fairLinOut$corrs <- corrsens(data,yName,fairLinOut,sName)
   }
   
   fairLinOut
@@ -98,5 +98,5 @@ predict.dsldQeFairRidgeLin <- function(object,newx,processNewx=FALSE)
 # ------------------------ Example 1 -------------------------------------------
 #library(dsld)
 #data("svcensus")
-#z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
+#z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sName='gender')
 #z$testAcc

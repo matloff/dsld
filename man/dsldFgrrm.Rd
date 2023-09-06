@@ -18,12 +18,8 @@
     \item{data}{
         The data, in data frame or matrix form.
     }
-    \item{yData}{
-        A numeric vector, the response variable.
-    }
-    \item{xData}{
-        A numeric matrix or a data frame containing numeric and
-        factor columns; the predictors.
+    \item{yName}{
+        Column name indicating a binary outcome variable
     }
     \item{sName}{
         A string vector of column names, the sensitive attributes.
@@ -79,58 +75,15 @@
     https://cran.r-project.org/web/packages/fairml/index.html
 }
 \author{
-    S. Martha, A. Mittal, B. Ouattara, B. Zarate
+    S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
 }
 
 \examples{
-    # Example 1
-    # Load the required libraries and dataset
-    library(survival)
-    data(flchain)
-
-    # Set the arguments
-    # Complete data analysis
-    flchain = flchain[complete.cases(flchain), ]
-    yData = cbind(time = flchain$futime + 1, status = flchain$death)
-    xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus","chapter")]
-    sName = c("age", "sex")
-
-    # Call the function
-    m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
-    summary(m)
-
-
-    # Example 2
-    # Load the required libraries and dataset
-    library(survival)
-    data(flchain)
-
-    # Set the arguments
-    # Complete data analysis
-    flchain = flchain[complete.cases(flchain), ]
-    yData = cbind(time = flchain$futime + 1, status = flchain$death)
-    sName = c("age", "sex")
-    xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
-                    "chapter")]
-
-    # Call the function
-    m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
-    summary(m)
-
-
-    # Example 3
-    # Load the required libraries and dataset
-    library(fairml)
-    data(obesity.levels)
-
-    # Set the arguments
-    # Complete data analysis
-    yData = obesity.levels[, "NObeyesdad"]
-    sName = c("Gender", "Age")
-    xData = obesity.levels[, setdiff(names(obesity.levels), c("NObeyesdad", "Gender", "Age"))]
-    
-    # Call the function
-    m = dsldFgrrm(data = obesity.levels, yData = yData, xData = xData, sName = sName, 0.05, family = "multinomial", lambda = 0.1)
-    summary(m)
-
+  # ---- Test ----
+  # data <- fairml::compas
+  # yName <- "two_year_recid"
+  # sName <- "race"
+  
+  # model <- dsldFgrrm(data, yName, sName, 0)
+  # predict(model, data)
 }

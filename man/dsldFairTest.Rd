@@ -30,10 +30,8 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
     User may instead pass in a function with a 'model' parameter, which is a reference
     to the model object generated from the modelFunc e.g. 'function(model)\{\}'.
   }
-  \item{deweightPars}{
-    values for de-emphasizing variables in a split, e.g. 'list(age=0.2,gender=0.5)'
-    Unused variables in the deweightPars are set to 1, and then all values are
-    scaled so the sum of all the deweights is 1.
+  \item{...}{
+    additional parameters to be passed into the modelFunc
   }
   \item{cutoff}{
     cutoff to generate predicted outcomes from predicted probabilities. 

@@ -1,7 +1,7 @@
 ### DsldQeFairKNN:: Works with the predict() function!!!
 
 ### ------------------------------- dsldQeFairKNN ------------------------------
-dsldQeFairKNN <- function(data, yName, sName = NULL,deweightPars, scaleX = TRUE, yesYVal= NULL,
+dsldQeFairKNN <- function(data, yName, sName, deweightPars=NULL, scaleX = TRUE, yesYVal= NULL,
                           k=25, holdout=floor(min(1000,0.1*nrow(data)))) {
   
   ### I'm wrapping the qeKNN function and using expandVars/expandVals args.

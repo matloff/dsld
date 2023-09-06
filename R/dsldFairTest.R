@@ -1,5 +1,5 @@
 dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc, 
-                         deweightPars=NULL, cutoff = .5, nReps = 1, 
+                         ..., cutoff = .5, nReps = 1, 
                          testProportion = 0.3) {
   dsld::getSuggestedLib("R.utils")
   
@@ -17,14 +17,25 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
       # right now only tested to work with dsldQeFairRF and qeRFranger
       # doCall used to work with unused args
       R.utils::doCall(
-        modelFunc, data=train, yName=yName, sName=sName, deweightPars=deweightPars
-        ),
+        modelFunc, data=train, yName=yName, sName=sName, yesYVal = "Yes", 
+        ...
+      ),
       finally = sink()
     )
     
     # model's prediction
-    pred <- predict(model, test)
-    if ("probs" %in% names(pred)) test$probs <- pred$probs[,1]
+    prediction <- predict(model, test)
+  
+    # EDFfair wrapper models have a probs attribute
+    if ("probs" %in% names(prediction)) {
+      test$probs <- prediction$probs[,1]
+      preds <- apply(prediction$probs, 1, which.max) # used for misclass error
+    } 
+    # fairml wrapper models dont
+    else {
+      test$probs <- prediction
+      preds <- (prediction > cutoff) + 1 # used for misclass error
+    }
     
     # perform fairness function Metric or 
     # user passed function with access to the model
@@ -36,11 +47,8 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     if ("Metric" %in% names(Metric)) Metric <- t(Metric$Metric)
     
     # manually calculated test accuracy
-    predic <- apply(pred$probs, 1, which.max)
     actual <- as.numeric(test[,yName])
-    error <- mean(predic != actual)
-    # for some reason its flipped w/ binary outcome
-    if (length(levels(data[,yName])) == 2) error <- mean(predic == actual)
+    error <- mean(preds != actual)
     
     # append test accuracy to the output
     Metric <- cbind(Metric, NA)

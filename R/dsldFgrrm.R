@@ -5,65 +5,40 @@
 #               save.auxiliary = FALSE)
 
 
-#TODO: 
-# Instead of the users having to enter yName and xName try to do that
-#   inside the function
-
-dsldFgrrm <- function(data, yData, xData, sName, unfairness,
+dsldFgrrm <- function(data, yName, sName, unfairness,
                       definition = "sp-komiyama", family = "binomial", 
-                      lambda = 0, save.auxiliary = FALSE)
-{
-  if (!require('cccp')) install.packages('cccp'); library('cccp')
+                      lambda = 0, save.auxiliary = FALSE) {
+  #if (!require('cccp')) install.packages('cccp'); library('cccp')
   
-  cc = data[complete.cases(data),]
-  r = yData
-
-  p = xData
-
-  s = cc[, sName]
+  # cc = data[complete.cases(data),]
+  r = data[,yName]
+  p = data[,!colnames(data) %in% c(yName, sName)]
+  s = data[,colnames(data) %in% sName]
   
-  fairml::fgrrm(response = r, predictors = p, 
+  base <- fairml::fgrrm(response = r, predictors = p, 
                 sensitive = s, unfairness = unfairness,
                 definition = definition, family = family, 
                 lambda = lambda, save.auxiliary = save.auxiliary)
+  model <- list(base=base)
+  model$yName <- yName
+  model$sName <- sName
+  class(model) <- c("dsldFgrrm")
+  model
 }
 
-# Example 1
-# library(survival)
-# data(flchain)
+predict.dsldFgrrm <- function(object, newx, needsSetup=TRUE) {
+  yName <- model$yName
+  sName <- model$sName
+  preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], 
+                   newx[,colnames(newx) %in% sName])
+  preds
+}
 
-# # complete data analysis.
-# flchain = flchain[complete.cases(flchain), ]
+# ---- Test ----
+# data <- fairml::compas
+# yName <- "two_year_recid"
+# sName <- "race"
 
-# yData = cbind(time = flchain$futime + 1, status = flchain$death)
-# xData = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
-#                 "chapter")]
-# sName = c("age", "sex")
-
-# m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
-# summary(m)
-
-
-# Example 2
-# library(survival)
-# data(flchain)
-# # complete data analysis.
-# flchain = flchain[complete.cases(flchain), ]
-
-# yName = cbind(time = flchain$futime + 1, status = flchain$death)
-# sName = c("age", "sex")
-# xName = flchain[, c("sample.yr", "kappa", "lambda", "flc.grp", "creatinine", "mgus",
-#                 "chapter")]
-# m = dsldFgrrm(data = flchain, yData = yData, xData = xData, sName = sName, 0.05, family = "cox")
-# summary(m)
-
-
-# Example 3
-# library(fairml)
-# data(obesity.levels)
-
-# yName = obesity.levels[, "NObeyesdad"]
-# sName = c("Gender", "Age")
-# xName = obesity.levels[, setdiff(names(obesity.levels), c("NObeyesdad", "Gender", "Age"))]
-# m = dsldFgrrm(data = obesity.levels, yData = yData, xData = xData, sName = sName, 0.05, family = "multinomial", lambda = 0.1)
-# summary(m)
+# model <- dsldFgrrm(data, yName, sName, 0)
+# summary(model)
+# predict(model, data)

@@ -19,10 +19,10 @@
         The data, in data frame or matrix form.
     }
     \item{yName}{
-        Name of the response variable.
+        Column name indicating a binary outcome variable
     }
     \item{sName}{
-        Name of the sensitive variable.
+        A string vector of column names, the sensitive attributes.
     }
     \item{unfairness}{
         A positive number in [0, 1], how unfair is the model allowed to be. 
@@ -82,33 +82,12 @@
 }
 
 \examples{
-    # Example 1
-    # Load the required libraries
-    library(dsld)
-    library(fairml)
-
-    # Define the arguments
-    data(communities.and.crime)
-    yName = "ViolentCrimesPerPop"
-    sName = c("racepctblack", "PctForeignBorn")
-
-    # Call the function
-    m = dsldFrrm(communities.and.crime, yName, sName, 0.05)
-    summary(m)
-
-    # Example 2
-    # Load the required libraries
-    library(dsld)
-    library(fairml)
-
-    # Define the arguments
-    data(law.school.admissions)
-    yName = "ugpa"
-    sName = c("age", "race1")
-
-    # Call the function
-    m = dsldFrrm(law.school.admissions, yName, sName, 0.05)
-    summary(m)
-
+  # ---- Test ----
+  # data <- fairml::compas
+  # yName <- "two_year_recid"
+  # sName <- "race"
+  
+  # model <- dsldFgrrm(data, yName, sName, 0)
+  # predict(model, data)
 }
 
