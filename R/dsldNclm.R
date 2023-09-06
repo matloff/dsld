@@ -23,6 +23,10 @@ dsldNclm <- function (data, yName, sName, unfairness, covfun = cov,
   model
 }
 
+summary.dsldNclm <- function(object) {
+  return(summary(object$base))
+}
+
 predict.dsldNclm <- function(object, newx) {
   newx <- fairmlConvert(newx)
   
@@ -37,8 +41,6 @@ predict.dsldNclm <- function(object, newx) {
 # data <- svcensus
 # yName <- "wageinc"
 # sName <- "gender"
-# 
 # model <- dsldNclm(data, yName, sName, 0)
+# summary(model)
 # predict(model, data)
-
-
