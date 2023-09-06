@@ -39,4 +39,5 @@ predict.dsldZlrm <- function(object, newx) {
 
 # model <- dsldZlrm(data, yName, sName, 0)
 # summary(model)
-# predict(model, data)
+# newX <- data[1,]
+# predict(model, newX)
