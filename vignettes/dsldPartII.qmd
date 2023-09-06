@@ -5,98 +5,20 @@
 <!-- Don't know how accurate this is, please feel free to make edits -->
 In modern applications of machine learning as a predictive modeling tool, it 
 would be irresponsible to produce a model that biases one sensitive group over 
-another. As such, it becomes imperative to find methods of reducing any such 
-biases that a model might hold when it comes to modeling and predicting on 
-sensitive datasets.
+another. As such, it becomes imperative to find methods of uncovering
+and reducing any such biases. 
 
-Of course, nothing comes for free: the inherent tradeoff of increasing fairness 
-is reduced utility (predictive power over the dataset). Thus, a means of 
-balancing this tradeoff between fairness and utility becomes essential in any 
-future implementations of machine learning.
-
-
-### Prediction
-Machine learning is all about prediction. The for the compas data set for 
-example, we may want to predict whether or not a person would commit a crime 
-again.  We can do that by training a predictive model on the compas data set. 
-We're going to use qeML's qeRFranger function for a quick random forest model, 
-but there are many, many others, as we will explore later.
-
-```{R}
-data <- fairml::compas
-yName <- "two_year_recid"
-model <- qeML::qeRFranger(data, yName, yesYVal="Yes")
-```
-
-Once we have a model, we can give it a "person" and it will tell us it's prediction
-on whether or not they will recidivate. 
-
-```{R}
-person <- data.frame(
-  age=24, juv_fel_count=0, decile_score=1, juv_misd_count=0, juv_other_count=0,
-  v_decile_score=1, priors_count=2, sex="Male", race="Caucasian", c_jail_in=0.800, 
-  c_jail_out=0.810,  c_offense_date=0.710, screening_date=0.720, 
-  in_custody=0.750, out_custody=0.820
-)
-
-predict(model, person)
-```
-Based on the characteristics of this person, the model gives out a "0", which means
-the model doesn't think that this person will recidivate.
-
-But we want to measure how fair the model is with regards to one's race.
-To start, we can simply count how many cases of "Yes" the model predicts for 
-recidivism in respect to each race, given a portion of the data in the compas set.
-
-```{R}
-# this code splits the data randomly, leaving 70% for training and 30% for testing
-partition <- sample(1:nrow(data))[1:round(nrow(data) * .3)]
-train <- data[-partition, ]
-test <- data[ partition, ]
-
-model <- qeML::qeRFranger(train, yName, yesYVal="Yes")
-
-prediction <- predict(model, test)
-raceRecid <- cbind(as.numeric(prediction$predClasses), test['race'])
-split <- split(raceRecid, raceRecid$race)
-sapply(split, function(x) sum(x[[1]]))
-```
-We see that the model has the most "Yes" predictions in the African-American group.
-However, this is a crude measure of fairness, as we will see later.
-
-::: {.callout-note}
-#### Fairness-Utility Tradeoff
-There exists a tradeoff between the predictive power a model possesses and the 
-fairness of its predictions.
-
-This "law" of sorts is becomes intuitive when considering what it means to be 
-"fair". In order to ensure decisions aren't being made with respect to a 
-sensitive variable, we must reduce our consideration of or neglect to consider 
-entirely the sensitive feautre. In doing so, we lose the information it 
-provides, but we boost fairness.
-
-Due to this tradeoff, considering what balance of fairness-utility best suites 
-the context with which the model operates in becomes essential. You may hear 
-phrases along the lines of "business necessity clause", which simply implies 
-that as fair a model may be, for practical application a model must be accurate 
-to at least a minimum threshold. Otherwise, it isn't viable for deployment.
-:::
-
-The end result of this modified modeling process is a tool that allows users to:
-
-1. Compare a fair model against one with no fairness implemented; the 
-   effective result is a means of uncovering if biases exist within the 
-   dataset itself, but also how much fairness is gained for utility lost.
-2. Reduce the impact of any inherent discrimination within the data (of 
-   course, only to the level that is specified).
+Of course, nothing comes for free: the inherent tradeoff of increasing
+fairness is reduced utility (reduced predictive power over the dataset).
+Thus, a means of balancing this tradeoff between fairness and utility
+becomes essential in any future implementations of machine learning.
 
 There are two main parts to fair machine learning:
 
-1. **Measuring fairness**, a deeper question that it appears at first glance, 
-as we will later discuss
-2. **Reducing unfairness**, a section dealing more with balancing fairness with 
-utility for practical uses in the real world; the approaches we'll be discussing 
-for reducing unfairness will typically be on the algorithm-side
+* **Measuring fairness**: A number of measures have been proposed.
+* **Reducing unfairness**: For a given ML algorithm, how can we
+  ameliorate its unfairness, yet still maintain an acceptable utility
+  level?
 
 In the latter section, we will take a look back at the **COMPAS** dataset to 
 understand how well some of the approaches reduce unfairness in real world examples.
