@@ -248,11 +248,31 @@ defines approaches for SVMs as well.
 :::
 
 
-### Ridge Penalty
-<!-- TODO: this will be for the Scutari paper -->
+### Penalty Driven Fair Ridge Regression
 First introduced by Scutari et al. in their 2021 paper. Building on the prior 
 research of Komiyama and Zafar, they introduce a ridge-regression analog to 
-Komiyama's non-convex optimization approach, allowing for 
+Komiyama's non-convex optimization approach that **(1)** allows for 
+applications beyond just linear regression, **(2)** provides a closed-form 
+solution that optimizes for a given fairness constraint, and **(3)** produces 
+an intuitive set of coefficients for more effective interpretation.
+
+The approach Scutari et al. took in this paper follows much of the same 
+sequence for the initial steps. They first decompose the training data $X$ 
+into its sensitive $S$ and residual $U$ parts, then trains on them separately. 
+
+The catch here is the residuals can be trained entirely without penalty, thus 
+allowing for the most optimal set of weights to be generated for the 
+residuals. Recall that this contrasts with regards to Komiyama et al.'s 
+approach which produced coefficients for the residuals and sensitive features 
+in one step, in effect making the coefficients for the residuals change with 
+respect to the fairness constraint. Intuitively, this makes sense when 
+considering that the residuals by definition do not have any relationship with 
+the sensitive features. As such, why would the weights we use for the 
+residuals have any dependence on how fair the constraint is set to be? After 
+all, they have no bearing on unfairness.
+
+With this in mind, Scutari then trains the model with increasing levels of 
+penalty until the desired level of fairness is arrived upon.
 
 
 ### Explicitly Deweighted Features
