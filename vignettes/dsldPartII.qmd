@@ -316,13 +316,26 @@ and how to engineer and otherwise augment data on a large scale to ensure
 responses generated don't bias any one sensitive group.
 
 
-### Short Conclusion
-With the descriptions of the approaches deployed for ensuring fair machine 
-learning, we hope some intuition behind these algorithms has been imparted 
-onto you. Demystifying what happens behind the scenes can enable more people 
-to accurately trust and distrust results as necessary. As you deploy your own 
-algorithms, ensure that you use this knowledge to best pick the approach that 
-not only performs the best, but that you can understand.
+### Understanding the Approaches
+A recurring theme (or lack thereof) throughout fair machine learning is no one 
+size fits all. Whether its choosing how to measure fairness or how to prevent 
+it, everything is dependent on the specific context with which one operates 
+in. This can be everything from the dataset you use (does it have historical 
+bias, etc.), the country you are in (i.e. the European GDPR prevents the 
+processing of race and other sensitive features), or the organization you work 
+for (business might favor accuracy over fairness, while government 
+organizations may favor the opposite).
+
+The reason we have included whole sections devoted to explaining the 
+approaches taken to reducing and measuring unfairness is to enable you to make 
+these decisions on your own. Demystifying the inner-workings of these models 
+can help you not only optimize the performance of your model, but also 
+communicate your findings to others.
+
+There is no *one* metric, *one* model, *one* approach. Any solutions marketed 
+as such should be treated with a healthy level of skepticism. We'll repeat 
+this frequently throughout the book, but it's a valuable lesson that is best 
+understood sooner rather than later.
 
 
 ## Measurements of Fairness & Utility
