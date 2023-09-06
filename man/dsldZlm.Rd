@@ -51,7 +51,7 @@ https://cran.r-project.org/web/packages/fairml/index.html
   yName <- "wageinc"
   sName <- "gender"
   
-  model <- dsldFgrrm(data, yName, sName, 0)
+  model <- dsldZlm(data, yName, sName, 0)
   predict(model, data)
 }
 

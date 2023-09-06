@@ -38,7 +38,7 @@ predict.dsldFrrm <- function(object, newx) {
 # data <- svcensus
 # yName <- "wageinc"
 # sName <- "gender"
-
-# model <- dsldFgrrm(data, yName, sName, 0)
+#
+# model <- dsldFrrm(data, yName, sName, 0)
 # predict(model, data)
 

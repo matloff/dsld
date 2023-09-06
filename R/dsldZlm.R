@@ -32,6 +32,6 @@ predict.dsldZlm <- function(object, newx) {
 # data <- fairml::compas
 # yName <- "two_year_recid"
 # sName <- "race"
-
+#
 # model <- dsldZlm(data, yName, sName, 0)
 # predict(model, data)
