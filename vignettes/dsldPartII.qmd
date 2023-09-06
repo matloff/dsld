@@ -193,6 +193,11 @@ have done have motivated further improvements on this class of
 fairness-constrained modeling with machine learning, some which will be 
 introduced below.
 
+::: {.callout-note}
+Komiyama et al.'s functions are implemented under the fairML package as 
+`nclm`, a linear-regressive model. In dsld, this is implemented as `dsldNclm`.
+:::
+
 
 ### Flexible Fairness Classification
 As introduced by Zafar et al. in 2019, this approach to fair machine learning 
