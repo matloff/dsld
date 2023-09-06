@@ -311,7 +311,7 @@ data required, that research has primarily focused on simpler models.
 As neural networks become more prevalant, however, the need for ensuring bias 
 in their training data doesn't persist into their predictions will be of key 
 importance. Research is already being done into large language models (LLMs) 
-[[Paper recently published by Li et al.](https://arxiv.org/pdf/2308.10149.pdf)]{.column-margin}
+[[Quite technical paper recently published by Li et al.](https://arxiv.org/pdf/2308.10149.pdf)]{.column-margin}
 and how to engineer and otherwise augment data on a large scale to ensure 
 responses generated don't bias any one sensitive group.
 
