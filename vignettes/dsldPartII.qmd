@@ -250,12 +250,34 @@ defines approaches for SVMs as well.
 
 ### Ridge Penalty
 <!-- TODO: this will be for the Scutari paper -->
-
+First introduce by Scutari et al. in their 2021 paper. Building on the prior 
+research of Komiyama and Zafar, they 
 
 
 ### Explicitly Deweighted Features
 <!-- TODO: this will be for the Matloff paper -->
 
+
+### The Limited Scope of Fair Machine Learning
+As it may have become clear when looking at these approaches, a certain class 
+of machine learning model has yet to make an appearance: neural-networks. Why 
+is that the case? A large majority of fair ML research has avoided diving into 
+these "black-box" algorithms for one key reason: explainability.
+
+The term "black-box" is commonplace for a reason: the interpretability of the 
+weights a neural net has trained on is [for the large part] low. It's hard for 
+machine learning researchers to evaluate a deep learning neural network, let 
+alone ensure fairness in its predictions.
+
+It's because of this, in addition to the computational resources and amount of 
+data required, that research has primarily focused on simpler models.
+
+As neural networks become more prevalant, however, the need for ensuring bias 
+in their training data doesn't persist into their predictions will be of key 
+importance. Research is already being done into large language models (LLMs) 
+[[Paper recently published by Li et al.](https://arxiv.org/pdf/2308.10149.pdf)]{.column-margin}
+and how to engineer and otherwise augment data on a large scale to ensure 
+responses generated don't bias any one sensitive group.
 
 
 ## Measurements of Fairness & Utility
