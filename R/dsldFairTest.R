@@ -17,7 +17,7 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
       # right now only tested to work with dsldQeFairRF and qeRFranger
       # doCall used to work with unused args
       R.utils::doCall(
-        modelFunc, data=train, yName=yName, sName=sName, yesYVal = "Yes", 
+        modelFunc, data=train, yName=yName, sName=sName,
         ...
       ),
       finally = sink()
@@ -29,7 +29,7 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     # EDFfair wrapper models have a probs attribute
     if ("probs" %in% names(prediction)) {
       test$probs <- prediction$probs[,1]
-      preds <- (prediction$probs[,2] > cutoff) + 1 # used for misclass error
+      preds <- (prediction$probs[,1] > cutoff) + 1 # used for misclass error
     } 
     # fairml wrapper models dont
     else {
@@ -50,7 +50,6 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     # manually calculated test accuracy
     actual <- as.numeric(test[,yName])
     error <- mean(preds != actual)
-    print(cbind(preds, actual))
     
     # append test accuracy to the output
     Metric <- cbind(Metric, NA)

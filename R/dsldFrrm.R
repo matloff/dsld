@@ -23,7 +23,7 @@ dsldFrrm <- function(data, yName, sName, unfairness,
   model
 }
 
-predict.dsldFrrm <- function(object, newx, needsSetup=TRUE) {
+predict.dsldFrrm <- function(object, newx) {
   yName <- model$yName
   sName <- model$sName
   preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], 

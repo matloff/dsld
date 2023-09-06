@@ -26,7 +26,7 @@ dsldFgrrm <- function(data, yName, sName, unfairness,
   model
 }
 
-predict.dsldFgrrm <- function(object, newx, needsSetup=TRUE) {
+predict.dsldFgrrm <- function(object, newx) {
   yName <- model$yName
   sName <- model$sName
   preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], 
@@ -40,5 +40,4 @@ predict.dsldFgrrm <- function(object, newx, needsSetup=TRUE) {
 # sName <- "race"
 
 # model <- dsldFgrrm(data, yName, sName, 0)
-# summary(model)
 # predict(model, data)

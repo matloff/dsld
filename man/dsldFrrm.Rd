@@ -71,23 +71,23 @@
 }
 
 \value{
-    frrm() returns an object of class c("frrm", "fair.model").
+    An object of class "dsldFrrm", which has a $data attribute that contains
+    an object of class c("frrm", "fair.model").
 }
 
 \references{
     https://cran.r-project.org/web/packages/fairml/index.html
 }
 \author{
-    S. Martha, A. Mittal, B. Ouattara, B. Zarate
+    S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
 }
 
 \examples{
-  # ---- Test ----
-  # data <- fairml::compas
-  # yName <- "two_year_recid"
-  # sName <- "race"
+  data <- fairml::compas
+  yName <- "two_year_recid"
+  sName <- "race"
   
-  # model <- dsldFgrrm(data, yName, sName, 0)
-  # predict(model, data)
+  model <- dsldFrrm(data, yName, sName, 0)
+  predict(model, data)
 }
 

@@ -48,7 +48,7 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
 }
 \details{
   As of 9/5/23, list of functions modelFunc works with if used with fairness pkg:
-  dsld::dsldQeFairRF, dsld::dsldFgrrm, qeML::qeRFranger
+  dsld::dsldQeFairRF, dsld::dsldFgrrm, qeML::qeRFranger, dsld::dsldZlrm
 }
 \value{
   whatever is returned from metricFunc based off the model. The 

@@ -10,8 +10,9 @@ export(
    dsldScatterPlot3D,
    dsldLinear, dsldLogit, dsldGetData, dsldCheckData, dsldDiffSLog, dsldGetRow5, dsldDiffSLin,
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
-   dsldFgrrm, dsldFrrm, dsldNclm, dsldQeFairRidgeLin, dsldQeFairRF, 
-   dsldQeFairRidgeLog, dsldQeFairKNN, dsldML, dsldCHunting, dsldFairTest
+   dsldFgrrm, dsldFrrm, dsldNclm, dsldZlm, dsldZlrm,
+   dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN, 
+   dsldML, dsldCHunting, dsldFairTest
 )
 
 S3method(summary, dsldLM)
@@ -28,3 +29,5 @@ S3method(predict, dsldQeFairRF)
 S3method(predict, dsldQeFairKNN)
 S3method(predict, dsldFgrrm)
 S3method(predict, dsldFrrm)
+S3method(predict, dsldZlm)
+S3method(predict, dsldZlrm)

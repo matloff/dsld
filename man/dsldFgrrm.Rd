@@ -68,7 +68,8 @@
 }
 
 \value{
-    fgrrm() returns an object of class c("fgrrm", "fair.model").
+    An object of class "dsldFgrrm", which has a $data attribute that contains
+    an object of class c("fgrrm", "fair.model").
 }
 
 \references{
@@ -79,11 +80,10 @@
 }
 
 \examples{
-  # ---- Test ----
-  # data <- fairml::compas
-  # yName <- "two_year_recid"
-  # sName <- "race"
+  data <- fairml::compas
+  yName <- "two_year_recid"
+  sName <- "race"
   
-  # model <- dsldFgrrm(data, yName, sName, 0)
-  # predict(model, data)
+  model <- dsldFgrrm(data, yName, sName, 0)
+  predict(model, data)
 }
