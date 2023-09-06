@@ -29,13 +29,14 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     # EDFfair wrapper models have a probs attribute
     if ("probs" %in% names(prediction)) {
       test$probs <- prediction$probs[,1]
-      preds <- apply(prediction$probs, 1, which.max) # used for misclass error
+      preds <- (prediction$probs[,2] > cutoff) + 1 # used for misclass error
     } 
     # fairml wrapper models dont
     else {
       test$probs <- prediction
       preds <- (prediction > cutoff) + 1 # used for misclass error
     }
+    
     
     # perform fairness function Metric or 
     # user passed function with access to the model
@@ -49,6 +50,7 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
     # manually calculated test accuracy
     actual <- as.numeric(test[,yName])
     error <- mean(preds != actual)
+    print(cbind(preds, actual))
     
     # append test accuracy to the output
     Metric <- cbind(Metric, NA)

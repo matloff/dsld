@@ -22,7 +22,7 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
     column name of the sensitive variable (factor)
   }
   \item{modelFunc}{
-    a function in the dsld package that starts with dsldQeFair
+    a function in the dsld package that generates a model. See details.
   }
   \item{metricFunc}{
     made for functions in the fairness package with the same call signatures as
