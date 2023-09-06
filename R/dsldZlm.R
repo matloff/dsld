@@ -19,6 +19,10 @@ dsldZlm <- function(data, yName, sName, unfairness) {
   model
 }
 
+summary.dsldZlm <- function(object){
+  return(summary(object$base))
+}
+
 predict.dsldZlm <- function(object, newx) {
   newx <- fairmlConvert(newx)
   
@@ -33,6 +37,7 @@ predict.dsldZlm <- function(object, newx) {
 # data <- svcensus
 # yName <- "wageinc"
 # sName <- "gender"
-#
 # model <- dsldZlm(data, yName, sName, 0)
-# predict(model, data)
+# summary(model)
+# newX <- data[1,]
+# predict(model, newX)
