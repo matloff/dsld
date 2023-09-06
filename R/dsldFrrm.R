@@ -24,9 +24,12 @@ dsldFrrm <- function(data, yName, sName, unfairness,
   model
 }
 
+summary.dsldFrrm <- function(object){
+  return(summary(object$base))
+}
+
 predict.dsldFrrm <- function(object, newx) {
   newx <- fairmlConvert(newx)
-  
   yName <- object$yName
   sName <- object$sName
   preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], newx[,colnames(newx) %in% sName])
@@ -34,11 +37,11 @@ predict.dsldFrrm <- function(object, newx) {
 }
 
 # ---- Test ----
-# data(svcensus)
-# data <- svcensus
-# yName <- "wageinc"
-# sName <- "gender"
-#
-# model <- dsldFrrm(data, yName, sName, 0)
-# predict(model, data)
+#data(svcensus)
+#yName <- "wageinc"
+#sName <- "gender"
+#model <- dsldFrrm(svcensus, yName, sName, 0.5)
+#summary(model)
+#newX <- svcensus[1,]
+#predict(model, newX)
 

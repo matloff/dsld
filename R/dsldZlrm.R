@@ -19,6 +19,10 @@ dsldZlrm <- function(data, yName, sName, unfairness) {
   model
 }
 
+summary.dsldZlrm <- function(object){
+  return(summary(object$base))
+}
+
 predict.dsldZlrm <- function(object, newx) {
   newx <- fairmlConvert(newx)
   
@@ -34,4 +38,5 @@ predict.dsldZlrm <- function(object, newx) {
 # sName <- "race"
 
 # model <- dsldZlrm(data, yName, sName, 0)
+# summary(model)
 # predict(model, data)
