@@ -29,9 +29,10 @@ predict.dsldZlm <- function(object, newx) {
 }
 
 # ---- Test ----
-# data <- fairml::compas
-# yName <- "two_year_recid"
-# sName <- "race"
+# data(svcensus)
+# data <- svcensus
+# yName <- "wageinc"
+# sName <- "gender"
 #
 # model <- dsldZlm(data, yName, sName, 0)
 # predict(model, data)
