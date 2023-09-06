@@ -250,8 +250,9 @@ defines approaches for SVMs as well.
 
 ### Ridge Penalty
 <!-- TODO: this will be for the Scutari paper -->
-First introduce by Scutari et al. in their 2021 paper. Building on the prior 
-research of Komiyama and Zafar, they 
+First introduced by Scutari et al. in their 2021 paper. Building on the prior 
+research of Komiyama and Zafar, they introduce a ridge-regression analog to 
+Komiyama's non-convex optimization approach, allowing for 
 
 
 ### Explicitly Deweighted Features
