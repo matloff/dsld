@@ -15,14 +15,49 @@ becomes essential in any future implementations of machine learning.
 
 There are two main parts to fair machine learning:
 
-* **Measuring fairness**: A number of measures have been proposed.
+* **Measuring unfairness**: A number of measures have been proposed.
+
 * **Reducing unfairness**: For a given ML algorithm, how can we
   ameliorate its unfairness, yet still maintain an acceptable utility
   level?
 
-In the latter section, we will take a look back at the **COMPAS** dataset to 
-understand how well some of the approaches reduce unfairness in real world examples.
+## Measuring utility
 
+Utility in fair ML, and in ML classification algorithms in general, tend
+to use acronyms like False Positive Rate (FPR).  These are conditional
+probabilities, but it's important not to confuse the event with the
+condition.
+
+::: {.callout-note}
+### The key rates
+
+Consider binary Y classification problems, where we label Y is either
+*positive* (e.g. patient has the disease) or *negative* (e.g. patient does
+not hae the disease).
+
+* FPR: P(we guess Y positive | Y is actually negative)
+
+* TPR: P(we guess Y positive | Y is actually positive)
+
+* FNR: P(we guess Y negative | Y is actually positive)
+
+* TNR: P(we guess Y negative | Y is actually negative)
+
+So for instance, FPR is the proportion of time we guess positive, *among
+those times* in which Y is actually negative.  Two other common terms:
+T
+* *recall*:  same as TPR
+
+* *precision*: P(Y is actually positive | we guess Y is positive)
+
+:::
+
+For whatever reason, ML research has tended to focus on that binary Y
+case, and there are no analogous acronyms for numeric Y.  Accuracy of
+the latter is handled simply as Mean Squared Prediction Error (MSPE),
+the average squared difference between predicted and actual Y value.
+
+## Measuing unfairness
 
 ## Approaches Deployed in DSLD
 While there exists a plethora of methods for ensuring a fair machine learning 
@@ -265,40 +300,6 @@ Different algorithms and approaches attempt to reduce bias as indicated through
 different metrics. In the following subsection, our aim is to explain what each 
 of these metrics tell users and which algorithms perform best with respect to 
 each one.
-
-::: {.callout-note}
-### True-False Positives and Negatives {#classification-terms}
-Over the following sections, you may see terms like True-Positive rate 
-(TPR), False-Negative rate (FPR), etc. These terms will primarily come in 
-the context of binary classifiers as a means of measuring performance or even 
-fairness. The definitions are as follows:
-
-* **True** means that the actual result and the predicted result are the same
-* **False** means that the actual result is the opposite of the predicted result
-* **Positive** refers to the act of a positive prediction, a `1`; this is 
-   simply assigning one of two outcomes to the positive class on an arbitrary 
-   basis
-* **Negative** refers to the act of a negative prediction, a `0`
-* **True Positives (TP)**: Number of instances from the positive class predicted 
-   correctly (i.e. as positive)
-* **True Negatives (TN)**: Number of instances from the negative class predicted 
-   correctly (i.e. as negative)
-* **False Positives (FP)**: Type I Error - Number of instances from negative class 
-   predicted incorrectly (i.e. as positive)
-* **False Negatives (FN)**: Type II Error - Number of instances from positive class 
-   predicted incorrectly (i.e. as negative)
-
-The rate appended to the end means a ratio with regards to all positives or 
-negatives.
-
-Aliases for the common rates (defined as the ratio of TP (true positives) over 
-P (all positives), FP over N (all negatives), etc.) are as follows:
-
-* **TPR** is also *sensitivity*, *recall*, or *hit rate*
-* **FPR** is also *fall-out* or *false-alarm ratio*
-* **TNR** is also *specificity*
-* **FNR** is also *miss rate*
-:::
 
 
 ### Fairness Metrics
