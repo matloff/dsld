@@ -3,6 +3,11 @@
 # zlm(response, predictors, sensitive, unfairness)
 
 dsldZlm <- function(data, yName, sName, unfairness) {
+  
+  # convert int col to numeric
+  data[,unlist(lapply(svcensus, is.integer))] <- 
+    lapply(data[,unlist(lapply(svcensus, is.integer))], as.numeric)
+  
   r = data[,yName]
   p = data[,!colnames(data) %in% c(yName, sName)]
   s = data[,colnames(data) %in% sName]
@@ -17,8 +22,8 @@ dsldZlm <- function(data, yName, sName, unfairness) {
 }
 
 predict.dsldZlm <- function(object, newx) {
-  yName <- model$yName
-  sName <- model$sName
+  yName <- object$yName
+  sName <- object$sName
   preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)])
   preds
 }

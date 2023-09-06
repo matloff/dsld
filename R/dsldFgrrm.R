@@ -8,9 +8,10 @@
 dsldFgrrm <- function(data, yName, sName, unfairness,
                       definition = "sp-komiyama", family = "binomial", 
                       lambda = 0, save.auxiliary = FALSE) {
-  #if (!require('cccp')) install.packages('cccp'); library('cccp')
+  # convert int col to numeric
+  data[,unlist(lapply(svcensus, is.integer))] <- 
+    lapply(data[,unlist(lapply(svcensus, is.integer))], as.numeric)
   
-  # cc = data[complete.cases(data),]
   r = data[,yName]
   p = data[,!colnames(data) %in% c(yName, sName)]
   s = data[,colnames(data) %in% sName]
@@ -27,8 +28,8 @@ dsldFgrrm <- function(data, yName, sName, unfairness,
 }
 
 predict.dsldFgrrm <- function(object, newx) {
-  yName <- model$yName
-  sName <- model$sName
+  yName <- object$yName
+  sName <- object$sName
   preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], 
                    newx[,colnames(newx) %in% sName])
   preds

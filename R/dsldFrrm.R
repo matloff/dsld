@@ -7,7 +7,10 @@ dsldFrrm <- function(data, yName, sName, unfairness,
                      definition = "sp-komiyama", lambda = 0, 
                      save.auxiliary = FALSE) 
 {
-  # cc = data[complete.cases(data), ]
+  # convert int col to numeric
+  data[,unlist(lapply(svcensus, is.integer))] <- 
+    lapply(data[,unlist(lapply(svcensus, is.integer))], as.numeric)
+  
   r = data[,yName]
   p = data[,!colnames(data) %in% c(yName, sName)]
   s = data[,colnames(data) %in% sName]
@@ -24,17 +27,17 @@ dsldFrrm <- function(data, yName, sName, unfairness,
 }
 
 predict.dsldFrrm <- function(object, newx) {
-  yName <- model$yName
-  sName <- model$sName
-  preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], 
-                   newx[,colnames(newx) %in% sName])
+  yName <- object$yName
+  sName <- object$sName
+  preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], newx[,colnames(newx) %in% sName])
   preds
 }
 
 # ---- Test ----
-# data <- fairml::compas
-# yName <- "two_year_recid"
-# sName <- "race"
+# data(svcensus)
+# data <- svcensus
+# yName <- "wageinc"
+# sName <- "gender"
 
 # model <- dsldFgrrm(data, yName, sName, 0)
 # predict(model, data)
