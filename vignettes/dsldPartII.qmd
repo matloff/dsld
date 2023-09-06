@@ -103,7 +103,6 @@ understand how well some of the approaches reduce unfairness in real world examp
 
 
 ## Approaches Deployed in DSLD
-
 While there exists a plethora of methods for ensuring a fair machine learning 
 model, the primary approaches utilized in the **dsld** package rely on fairness 
 constraints; each metric has its strengths and weaknesses. As such, it will be 
@@ -158,6 +157,28 @@ metric motivates a part of their approach. Briefly put, s-correlation measures
 the relationship between the sensitive feature (often referred as $S$) and the 
 predicted outcomes (often referred as $Y$).
 
+Komiyama et al.'s approach works as such:
+
+The first step in their process is segmenting out the proxies (features that 
+are influenced by the sensitive feature; occupation, for example, is often a 
+proxy for gender) and any other information in the dataset that has strong 
+ties to this sensitive feature. What we can effectively do is rewrite $X$, the 
+full dataset, as a combination of parts explainable by the sensitive feature 
+(proxies, etc.) and the residuals that the sensitive feature cannot explain. 
+How this is done is not entirely relevant to understanding the algorithm, but 
+Komiyama essentially predicts $X$ from $S$ to find the residuals $U$. With 
+a small proof, this can be determined to have 0 covariance (that is, similar 
+behavior) with respect to the sensitive feature[Note: theoretically speaking, 
+this is only proved to be as the number of samples in the dataset approaches 
+infinity. In all practical applications, however, the covariance is so small 
+it's practically zero; a negligible difference.]{.column-margin}.
+
+What does this all mean? We've essentially managed to extract the data from 
+$X$ that is completely distinct from the sensitive feature. So why not use 
+this to predict? In most cases where fair machine learning is necessary, the 
+response variable $Y$ normally has a strong relationship with $S$. By removing 
+essentially all the information $S$ provides from the dataset, 
+effectively stripping 
 
 
 
