@@ -253,8 +253,9 @@ First introduced by Scutari et al. in their 2021 paper. Building on the prior
 research of Komiyama and Zafar, they introduce a ridge-regression analog to 
 Komiyama's non-convex optimization approach that **(1)** allows for 
 applications beyond just linear regression, **(2)** provides a closed-form 
-solution that optimizes for a given fairness constraint, and **(3)** produces 
-an intuitive set of coefficients for more effective interpretation.
+solution that optimizes for a given fairness constraint, **(3)** produces an 
+intuitive set of coefficients for more effective interpretation, and **(4)** 
+enables users to choose from a selection of fairness metrics to optimize for.
 
 The approach Scutari et al. took in this paper follows much of the same 
 sequence for the initial steps. They first decompose the training data $X$ 
@@ -271,12 +272,26 @@ the sensitive features. As such, why would the weights we use for the
 residuals have any dependence on how fair the constraint is set to be? After 
 all, they have no bearing on unfairness.
 
-With this in mind, Scutari then trains the model with increasing levels of 
-penalty until the desired level of fairness is arrived upon.
+With this in mind, Scutari's model then trains the with increasing levels of 
+penalty until the desired level of fairness is arrived upon.[Note: Scutari 
+also derived a closed-form version of this iterative penalty-finding approach, 
+but it fails in cases where sensitive features aren't mutually independent]{.column-margin}
+
+In their own testing, Scutari's approach has outperformed the analagous models 
+from the aforementioned approaches. It is, however, important to note that 
+there do exist positives and negatives to each approach.
+
+::: {.callout-note}
+Derived from the fair ML package (which Scutari himself had developed), this 
+approach is deployed in the `frrm` and `fgrrm` models. Within DSLD itself, we 
+have also included easy-to-deploy `dsldFrrm` and `dsldFgrrm` wrappers that 
+leverage these models.
+:::
 
 
 ### Explicitly Deweighted Features
 <!-- TODO: this will be for the Matloff paper -->
+
 
 
 ### The Limited Scope of Fair Machine Learning
@@ -299,6 +314,15 @@ importance. Research is already being done into large language models (LLMs)
 [[Paper recently published by Li et al.](https://arxiv.org/pdf/2308.10149.pdf)]{.column-margin}
 and how to engineer and otherwise augment data on a large scale to ensure 
 responses generated don't bias any one sensitive group.
+
+
+### Short Conclusion
+With the descriptions of the approaches deployed for ensuring fair machine 
+learning, we hope some intuition behind these algorithms has been imparted 
+onto you. Demystifying what happens behind the scenes can enable more people 
+to accurately trust and distrust results as necessary. As you deploy your own 
+algorithms, ensure that you use this knowledge to best pick the approach that 
+not only performs the best, but that you can understand.
 
 
 ## Measurements of Fairness & Utility
