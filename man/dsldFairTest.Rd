@@ -47,7 +47,8 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
   }
 }
 \details{
-  As of 9/5/23, the modelFunc arguement only works with dsldQeFairRF and qeRFranger
+  As of 9/5/23, list of functions modelFunc works with if used with fairness pkg:
+  dsld::dsldQeFairRF, dsld::dsldFgrrm, qeML::qeRFranger
 }
 \value{
   whatever is returned from metricFunc based off the model. The 
@@ -65,5 +66,9 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL,
   dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 2)
   
   # S Correlation
-  dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, \(model) model$corrsens, nReps = 2)
+  dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, \(model) model$corrsens, 
+    nReps = 2, deweightPars=list(decile_score=0))
+  
+  # Equal Odds w/ dsldFgrmm
+  dsld::dsldFairTest(data, yName, sName, dsld::dsldFgrrm, fairness::equal_odds, nReps = 2, unfairness=0)
 }
