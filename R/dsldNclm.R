@@ -6,45 +6,41 @@
 dsldNclm <- function (data, yName, sName, unfairness, covfun = cov, 
                      lambda = 0, save.auxiliary = FALSE) 
 {
-  if (!require('cccp')) install.packages('cccp'); library('cccp')
+  data <- fairmlConvert(data)
+  
+  r = data[,yName]
+  p = data[,!colnames(data) %in% c(yName, sName)]
+  s = data[,colnames(data) %in% sName]
 
-  cc = data[complete.cases(data),]
-  r = cc[, yName]
-  p = cc[,!names(cc) %in% c(yName, sName)]
-  s = cc[, sName]
-
-  fairml::nclm(response = r, predictors = p, 
+  base <- fairml::nclm(response = r, predictors = p, 
                sensitive = s, unfairness = unfairness, covfun = covfun,
                lambda = lambda, save.auxiliary = save.auxiliary)
   
+  model <- list(base=base)
+  model$yName <- yName
+  model$sName <- sName
+  class(model) <- c("dsldNclm")
+  model
 }
 
+summary.dsldNclm <- function(object) {
+  return(summary(object$base))
+}
 
-# Example 1
-# library(dsld)
-# library(fairml)
-# library(cccp)
+predict.dsldNclm <- function(object, newx) {
+  newx <- fairmlConvert(newx)
+  
+  yName <- object$yName
+  sName <- object$sName
+  preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], newx[,colnames(newx) %in% sName])
+  preds
+}
 
-# data(communities.and.crime)
-# yName = "ViolentCrimesPerPop"
-# sName = c("racepctblack", "PctForeignBorn")
-
-# m = dsldNclm(communities.and.crime, yName, sName, 0.05)
-# summary(m)
-
-#Error: ‘there is no package called ‘cccp’
-#solution: Install 'cccp' through CRAN
-
-
-# #Example 2
-# library(dsld)
-# library(fairml)
-# library(cccp)
-
-# data(law.school.admissions)
-# yName = "ugpa"
-# sName = c("age", "race1")
-
-# m = dsldNclm(law.school.admissions, yName, sName, 0.05)
-# summary(m)
-
+# ---- Test ----
+# data(svcensus)
+# data <- svcensus
+# yName <- "wageinc"
+# sName <- "gender"
+# model <- dsldNclm(data, yName, sName, 0)
+# summary(model)
+# predict(model, data)

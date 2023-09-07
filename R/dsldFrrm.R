@@ -7,7 +7,8 @@ dsldFrrm <- function(data, yName, sName, unfairness,
                      definition = "sp-komiyama", lambda = 0, 
                      save.auxiliary = FALSE) 
 {
-  # cc = data[complete.cases(data), ]
+  data <- fairmlConvert(data)
+  
   r = data[,yName]
   p = data[,!colnames(data) %in% c(yName, sName)]
   s = data[,colnames(data) %in% sName]
@@ -23,19 +24,24 @@ dsldFrrm <- function(data, yName, sName, unfairness,
   model
 }
 
+summary.dsldFrrm <- function(object){
+  return(summary(object$base))
+}
+
 predict.dsldFrrm <- function(object, newx) {
-  yName <- model$yName
-  sName <- model$sName
-  preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], 
-                   newx[,colnames(newx) %in% sName])
+  newx <- fairmlConvert(newx)
+  yName <- object$yName
+  sName <- object$sName
+  preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], newx[,colnames(newx) %in% sName])
   preds
 }
 
 # ---- Test ----
-# data <- fairml::compas
-# yName <- "two_year_recid"
-# sName <- "race"
-
-# model <- dsldFgrrm(data, yName, sName, 0)
-# predict(model, data)
+#data(svcensus)
+#yName <- "wageinc"
+#sName <- "gender"
+#model <- dsldFrrm(svcensus, yName, sName, 0.5)
+#summary(model)
+#newX <- svcensus[1,]
+#predict(model, newX)
 

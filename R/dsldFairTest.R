@@ -37,7 +37,6 @@ dsldFairTest <- function(data, yName, sName, modelFunc, metricFunc,
       preds <- (prediction > cutoff) + 1 # used for misclass error
     }
     
-    
     # perform fairness function Metric or 
     # user passed function with access to the model
     Metric <- R.utils::doCall(

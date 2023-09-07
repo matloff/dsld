@@ -3,6 +3,9 @@
 # zlm(response, predictors, sensitive, unfairness)
 
 dsldZlm <- function(data, yName, sName, unfairness) {
+  
+  data <- fairmlConvert(data)
+  
   r = data[,yName]
   p = data[,!colnames(data) %in% c(yName, sName)]
   s = data[,colnames(data) %in% sName]
@@ -16,17 +19,25 @@ dsldZlm <- function(data, yName, sName, unfairness) {
   model
 }
 
+summary.dsldZlm <- function(object){
+  return(summary(object$base))
+}
+
 predict.dsldZlm <- function(object, newx) {
-  yName <- model$yName
-  sName <- model$sName
+  newx <- fairmlConvert(newx)
+  
+  yName <- object$yName
+  sName <- object$sName
   preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)])
   preds
 }
 
 # ---- Test ----
-# data <- fairml::compas
-# yName <- "two_year_recid"
-# sName <- "race"
-
+# data(svcensus)
+# data <- svcensus
+# yName <- "wageinc"
+# sName <- "gender"
 # model <- dsldZlm(data, yName, sName, 0)
-# predict(model, data)
+# summary(model)
+# newX <- data[1,]
+# predict(model, newX)

@@ -2,7 +2,7 @@
 dsldQeFairRidgeLin <- function(data,yName,sName,deweightPars=NULL,
                            holdout=floor(min(1000,0.1*nrow(data))))
 {
-  
+  sensNames <- sName
   require(qeML)
   
   # data prep
@@ -96,7 +96,8 @@ predict.dsldQeFairRidgeLin <- function(object,newx,processNewx=FALSE)
 
 
 # ------------------------ Example 1 -------------------------------------------
-#library(dsld)
-#data("svcensus")
-#z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sName='gender')
-#z$testAcc
+# library(dsld)
+# data("svcensus")
+# z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sName='gender')
+# z$testAcc
+

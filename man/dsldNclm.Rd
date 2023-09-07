@@ -85,37 +85,12 @@
 }
 
 \examples{
-    # NOTE: if the ERROR: ‘there is no package called ‘cccp’ appears
-    #       Solution: Install 'cccp' through CRAN
-
-    # Example 1
-    # Load the required libraries
-    library(dsld)
-    library(fairml)
-    library(cccp)
-
-    # Define the arguments
-    data(communities.and.crime)
-    yName = "ViolentCrimesPerPop"
-    sName = c("racepctblack", "PctForeignBorn")
-
-    # Call the function
-    m = dsldNclm(communities.and.crime, yName, sName, 0.05)
-    summary(m)
-
-    # Example 2
-    # Load the required libraries
-    library(dsld)
-    library(fairml)
-    library(cccp)
-
-     # Define the arguments
-    data(law.school.admissions)
-    yName = "ugpa"
-    sName = c("age", "race1")
-
-    # Call the function
-    m = dsldNclm(law.school.admissions, yName, sName, 0.05)
-    summary(m)
+  data(svcensus)
+  data <- svcensus
+  yName <- "wageinc"
+  sName <- "gender"
+  
+  model <- dsldNclm(data, yName, sName, 0)
+  predict(model, data)
 }
 

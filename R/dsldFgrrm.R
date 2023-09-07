@@ -8,9 +8,9 @@
 dsldFgrrm <- function(data, yName, sName, unfairness,
                       definition = "sp-komiyama", family = "binomial", 
                       lambda = 0, save.auxiliary = FALSE) {
-  #if (!require('cccp')) install.packages('cccp'); library('cccp')
   
-  # cc = data[complete.cases(data),]
+  data <- fairmlConvert(data)
+  
   r = data[,yName]
   p = data[,!colnames(data) %in% c(yName, sName)]
   s = data[,colnames(data) %in% sName]
@@ -26,9 +26,15 @@ dsldFgrrm <- function(data, yName, sName, unfairness,
   model
 }
 
+summary.dsldFgrrm <- function(object) {
+  return(summary(object$base))
+}
+
 predict.dsldFgrrm <- function(object, newx) {
-  yName <- model$yName
-  sName <- model$sName
+  newx <- fairmlConvert(newx)
+  
+  yName <- object$yName
+  sName <- object$sName
   preds <- predict(object$base, newx[,!colnames(newx) %in% c(yName, sName)], 
                    newx[,colnames(newx) %in% sName])
   preds
@@ -40,4 +46,5 @@ predict.dsldFgrrm <- function(object, newx) {
 # sName <- "race"
 
 # model <- dsldFgrrm(data, yName, sName, 0)
+# summary(model)
 # predict(model, data)

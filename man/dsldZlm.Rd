@@ -46,11 +46,12 @@ https://cran.r-project.org/web/packages/fairml/index.html
   Jonathan Tran
 }
 \examples{
-data <- fairml::compas
-yName <- "two_year_recid"
-sName <- "race"
-
-model <- dsldZlm(data, yName, sName, 0)
-predict(model, data)
+  data(svcensus)
+  data <- svcensus
+  yName <- "wageinc"
+  sName <- "gender"
+  
+  model <- dsldZlm(data, yName, sName, 0)
+  predict(model, data)
 }
 
