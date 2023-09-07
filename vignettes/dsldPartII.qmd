@@ -33,19 +33,37 @@ condition.
 
 Consider binary Y classification problems, where we label Y is either
 *positive* (e.g. patient has the disease) or *negative* (e.g. patient does
-not hae the disease).
+not have the disease).
 
-* FPR: P(we guess Y positive | Y is actually negative)
+After we fit our ML tool to predict Y, we use it for prediction.
+Consider a long period of time in which we do such predictions.  During 
+that time, define the following counts:
 
-* TPR: P(we guess Y positive | Y is actually positive)
+* FP: Count of the number of times we predict Y to be positive and
+actually it's negative.
 
-* FNR: P(we guess Y negative | Y is actually positive)
+* FN: Count of the number of times we predict Y to be negative and
+actually it's positive.
 
-* TNR: P(we guess Y negative | Y is actually negative)
+* TP: Count of the number of times we predict Y to be positive and
+actually it's positive.
+
+* TN: Count of the number of times we predict Y to be negative and
+actually it's negative.
+
+Then some key rates are:
+
+* FPR: FP / (FP + TN) = P(guess Y positive | Y acutally is negative)
+
+* TPR: TP / (TP + FN) = P(guess Y positive | Y acutally is positive)
+
+* FNR: FN / (TP + FN) = P(guess Y negative | Y acutally is positive)
+
+* TNR: TN / (FP + TN) = P(guess Y negative | Y acutally is negative)
 
 So for instance, FPR is the proportion of time we guess positive, *among
 those times* in which Y is actually negative.  Two other common terms:
-T
+
 * *recall*:  same as TPR
 
 * *precision*: P(Y is actually positive | we guess Y is positive)
