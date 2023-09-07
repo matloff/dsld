@@ -2,7 +2,7 @@
 dsldQeFairRidgeLog <- function(data,yName,sName,deweightPars=NULL,
                            yesYVal=0,holdout=floor(min(1000,0.1*nrow(data))))
 {
-  sensNames = sName
+  sensNames <- sName
   require(qeML)
   if (yesYVal == 0) stop('missing yesYVal')
   
@@ -100,9 +100,9 @@ predict.dsldQeFairRidgeLog <- function(object,newx)
 
 # ------------------------------------------------------------------------------------------------
 #Example: 1
-#load('/Users/adityamittal/Desktop/Year_two/Spring_2023/ECS_189G/hw2/law.school.admissions.rda')                        
-#drop <- c('fulltime','cluster')
-#law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
-#law.school.admissions$bar <- as.integer(as.logical(law.school.admissions$bar))
-#law.school.admissions$bar <- as.factor(law.school.admissions$bar)
-#z <- dsldQeFairRidgeLog(data=law.school.admissions,yName='bar',deweightPars=list(fam_inc=0.2),sensNames='gender', yesYVal = '1')
+# library(dsld); library(fairml); data("law.school.admissions")
+# drop <- c('fulltime','cluster')
+# law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
+# law.school.admissions$bar <- as.integer(as.logical(law.school.admissions$bar))
+# law.school.admissions$bar <- as.factor(law.school.admissions$bar)
+# z <- dsldQeFairRidgeLog(data=law.school.admissions,yName='bar',deweightPars=list(fam_inc=0.2),sName='gender', yesYVal = '1')
