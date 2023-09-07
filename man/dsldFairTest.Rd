@@ -1,15 +1,15 @@
 \name{dsldFairTest}
 \alias{dsldFairTest}
 \title{
-  Perform fairness measurements on dsldQeFair models
+  Perform fairness measurements on dsld models. 
 }
 \description{
   Takes a model generation function, a fairness metric function, and outputs
-  the fairness measurement of the model.
+  the fairness measurements of the model based on its predictions.
 }
 \usage{
-dsldFairTest(data, yName, sName, modelFunc, metricFunc, deweightPars=NULL, 
-  cutoff = .5, nReps = 1, testProportion = 0.3)
+dsldFairTest(data, yName, sName, modelFunc, metricFunc, ..., 
+                cutoff = .5, nReps = 1, testProportion = 0.3)
 }
 \arguments{
   \item{data}{
