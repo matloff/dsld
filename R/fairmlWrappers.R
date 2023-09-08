@@ -10,14 +10,16 @@ toNumericFactor <- function(data) {
 # base function for fairML wrappers since they all follow the same format
 fairmlBase <- function(fairmlFUNC, data, yName, sName, unfairness, ...) {
   # fairml requires numeric and factor columns
-  data <- toNumericFactor(data) # found in Utils.R
+  data <- toNumericFactor(data)
   
   response = data[,yName]
   predictors = data[,!colnames(data) %in% c(yName, sName)]
   sensitive = data[,colnames(data) %in% sName]
   
+  # calls a fairml model function as the base for the dsldFairML object
   base <- fairmlFUNC(response = response, predictors = predictors, 
                        sensitive = sensitive, unfairness = unfairness, ...)
+  
   # save yName and sName to use in predict()
   model <- list(base=base)
   model$yName <- yName
@@ -64,16 +66,46 @@ predict.dsldFairML <- function(object, newx) {
   yName <- object$yName
   sName <- object$sName
   
-  # zlm and zlrm have one less argument for prediction
+  predictors <- newx[,!colnames(newx) %in% c(yName, sName)]
+  sensitive <- newx[,colnames(newx) %in% sName]
+  
   class <- class(object$base)[1]
+  # call the fairml predict function
   if (class == "zlm" || class == "zlrm")
-    predict(object=object$base, 
-            new.predictors=newx[,!colnames(newx) %in% c(yName, sName)]
-    )
+    # zlm and zlrm have one less argument for prediction
+    predict(object$base, predictors)
   else
-    predict(object=object$base, 
-          new.predictors=newx[,!colnames(newx) %in% c(yName, sName)],
-          new.sensitive=newx[,colnames(newx) %in% sName]
-    )
+    predict(object$base, predictors, sensitive)
 }
 
+# --------- Tests ------------
+
+# library(dsld)
+# data(svcensus)
+# data <- svcensus
+# yName <- "wageinc"
+# sName <- "gender"
+# 
+# model <- dsldFrrm(data, yName, sName, 0)
+# summary(model)
+# predict(model, data)
+# 
+# model <- dsldNclm(data, yName, sName, 0)
+# summary(model)
+# predict(model, data)
+# 
+# model <- dsldZlm(data, yName, sName, 0)
+# summary(model)
+# predict(model, data)
+# 
+# data <- fairml::compas
+# yName <- "two_year_recid"
+# sName <- "race"
+# 
+# model <- dsldFgrrm(data, yName, sName, 0)
+# summary(model)
+# predict(model, data)
+# 
+# model <- dsldZlrm(data, yName, sName, 0)
+# summary(model)
+# predict(model, data)
