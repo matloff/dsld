@@ -1,23 +1,12 @@
-dsldScatterPlot3D <-
-  function(data,
-           yNames,
-           sName,
-           sGroups = NULL,
-           sortedBy = "Name",
-           numGroups = 8,
-           maxPoints = NULL,
-           xlim = NULL,
-           ylim = NULL,
-           zlim = NULL,
-           main = NULL,
-           colors = "Paired",
-           opacity = 1,
+dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
+           sortedBy = "Name", numGroups = 8, maxPoints = NULL, xlim = NULL,
+           ylim = NULL, zlim = NULL, main = NULL, colors = "Paired", opacity = 1,
            pointSize = 8) {
     getSuggestedLib("plotly")
     
     # Limit amount of data points
-    if (!is.null(maxPoints))
-      data <- data[1:maxPoints, ]
+    if (!is.null(maxPoints)) 
+      data <- data[1:maxPoints,]
     
     if (!class(data[, sName]) %in% c("factor", "character"))
       stop(
@@ -92,16 +81,11 @@ dsldScatterPlot3D <-
 # dsldScatterPlot3D(svcensus, yNames = c("educ", "wageinc", "occ"), sName = "gender")
 
 # Generates a list of groups that exist within a sName column of a data frame
-makeSGroups <-
-  function(data,
-           sName,
-           numGroups = NULL,
-           sortedBy = "Name") {
+makeSGroups <- function(data, sName, numGroups = NULL, sortedBy = "Name") {
     # If there are 8 possible types the group variable can be, the vector is 8 long.
     # Sorted according to user
     sGroups <- NULL
-    switch(
-      sortedBy,
+    switch( sortedBy,
       "Name" = sGroups <- levels(unique(data[, sName])),
       "Frequency" = sGroups <-
         names(sort(table(data[, sName]), decreasing = T)),
@@ -109,33 +93,27 @@ makeSGroups <-
         names(sort(table(data[, sName]), decreasing = F))
     )
     # otherwise the vector is cut off to only have numGroups number of sGroups
-    if (!is.null(numGroups) &&
-        length(sGroups) > numGroups)
+    if (!is.null(numGroups) && length(sGroups) > numGroups)
       sGroups <- sGroups[1:numGroups]
-    return(sGroups)
+    
+    sGroups
   }
 
 
 # Restricts the values of a data frame to specified limits
 limitRange <-
-  function(data,
-           yNames,
-           xlim = NULL,
-           ylim = NULL,
-           zlim = NULL) {
+  function(data, yNames, xlim = NULL, ylim = NULL, zlim = NULL) {
     # in case the user only gives lim as a single number
     xlim <- rep(xlim, 2)
     ylim <- rep(ylim, 2)
     zlim <- rep(zlim, 2)
     # limits the data frame 
     if (!is.null(xlim))
-      data <-
-      data[data[, yNames[1]] >= xlim[1] & data[, yNames[1]] <= xlim[2], ]
+      data <- data[data[, yNames[1]] >= xlim[1] & data[, yNames[1]] <= xlim[2],]
     if (!is.null(ylim))
-      data <-
-      data[data[, yNames[2]] >= ylim[1] & data[, yNames[2]] <= ylim[2], ]
+      data <- data[data[, yNames[2]] >= ylim[1] & data[, yNames[2]] <= ylim[2],]
     if (!is.null(zlim))
-      data <-
-      data[data[, yNames[3]] >= zlim[1] & data[, yNames[3]] <= zlim[2], ]
-    return(data)
+      data <- data[data[, yNames[3]] >= zlim[1] & data[, yNames[3]] <= zlim[2],]
+    
+    data
   }
