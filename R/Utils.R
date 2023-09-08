@@ -113,13 +113,3 @@ cartFactorLvls <- function(factorNames)
    expand.grid(theLevels)
 }
 
-# converts int cols to numeric and chr cols to factor for fairml models
-fairmlConvert <- function(data) {
-  data[,unlist(lapply(data, is.integer))] <- 
-    lapply(data[,unlist(lapply(data, is.integer))], as.numeric)
-  
-  data[,unlist(lapply(data, is.character))] <- 
-    lapply(data[,unlist(lapply(data, is.character))], as.factor)
-  
-  data
-}

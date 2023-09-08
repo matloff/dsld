@@ -58,7 +58,7 @@ dsldScatterPlot3D <-
       text <-
       paste(text, names(data[i]), ": ", original[, i], "<br>", sep = "")
     
-    
+    # plotting the points
     fig <- plotly::plot_ly(
       data,
       x = data[, yNames[1]],
@@ -71,6 +71,7 @@ dsldScatterPlot3D <-
                     opacity = opacity)
     )
     fig <- plotly::add_markers(fig)
+    # add labels and axis
     fig <- plotly::layout(
       fig,
       title = main,
