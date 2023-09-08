@@ -73,7 +73,7 @@
 }
 
 \author{
-    S. Martha, A. Mittal, B. Ouattara, B. Zarate
+    S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
 }
 
 \seealso{

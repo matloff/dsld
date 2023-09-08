@@ -1,4 +1,4 @@
-# converts int cols to numeric and chr cols to factor for fairml wrappers
+# converts integer cols to numeric and character cols to factor for fairml wrappers
 toNumericFactor <- function(data) {
   data[,unlist(lapply(data, is.integer))] <- 
     lapply(data[,unlist(lapply(data, is.integer))], as.numeric)
@@ -8,13 +8,16 @@ toNumericFactor <- function(data) {
 }
 
 # base function for fairML wrappers since they all follow the same format
+# converts the data into a format that the fairml models accept
+# then puts the fairml model inside an object of the dsldFairML class which
+# has its own predict function
 fairmlBase <- function(fairmlFUNC, data, yName, sName, unfairness, ...) {
   # fairml requires numeric and factor columns
   data <- toNumericFactor(data)
   
   response = data[,yName]
-  predictors = data[,!colnames(data) %in% c(yName, sName)]
-  sensitive = data[,colnames(data) %in% sName]
+  predictors = data[,!colnames(data) %in% c(yName,sName)]
+  sensitive = data[,sName]
   
   # calls a fairml model function as the base for the dsldFairML object
   base <- fairmlFUNC(response = response, predictors = predictors, 
@@ -28,20 +31,24 @@ fairmlBase <- function(fairmlFUNC, data, yName, sName, unfairness, ...) {
   model
 }
 
+# wrapper for nclm
 dsldNclm <- function(data, yName, sName, unfairness, covfun = cov, 
                      lambda = 0, save.auxiliary = FALSE) {
   fairmlBase(fairml::nclm, data, yName, sName, unfairness, covfun, 
              lambda, save.auxiliary)
 }
 
+# wrapper for zlm
 dsldZlm <- function(data, yName, sName, unfairness) {
   fairmlBase(fairml::zlm, data, yName, sName, unfairness)
 }
 
+# wrapper for zlrm
 dsldZlrm <- function(data, yName, sName, unfairness) {
   fairmlBase(fairml::zlrm, data, yName, sName, unfairness)
 }
 
+# wrapper for frrm
 dsldFrrm <- function(data, yName, sName, unfairness,
                      definition = "sp-komiyama", lambda = 0, 
                      save.auxiliary = FALSE) {
@@ -49,6 +56,7 @@ dsldFrrm <- function(data, yName, sName, unfairness,
              definition, lambda, save.auxiliary)
 }
 
+# wrapper for fgrrm
 dsldFgrrm <- function(data, yName, sName, unfairness,
                       definition = "sp-komiyama", family = "binomial", 
                       lambda = 0, save.auxiliary = FALSE) {
@@ -67,7 +75,7 @@ predict.dsldFairML <- function(object, newx) {
   sName <- object$sName
   
   predictors <- newx[,!colnames(newx) %in% c(yName, sName)]
-  sensitive <- newx[,colnames(newx) %in% sName]
+  sensitive <- newx[,sName]
   
   class <- class(object$base)[1]
   # call the fairml predict function
@@ -79,7 +87,7 @@ predict.dsldFairML <- function(object, newx) {
 }
 
 # --------- Tests ------------
-
+# 
 # library(dsld)
 # data(svcensus)
 # data <- svcensus
@@ -88,24 +96,24 @@ predict.dsldFairML <- function(object, newx) {
 # 
 # model <- dsldFrrm(data, yName, sName, 0)
 # summary(model)
-# predict(model, data)
+# predict(model, data[1,])
 # 
 # model <- dsldNclm(data, yName, sName, 0)
 # summary(model)
-# predict(model, data)
+# predict(model, data[1,])
 # 
 # model <- dsldZlm(data, yName, sName, 0)
 # summary(model)
-# predict(model, data)
+# predict(model, data[1,])
 # 
 # data <- fairml::compas
 # yName <- "two_year_recid"
-# sName <- "race"
+# sName <- c("race", "sex")
 # 
 # model <- dsldFgrrm(data, yName, sName, 0)
 # summary(model)
-# predict(model, data)
+# predict(model, data[1,])
 # 
 # model <- dsldZlrm(data, yName, sName, 0)
 # summary(model)
-# predict(model, data)
+# predict(model, data[1,])
