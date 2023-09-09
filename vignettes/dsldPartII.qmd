@@ -6,7 +6,7 @@ would be irresponsible to produce a model that biases one sensitive group over
 another. As such, it becomes imperative to find methods of uncovering
 and reducing any such biases. 
 
-## Goals
+## Goals  
 
 There are two main aspects of fair machine learning:
 
@@ -79,14 +79,16 @@ taller and heavier than the other, that is a concordance.  If on the
 other hand, one is shorter but heavier than the other, that is a
 discordance.  We consider all possible pairs of people in our dataset,
 then sets tau to the difference in concordance and discordance counts,
-divided by 2.]{.column-margin} correlation here, opting instead for
-*Kendall's tau* correlation.  Both are widely-used, and both take on
-values in [-1,], but while Pearson is geared toward continuous numeric variables,
-Kendall is also usable for binary or ordinal integer-valued variables.
+divided by the number of pairs.]{.column-margin} correlation here,
+opting instead for *Kendall's tau* correlation.  Both are widely-used,
+and both take on values in [-1,], but while Pearson is geared toward
+continuous numeric variables, Kendall is also usable for binary or
+ordinal integer-valued variables.
 
 ## Measuring utility
 
-Utility in fair ML, and in ML classification algorithms in general,
+Utility in ML classification algorithms in general,
+and both utility and fairness in the fair ML realm,
 often (but far from always) make use of quantitaties like False Positive
 Rate (FPR).  So, let's start by defining these rates.
 
@@ -197,37 +199,57 @@ i.e. that the quanitty
 
 has the same value for each race.
 
-Here is an example using the mortgage data:
+Below is an example using the mortgage data:
 
 ```{r}
 z <- qeKNN(mortgageSE,'deny',holdout=NULL,yesYVal='1')
+# determine which rows were for Black applicants, which not
 BlackRows <- which(mortgageSE$black == '1')
 NonblackRows <- which(mortgageSE$black == '0')
+# regest, the output of qeKNN, is the vector of fitted probabilities
+# (recall that for the Y = 0,1 case, the mean reduces to the probability
+# of a 1)
 BlackProbs <- z$regest[BlackRows]
 NonblackProbs <- z$regest[NonblackRows]
+# if a probability is > 0.5, we will guess Y = 1, otherwise guess Y = 0;
+# conveniently, that's same as rounding to the nearest integer
 BlackYhats <- round(BlackProbs)
 NonblackYhats <- round(NonblackProbs)
+# again, recall that the mean of a bunch of 0s and 1s is the proportion
+# of 1s, i.e. the probability of a 1
 mean(BlackYhats)
 mean(NonblackYhats)
 ```
 
+That's quite a difference!  Overall, about 12% of African-American loan
+applicants are denied, versus less than 2% for non-Blacks.
 
-
-African-Americans who are predicted to recidivate is different than the 
-to commit crime), we'll try to minimize the bias of the model used to predict 
-on that dataset as a compensatory measure, even if it comes at the risk of 
-losing even more utility.
-
-That last point is crucial: the restrictiveness of demographic parity as a 
-fairness metric will mean a lower-reward tradeoff with utility--more will need 
-to be sacrificed in performance to achieve fairness. Of course, if this metric 
-is used in the first place, the seriousness of the context the model will be 
-deployed in motivates the use of something as restrictive as demographic 
-parity.
-
-### Equal Opportunity
+However, such a criterion is generally considered too coarse, since it doesn't
+account for possible differences in qualifications between the two groups.
+In other words, one must take confounders into account, as we did in Part I.
 
 ### Equalized Odds
+
+In the mortgage data, consider a scenario of two applicants, one Black
+and the other nonblack but who otherwise similar.  Say both have their
+loan applications denied.  For fairness, we would hope that our ML
+algorithm originally assigned both of them the same probability of
+denial .  
+
+If for instance the nonblack applicant had been assessed as being of
+lower risk for repayment, that would be unfair.  After all, they had similar 
+characteristics at the time they applied for the loan, and they had the same 
+outcome.  Shouldn't the algorithm have treated them equally?
+
+Equalized Odds requires the quantity
+
+TP / (TP+FN)
+
+to be the same for each sensitive 
+
+(remember, "positive" here m
+
+
 Equalized Odds requires that the different senstive sub-groups have equal 
 *sensitivity* and *fall-out* (aka **TPR** and **FPR**). The strictness of this 
 requirement (even compared to demographic parity) can make this metric more 
