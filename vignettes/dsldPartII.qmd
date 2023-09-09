@@ -57,7 +57,7 @@ on that variable in predicting Y.
 Below we will describe some common measures of unfairness.  But first,
 how do we choose the O variables?
 
-### Deciding proxies
+### Deciding proxies  
 
 As with choosing confounders in Part I, analyst may simply choose the
 proxies by using his/her domain expertise.  But a more formal approach
