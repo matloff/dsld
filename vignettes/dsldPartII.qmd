@@ -27,11 +27,13 @@ becomes essential in any future implementations of machine learning.
 
 ## Comparison to Part I
 
-First, recall our notation:
+First, recall our notation: [Actually, think of X as, at first,
+consisting of all variables other than Y and S, but then selecting some
+of X as O, with X then being all variables but Y, S and O.]{.column-margin}
 
 * Y; our outcome variable, to be predicted
 
-* S: our senstive variable
+* S: our sensitive variable
 
 * O: our proxy variables
 
@@ -59,18 +61,21 @@ how do we choose the O variables?
 
 ### Deciding proxies  
 
+So, how does one choose those proxies O?
+
 As with choosing confounders in Part I, analyst may simply choose the
 proxies by using his/her domain expertise.  But a more formal approach
-may involve correlation.  Here's an example:
+may involve correlation.  Here's an example, using the COMPAS data:
 
 ```{r}
-data(mortgageSE) 
-dsldOHunting(mortgageSE,'deny','black')
+data(compas1) 
+cmp <- compas1[,-3]  # omit decile, as we are developing our own tool
+dsldOHunting(cmp,'two_year_recid','race')
 ```
 
 The function **dsldOHunting** calculates the correlations between S and
 all possible candidate O variables.  The output here  suggests possibly
-using, say, the **loan_val** and **condo** variables as proxies.
+using, say, the **age** and **priors_count** variables as proxies.
 
 The function does not use the classic *Pearson product moment*1 [Tau is
 defined in terms of *concordances* and *discordances*.  Say we look at
@@ -88,7 +93,7 @@ ordinal integer-valued variables.
 ## Measuring utility
 
 Utility in ML classification algorithms in general,
-and both utility and fairness in the fair ML realm,
+and both utility and fairness in the fair ML classification realm,
 often (but far from always) make use of quantitaties like False Positive
 Rate (FPR).  So, let's start by defining these rates.
 
@@ -133,6 +138,8 @@ those times* in which Y is actually negative.  Two other common terms:
 
 * *recall*:  same as TPR
 
+* *sensitivity*:  same as TPR
+
 * *precision*: P(Y is actually positive | we guess Y is positive)=
 (TP + FN) / (TP + FP)
 
@@ -153,17 +160,17 @@ physically omitting the latter is to compute the correlation between
 predicted Y, to be denoted $\hat{Y}$ and S.  As noted earlier, we use
 Kendall's Tau correlation here.
 
-[Here and below, to keep things simple, we will not use a holdout set.]{.column-margin}
-For instance, let's consider our mortgage example, say with k-Nearest
-Neighbors as our ML prediction tool:
+[Here and below, to keep things simple, we will not use a holdout
+set.]{.column-margin} For instance, let's consider our mortgage example,
+say with k-Nearest Neighbors as our ML prediction tool:
 
 ```{r}
-z <- qeKNN(mortgageSE,'deny',holdout=NULL,yesYVal='1') 
-# look at the fitted model's probability of denial of the mortgage
-# application, i.e. regression estimates
+z <- qeKNN(cmp,'two_year_recid',holdout=NULL,yesYVal='Yes') 
+# look at the fitted model's probability of recidivism,
+# i.e. regression estimates
 probs <- z$regests
-# the variable 'black' is an R factor, need to be numeric
-black <- ifelse(mortgageSE$black=='1',1,0)
+# the variable 'race' is an R factor, need a numeric
+black <- ifelse(cmp$race=='African-American',1,0)
 cor(black,probs,method='kendall')
 ```
 
@@ -171,16 +178,20 @@ That's a pretty substantial correlation, definitely a cause for concern
 that our ML analysis here is unfair.  Of course, it's not the algorithm
 itself's fault, but we must find a way to mitigate the problem.
 
+[Prediction of income might be of interest in, say, a marketing context.
+Actually, the field of marketing has been the subject of much concern in
+fair ML; e.g. see
+[FWA](https://thefwa.com/cases/a-marketers-guide-to-machine-learning-fairness).]{.column-margin}
 An advantage of the S-Correlation measure is that it can also be used in
-non-classification problems, say predicting wage income:
+non-classification problems, say predicting wage income, and take age as
+our sensitive variable S:
 
 ```{r}
 z <- qeKNN(svcensus,'wageinc',holdout=NULL)
-gender <- ifelse(svcensus$gender=='male',1,0) 
-cor(svcensus$wageinc,gender,method='kendall') 
+cor(z$regests,svcensus$age,method='kendall') 
 ```
 
-So, there would seem to be only a moderate degree of unfairness, if any.
+So, again, our ML tool seems to be biased, this time in terms of age.
 
 ### Demographic Parity
 
@@ -199,18 +210,18 @@ i.e. that the quanitty
 
 has the same value for each race.
 
-Below is an example using the mortgage data:
+Below is an example using the COMPAS data:
 
 ```{r}
-z <- qeKNN(mortgageSE,'deny',holdout=NULL,yesYVal='1')
+z <- qeKNN(cmp,'two_year_recid',holdout=NULL,yesYVal='Yes')
 # determine which rows were for Black applicants, which not
-BlackRows <- which(mortgageSE$black == '1')
-NonblackRows <- which(mortgageSE$black == '0')
-# regest, the output of qeKNN, is the vector of fitted probabilities
+BlackRows <- which(cmp$race == 'African-American')
+NonblackRows <- setdiff(1:nrow(cmp),BlackRows)  # all the others
+# regests, the output of qeKNN, is the vector of fitted probabilities
 # (recall that for the Y = 0,1 case, the mean reduces to the probability
 # of a 1)
-BlackProbs <- z$regest[BlackRows]
-NonblackProbs <- z$regest[NonblackRows]
+BlackProbs <- z$regests[BlackRows]
+NonblackProbs <- z$regests[NonblackRows]
 # if a probability is > 0.5, we will guess Y = 1, otherwise guess Y = 0;
 # conveniently, that's same as rounding to the nearest integer
 BlackYhats <- round(BlackProbs)
@@ -221,8 +232,8 @@ mean(BlackYhats)
 mean(NonblackYhats)
 ```
 
-That's quite a difference!  Overall, about 12% of African-American loan
-applicants are denied, versus less than 2% for non-Blacks.
+That's quite a difference!  Overall, our ML model predicts about 51% of
+Black defendants to recidivate,j versus than 27% for non-Blacks.
 
 However, such a criterion is generally considered too coarse, since it doesn't
 account for possible differences in qualifications between the two groups.
@@ -230,34 +241,33 @@ In other words, one must take confounders into account, as we did in Part I.
 
 ### Equalized Odds
 
-In the mortgage data, consider a scenario of two applicants, one Black
-and the other nonblack but who otherwise similar.  Say both have their
-loan applications denied.  For fairness, we would hope that our ML
-algorithm originally assigned both of them the same probability of
-denial .  
+This criterion takes a retrospective view, asking in the case of COMPAS:
 
-If for instance the nonblack applicant had been assessed as being of
-lower risk for repayment, that would be unfair.  After all, they had similar 
-characteristics at the time they applied for the loan, and they had the same 
-outcome.  Shouldn't the algorithm have treated them equally?
+> Among those who recidivate, what proportion of them had been predicted
+> to do so?  And, does that proportion vary by race?
 
-Equalized Odds requires the quantity
+If the answer to that second question is No, we say our prediction tool
+satisfies the Equalized Odds criterion.
+
+So, Equalized Odds requires the quantity
 
 TP / (TP+FN)
 
-to be the same for each sensitive 
+to be the same for each sensitive group.
 
-(remember, "positive" here m
+### The **fairness** package
 
+This package calculates and graphically displays a wide variety of
+fairness criteria.  For instance, let's use it to evaluate the Equalized
+Odds criterion in the above COMPAS example.
 
-Equalized Odds requires that the different senstive sub-groups have equal 
-*sensitivity* and *fall-out* (aka **TPR** and **FPR**). The strictness of this 
-requirement (even compared to demographic parity) can make this metric more 
-difficult to implement and achieve, but if Equalized Odds is achieved, this is a 
-very strong indicator of high fairness [(Source)](https://ocw.mit.edu/courses/res-ec-001-exploring-fairness-in-machine-learning-for-international-development-spring-2020/pages/module-three-framework/fairness-criteria/). 
-For example, if a model that predicted COMPAS *two_year_recid* 
-was perfectly fair with regard to race, then the chance of an African-American 
-recidivating would be the same as a non African-American *not* recidivating.
+```{r}
+library(fairness)
+equal_odds(cmp,'two_year_recid','race',probs=z$regests)
+```
+
+Taking African-Americans as the base, we see that the Equalized Odds
+criterion was not met, even approximately.  Nor was Demographic Parity.
 
 ## Approaches Deployed in DSLD
 While there exists a plethora of methods for ensuring a fair machine learning 
