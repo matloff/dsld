@@ -71,6 +71,12 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL,
 # knn <- dsldQeFairKNN(fairml::compas, "two_year_recid", "race")
 # predict.dsldQeFair(knn, fairml::compas[1,])
 
+# base function for the ridge models. [General] parameter is a logical value.
+# if false, use linear model- if true, use logistic.
+# scales and expands the data, expands the deweightPars, 
+# adds a diagonal matrix to the bottom of the data as described in the paper
+# before training the model on it.
+# then calculates its own test accuracy metrics
 qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars, 
                             holdout, yesYVal) {
   classif <- general
@@ -96,9 +102,8 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
   p <- ncol(train) - 1 # common length for how many predictors there are
   n <- nrow(train) # common length for how many rows in the data
   
-  ylvls <- levels(data[,yName])
   blank <- # in general case: the no value- in linear case: 0
-    if (general) ylvls[!ylvls %in% yesYVal] else 0
+    if (general) setdiff(levels(data[,yName]), yesYVal) else 0
   
   # formula described in edffair paper
   temp <- setNames(rep(0, p), xNames)             # new row of 0s for each col
@@ -119,7 +124,7 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
   # add these variables as their own name in the model object
   model <- append(model, variablesAsList(
     sNames, yName, deweightPars, scaling, scalePars, holdIdxs, classif))
-  if (general) model <- append(model, variablesAsList(yesYVal))
+  if (general) model$yesYVal <- yesYVal
   
   # add the test accuracy calculations
   if (!is.null(holdout)) {
@@ -143,8 +148,8 @@ dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL,
 
 # only works in the binary classification case
 dsldQeFairRidgeLog <- function(data,yName,sNames,deweightPars=NULL,
-                               yesYVal=levels(data[,yName])[2],
-                               holdout=floor(min(1000,0.1*nrow(data)))) {
+                               holdout=floor(min(1000,0.1*nrow(data))),
+                               yesYVal=levels(data[,yName])[2]) {
   qeFairRidgeBase(general=TRUE, data, yName, sNames, deweightPars, holdout, yesYVal)
 }
 
