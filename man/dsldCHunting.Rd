@@ -41,6 +41,7 @@ data(mortgageSE)
 dsldOHunting(mortgageSE,'deny','black')
 # e.g. suggests using loan value and condo purchase as proxies
 
+}
 \details{
 
 dsldCHunting:

@@ -8,22 +8,24 @@
 }
 
 \usage{
-  dsldQeFairKNN <- function(data, yName, sName = NULL,deweightPars, scaleX = TRUE, yesYVal= NULL,
-                          k=25, holdout=floor(min(1000,0.1*nrow(data))))
+  dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL, 
+                          yesYVal=NULL,k=25,scaleX=TRUE,
+                          holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{
     \item{data}{
-        dataset in dataframe form
+        Data frame
     }
     \item{yName}{
-        a string, the response variable [character]
+        A string representing a reponse column
     }
-    \item{sName}{
-        a string, the sensitive variable (an R factor) [character]
+    \item{sNames}{
+        A vector or single string, representing the sensitive column(s)
     }
     \item{deweightPars}{
         Values for de-emphasizing variables in a split, e.g. 'list(age=0.2,gender=0.5)'
+        Lower values means more deweighting.
     }
     \item{scaleX}{
         Scale the features. Defaults to TRUE.
@@ -36,12 +38,13 @@
         it is the number of neighbors to use in finding conditional probabilities via knnCalib.
     } 
     \item{holdout}{
-        If not NULL, form a holdout set of the specified size. After fitting to the remaining data, evaluate accuracy on the test set.
+        How many rows to use as the holdout/testing set. Can be NULL.
+        The testing set is used to calculate s correlation and test accuracy.
     } 
 }
 
 \author{
-    N. Matloff, A. Mittal
+    N. Matloff, A. Mittal, J. Tran
 }
 
 \details{
@@ -49,32 +52,7 @@
 }
 
 \examples{  
-  # Working example:
-  data("svcensus")
-
-  # deweight 'occ' to 0.1
-  k1 = dsldQeFairKNN(data = svcensus,yName = 'wageinc', sName = 'gender', deweightPars = list(occ=0.1))
-
-  # View params:
-  k1$testAcc
-  k1$corrsens
-  k1$holdoutPreds
-  k1$deweightNames
-  k1$deweightVals
-
-  # predict()
-  newData <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), wkswrkd = c(50, 50), occ = c("106", "106"), gender = c('male','male'))
-  predict(k1,newData)
-
-  # deweight 'occ' to 0.5, 'age' to 0.8
-  k2 = dsldQeFairKNN(data = svcensus,yName = 'wageinc', sName = 'gender', deweightPars = list(occ=0.5, age = 0.8))
-
-  # View params:
-  k2$testAcc
-  k2$corrsens
-  k2$holdoutPreds
-  k2$deweightNames
-  k2$deweightVals
-  predict(k2,newData)
+  knn <- dsld::dsldQeFairKNN(fairml::compas, "two_year_recid", "race")
+  predict(knn, fairml::compas[1,])
 }
         

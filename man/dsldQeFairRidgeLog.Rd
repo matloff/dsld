@@ -4,45 +4,52 @@
 \title{dsldQeFairRidgeLog}
 
 \description{ 
-  To-do
+  Fair Logistic Ridge Regression
+  Only works with binary classifications
 }
 
 \usage{
-  dsldQeFairRidgeLog <- function(data,yName,deweightPars,sName = NULL, yesYVal = NULL, holdout=floor(min(1000,0.1*nrow(data))))
+  dsldQeFairRidgeLog <- function(data,yName,sNames,deweightPars=NULL,
+                               yesYVal=levels(data[,yName])[2],
+                               holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{
     \item{data}{
-        to-do
+        Data frame
     }
     \item{yName}{
-        A numeric vector, the response variable.
-    }
-    \item{deweightPars}{
-        to-do
+        A string representing a binary factor reponse column
     }
     \item{sName}{
-        to-do
+        A vector or single string, representing the sensitive column(s)
+    }
+    \item{deweightPars}{
+        E.g list(age=0.2, gender=0.5), used to deweight proxy variables. 
+        Higher values mean more deweighting.
     }
     \item{yesYVal}{
-        to-decorrelated
+        Y value to be considered "yes," to be coded 1 rather than 0. By default
+        this is the 2nd factor level.
     }
     \item{holdout}{
-        to-decorrelated
+        How many rows to use as the holdout/testing set. Can be NULL.
+        The testing set is used to calculate s correlation and test accuracy.
     } 
 }
 
 \author{
-    N. Matloff, S. Martha, A. Mittal, B. Ouattara, B. Zarate
+    N. Matloff, S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
 }
 
 \details{
-    To-do
+    The algorithm used to perform ridge regression is described in the paper
+    described in Matloff's EDFfair package.
+    testAcc is in mean absolute prediction error. corrs is the correlation
+    on every level of S.
 }
 
 \examples{
-  data(law.school.admissions)                      
-  law.school.admissions$bar <- as.integer(as.logical(law.school.admissions$bar))
-  law.school.admissions$bar <- as.factor(law.school.admissions$bar)
-  z <- dsldQeFairRidgeLog(data=law.school.admissions,yName='bar',deweightPars=list(fam_inc=0.2),sName='gender', yesYVal = '1') # causes Error 
+  log <- dsld::dsldQeFairRidgeLog(fairml::compas, "two_year_recid", "race")
+  predict(log, fairml::compas[1,])
 }

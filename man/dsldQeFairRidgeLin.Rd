@@ -4,45 +4,51 @@
 \title{dsldQeFairRidgeLin}
 
 \description{ 
-  To-do
+  Fair Linear Ridge Regression
 }
 
 \usage{
-  dsldQeFairRidgeLin <- function(data,yName,deweightPars,sensNames=NULL, holdout=floor(min(1000,0.1*nrow(data))))
+  dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL, 
+                                      holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{
     \item{data}{
-        to-do
+        Data frame
     }
     \item{yName}{
-        A numeric vector, the response variable.
+        A string representing a numeric reponse column
+    }
+    \item{sNames}{
+        A vector or single string, representing the sensitive column(s)
     }
     \item{deweightPars}{
-        to-do
-    }
-    \item{sensNames}{
-        to-decorrelated
+        E.g list(age=0.2, gender=0.5), used to deweight proxy variables. 
+        Higher values mean more deweighting.
     }
     \item{holdout}{
-        to-decorrelated
+        How many rows to use as the holdout/testing set. Can be NULL.
+        The testing set is used to calculate s correlation and test accuracy.
     } 
 }
 
 \author{
-    N. Matloff, S. Martha, A. Mittal, B. Ouattara, B. Zarate
+    N. Matloff, S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
 }
 
 \details{
-    To-do
+    The algorithm used to perform ridge regression is described in the paper
+    described in Matloff's EDFfair package.
+    testAcc is in mean absolute prediction error. corrs is the correlation
+    on every level of S.
 }
 
 \examples{  
-  # will continue to improve :)
   library(dsld)
-  data("svcensus")
-  z <- dsldQeFairRidgeLin(data=svcensus,yName='wageinc',deweightPars=list(occ=0.2),sensNames='gender')
-  z$testAcc
-  z$corrs
+  data(svcensus)
+  lin <- dsld::dsldQeFairRidgeLin(svcensus, "wageinc", "gender", deweightPars = list(occ=.4, age=.2))
+  lin$testAcc
+  lin$corrs
+  predict(lin, svcensus[1,])
 }
         

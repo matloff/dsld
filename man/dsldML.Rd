@@ -44,6 +44,7 @@ w<-dsldML('svcensus',quote(wageinc),'gender',
    qeMLftnName='qeKNN',opts=list(k=50))
 print(w)
 
+}
 \details{
 
 The specified \code{qeML} function will be called on the indicated data once

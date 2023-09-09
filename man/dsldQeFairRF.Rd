@@ -4,27 +4,28 @@
 \title{DSLDQeFairRF}
 
 \description{ 
-  To-do
+  Fair Random Forest w/ deweighted nodes
 }
 
 \usage{
-dsldQeFairRF <- function(data,yName, sName=NULL,deweightPars, nTree=500,
+dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
                          minNodeSize=10,mtry = floor(sqrt(ncol(data))),
                          yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{
     \item{data}{
-        dataset in dataframe form
+        Data frame
     }
     \item{yName}{
-        a string, the response variable [character]
+        A string representing a reponse column
     }
-    \item{sName}{
-        a string, the sensitive variable (an R factor) [character]
+    \item{sNames}{
+        A vector or single string, representing the sensitive column(s)
     }
     \item{deweightPars}{
         Values for de-emphasizing variables in a split, e.g. 'list(age=0.2,gender=0.5)'
+        Lower values means more deweighting.
     }
     \item{nTree}{
         Number of trees.
@@ -39,12 +40,13 @@ dsldQeFairRF <- function(data,yName, sName=NULL,deweightPars, nTree=500,
         Y value to be considered "yes," to be coded 1 rather than 0.
     } 
     \item{holdout}{
-        If not NULL, form a holdout set of the specified size. After fitting to the remaining data, evaluate accuracy on the test set.
+        How many rows to use as the holdout/testing set. Can be NULL.
+        The testing set is used to calculate s correlation and test accuracy.
     } 
 }
 
 \author{
-    N. Matloff, A.Mittal
+    N. Matloff, A.Mittal, J. Tran
 }
 
 \details{
@@ -52,24 +54,7 @@ dsldQeFairRF <- function(data,yName, sName=NULL,deweightPars, nTree=500,
 }
 
 \examples{  
-  # Working example:
-  data("svcensus")
-
-  # deweight 'occ' to 0.1
-  z1 <- dsldQeFairRF(data=svcensus,yName='wageinc',deweightPars = list(occ =0.1),sName='gender')
-  z1$testAcc
-  z1$corrsens
-  z1$deweightPars
-
-  # predict()
-  newData <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), wkswrkd = c(50, 50), occ = c("106", "106"), gender = c('male','male'))
-  predict(z1,newData)
-
-  # deweight 'occ' to 0.5, 'age' to 0.8
-  z2 <- dsldQeFairRF(data=svcensus,yName='wageinc',deweightPars = list(occ =0.5,age =0.8),sName='gender')
-  z2$testAcc
-  z2$corrsens
-  z2$deweightPars
-  predict(z2, newData)
+  rf <- dsld::dsldQeFairRF(fairml::compas, "two_year_recid", "race")
+  predict(rf, fairml::compas[1,])
 }
         
