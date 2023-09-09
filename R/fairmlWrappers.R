@@ -15,9 +15,9 @@ fairmlBase <- function(fairmlFUNC, data, yName, sName, unfairness, ...) {
   # fairml requires numeric and factor columns
   data <- toNumericFactor(data)
   
-  response = data[,yName]
-  predictors = data[,!colnames(data) %in% c(yName,sName)]
-  sensitive = data[,sName]
+  response <- data[,yName]
+  predictors <- data[,!colnames(data) %in% c(yName,sName)]
+  sensitive <- data[,sName]
   
   # calls a fairml model function as the base for the dsldFairML object
   base <- fairmlFUNC(response = response, predictors = predictors, 
@@ -69,11 +69,13 @@ summary.dsldFairML <- function(object){
 }
 
 predict.dsldFairML <- function(object, newx) {
+  # fairml requires char and factor cols
   newx <- toNumericFactor(newx)
   
   yName <- object$yName
   sName <- object$sName
   
+  # convert dsld format into fairml format
   predictors <- newx[,!colnames(newx) %in% c(yName, sName)]
   sensitive <- newx[,sName]
   

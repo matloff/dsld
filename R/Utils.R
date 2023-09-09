@@ -7,9 +7,10 @@
 # we write the top of f(), getSuggestedLib('p'); this loads p if it is
 # installed on the user's machine, otherwise so informs the user
 
-getSuggestedLib <- function(pkgName)
+getSuggestedLib <- function(pkgName) {
    if (!requireNamespace(pkgName,quietly=TRUE))
       stop(paste0(pkgName, ' not loaded'))
+}
 
 pr2file <- function(filename)
 {
