@@ -19,7 +19,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
             # require input if there's a next
             if (i != numCols) {
                 cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
-                temp_input <- readline()
+                tempInput <- readline()
             }
         # if numeric
         } else if (is.numeric(data[, i])) {
@@ -28,7 +28,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
             # require input if there's a next
             if (i != numCols) {
                 cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
-                temp_input <- readline()
+                tempInput <- readline()
             }
         # throw error
         } else {
@@ -172,11 +172,13 @@ plotlyDensity <- function(data, cName, sName) {
 
 dsldFrequencyByS <- function(data, cName, sName) {
     # type validation #
+    # we're essentially just checking the value-type for the key columns
     if (!class(data[, sName]) %in% c("factor", "character")) {
         stop(paste(
             "sName should be of factor or character data type."
         ))
     }
+    # helpful error message if the specified confounder column isn't factor
     if (!class(data[, cName]) %in% c("factor", "character")) {
         stop(paste(
             "cName should be of factor or character data type. Consider",
