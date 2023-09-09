@@ -542,11 +542,12 @@ height = 70.2.
 
 How is "close to" defined?  Should we look at the closest 5 people, the
 closest 50, or what?  That number is k, the number of nearest neighbors.
-It's chosen by the analyst, just like the analyst chooses the number of
-bins in plotting a histogram.  Typically k is chosen by trying several
-different values of k, then using the one that best predicts in the
-holdout set.  Once we've settled on k, we might use the full dataset, no
-holdout.
+[The number k here is called *hyperparameter* of the
+algorithms.]{.column-margin} It's chosen by the analyst, just like the
+analyst chooses the number of bins in plotting a histogram.  Typically k
+is chosen by trying several different values of k, then using the one
+that best predicts in the holdout set.  Once we've settled on k, we
+might use the full dataset, no holdout.
 
 ```{R}
 set.seed(9999)
@@ -578,6 +579,39 @@ more confident about it, since this analysis is unencumbered by
 assumptions on the form of the regression function.  On the other hand,
 there is no easy way to obtain standard errors; one approach is to use
 the *bootstrap* (Appendix C).
+
+## The random forests algorithm
+
+In the above example, in which we are predicting wage income, a random
+forests (RF) analysis would generate a large number of *decision trees*.
+As explained below, each tree would give us a predicted income, and our
+final prediction would simply the average of all those predicted values.
+
+So, what is a decision tree?  It's just a flow chart.  Consider this
+example involving vertebral disease.  Y is categorical, with values NO
+(normal), SL and DH.  To predict a new case, we look at the X variables
+(which have the nondescript names V1 through V6) one at a time, and
+branch through the tree accordingly.
+
+For example, if the new case to be predicted has V6 of at least 16, we 
+branch right, and immediately decide to predict that this patient's
+disease status is SL.  If on the other hand, V6 is less than 16, we look
+at V4.  If it's under 28, we immediately predict status DH, and so on.
+
+![A decision tree](RpartVert.png){width=100%}
+
+There is no "universally best" predictive algorithm, with performance of
+a given algorithm being dependent on the given dataset.  So, instead of
+doing a kNN analysis, we could try RF.
+
+```{R}
+set.seed(9999)
+w <- dsldML('svcensus',quote(wageinc),'gender',
+   qeMLftnName='qeRF')  
+print(w)  
+```
+
+The results here are rather different from what we obtained with kNN.   
 
 ## Example:  The Law School Admissions dataset {#law-school}
 
