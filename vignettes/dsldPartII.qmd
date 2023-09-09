@@ -1,19 +1,14 @@
 
 # Part II:  Fairness in Machine Learning
 
-## Motivation & Background
-<!-- Don't know how accurate this is, please feel free to make edits -->
 In modern applications of machine learning as a predictive modeling tool, it 
 would be irresponsible to produce a model that biases one sensitive group over 
 another. As such, it becomes imperative to find methods of uncovering
 and reducing any such biases. 
 
-Of course, nothing comes for free: the inherent tradeoff of increasing
-fairness is reduced utility (reduced predictive power over the dataset).
-Thus, a means of balancing this tradeoff between fairness and utility
-becomes essential in any future implementations of machine learning.
+## Goals
 
-There are two main parts to fair machine learning:
+There are two main aspects of fair machine learning:
 
 * **Measuring unfairness**: A number of measures have been proposed.
 
@@ -21,14 +16,82 @@ There are two main parts to fair machine learning:
   ameliorate its unfairness, yet still maintain an acceptable utility
   level?
 
+In our earlier COMPAS example:  Is the risk assessment tool biased
+against African-Americans?  And if so, how can we reduce that bias while
+still maintaining good predictive ability?
+
+Of course, nothing comes for free: the inherent tradeoff of increasing
+fairness is reduced utility (reduced predictive power over the dataset).
+Thus, a means of balancing this tradeoff between fairness and utility
+becomes essential in any future implementations of machine learning.
+
+## Comparison to Part I
+
+First, recall our notation:
+
+* Y; our outcome variable, to be predicted
+
+* S: our senstive variable
+
+* O: our proxy variables
+
+* X: other variables to be used to predict Y
+
+We wish to predict Y from X and O, omitting S, but with concern that we
+may be indirectly using S via O.  Contrast this from our material in
+Part I:
+
+* In Part I, we fit models for predicting Y, but with the goal of using
+such models to assess the effect of S on Y; we were not interested in
+actually predicting Y.  We made central use of S, but wished to find
+variables C that were correlated with both Y and S, so as to avoid
+distorting our look at the impact of S on Y.  Any X variable unrelated
+to Y was not of interest.
+
+* Here in Part II, prediction of Y is our central goal.  We will omit S,
+relying our prediction fully on X and partly on O.  We find the
+variables O by investigating which variables are related to S; the
+stronger the relation of an O variable to S, the less weight we will put
+on that variable in predicting Y.
+
+Below we will describe some common measures of unfairness.  But first,
+how do we choose the O variables?
+
+### Deciding proxies
+
+As with choosing confounders in Part I, analyst may simply choose the
+proxies by using his/her domain expertise.  But a more formal approach
+may involve correlation.  Here's an example:
+
+```{r}
+data(mortgageSE) 
+dsldOHunting(mortgageSE,'deny','black')
+```
+
+The function **dsldOHunting** calculates the correlations between S and
+all possible candidate O variables.  The output here  suggests possibly
+using, say, the **loan_val** and **condo** variables as proxies.
+
+The function does not use the classic *Pearson product moment*1 [Tau is
+defined in terms of *concordances* and *discordances*.  Say we look at
+height and weight, and compare two people. If one of the people is both
+taller and heavier than the other, that is a concordance.  If on the
+other hand, one is shorter but heavier than the other, that is a
+discordance.  We consider all possible pairs of people in our dataset,
+then sets tau to the difference in concordance and discordance counts,
+divided by 2.]{.column-margin} correlation here, opting instead for
+*Kendall's tau* correlation.  Both are widely-used, and both take on
+values in [-1,], but while Pearson is geared toward continuous numeric variables,
+Kendall is also usable for binary or ordinal integer-valued variables.
+
 ## Measuring utility
 
 Utility in fair ML, and in ML classification algorithms in general,
-often (but far from always) refer to like False Positive Rate (FPR).  
-Let's start by defining these rates.
+often (but far from always) make use of quantitaties like False Positive
+Rate (FPR).  So, let's start by defining these rates.
 
 ::: {.callout-note}
-### The key rates
+### The famous rates FPR etc.
 
 These are conditional probabilities, but it's important not to confuse
 the event with the condition.
@@ -69,7 +132,7 @@ those times* in which Y is actually negative.  Two other common terms:
 * *recall*:  same as TPR
 
 * *precision*: P(Y is actually positive | we guess Y is positive)=
-(TP + FN) / (TP + NP)
+(TP + FN) / (TP + FP)
 
 :::
 
@@ -81,113 +144,76 @@ the average squared difference between predicted and actual Y value.
 
 ## Measuring unfairness
 
-First, recall our notation:
-
-* Y; our outcome variable, to be predicted
-
-* S: our senstive variable
-
-* O: our proxy variables
-
-* X: other variables to be used to predict Y
-
-We wish to predict Y from X and O, omitting S from with an eye toward
-indirectly using S via O.  Contrast this from our material in Part I:
-
-* In Part I, we fit models for predicting Y, but with the goal of using
-such models to assess the effect of S on Y; we were not interested in
-actually predicting Y.  We made central use of S, but wished to find
-variables C that were correlated with both Y and S, so as to avoid
-distorting our look at the impact of S on Y.  Any X variable unrelated
-to Y was not of interest.
-
-* Here in Part II, prediction of Y is our central goal.  We will omit S,
-relying our prediction fully on X and partly on O.  We find the
-variables O by investigating which variables are related to S; the
-stronger the relation of an O variable to S, the less weight we will put
-on that variable in predicting Y.
-
-Below we will describe some common measures of unfairness.  But first,
-how do we choose the O variables?
-
-### Deciding proxies
-
-The analyst may simply choose the proxies by using his/her domain
-expertise.  But a more formal approach may involve correlation.  Here's
-an example:
-
-```{r}
-data(mortgageSE) 
-mtg <- mortgageSE[,-1] # col. 1 contains Y
-# any factors there? correlation needs numeric entities
-for(i in 1:ncol(mtg)) if (is.factor(mtg[,i])) 
-   mtg[,i] <- as.numeric(mtg[,i]) 
-cor(mtg$black,mtg[,-2],method='kendall') 
-```
-
-Note that we did not use the classic *Pearson product moment*1 [Tau is
-defined in terms of *concordances* and *discordances*.  Say we look at
-height and weight, and compare two people. If one of the people is both
-taller and heavier than the other, that is a concordance.  If on the
-other hand, one is shorter but heavier than the other, that is a
-discordance.  We consider all possible pairs of people in our dataset,
-then sets tau to the difference in concordance and discordance counts,
-divided by 2.]{.column-margin} correlation here, opting instead for
-*Kendall's tau* correlation.  Both are widely-used, but while Pearson is
-geared toward numeric variables, Kendall is usable for either numeric or
-binary variables.
-
 ### S-Correlation
 
 A direct way to measure where Y and S are still related in spite of
 physically omitting the latter is to compute the correlation between
-predicted Y, to be denoted $\hat{Y}$ and S.  But what do we mean by
-correlation?
+predicted Y, to be denoted $\hat{Y}$ and S.  As noted earlier, we use
+Kendall's Tau correlation here.
 
+[Here and below, to keep things simple, we will not use a holdout set.]{.column-margin}
+For instance, let's consider our mortgage example, say with k-Nearest
+Neighbors as our ML prediction tool:
 
-In order to ensure an ML model isn't discriminating, it may be a
-meaningful measure of fairness to see how much a sensitive feature like
-race, gender, or age relates to the predictions the model is making. A
-way to measure this sort of association is called S-correlation.
-Measuring how strongly S (sensitive feature) and Y (response variable)
-are correlated allows us to understand the how much the model has
-trained to discriminate. An added benefit of S-Correlation is a warning
-that the data itself may be biased if there exists a strong correlation
-between S and Y.
+```{r}
+z <- qeKNN(mortgageSE,'deny',holdout=NULL,yesYVal='1') 
+# look at the fitted model's probability of denial of the mortgage
+# application, i.e. regression estimates
+probs <- z$regests
+# the variable 'black' is an R factor, need to be numeric
+black <- ifelse(mortgageSE$black=='1',1,0)
+cor(black,probs,method='kendall')
+```
 
-The function dsldTakeALookAround calculates the S-Correlation through a
-non-parametric test, known as the Kendall rank correlation. The strength
-of associativity is measured by the pattern of accordance/discordance
-(i.e: agreement/disagreement) of pairs of observations. A benefit of
-using Kendall's rank correlation is that it can be used with ordinal or
-continuous data. It is also viable with smaller sets of data compared to
-other methods.  For more information on how Kendall rank correlation is
-calculated, click [here](https://arxiv.org/abs/2206.04019).
+That's a pretty substantial correlation, definitely a cause for concern
+that our ML analysis here is unfair.  Of course, it's not the algorithm
+itself's fault, but we must find a way to mitigate the problem.
 
+An advantage of the S-Correlation measure is that it can also be used in
+non-classification problems, say predicting wage income:
+
+```{r}
+z <- qeKNN(svcensus,'wageinc',holdout=NULL)
+gender <- ifelse(svcensus$gender=='male',1,0) 
+cor(svcensus$wageinc,gender,method='kendall') 
+```
+
+So, there would seem to be only a moderate degree of unfairness, if any.
 
 ### Demographic Parity
 
-Demographic parity is a fairness metric that measures if a classifier model's 
-predictions are dependent on a sensitive attribute. Demographic parity 
-essentially compares if the same proportion of each sub-group within the 
-sensitive feature is classified at equal rates for each of the possible 
-outcomes [(Source)](https://arxiv.org/pdf/2205.13619.pdf).
-Perfect demographic parity requires that every sensitive sub-group 
-has an equal chance of being classified as Positive.
+The criterion for demographic parity is that the same proportion of each
+sub-group within the sensitive feature is classified at equal rates for
+each of the possible outcomes 
 
-For example, let's consider the COMPAS dataset again. If the proportion of 
+For example, let's consider the COMPAS dataset again. Demographic Parity
+would require 
+
+P(predict recidivate | Black) = P(predict recidivate | white),
+
+i.e. that the quanitty
+
+(TP+FP) / (TP+FP+TN+FN)
+
+has the same value for each race.
+
+Here is an example using the mortgage data:
+
+```{r}
+z <- qeKNN(mortgageSE,'deny',holdout=NULL,yesYVal='1')
+BlackRows <- which(mortgageSE$black == '1')
+NonblackRows <- which(mortgageSE$black == '0')
+BlackProbs <- z$regest[BlackRows]
+NonblackProbs <- z$regest[NonblackRows]
+BlackYhats <- round(BlackProbs)
+NonblackYhats <- round(NonblackProbs)
+mean(BlackYhats)
+mean(NonblackYhats)
+```
+
+
+
 African-Americans who are predicted to recidivate is different than the 
-proportion of Asian-Americans, then we can consider this model to fail to be 
-demographically par. Of course, exactness is something to be decided by the 
-user--what constitutes a signficant difference will vary on the data, context, 
-etc.
-
-The measure may seem a bit restrictive or aggressive at first, but keep in mind 
-its main use-cases. Typically, demographic parity performs well as a measure 
-for fairness in contexts surrounding historical biases skewing the dataset 
-itself. In order to prevent a self-reinforcing cycle (such as in the case of 
-COMPAS predicting African-Americans to recidivate more --> kept in jail longer 
---> have a more difficult time adjusting to society post-jail --> more likely 
 to commit crime), we'll try to minimize the bias of the model used to predict 
 on that dataset as a compensatory measure, even if it comes at the risk of 
 losing even more utility.
