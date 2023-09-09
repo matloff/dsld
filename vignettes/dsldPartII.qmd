@@ -14,16 +14,11 @@ There are two main aspects of fair machine learning:
 
 * **Reducing unfairness**: For a given ML algorithm, how can we
   ameliorate its unfairness, yet still maintain an acceptable utility
-  level?
+  (predictive power) level?
 
 In our earlier COMPAS example:  Is the risk assessment tool biased
 against African-Americans?  And if so, how can we reduce that bias while
 still maintaining good predictive ability?
-
-Of course, nothing comes for free: the inherent tradeoff of increasing
-fairness is reduced utility (reduced predictive power over the dataset).
-Thus, a means of balancing this tradeoff between fairness and utility
-becomes essential in any future implementations of machine learning.
 
 ## Comparison to Part I
 
@@ -152,6 +147,8 @@ the average squared difference between predicted and actual Y value.
 
 
 ## Measuring unfairness
+Many unfairness criteria have been proposed.  We preseent a few of them
+in this section.
 
 ### S-Correlation
 
@@ -265,9 +262,62 @@ Odds criterion in the above COMPAS example.
 library(fairness)
 equal_odds(cmp,'two_year_recid','race',probs=z$regests)
 ```
-
 Taking African-Americans as the base, we see that the Equalized Odds
 criterion was not met, even approximately.  Nor was Demographic Parity.
+
+## Remedies
+
+Having established that ML prediction models can be biased against
+certain sensitive groups, what remedies are available?  The **dsld**
+package includes a few of these, presented in this section.  Of course,
+all of them recognize a basic principle:
+
+::: {.callout-note}
+### The Fairness-Utility Tradefoff
+
+Of course, nothing comes for free: the inherent tradeoff of increasing
+fairness is reduced utility (reduced predictive power over the dataset).
+Thus, a means of balancing this tradeoff between fairness and utility
+becomes essential in any future implementations of machine learning.
+
+:::
+
+Any algorithm for ameliorating unfairness will thus include one or more
+parameters that one to achieved a desired level of compromise between
+fairness and utility.  The parameters essentially allow us to "dial" the
+weight that our proxies will play in predicting Y; lighter weight means
+more fairness but poorer utility, and vice versa.
+
+Our context will be:
+
+* Due to legal requirements or simply a desire for fairness, we will
+  omit S from all analyses, other than for fairness assessment of our
+  derived prediction tool.
+
+* But we are concerned about the impact of proxies, and have chosen a
+  set of variables O to play this role.
+
+* We have chosen fairness and utility measures with which we will choose
+  a desired point in the Fairness-Utility Tradefoff.
+
+Many, many fair ML algorithms have been proposed, most of which are
+technically complex.  The ones we present here have been chosen (a) for
+their technical simplicity and (b) availability as R packages.
+We will begin with the simplest algorithms (which have been developed by
+one of the authors of this book).
+
+Let's take as a running example the COMPAS data, predicting recidivism,
+with age and prior convictions count as proxies.  To illustrate
+prediction, we will predict the first case in the dataset:
+
+```{r}
+newx <- cmp[1,-(7:8)]  # just X and O, not Y and S
+```
+
+## **dsldQeFairRF**
+
+
+
 
 ## Approaches Deployed in DSLD
 While there exists a plethora of methods for ensuring a fair machine learning 
