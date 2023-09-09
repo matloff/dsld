@@ -113,3 +113,12 @@ predictHoldoutFair <- function(model, test, train) {
   }
   predHold
 }
+
+# utility to add variables to a list as an item w/ their own name
+# ex. 'model$yName <- yName' for a list of variables
+variablesAsList <- function(...) {
+  names <- as.list(substitute(list(...)))[-1]
+  values <- list(...)
+  list <- setNames(values, names)
+  list
+}

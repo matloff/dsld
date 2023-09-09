@@ -96,17 +96,18 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
   p <- ncol(train) - 1 # common length for how many predictors there are
   n <- nrow(train) # common length for how many rows in the data
   
+  ylvls <- levels(data[,yName])
   blank <- # in general case: the no value- in linear case: 0
-    if (general) levels(data[,yName])[!levels(data[,yName]) %in% yesYVal] else 0
+    if (general) ylvls[!ylvls %in% yesYVal] else 0
   
   # formula described in edffair paper
-  temp <- setNames(rep(0, p), xNames)
-  if (!is.null(deweightPars))
-    temp[expandVars] <- sqrt(expandVals)
-  newx <- data.frame(diag(temp))
-  newxy <- cbind(newx, rep(blank, p))
+  temp <- setNames(rep(0, p), xNames)             # new row of 0s for each col
+  if (!is.null(deweightPars))                     
+    temp[expandVars] <- sqrt(expandVals)          # set deweighted cols to sqrt of deweight
+  newx <- data.frame(diag(temp))                  # turn this vector into a diag matrix
+  newxy <- cbind(newx, rep(blank, p))             # append a blank y column
   names(newxy) <- colnames(train)
-  dataExtended <- rbind(train, newxy)
+  dataExtended <- rbind(train, newxy)             # append this to the bottom of the training data
   
   base <- 
     if (general) 
@@ -161,13 +162,4 @@ predict.dsldQeFair <- function(model, newx) {
   newx <- newx[,!colnames(newx) %in% yName]
   
   suppressWarnings(predict(model$base, newx))
-}
-
-# utility to add variables to a list as an item w/ their own name
-# ex. 'model$yName <- yName' for a list of variables
-variablesAsList <- function(...) {
-  names <- as.list(substitute(list(...)))[-1]
-  values <- list(...)
-  list <- setNames(values, names)
-  list
 }
