@@ -12,45 +12,50 @@
 #    for that function
 
 dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
-   qeMLftnName,opts=NULL)
+                   qeMLftnName,opts=NULL)
 {
+  
+  if (!inherits(yName,'name')) stop('specify yName via quote()')
+  
+  data <- get(dataName)
+  ycol <- which(names(data) == yName)
+  scol <- which(names(data) == sName)
+  slevels <- levels(data[,scol])
+  
+  if (sComparisonPts=='rand5'){
+    rows <- sample(nrow(data), 5)
+    reducedData <- data[rows, ]
+    columns <- c(yName, sName)
+    sComparisonPts <- reducedData[, !(names(reducedData) %in% columns)]
+  }
 
-   if (!inherits(yName,'name')) stop('specify yName via quote()')
+  # called from lapply(), calling the QE function on the subset of data
+  # corresponding to the specified level of the sensitive variable S
+  do1Slevel <- function(sLevel) 
+  {
+    subData <- data[data[,scol]==sLevel,]
+    subData <- subData[,-scol]
+    cmd <- buildQEcall(qeMLftnName,'subData',yName,opts)
+    evalr(cmd)
+  }
+  
+  qeOut <- lapply(slevels,do1Slevel)
+  names(qeOut) <- slevels
 
-   data <- get(dataName)
-   ycol <- which(names(data) == yName)
-   scol <- which(names(data) == sName)
-   slevels <- levels(data[,scol])
-
-   # called from lapply(), calling the QE function on the subset of data
-   # corresponding to the specified level of the sensitive variable S
-   do1Slevel <- function(sLevel) 
-   {
-      subData <- data[data[,scol]==sLevel,]
-      subData <- subData[,-scol]
-      cmd <- buildQEcall(qeMLftnName,'subData',yName,opts)
-      evalr(cmd)
-   }
-
-   qeOut <- lapply(slevels,do1Slevel)
-   names(qeOut) <- slevels
-
-   if (sComparisonPts=='rand5') 
-      sComparisonPts <- data[sample(1:nrow(data),5),-c(ycol,scol)]
-
-   tmp <- sComparisonPts
-   for (sl in slevels) {
-      # predicted values are the values of the estimated regression
-      # function, just what we want
-      preds <- predict(qeOut[[sl]],sComparisonPts)
-      if (qeOut[[1]]$classif) {
-         if (is.null(preds$probs)) stope('ML function does not return "probs"')
-         preds <- preds$probs
-      } else preds <- as.vector(preds)
-      tmp[[sl]] <- preds
-   }
-
-   tmp
-
+  tmp <- sComparisonPts
+  for (sl in slevels) {
+    # predicted values are the values of the estimated regression
+    # function, just what we want
+    preds <- predict(qeOut[[sl]],sComparisonPts)
+    if (qeOut[[1]]$classif) {
+      if (is.null(preds$probs)) stope('ML function does not return "probs"')
+      preds <- preds$probs
+    } else preds <- as.vector(preds)
+    tmp[[sl]] <- preds
+  }
+  
+  tmp
+  
 }
+
 
