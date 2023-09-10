@@ -11,12 +11,14 @@
 #    qeMLftnName is, e.g. 'qeKNN'); opts is an R list of optional arguments
 #    for that function
 
-dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
-                   qeMLftnName,opts=NULL)
-{
-  
+dsldML <- function(dataName, yName, sName, sComparisonPts = 'rand5',
+                   qeMLftnName, opts = NULL) {
+
+  # args checking
   if (!inherits(yName,'name')) stop('specify yName via quote()')
   
+  
+  # execute params
   data <- get(dataName)
   ycol <- which(names(data) == yName)
   scol <- which(names(data) == sName)
@@ -48,14 +50,13 @@ dsldML <- function(dataName,yName,sName,sComparisonPts='rand5',
     # function, just what we want
     preds <- predict(qeOut[[sl]],sComparisonPts)
     if (qeOut[[1]]$classif) {
-      if (is.null(preds$probs)) stope('ML function does not return "probs"')
+      if (is.null(preds$probs)) stop('ML function does not return "probs"')
       preds <- preds$probs
     } else preds <- as.vector(preds)
     tmp[[sl]] <- preds
   }
   
-  tmp
-  
+  return(tmp) 
 }
 
 
