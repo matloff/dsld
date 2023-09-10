@@ -1,85 +1,90 @@
-
-dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
-                         minNodeSize=10,mtry = floor(sqrt(ncol(data))),
-                         yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data)))) {
-  # remove sName from data and expand factors
-  scaling <- FALSE
+# -------- QeFairBase -----------
+#
+# base function to use in qefairRF and qefairKNN.  
+# scales the data/expands factors, trains the base model, then adds additional
+# information into the final model object
+#
+# qeFUNC        - a qeML model generation function
+# data          - unmodified data to train the model on
+# appendedItems - items to be appended to the model object.
+#                 must have yName, sNames, scaling.
+# ...           - additional parameters that are passed into the qeFUNC
+#
+qeFairBase <- function(qeFUNC, data, appendedItems, ...) {
+  
+  yName <- appendedItems$yName
+  sNames <- appendedItems$sNames
+  scaling <- appendedItems$scaling
+  
   scaledData <- fairScale(data, yName, sNames, scaling)
-  expandDW <- expandDeweights(deweightPars, data[1,])
   
-  base <- qeML::qeRFranger(scaledData, yName, nTree=nTree,minNodeSize=10,
-                   mtry=floor(sqrt(ncol(data)))+1,yesYVal=yesYVal,
-                   holdout=holdout, deweightPars = expandDW)
+  base <- qeFUNC(scaledData, yName, ...)
   
-  # add base model into dsldQeFair object with special predict function
-  model <- list(base = base)
-  
-  # transfer these objects from the base model into objects in the main model
+  model <- list(base=base)
   model <- append(model, base[names(base) %in% 
-                 c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")])
-  # add these variables as objects of their own name to the model                
-  model <- append(model, variablesAsList(
-                  sNames, yName, deweightPars, scaling))
+                c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")])
+  model <- append(model, appendedItems)
+  
+  model$scalePars <- attr(scaledData, 'scalePars')
   
   # add s correlation calculation
-  if (!is.null(sNames) && !is.null(holdout)) {
+  if (!is.null(sNames) && length(model$holdIdxs) > 0) {
     model$corrs <- sCorr(base, data, yName, sNames)
   }
   class(model) <- c("dsldQeFair")
+  model
+}
+# -------------- QeFairRF -------------
+dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
+                         minNodeSize=10, mtry = floor(sqrt(ncol(data))),
+                         yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data)))) {
+  scaling <- FALSE 
+  # expand deweights to match the expanded factors in the data in qeFairBase
+  expandedDW <- expandDeweights(deweightPars, data[1,])
+  
+  # these items will be in the model object later
+  appendedItems <- variablesAsList(sNames, yName, deweightPars, scaling)
+  model <- qeFairBase(qeML::qeRFranger, data, appendedItems, nTree=nTree,
+                      minNodeSize=minNodeSize, mtry=mtry,
+                      yesYVal=yesYVal, holdout=holdout, deweightPars = expandedDW)
   model
 }
 
 # rf <- dsldQeFairRF(fairml::compas, "two_year_recid", "race")
 # predict.dsldQeFair(rf, fairml::compas[1,])
 
+# ----------------- QeFairKNN ------------
 dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL, 
                           yesYVal=NULL,k=25,scaleX=TRUE,
                           holdout=floor(min(1000,0.1*nrow(data)))) {
-  # data w/o sName, expanded factors, may or may not be scaled
   scaling <- scaleX
-  scaledData <- fairScale(data, yName, sNames, scaling)
-  scalePars <- attr(scaledData, 'scalePars')
+  # expand deweights to match the expanded factors in the data in qeFairBase
+  expandedDW <- expandDeweights(deweightPars, data[1,])
+  expandVars <- names(expandedDW) 
+  expandVals <- unlist(expandedDW) # to use as qeKNN pars
   
-  # expand deweights to match deweightpars
-  expandDW <- expandDeweights(deweightPars, data[1,])
-  expandVars <- names(expandDW)
-  expandVals <- unlist(expandDW)
-  
-  base <- qeML::qeKNN(scaledData, yName, k=k, yesYVal=yesYVal,
-                      expandVars=expandVars,expandVals=expandVals,
-                      holdout=holdout)
-  
-  # add base model into dsldQeFair object with special predict function
-  model <- list(base=base)
-  
-  # transfer these objects from the base model into objects in the main model
-  model <- append(model, base[names(base) %in% 
-                  c("classif", "factorsInfo", "holdIdxs", "testAcc", "baseAcc")])
-  # add these variables as objects of their own name to the model   
-  model <- append(model, variablesAsList(
-                  sNames, yName, deweightPars, scaling, scalePars))
-  
-  # add s correlation calculation
-  if (!is.null(sNames) && !is.null(holdout)) {
-    model$corrs <- sCorr(base, data, yName, sNames)
-  }
-  
-  class(model) <- c("dsldQeFair")
+  # these items will be in the model object later
+  appendedItems <- variablesAsList(sNames, yName, deweightPars, scaling)
+  model <- qeFairBase(qeML::qeKNN, data, appendedItems, k=k, yesYVal=yesYVal,
+                      expandVars=expandVars,expandVals=expandVals, holdout=holdout)
   model
 }
 
 # knn <- dsldQeFairKNN(fairml::compas, "two_year_recid", "race")
 # predict.dsldQeFair(knn, fairml::compas[1,])
 
-# base function for the ridge models. [General] parameter is a logical value.
-# if false, use linear model- if true, use logistic.
+# --------------- QeFairRidgeBase -------------
+
+# base function for the ridge models. 
 # scales and expands the data, expands the deweightPars, 
 # adds a diagonal matrix to the bottom of the data as described in the paper
-# before training the model on it.
-# then calculates its own test accuracy metrics
-qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars, 
+# before training the model on it. then calculates its own test accuracy metrics
+#
+# linear - a logical value. if false, use linear model- if true, use logistic.
+#
+qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars, 
                             holdout, yesYVal) {
-  classif <- general
+  classif <- !linear
   
   # data w/o sName and scaled xNames
   scaling <- TRUE
@@ -102,8 +107,8 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
   p <- ncol(train) - 1 # common length for how many predictors there are
   n <- nrow(train) # common length for how many rows in the data
   
-  blank <- # in general case: the no value- in linear case: 0
-    if (general) setdiff(levels(data[,yName]), yesYVal) else 0
+  blank <- # in linear case: 0- in nonlinear: the no value
+    if (linear) 0 else setdiff(levels(data[,yName]), yesYVal) 
   
   # formula described in edffair paper
   D <- setNames(rep(0, p), xNames)                # new row of 0s for each col
@@ -115,16 +120,16 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
   dataExtended <- rbind(train, newxy)             # append this to the bottom of the training data
   
   base <- 
-    if (general) 
-      qeML::qeLogit(dataExtended,yName,holdout=NULL, yesYVal=yesYVal)
-    else
+    if (linear) 
       qeML::qeLin(dataExtended,yName,holdout=NULL)
-  
+    else
+      qeML::qeLogit(dataExtended,yName,holdout=NULL, yesYVal=yesYVal)
+
   model <- list(base=base)
   # add these variables as their own name in the model object
   model <- append(model, variablesAsList(
     sNames, yName, deweightPars, scaling, scalePars, holdIdxs, classif))
-  if (general) model$yesYVal <- yesYVal
+  if (!linear) model$yesYVal <- yesYVal
   
   # add the test accuracy calculations
   if (!is.null(holdout)) {
@@ -141,7 +146,7 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
 
 dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL, 
                                       holdout=floor(min(1000,0.1*nrow(data)))) {
-  qeFairRidgeBase(general=FALSE, data, yName, sNames, deweightPars, holdout)
+  qeFairRidgeBase(linear=TRUE, data, yName, sNames, deweightPars, holdout)
 }
 # lin <- dsldQeFairRidgeLin(svcensus, "wageinc", "gender", deweightPars = list(occ=.4, age=.2))
 # predict.dsldQeFair(lin, svcensus[1,])
@@ -150,12 +155,13 @@ dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL,
 dsldQeFairRidgeLog <- function(data,yName,sNames,deweightPars=NULL,
                                holdout=floor(min(1000,0.1*nrow(data))),
                                yesYVal=levels(data[,yName])[2]) {
-  qeFairRidgeBase(general=TRUE, data, yName, sNames, deweightPars, holdout, yesYVal)
+  qeFairRidgeBase(linear=FALSE, data, yName, sNames, deweightPars, holdout, yesYVal)
 }
 
 # log <- dsldQeFairRidgeLog(fairml::compas, "two_year_recid", "race")
 # predict.dsldQeFair(log, fairml::compas[1,])
 
+# -------- Predict -----------------
 predict.dsldQeFair <- function(model, newx) {
   yName <- model$yName
   sNames <- model$sNames
