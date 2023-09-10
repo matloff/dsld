@@ -9,6 +9,7 @@ dsldGetRow5 <- function(data, yName, sName) {
   return(newDat)
 }
 
+
 ### --------------------------- DSLDCheckData ----------------------------------
 dsldCheckData <- function(data1, data2, yName) {
   data1 <- data1[, !(names(data1) == yName), drop = FALSE]
@@ -115,16 +116,16 @@ coef.dsldLM <- function(dsldLM) {
 
 # added vcov generic
 vcov.dsldLM <- function(dsldLM) {
-  # merge & return coefficients #
-  mergedCoef <- lapply(dsldLM, function(x) x$covarianceMatrix)
-  return(mergedCoef)
+  # merge & return covariance matrix #
+  mergedCov <- lapply(dsldLM, function(x) x$covarianceMatrix)
+  return(mergedCov)
 }
 
 # vcov(lin1)
 # vcov(lin11)
 
 dsldGetData <- function(dsldLM) {
-  # merge & return datasets #
+  # merge separated datasets & return #
   mergedData <- lapply(dsldLM, function(x) x$data)
   return(mergedData)
 }
