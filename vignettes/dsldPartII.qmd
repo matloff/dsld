@@ -1,5 +1,5 @@
 
-# Part II:  Fairness in Machine Learning
+# Part II:  Fairness in Machine Learning   
 
 In modern applications of machine learning as a predictive modeling tool, it 
 would be irresponsible to produce a model that biases one sensitive group over 
@@ -316,7 +316,12 @@ newx <- cmp[1,-(7:8)]  # just X and O, not Y and S
 
 ## **dsldQeFairRF**
 
-
+```{r}
+z <- dsldQeFairRF(cmp,'two_year_recid','race',
+   list(age=0.2,priors_count=0.1),yesYVal='Yes')
+z
+predict(z,newx)
+```
 
 
 ## Approaches Deployed in DSLD
