@@ -580,7 +580,7 @@ assumptions on the form of the regression function.  On the other hand,
 there is no easy way to obtain standard errors; one approach is to use
 the *bootstrap* (Appendix C).
 
-## The random forests algorithm
+### The random forests algorithm
 
 In the above example, in which we are predicting wage income, a random
 forests (RF) analysis would generate a large number of *decision trees*.
