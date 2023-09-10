@@ -322,6 +322,10 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
 # -----------------------------------------------------------------------------#
                                 
 summary.dsldLM <- function(dsldLM) {
+  # the goal of the summary is to generate all attributes a user may want to
+  # inspect with a given dsldLM object, which ends up as a list of these key
+  # underlying attributes (sensitive comparison (interactions, etc.), and more)
+
   diffS <- list()
   
   # get sName and yName from the output of dsldLinear #
@@ -332,7 +336,7 @@ summary.dsldLM <- function(dsldLM) {
     data <- dsldGetData(dsldLM)[[1]]
     summaryOutput <- summary(dsldLM[[1]]$model)
     coef <- summaryOutput$coefficients[, 1]
-    covMatrix = dsldLM[[1]]$covarianceMatrix
+    covMatrix <- dsldLM[[1]]$covarianceMatrix
     stdErr <- sqrt(diag(covMatrix))
     testStat <- coef / stdErr
     pValues <- 2 * (1 - pnorm(abs(testStat)))
@@ -361,7 +365,7 @@ summary.dsldLM <- function(dsldLM) {
       data <- dsldLM[[i]]$data
       summaryOutput <- summary(dsldLM[[i]]$model)
       coef <- summaryOutput$coefficients[, 1]
-      covMatrix = dsldLM[[i]]$covarianceMatrix
+      covMatrix <- dsldLM[[i]]$covarianceMatrix
       stdErr <- sqrt(diag(covMatrix))
       testStat <- coef / stdErr
       pValues <- 2 * (1 - pnorm(abs(testStat)))
