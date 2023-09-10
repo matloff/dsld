@@ -600,6 +600,12 @@ at V4.  If it's under 28, we immediately predict status DH, and so on.
 
 ![A decision tree](RpartVert.png){width=100%}
 
+The order in which variables are considered in building a tree is random
+for each tree.  So, while V6 is considered first in the tree displayed
+here, in some other tree it may be, say, V2.  The split points, e.g. 16
+in the root node in the picture, are through formulas that depend on the
+data in complex (though not terribly deep) ways.
+
 There is no "universally best" predictive algorithm, with performance of
 a given algorithm being dependent on the given dataset.  So, instead of
 doing a kNN analysis, we could try RF.
