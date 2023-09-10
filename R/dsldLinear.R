@@ -38,21 +38,30 @@ dsldCheckData <- function(data1, data2, yName) {
   }
   return(data2)
 }
+
+
 ### -------------------------- DSLD Linear -------------------------------------
 dsldLinear <- function (data, yName, sName, interactions = FALSE, 
-                        sComparisonPts = NULL, useSandwich = FALSE) 
-{
+                        sComparisonPts = NULL, useSandwich = FALSE) {
+
+  # execute params
   if (useSandwich) {
     library(sandwich)
   }
+
+  # setup
   dsldModel <- list()
+
+  # branch on interactions
   if (interactions) {
+    # generate interactions data if not provided / stop if erroneous
     if (is.null(sComparisonPts)) {
-      sComparisonPts = dsldGetRow5(data,yName, sName)
+      sComparisonPts <- dsldGetRow5(data,yName, sName)
     } else if (!is.data.frame(sComparisonPts)) {
       stop(paste("Error: sComparisonPts must be a dataframe"))
     } 
     
+    # setup interactions data
     tempData <- data[, !(names(data) %in% sName)]
     newData <- dsldCheckData(tempData, sComparisonPts, yName)
     dataSplit <- split(data, data[[sName]])
@@ -63,41 +72,85 @@ dsldLinear <- function (data, yName, sName, interactions = FALSE,
       diffData <- dataSplit[[name]]
       drop <- c(sName)
       diffData <- diffData[, !(names(diffData) %in% drop)]
-      diffModel <- lm(formula = as.formula(paste(yName, 
-                                                 "~ .")), data = diffData)
+      diffModel <- lm(
+        formula = as.formula(paste(yName, "~ .")),
+        data = diffData
+      )
+
+      # sandwich branch for covariance matrix
       if (useSandwich) {
         covMatrix <- sandwich(diffModel)
-      }
-      else {
+      } else {
         covMatrix <- vcov(diffModel)
       }
-      dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel),
-                         list(newData), list(summary(diffModel)), list(coef(diffModel)),
-                         list(covMatrix), list(diffData))
-      names(dsldDiffModel) <- c("yName", "sName", "model",
-                                "newData", "summary", "coef", "covarianceMatrix",
-                                "data")
+
+      # generate diff model s3 object with attributes & names
+      dsldDiffModel <- c(
+        dsldDiffModel,
+        yName,
+        sName,
+        list(diffModel),
+        list(newData),
+        list(summary(diffModel)),
+        list(coef(diffModel)),
+        list(covMatrix),
+        list(diffData)
+      )
+      names(dsldDiffModel) <- c(
+        "yName",
+        "sName",
+        "model",
+        "newData",
+        "summary",
+        "coef",
+        "covarianceMatrix",
+        "data"
+      )
       class(dsldDiffModel) <- "dsldDiffModel"
+
+      # add diff model to dsldLM object
       dsldModel[[name]] <- dsldDiffModel
     }
-  }
-  else {
+  } else {
+    # setup diff model object
     dsldDiffModel <- list()
-    diffModel <- lm(formula = as.formula(paste(yName, "~ .")),
-                    data = data)
+    diffModel <- lm(
+      formula = as.formula(paste(yName, "~ .")),
+      data = data
+    )
+
+    # branch covariance matrix on sandwich
     if (useSandwich) {
       covMatrix <- sandwich(diffModel)
-    }
-    else {
+    } else {
       covMatrix <- vcov(diffModel)
     }
-    dsldDiffModel <- c(dsldDiffModel, yName, sName, list(diffModel),
-                       list(summary(diffModel)), list(coef(diffModel)),
-                       list(covMatrix), list(data))
-    names(dsldDiffModel) <- c("yName", "sName", "model",
-                              "summary", "coef", "covarianceMatrix", "data")
+    
+    # generate diff model s3 object with attributes & names
+    dsldDiffModel <- c(dsldDiffModel,
+      yName,
+      sName,
+      list(diffModel),
+      list(summary(diffModel)),
+      list(coef(diffModel)),
+      list(covMatrix),
+      list(data)
+    )
+    names(dsldDiffModel) <- c(
+      "yName",
+      "sName",
+      "model",
+      "summary",
+      "coef",
+      "covarianceMatrix",
+      "data"
+    )
+
+    # add diff model to dsldLM object
     dsldModel[[sName]] <- dsldDiffModel
   }
+
+  # finalize dsldLM s3 object & return
   class(dsldModel) <- "dsldLM"
   return(dsldModel)
 }
