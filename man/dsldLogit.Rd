@@ -29,14 +29,10 @@ dsldDiffSLog(dsldGLM, newData) 	# compare P (Y = 1|X) for additional data in the
     \item{sName}{
         a string, the sensitive variable (an R factor) [character]
     }
-    \item{interactions}{
-        a logical value indicating whether or not to fit interactions with the
-        sensitive variable. Defaults to FALSE [logical]
-    }
     \item{sComparisonPts}{
-        dataframe of new cases for which P(Y = 1| X) will be compared between
-        each pairs of S levels. Defaults to NULL for the no-interactions case
-        [dataframe]
+        dataframe of new cases (minus Y,S) for which P(Y = 1| X) 
+        will be compared between each pairs of S levels; defaults to NULL for 
+        the no-interactions case [dataframe]
     }
     \item{yesYVal}{
         Y value to be considered "yes," to be coded 1 rather than 0.[character]
