@@ -5,7 +5,7 @@ dsldGetRow5 <- function(data, yName, sName) {
   reducedData <- data[rows, ]
   columns <- c(yName, sName)
   newDat <- reducedData[, !(names(reducedData) %in% columns)]
-  result = sprintf("No user sComparisonPts supplied. The following rows are selected: %s,%s,%s,%s,%s", rows[1],rows[2],rows[3],rows[4],rows[5]); print(result)
+  result <- sprintf("No user sComparisonPts supplied. The following rows are selected: %s,%s,%s,%s,%s", rows[1],rows[2],rows[3],rows[4],rows[5]); print(result)
   return(newDat)
 }
 
