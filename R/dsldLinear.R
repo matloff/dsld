@@ -1,5 +1,6 @@
 ### --------------------------- dsldGetRow5 ------------------------------------
 dsldGetRow5 <- function(data, yName, sName) {
+  ## The function creates sComparisonPts with 5 random rows
   rows <- sample(nrow(data), 5)
   reducedData <- data[rows, ]
   columns <- c(yName, sName)
