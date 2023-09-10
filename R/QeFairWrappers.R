@@ -11,20 +11,21 @@
 # ...           - additional parameters that are passed into the qeFUNC
 #
 qeFairBase <- function(qeFUNC, data, appendedItems, ...) {
-  
+  # extract important variables
   yName <- appendedItems$yName
   sNames <- appendedItems$sNames
   scaling <- appendedItems$scaling
-  
+  # scale data / expand factors
   scaledData <- fairScale(data, yName, sNames, scaling)
   
   base <- qeFUNC(scaledData, yName, ...)
   
+  # construct model
   model <- list(base=base)
+  # append from base model + appendedItems
   model <- append(model, base[names(base) %in% 
                 c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")])
   model <- append(model, appendedItems)
-  
   model$scalePars <- attr(scaledData, 'scalePars')
   
   # add s correlation calculation
