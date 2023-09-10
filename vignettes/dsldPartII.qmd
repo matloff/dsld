@@ -316,13 +316,24 @@ newx <- cmp[1,-(7:8)]  # just X and O, not Y and S
 
 ## **dsldQeFairRF**
 
+This function fits an RF model, but with deweighting of the proxies.
+
 ```{r}
 z <- dsldQeFairRF(cmp,'two_year_recid','race',
    list(age=0.2,priors_count=0.1),yesYVal='Yes')
-z
+z$corrs
 predict(z,newx)
 ```
 
+Recall that in RFs, each tree will use a different random ordering of
+the X and O variables.  At any given node in a tree, a variable is
+chosen at random to set up a possible split point.  But here we are
+specifying that the age and priors count variables be used only 20% and
+10% as often as other variables, in order to reduce their impact.
+
+Yet the S-Correlation valuea are still substantial.  We need to give
+the O variables even smaller weights or possibly include additional
+variables in our O set.
 
 ## Approaches Deployed in DSLD
 While there exists a plethora of methods for ensuring a fair machine learning 
