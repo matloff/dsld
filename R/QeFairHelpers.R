@@ -1,30 +1,42 @@
 # called data2 in the edffair package. 
 # factor types are split into binary columns for each level
 # sNames is removed. all but yName may be scaled
-fairScale <- function(data, yName, sNames, scaling=FALSE, scalePars=NULL) {
+fairScale <- function(data, yName, sNames, scaling=FALSE) {
   predictors <- data[,!colnames(data) %in% c(sNames, yName)]
   response <- data[,yName]
   
   # expand factors
   predictors <- regtools::factorsToDummies(predictors)
   if (scaling) { # if user chooses to scale the data,
-    if (is.null(scalePars)) { # default scaling
-      predictors <- scale(predictors)
-      # save scalePars in order to rescale newx in predict function
-      scalePars <- list(
-        center=attr(predictors,'scaled:center'),
-        scale=attr(predictors,'scaled:scale')
-      )
-    } else {
-      # called from predict, with scaledPars
-      predictors <- scale(predictors, scalePars$center, scalePars$scale)
-    }
+    predictors <- scale(predictors)
+    # save scalePars in order to rescale newx in predict function
+    scalePars <- list(
+      center=attr(predictors,'scaled:center'),
+      scale=attr(predictors,'scaled:scale')
+    )
   }
+  # put it back together
   data <- cbind(data.frame(predictors), response)
   colnames(data)[ncol(data)] <- yName
   
-  attr(data, 'scalePars') <- scalePars
+  if (scaling) attr(data, 'scalePars') <- scalePars
   data
+}
+
+scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
+  newx <- regtools::factorsToDummies(newx)
+  
+  center <- TRUE; scale <- TRUE
+  if (scaling) { # if user chooses to scale the data,
+    if (!is.null(scalePars)) { # default scaling
+      center <- scalePars$center
+      scale <- scalePars$scale
+    }
+    # save scalePars in order to rescale newx in predict function
+    # called from predict, with scaledPars
+    newx <- scale(newx, center=center, scale=scale)
+  }
+  newx
 }
 
 # if one of the deweights is a factor, expand it into a dummy for all the qeFairs
@@ -32,7 +44,7 @@ expandDeweights <- function(deweightPars, row1) {
   pars <- list()
   for (item in names(deweightPars)) {
     if (is.factor(row1[,item])) {      # expand deweight if factor type
-      names <- names(factorToDummies(row1[,item], item)[1,])
+      names <- names(regtools::factorToDummies(row1[,item], item)[1,])
       expanded <- Map(\(x) deweightPars[[item]], names)
       pars <- append(pars, expanded)
     } else {                           # add deweight as usual
@@ -99,9 +111,9 @@ nonBinScorr <- function(preds, data, xNames, sName, holdout) {
 }
 
 # add holdout predictions and test accuracy to ridge regressions
-predictHoldoutFair <- function(model, test, train) {
+# test must not be scaled. train should be
+predictHoldoutFair <- function(model, test, train, data) {
   yName <- model$yName
-  data <- rbind(test, train)
   preds <- predict.dsldQeFair(model, test)
   predHold <- list(holdoutPreds=preds)
   if (model$classif) {

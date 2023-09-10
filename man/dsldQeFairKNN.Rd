@@ -52,7 +52,8 @@
 }
 
 \examples{  
-  knn <- dsld::dsldQeFairKNN(fairml::compas, "two_year_recid", "race")
+  knn <- dsld::dsldQeFairKNN(fairml::compas, "two_year_recid", "race", 
+              list(decile_score=.2), yesYVal = "Yes")
   predict(knn, fairml::compas[1,])
 }
         

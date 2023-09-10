@@ -54,7 +54,7 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL,
   
   # transfer these objects from the base model into objects in the main model
   model <- append(model, base[names(base) %in% 
-                  c("classif", "factorsInfo", "holdIdxs")])
+                  c("classif", "factorsInfo", "holdIdxs", "testAcc", "baseAcc")])
   # add these variables as objects of their own name to the model   
   model <- append(model, variablesAsList(
                   sNames, yName, deweightPars, scaling, scalePars))
@@ -94,7 +94,7 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
   # test and training sets to use in testAcc section
   if(!is.null(holdout)) {
     holdIdxs <- sample(1:nrow(scaledData),holdout);
-    test <- scaledData[holdIdxs,];
+    test <- data[holdIdxs,];
     train <- scaledData[-holdIdxs,];
   } else train <- scaledData
   
@@ -106,10 +106,10 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
     if (general) setdiff(levels(data[,yName]), yesYVal) else 0
   
   # formula described in edffair paper
-  temp <- setNames(rep(0, p), xNames)             # new row of 0s for each col
+  D <- setNames(rep(0, p), xNames)                # new row of 0s for each col
   if (!is.null(deweightPars))                     
-    temp[expandVars] <- sqrt(expandVals)          # set deweighted cols to sqrt of deweight
-  newx <- data.frame(diag(temp))                  # turn this vector into a diag matrix
+    D[expandVars] <- sqrt(expandVals)             # set deweighted cols to sqrt of deweight
+  newx <- data.frame(diag(D))                     # turn this vector into a diag matrix
   newxy <- cbind(newx, rep(blank, p))             # append a blank y column
   names(newxy) <- colnames(train)
   dataExtended <- rbind(train, newxy)             # append this to the bottom of the training data
@@ -128,7 +128,7 @@ qeFairRidgeBase <- function(general, data, yName, sNames, deweightPars,
   
   # add the test accuracy calculations
   if (!is.null(holdout)) {
-    model <- append(model, predictHoldoutFair(model, test, train))
+    model <- append(model, predictHoldoutFair(model, test, train, data))
   }
   
   # add s correlation calculation
@@ -161,10 +161,10 @@ predict.dsldQeFair <- function(model, newx) {
   sNames <- model$sNames
   scaling <- model$scaling
   scalePars <- model$scalePars
-  
+
+  newx <- newx[,!colnames(newx) %in% c(sNames, yName)]
   # rescale the data according to how the training data was scaled in the model
-  newx <- fairScale(newx, yName, sNames, scaling, scalePars)
-  newx <- newx[,!colnames(newx) %in% yName]
+  newx <- scaleNewX(newx, scaling, scalePars)
   
   suppressWarnings(predict(model$base, newx))
 }

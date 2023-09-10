@@ -54,7 +54,7 @@ dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
 }
 
 \examples{  
-  rf <- dsld::dsldQeFairRF(fairml::compas, "two_year_recid", "race")
+  rf <- dsld::dsldQeFairRF(fairml::compas, "two_year_recid", "race", list(decile_score=.3))
   predict(rf, fairml::compas[1,])
 }
         
