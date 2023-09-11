@@ -73,7 +73,10 @@ expandDeweights <- function(deweightPars, row1) {
 
 # ----------------- S Corr ------------------
 # calculates s correlation as described in EDF fair github but idk how it works
-sCorr <- function(model, data, yName, sNames) {
+#
+# xData     - data w/o the y column
+#
+sCorr <- function(model, xData, sNames) {
   # qeML functions have a lot of predict formats
   preds <- 
     if (is.list(model$holdoutPreds)) {
@@ -85,20 +88,19 @@ sCorr <- function(model, data, yName, sNames) {
     else
       model$holdoutPreds
   
-  xNames <- setdiff(colnames(data), c(yName))
   holdIdxs <- model$holdIdxs
   
   # add correlations per s level per s name one by one
   corrs <- NULL
   for (sName in sNames) {
-    sCol <- data[holdIdxs, sName]
+    sCol <- xData[holdIdxs, sName]
     if (is.factor(sCol)) { # classification case
       corrs <- 
         c(corrs, 
           if(length(levels(sCol)) == 2)
-            binaryScorr(preds, data, xNames, sName, holdIdxs)
+            binaryScorr(preds, xData, sName, holdIdxs)
           else
-            nonBinScorr(preds, data, xNames, sName, holdIdxs)
+            nonBinScorr(preds, xData, sName, holdIdxs)
           )
     } else { # non-classification case
       if (is.matrix(preds)) preds <- as.vector(preds)
@@ -111,26 +113,25 @@ sCorr <- function(model, data, yName, sNames) {
 } 
 
 # preds     - numeric vector of predictions the model made
-# data      - original data
-# xNames    - names of every column that isnt yName
+# xData     - data w/o the y column
 # sName     - one of the names of the sensitive column
 # holdIdxs  - the row numbers of the holdout set 
-binaryScorr <- function(preds, data, xNames, sName, holdIdxs) {
+binaryScorr <- function(preds, xData, sName, holdIdxs) {
   formula <- formula(paste(sName, '~.'))
-  model <- glm(formula, data[,xNames], family=binomial())
+  model <- glm(formula, xData, family=binomial())
   sProbs <- model$fitted.values[holdIdxs]
   cor <- cor(preds, sProbs)^2
   setNames(cor, sName)
 }
-nonBinScorr <- function(preds, data, xNames, sName, holdIdxs) {
-  model <- suppressWarnings(qeML::qeLogit(data[,xNames], sName, holdout=NULL))
+nonBinScorr <- function(preds, xData, sName, holdIdxs) {
+  model <- suppressWarnings(qeML::qeLogit(xData, sName, holdout=NULL))
   corrs <- NULL
   for (glmout in model$glmOuts) {
     sProbs <- glmout$fitted.values[holdIdxs]
     cor <- cor(preds, sProbs)^2
     corrs <- c(corrs, cor)
   }
-  setNames(corrs, levels(data[,sName])) 
+  setNames(corrs, levels(xData[,sName])) 
 }
 
 # ------------------ Predict Holdout Fair -----------------------
@@ -140,14 +141,15 @@ nonBinScorr <- function(preds, data, xNames, sName, holdIdxs) {
 # model - model to make predictions with
 # test  - data set to train the data on. must not be scaled
 # train - the data set the model was trained on. 
-# data  - original data set
-predictHoldoutFair <- function(model, test, train, data) {
+#
+predictHoldoutFair <- function(model, test, train) {
   yName <- model$yName
   preds <- predict.dsldQeFair(model, test)
+  yCol <- c(test[,yName], train[,yName])
   predHold <- list(holdoutPreds=preds)
   if (model$classif) {
     predHold$testAcc <- mean(preds$predClasses != test[, yName])
-    predHold$baseAcc <- 1 - max(table(data[,yName])) / nrow(data)
+    predHold$baseAcc <- 1 - max(table(yCol)) / length(yCol)
   } else {
     predHold$testAcc <- mean(abs(preds - test[,yName]))
     predHold$baseAcc <-  mean(abs(test[,yName] - mean(train[,yName])))
