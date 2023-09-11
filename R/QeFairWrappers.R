@@ -93,8 +93,6 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
   
   # expanded deweight pars
   expandDW <- expandDeweights(deweightPars, data[1,])
-  expandVars <- names(expandDW)
-  expandVals <- unlist(expandDW)
   
   # test and training sets to use in testAcc section
   if (!is.null(holdout)){
@@ -103,21 +101,11 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
     train <- scaledData[-holdIdxs,];
   } else train <- scaledData
   
-  xNames <- colnames(train[,-ncol(train)])
-  p <- ncol(train) - 1   # common length for how many predictors there are
-  n <- nrow(train)       # common length for how many rows in the data
-  
   # in linear case: 0- in nonlinear: the no value
   blank <- if (linear) 0 else setdiff(levels(data[,yName]), yesYVal) 
   
-  # formula described in edffair paper
-  D <- setNames(rep(0, p), xNames)                                        # new row of 0s for each col
-  if (!is.null(deweightPars))                     
-    D[expandVars] <- sqrt(expandVals)                                     # set deweighted cols to sqrt of deweight
-  newx <- data.frame(diag(D))                                             # turn this vector into a diag matrix
-  newxy <- cbind(newx, rep(blank, p))                                     # append a blank y column
-  names(newxy) <- colnames(train)
-  dataExtended <- rbind(train, newxy)                                     # append this to the bottom of the training data
+  # perform formula described in edffair paper
+  dataExtended <- ridgeModify(train, expandDW, blank)
   
   base <- 
     if (linear) 
@@ -145,6 +133,33 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
 
   class(model) <- c("dsldQeFair")
   model
+}
+
+# modify the training data as described in the edf fair paper
+# 
+# train    - expanded factor + scaled training data
+# expandDW - expanded factor deweights
+# blank    - value to append to the y column to expand it. 0 in the linear case
+#            the no value in the general case
+#
+ridgeModify <- function(train, expandDW, blank=0) {
+  expandVars <- names(expandDW)
+  expandVals <- unlist(expandDW)
+  
+  xNames <- colnames(train[,-ncol(train)])
+  p <- ncol(train) - 1   # common length for how many predictors there are
+  n <- nrow(train)       # common length for how many rows in the data
+  
+  # formula described in edffair paper
+  D <- setNames(rep(0, p), xNames)                                        # new row of 0s for each col
+  if (length(expandDW))                     
+    D[expandVars] <- sqrt(expandVals)                                     # set deweighted cols to sqrt of deweight
+  newx <- data.frame(diag(D))                                             # turn this vector into a diag matrix
+  newxy <- cbind(newx, rep(blank, p))                                     # append a blank y column
+  names(newxy) <- colnames(train)
+  dataExtended <- rbind(train, newxy)                                     # append this to the bottom of the training data
+  
+  dataExtended
 }
 
 dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL, 
