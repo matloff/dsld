@@ -1,10 +1,10 @@
 
-# Part I:  Adjustment for Confounders 
+# Part I:  Adjustment for Confounders   
 
 How do we adjust for confounders?  The most common approach involves
 [There will also be the question of *which* possible confounders to use.
 ]{.column-margin} linear models, with which we express the mean Y for
-given values of the X, C and S variables in a linear form.   
+given values of the X, C and S variables in a linear form.  
 
 ::: {.callout-note}
 ### Important term: the *regression function*
@@ -569,10 +569,11 @@ training set.  In order to obtain consistent results each time this book
 is processed by Quarto, we've called R's **set.seed** function.
 
 It's important to keep in mind that the output here is not simply for 5
-persons; each row represents a subpopulation.  Thus for instance we
-estimate among *all* Silicon Valley techies of age 37.4, with a
-Bachelor's degree or less, in occupation 101, and having worked 52
-weeks, women average wage is 48,914 and for men it's 61,156.
+persons; each row represents a subpopulation.  Thus for instance in that
+first row of output, we estimate among *all* Silicon Valley techies of
+age 37.4, with a Bachelor's degree or less, in occupation 101, and
+having worked 52 weeks, women's average wage is 48,914 and for men it's
+61,156.
 
 As before, we see a substantial gender wage gap, but now we can feel
 more confident about it, since this analysis is unencumbered by
@@ -618,6 +619,16 @@ print(w)
 ```
 
 The results here are rather different from what we obtained with kNN.   
+
+### Other ML methods
+
+The most famous class of ML these days is of course *neural networks*,
+especially the refined version *deep learning*.  These have been found
+highly useful in image recognition and language processing.
+
+The ML people refer to the types of data we see in this book, where each
+row represents, say, one person, as *tabular* data, and their go-to
+method for such data is *gradient boosting*.
 
 ## Example:  The Law School Admissions dataset {#law-school}
 
