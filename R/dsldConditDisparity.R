@@ -1,8 +1,8 @@
 
-dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
-                                minS=50, yLim=NULL, useLoess=TRUE)
-{
-    # args checking #
+dsldConditDisparity <- function(data, yName, sName, xName, condits,
+                                qeFtn = qeKNN, minS = 50, yLim = NULL,
+                                useLoess = TRUE) {
+    # args type checking#
     if (!is.data.frame(data)) {
         stop("data must be a dataframe.")
     }
@@ -30,10 +30,10 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
     # restrict data to fit conditions
     if (length(condits) > 1) {
         # combine conditions
-        condits <- paste(condits, collapse=' & ')
+        condits <- paste(condits, collapse = ' & ')
     }
     restrictions <- sprintf('focusedData <- subset(data, %s)', condits)
-    eval(parse(text=restrictions))
+    eval(parse(text = restrictions))
 
     # won't use the restricting variables anymore
     focusedData <- focusedData[c(yName, xName, sName)]
@@ -45,9 +45,9 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
     sizes <- sapply(groupByS, nrow)
     tiny <- which(sizes < minS)
 
+    # remove too small groups
     if (length(tiny) > 0)
     {
-        # remove too small groups
         groupByS <- groupByS[-tiny]
     }
 
@@ -59,7 +59,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
     colors <- colorRampPalette(c("blue", "red"))(remainingS)
 
     # plot each sensitive var wrt x
-    for (i in 1:remainingS) { 
+    for (i in 1:remainingS) {
         # setup data for training
         curData <- groupByS[[i]][,-sCol]                    # data for current s-level w/o sensitive column
         curXData <- unique(curData[[xName]])                # data for only the numeric x column
@@ -88,29 +88,29 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits, qeFtn=qeKNN,
         if (i == 1) {
             # create plot
             plot(
-                curXData, 
-                preds, 
-                type='l', 
-                lty='solid', 
-                ylim=yLim, 
-                col=colors[i],
-                xlab=xName, 
-                ylab=yName, 
-                main=paste("Underlying Effects of ", sName, " on ", yName, " wrt ", xName)
+                curXData,
+                preds,
+                type = "l",
+                lty = "solid",
+                ylim = yLim,
+                col = colors[i],
+                xlab = xName,
+                ylab = yName,
+                main = paste("Underlying Effects of ", sName, " on ", yName, " wrt ", xName)
             )
 
             # create legend
             legend(
-                x = "bottomright", 
-                lty = c(4,6), 
-                text.font=4, 
-                col=colors,
-                text.col="black",
-                legend=sLevels
+                x = "bottomright",
+                lty = c(4,6),
+                text.font = 4,
+                col = colors,
+                text.col = "black",
+                legend = sLevels
             )
         } else {
             # plot points
-            points(curXData, preds, type='l', lty='solid', col=colors[i])
+            points(curXData, preds, type = "l", lty = "solid", col = colors[i])
         }
     }
 }
