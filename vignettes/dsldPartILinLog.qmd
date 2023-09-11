@@ -514,7 +514,7 @@ case, the regression function is modeled as linear, "S curve-shaped" and
 so on, that can be described with just a few quantities.
 
 But these models make assumptions, such as assuming the regression
-function is approximately linear.  It would also be nice to conduct
+function is approximately linear.  It would be nice to conduct
 analyses that don't rely on such assumptions.
 
 *Machine learning* (ML) algorithms typically do not assume the regression
@@ -627,8 +627,12 @@ especially the refined version *deep learning*.  These have been found
 highly useful in image recognition and language processing.
 
 The ML people refer to the types of data we see in this book, where each
-row represents, say, one person, as *tabular* data, and their go-to
-method for such data is *gradient boosting*.
+row represents, say, one person, as *tabular* data.  Their go-to
+method for such data is *gradient boosting* (GB), more specifically XGBoost,
+accessible in **qeML** via **qeXGBoost**.  GB is again a tree-based
+method, but it works by starting with a primitive tree and repeatedly
+refining it.
+
 
 ## Example:  The Law School Admissions dataset {#law-school}
 
