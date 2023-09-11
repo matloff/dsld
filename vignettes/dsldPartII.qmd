@@ -69,21 +69,25 @@ dsldOHunting(cmp,'two_year_recid','race')
 ```
 
 The function **dsldOHunting** calculates the correlations between S and
+[It should be kept in mind that, as with any statistic, all utility and
+fairness measures are subject to sampling variation.  Better precision
+may be attained via the *bootstrap*; see @sec-boot.]{.column-margin}
 all possible candidate O variables.  The output here  suggests possibly
 using, say, the **age** and **priors_count** variables as proxies.
 
-The function does not use the classic *Pearson product moment*1 [Tau is
-defined in terms of *concordances* and *discordances*.  Say we look at
-height and weight, and compare two people. If one of the people is both
-taller and heavier than the other, that is a concordance.  If on the
-other hand, one is shorter but heavier than the other, that is a
-discordance.  We consider all possible pairs of people in our dataset,
-then sets tau to the difference in concordance and discordance counts,
-divided by the number of pairs.]{.column-margin} correlation here,
-opting instead for *Kendall's tau* correlation.  Both are widely-used,
-and both take on values in [-1,], but while Pearson is geared toward
-continuous numeric variables, Kendall is also usable for binary or
-ordinal integer-valued variables.
+The function does not use the classic *Pearson product moment*
+correlation here, opting instead for *Kendall's tau* correlation.  Both
+are widely-used, and both take on values in [-1,], but while Pearson is
+geared toward continuous numeric variables, Kendall is also usable for
+[Tau is defined in terms of
+*concordances* and *discordances*.  Say we look at height and weight,
+and compare two people. If one of the people is both taller and heavier
+than the other, that is a concordance.  If on the other hand, one is
+shorter but heavier than the other, that is a discordance.  We consider
+all possible pairs of people in our dataset, then sets tau to the
+difference in concordance and discordance counts, divided by the number
+of pairs.]{.column-margin} 
+binary or ordinal integer-valued variables.  
 
 ## Measuring utility
 
@@ -354,6 +358,66 @@ specifying that the age and priors count variables be used only 20% and
 Yet the S-Correlation valuea are still substantial.  We need to give
 the O variables even smaller weights or possibly include additional
 variables in our O set.
+
+## **dsldQeFairKNN**
+
+Remember, the common theme here is reducing the role played in
+prediction by the proxies O.  How might this be done with k-NN?
+
+An easy answer is to weight the distance metric.  Ordinarily, if we move
+3.2 meters to the right and then 1.1 meters forward, the distance
+between our new point and our original one is
+
+$\sqrt{3.2^2+1.1^2} = 3.38$
+
+That puts equal weight in the left-right direction and the forward-back
+direction, which makes sense for geometric distance.  But in data
+prediction, we can use different weights.  In prediction wage income in
+the Census data, say, we can place large weight on age and occupation,
+and less weight on education.  The above call would change to:
+
+```{r,eval=FALSE}
+z <- dsldQeFairKNN(cmp,'two_year_recid','race',
+   list(age=0.2,priors_count=0.1),yesYVal='Yes')
+z$corrs
+predict(z,newx)
+```
+
+## Remedies based on "shrunken" linear models
+
+One of the most striking advances in modern statistics was the discovery
+that classical estimators tend to be  "too big," and that one may
+improve accuracy by "shrinking" them.  The details involve matrix
+algebra, but here is the intuition:
+
+Consider the example in @sec-compas.  The vector of estimated regression
+coefficients was 
+
+(12.46,-0.94,0.39,0.16,...)
+
+We might (crudely) shrink this vector by multiplying by a factor of,
+say, 0.5, yielding
+
+(6.23,-0.47,0.20,0.08,...)
+
+The actual shrinkage mechanisms used in the regression context are much
+more complex than simply multiplying every component of the vector by
+the same constant, but this is the basic principle.
+
+Why might this odd action be helpful?  Shrinking introduces a bias, but
+reduces variance (roughly speaking, smaller variables vary less).  If
+outliers (extreme values, not errors) are common in the data, these
+result in large estimator variance, possibly so much that it overwhelms
+our increase in bias.
+
+Some readers may have heard of *ridge regression* and the *LASSO*, both
+of which impose shrinkage.  For our fair ML context, though we wish to
+perform our shrinkage focusing on *only some* of the estimated regression
+coefficients, specifically those corresponding to our proxies.  To be
+sure, it should be noted that non-proxy coefficients are affected too.
+
+Note that these estimators also have the potential ancillary benefit
+obtained from shrinkage in general, i.e. better utility.
 
 
 ### Nonconvex Optimization with Fairness Constraints

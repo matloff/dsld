@@ -140,7 +140,7 @@ DAGs can indeed lead to valuable insight, but can be misleading as well.
 A healthy skepticism and a solid understanding of the concepts are
 mandatory for avoiding misleading or invalid results. 
 
-## Appendix C: Standard Errors via the Bootstrap
+## Appendix C: Standard Errors via the Bootstrap {#sec-boot}
 
 ## Appendix D: Installing the Software
 

@@ -838,7 +838,7 @@ view of many, no value at all, on significance testing.
 
 :::
 
-## Example: COMPAS dataset
+## Example: COMPAS dataset {#sec-compas}
 
 Recall that COMPAS is a tool developed to help judges decide on
 sentences in criminal trials, which it does by predicting whether the
