@@ -1,6 +1,4 @@
 
-\setcounter{section}{0}
-\renewcommand{\thesection}{\Alph{section}}
 
 # Appendices {.appendix}
 
