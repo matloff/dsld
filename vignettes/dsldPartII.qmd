@@ -387,8 +387,7 @@ predict(z,newx)
 
 One of the most striking advances in modern statistics was the discovery
 that classical estimators tend to be  "too big," and that one may
-improve accuracy by "shrinking" them.  The details involve matrix
-algebra, but here is the intuition:
+improve accuracy by "shrinking" them.  Here is the intuition:
 
 Consider the example in @sec-compas.  The vector of estimated regression
 coefficients was 
@@ -407,251 +406,37 @@ the same constant, but this is the basic principle.
 Why might this odd action be helpful?  Shrinking introduces a bias, but
 reduces variance (roughly speaking, smaller variables vary less).  If
 outliers (extreme values, not errors) are common in the data, these
-result in large estimator variance, possibly so much that it overwhelms
-our increase in bias.
+result in large estimator variance, possibly so much that shrinkage's
+reduction in variance overwhelms our increase in bias.
 
 Some readers may have heard of *ridge regression* and the *LASSO*, both
 of which impose shrinkage.  For our fair ML context, though we wish to
 perform our shrinkage focusing on *only some* of the estimated regression
 coefficients, specifically those corresponding to our proxies.  To be
-sure, it should be noted that non-proxy coefficients are affected too.
+sure, it should be noted that non-proxy coefficients are affected too,
+but the main effects will be on the proxies.
 
 Note that these estimators also have the potential ancillary benefit
 obtained from shrinkage in general, i.e. better utility.
 
+### The **dsldFgrrm** function
 
-### Nonconvex Optimization with Fairness Constraints
-As introduced by Komiyama et al. in 2018, this approach to fair machine 
-learning defines a framework that **(1)** allows users to set a level of 
-fairness to provably optimize accuracy for, **(2)** allows for numeric 
-sensitive features, and **(3)** accomodates multiple sensitive features 
-concurrently.
+This is a wrapper to a corresponding function in the **fairml** package,
+based on [a
+paper](https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf)
+by the authors of the package.
 
-The authors of this approach primarily focused on two methods for gauging 
-fairness: **demographic parity** and **s-correlation**. While we'll go more 
-into detail later about these metrics, it's important to note that the latter 
-metric motivates a part of their approach. Briefly put, s-correlation measures 
-the relationship between the sensitive feature (often referred as $S$) and the 
-predicted outcomes (often referred as $Y$).
+Let's see what it does with the COMPAS data:
 
-Komiyama et al.'s approach works as such:
-
-The first step in their process is segmenting out the proxies (features that 
-are influenced by the sensitive feature; occupation, for example, is often a 
-proxy for gender) and any other information in the dataset that has strong 
-ties to this sensitive feature. What we can effectively do is rewrite $X$, the 
-full dataset, as a combination of parts explainable by the sensitive feature 
-(proxies, etc.) and the residuals that the sensitive feature cannot explain. 
-How this is done is not entirely relevant to understanding the algorithm, but 
-Komiyama essentially predicts $X$ from $S$ to find the residuals $U$. With 
-a small proof, this can be determined to have 0 covariance (that is, similar 
-behavior) with respect to the sensitive feature[Note: theoretically speaking, 
-this is only proved to be as the number of samples in the dataset approaches 
-infinity. In all practical applications, however, the covariance is so small 
-it's practically zero; a negligible difference.]{.column-margin}.
-
-What does this all mean? We've essentially managed to extract the data from 
-$X$ that is completely distinct from the sensitive feature. So why not use 
-this to predict? In most cases where fair machine learning is necessary, the 
-response variable $Y$ normally has a strong relationship with $S$. By removing 
-essentially all the information $S$ provides from the dataset, its effectively 
-stripped of the majority of its predictive power. The practical implementation 
-of these residuals, therefore, is to combine it with the $S$ data in a limited 
-capacity. In other words, what's being done is splitting $X$ into its fair and 
-unfair datapoints,[Note: by datapoints, it's not necessarily referring to 
-distinct entries, but rather a decomposition of the same datapoint into a part 
-contributed by the sensitive feature and a part contributed by the other 
-features]{.column-margin} and then reintroducing the unfair portion to a 
-user-defined level of fairness.
-
-Ultimately, all users of Komiyama's approach need to understand is that it can 
-provably optimize for a given level of fairness. The research Komiyama et al. 
-have done have motivated further improvements on this class of 
-fairness-constrained modeling with machine learning, some which will be 
-introduced below.
-
-::: {.callout-note}
-Komiyama et al.'s functions are implemented under the fairML package as 
-`nclm`, a linear-regressive model. In dsld, this is implemented as `dsldNclm`.
-:::
-
-
-
-## Testing
-
-We are (purely hypothetically) investigating racial bias in the **COMPAS** data with 
-regards to recidivism. We are trying to predict two_year_recid (which is a 
-classification setting), with race as our sensitive variable. Since this is a 
-classification setting, the only utility metric we can use (out of the above listings) 
-for this scenario is Test Accuracy (misclassification error). For each fairness metric, 
-we will try to find the best balance between fairness and utility using an approach 
-implemented in the models from this package.
-
-[Based on results from **dsldConfounders**]{.column-margin}We will consider decile_score 
-and priors_count to be the proxies to our sensitive variable (race).
-
-We will look at the Random Forests model using **dsldQeFairRF**. This 
-function uses the *explicitly deweighted features* strategy, so by 
-adjusting the deweight values for proxies, we should be able to adjust fairness and 
-utility.
-
-That approach used in this model to minimize fairness is *Explicitly Deweighted Features*, 
-so we will present the two extreme cases (deweighting and not deweighting) and determine 
-the fairness and utility for each based on the selected metrics. The trends in fairness 
-vs utility can help inform the user's decision of where the best balance is (at the end of 
-the day, there is no definitive balance between fairness and utility).
-
-### Testing: S Correlation
-
-**DSLD** has a **dsldFairTest** function that allows us to invoke a test function
-on different models. For **dsldQeFairRF**, we can simply call the *corrsens* attribute
-to get the S Correlations of the model with and without the deweighted features.
-
-```{r, eval = FALSE}
-# set up base variables
-data <- fairml::compas
-yName <- 'two_year_recid'
-sName <- 'race'
-
-############## S Correlation ##############
-# The dsldQeFairRF model has a corrsens attribute that contains the 
-# S Correlations of all the levels
-scorr <- function (model) model$corrsens
-
-# No deweights
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 20)
-# Results
-                          Metric Misclass Error
-race.African-American 0.30380005      0.2164294
-race.Caucasian        0.20623475            NaN
-race.Hispanic         0.27411083            NaN
-race.Other            0.20974439            NaN
-race.Asian            0.19859936            NaN
-race.Native American  0.04276491            NaN
-
-# Deweight decile_score and priors_count
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, scorr, nReps = 20, 
-            deweightPars = list(decile_score=0, priors_count=0))
-# Results
-                          Metric Misclass Error
-race.African-American 0.21539335      0.2234055
-race.Caucasian        0.15130625            NaN
-race.Hispanic         0.19563113            NaN
-race.Other            0.13279856            NaN
-race.Asian            0.16259914            NaN
-race.Native American  0.01459168            NaN
+```{r}
+dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.1,family='binomial')
+dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.01,family='binomial')
 ```
 
-Recall that the closer the Misclassification Error is to 0, the higher the utility.
-The closer the S Correlation is to 0, the higher the fairness.
+The **unfairness** argument is a number in (0,1].  The smaller the
+value, the fairer the fit.  The first value, 0.1, gave an estimate
+coefficient for Caucasian of -0.73, while using 0.01 reduced this to
+-0.15.  (Note that the base for the dummy variables is apparently
+African-American.]  But both values are small relative some of the other
+coefficients.
 
-This example demonstrates the tradeoff between utility and fairness: when we 
-deweight the Race proxies, our utility also **decreases** (since the 
-misclassification error increases). On the other hand, S Correlation decreases, 
-which indicates that fairness is **increasing** since we are trying to increase 
-fairness by reducing the impact of S proxies.
-
-### Testing: Demographic Parity
-
-The **dsldFairTest** function really shines with the **fairness** package, which
-has several functions for several fairness metrics, including demographic
-parity. Its important to note that the demographic parity we described earlier is 
-labeled *prop_parity* under the fairness package.
-
-```{r, eval = FALSE}
-# No deweights
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 20)
-# Results
-                 Proportion Proportional Parity Group size Misclass Error
-African-American  0.5154766           1.0000000     884.20      0.2146071
-Caucasian         0.3565180           0.6917514     613.95            NaN
-Hispanic          0.3132897           0.6082632     149.60            NaN
-Other             0.3070574           0.5951850      94.95            NaN
-Asian             0.2225316           0.4324312       8.95            NaN
-Native American   0.3816667           0.7379000       4.35            NaN
-
-# Deweight decile_score and priors_count
-dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::prop_parity, nReps = 20, 
-            deweightPars = list(decile_score=0, priors_count=0))
-# Results            
-                 Proportion Proportional Parity Group size Misclass Error
-African-American  0.5030514           1.0000000     874.70      0.2218964
-Caucasian         0.3800740           0.7556834     624.20            NaN
-Hispanic          0.3328865           0.6624944     149.85            NaN
-Other             0.2912062           0.5796095      94.10            NaN
-Asian             0.2225991           0.4391436       9.10            NaN
-Native American   0.3657143           0.7320974       4.05            NaN
-```
-
-For fairness, we are concerned with the Proportional Parity column--the closer its 
-values are to 1, the higher the fairness.
-
-We see a similar set of results to our S Correlation testing: in the transition from 
-deweight values = 1 to deweight values = 0, we see that the utility is **decreasing** 
-since the misclassification error is decreasing. For our demographic parity results, 
-the distance from 1 is smaller at the deweight 
-value of 0, so deweighting proxies is **increasing** our fairness according to 
-demographic parity.
-
-[The way the fairness package calculates the proportional parity column is by
-finding a factor that sets the proportion of the first level (African-Americans
-in this case) to 1.0, and scales the rest of the levels by that factor.]{.column-margin}
-
-::: {.callout-note}
-##### Randomness in Misclassification Error
-You might have noticed that the results for Native-American and Asian groups seem 
-to contradict the overall trends we are analyzing. This could be due to the small 
-sample sizes in this dataset for Native-American and Asian sub-groups (14 and 28 
-respectively, compared to 2941 for African-American). Due to the small sample size, 
-we will be ignoring the results for these sub-groups in our analyses.
-:::
-
-### Testing: Equalized Odds
-
-Similar to our approach for measuring demographic parity, we will make use of the 
-*equal_odds* label with the **fairness** package to determine the equalized odds.
-
-```{r, eval = FALSE}
-# No deweights
-dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, nReps = 20)
-# Results
-                 Sensitivity Equalized odds Group size Misclass Error
-African-American   0.7655988      1.0000000     876.75      0.2140661
-Caucasian          0.6917817      0.9040189     618.20            NaN
-Hispanic           0.6500930      0.8495973     151.80            NaN
-Other              0.6981959      0.9116227      96.00            NaN
-Asian              0.8888889      1.1648472       9.25            NaN
-Native American    0.6491228      0.8461428       4.00            NaN
-
-# Deweight decile_score and priors_count
-dsld::dsldFairTest(data, yName, sName, dsld::dsldQeFairRF, fairness::equal_odds, nReps = 20, 
-                  deweightPars = list(decile_score=0, priors_count=0))
-# Results
-                 Sensitivity Equalized odds Group size Misclass Error
-African-American   0.7444010      1.0000000     882.70      0.2251708
-Caucasian          0.6882518      0.9252327     612.80            NaN
-Hispanic           0.6654964      0.8942501     152.80            NaN
-Other              0.6960300      0.9345101      94.85            NaN
-Asian              0.8333333      1.1208604       8.85            NaN
-Native American    0.5601852      0.7530386       4.00            NaN
-```
-
-For fairness, we are concerned with the Equalized Odds column--the closer its 
-values are to 1, the higher the fairness.
-
-Similar to demographic parity, we can see a trend where the fairness is 
-**increased** at a deweight value of 0, while our utility **decreases** as 
-missclassification error increases.
-
-Overall, the different fairness metrics show us that deweighting the proxies 
-to the sensitive variable will help to **increase fairness at the cost of utility**.
-
-
-<!-- TODO: If ALL of the above todo's have been addressed, we can expand the testing/conceptual 
-sections with any of the following options, in a rough top-down order of priority:
-- More fairness metrics
-- More models (besides qeFairRF)*
-- * ^ This will likely require a new COMPAS example with a continuous Y name as opposed to
-      the binary two_year_recid
-- More utility metrics
--->
