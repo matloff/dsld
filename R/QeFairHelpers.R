@@ -10,7 +10,7 @@ fairScale <- function(data, yName, sNames, scaling=FALSE) {
   response <- data[,yName]
   
   # expand factors
-  predictors <- regtools::factorsToDummies(predictors)
+  predictors <- regtools::factorsToDummies(predictors, omitLast = TRUE)
   if (scaling) { # if user chooses to scale the data,
     predictors <- scale(predictors)
     # save scalePars in order to rescale newx in predict function
@@ -35,7 +35,7 @@ fairScale <- function(data, yName, sNames, scaling=FALSE) {
 # scalePars - a list of (center, scale) that describes how the data was scaled
 #
 scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
-  newx <- regtools::factorsToDummies(newx)
+  newx <- regtools::factorsToDummies(newx, omitLast = TRUE)
   
   center <- TRUE; scale <- TRUE
   if (scaling) { # if user chooses to scale the data,
@@ -61,7 +61,7 @@ expandDeweights <- function(deweightPars, row1) {
   pars <- list()
   for (item in names(deweightPars)) {
     if (is.factor(row1[,item])) {      # expand deweight if factor type
-      names <- names(regtools::factorToDummies(row1[,item], item)[1,])
+      names <- names(regtools::factorToDummies(row1[,item], item, omitLast = TRUE)[1,])
       expanded <- Map(\(x) deweightPars[[item]], names)
       pars <- append(pars, expanded)
     } else {                           # add deweight as usual
@@ -124,7 +124,8 @@ binaryScorr <- function(preds, xData, sName, holdIdxs) {
   setNames(cor, sName)
 }
 nonBinScorr <- function(preds, xData, sName, holdIdxs) {
-  model <- suppressWarnings(qeML::qeLogit(xData, sName, holdout=NULL))
+  model <- suppressWarnings(
+    qeML::qeLogit(xData, sName, holdout=NULL))
   corrs <- NULL
   for (glmout in model$glmOuts) {
     sProbs <- glmout$fitted.values[holdIdxs]
