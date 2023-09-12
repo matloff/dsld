@@ -716,6 +716,13 @@ w <- dsldLogit(lsa,'bar','race1',comparisonPts,yesYVal= 'TRUE')
 summary(w)   
 ```
 
+That's a lot of output.  Let's take a closer look.
+
+```{r}
+u <- summary(w)
+u$'Sensitive Factor Level Comparisons'[,c(1,3,4)] 
+```
+
 Black and white students having the same traits appear to have passed
 the bar exam at the same rates.   
 
