@@ -190,5 +190,5 @@ predict.dsldQeFair <- function(model, newx) {
   # rescale the data according to how the training data was scaled in the model
   newx <- scaleNewX(newx, scaling, scalePars)
   
-  suppressWarnings(predict(model$base, newx))
+  predict(model$base, newx)
 }
