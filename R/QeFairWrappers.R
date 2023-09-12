@@ -11,16 +11,18 @@
 # ...           - additional parameters that are passed into the qeFUNC
 #
 qeFairBase <- function(qeFUNC, data, appendedItems, ...) {
+  # extract important variables
   yName <- appendedItems$yName
   sNames <- appendedItems$sNames
   scaling <- appendedItems$scaling
   
+  # scale data / expand factors, before training the model
   train <- fairScale(data, yName, sNames, scaling)
-  
   base <- qeFUNC(train, yName, ...)
   
+  # construct the model with items from base, as from appendedItems
   transferredItems <- base[names(base) %in% 
-                             c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")]
+                  c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")]
   model <- list(base=base)
   model <- append(model, append(appendedItems, transferredItems))
   model$scalePars <- attr(train, 'scalePars')
@@ -84,8 +86,6 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL,
 #
 qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars, 
                             holdout, yesYVal) {
-  classif <- !linear
-  
   # data w/o sName and scaled xNames
   scaling <- TRUE
   scaledData <- fairScale(data, yName, sNames, scaling)
@@ -102,8 +102,7 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
   } else train <- scaledData
   
   # in linear case: 0- in nonlinear: the no value
-  blank <- if (linear) 0 else setdiff(levels(data[,yName]), yesYVal) 
-  
+  blank <- if (linear) 0 else setdiff(levels(data[,yName]), yesYVal)
   # perform formula described in edffair paper
   dataExtended <- ridgeModify(train, expandDW, blank)
   
@@ -113,19 +112,23 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
     else
       qeML::qeLogit(dataExtended,yName,holdout=NULL, yesYVal=yesYVal)
 
-  # add these variables as their own name in the model object
+  # add these variables as their own name to the model object
+  classif <- !linear
   appendedItems <- variablesAsList(
     sNames, yName, deweightPars, scaling, scalePars, classif)
   if (!linear) appendedItems$yesYVal <- yesYVal
   
+  # construct output model object
   model <- list(base=base)
   model <- append(model, appendedItems)
   
+  # add test accuracy and s corr calculations
   if (!is.null(holdout)) {
     model$holdIdxs <- holdIdxs
     model <- append(model, predictHoldoutFair(model, test, train))
     
     if (!is.null(sNames)) {
+      # sCorr requires data w/o the ycol
       xData <- data[,!colnames(data) %in% yName]
       model$corrs <- sCorr(model, xData, sNames)
     }
@@ -181,6 +184,7 @@ dsldQeFairRidgeLog <- function(data,yName,sNames,deweightPars=NULL,
 
 # -------- Predict -----------------
 predict.dsldQeFair <- function(model, newx) {
+  # extract params from the model
   yName <- model$yName
   sNames <- model$sNames
   scaling <- model$scaling
@@ -189,6 +193,5 @@ predict.dsldQeFair <- function(model, newx) {
   newx <- newx[,!colnames(newx) %in% c(sNames, yName)]
   # rescale the data according to how the training data was scaled in the model
   newx <- scaleNewX(newx, scaling, scalePars)
-  
   predict(model$base, newx)
 }

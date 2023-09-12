@@ -47,6 +47,7 @@ scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
     # called from predict, with scaledPars
     newx <- scale(newx, center=center, scale=scale)
   }
+  newx <- data.frame(newx)
   newx
 }
 
