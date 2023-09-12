@@ -8,16 +8,14 @@
 # based on cor(), using Kendall's Tau in order to acccomdate binary
 # variables (0,1 valued), and to mitigate effects of outliers
 
-dsldOHunting <- function(data,yName,sName) 
-{
-
+dsldOHunting <- function(data, yName, sName) {
+   # get cols
    ycol <- which(names(data) == yName)
    scol <- which(names(data) == sName)
 
-   sdumms <- regtools::factorsToDummies(data[,scol])
-   odumms <- regtools::factorsToDummies(data[,-c(ycol,scol)])
+   sdumms <- regtools::factorsToDummies(data[, scol])
+   odumms <- regtools::factorsToDummies(data[, -c(ycol, scol)])
 
-   cor(sdumms,odumms,method='kendall')
-
+   return(cor(sdumms, odumms, method = "kendall"))
 }
 
