@@ -55,7 +55,7 @@ dsldFairTest(data, yName, sName, modelFunc, metricFunc, ...,
   last column, Misclass Rate, is independent of the rows.
 }
 \author{
-  Jonathan Tran
+  J. Tran, T. Abdullah
 }
 \examples{
   data <- fairml::compas

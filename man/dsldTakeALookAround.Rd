@@ -53,7 +53,7 @@
 }
 
 \author{
-    N. Matloff, A. Ashok, S. Martha, A. Mittal, T. Abdullah
+    N. Matloff, A. Ashok, S. Martha, A. Mittal
 }
 
 \examples{
