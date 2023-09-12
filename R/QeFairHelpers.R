@@ -163,15 +163,15 @@ predictHoldoutFair <- function(model, test, train) {
   yName <- model$yName
   preds <- predict.dsldQeFair(model, test)
   yCol <- c(test[,yName], train[,yName])
-  predHold <- list(holdoutPreds=preds)
+  testInfo <- list(holdoutPreds=preds)
   if (model$classif) {
-    predHold$testAcc <- mean(preds$predClasses != test[, yName])
-    predHold$baseAcc <- 1 - max(table(yCol)) / length(yCol)
+    testInfo$testAcc <- mean(preds$predClasses != test[, yName])
+    testInfo$baseAcc <- 1 - max(table(yCol)) / length(yCol)
   } else {
-    predHold$testAcc <- mean(abs(preds - test[,yName]))
-    predHold$baseAcc <-  mean(abs(test[,yName] - mean(train[,yName])))
+    testInfo$testAcc <- mean(abs(preds - test[,yName]))
+    testInfo$baseAcc <-  mean(abs(test[,yName] - mean(train[,yName])))
   }
-  predHold
+  testInfo
 }
 
 # ------------ Utils -----------------

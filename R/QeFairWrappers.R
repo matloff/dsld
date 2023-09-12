@@ -11,7 +11,7 @@
 #
 # qeFUNC        - a qeML model generation function
 # data          - unmodified data to train the model on
-# appendedItems - items to be appended to the model object.
+# appendedItems - list of items to be appended to the model object.
 #                 must have yName, sNames, scaling.
 # ...           - additional parameters that are passed into the qeFUNC
 #
@@ -29,7 +29,8 @@ qeFairBase <- function(qeFUNC, data, appendedItems, ...) {
   transferredItems <- base[names(base) %in% 
                   c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")]
   model <- list(base=base)
-  model <- append(model, append(appendedItems, transferredItems))
+  model <- append(model, transferredItems)
+  model <- append(model, appendedItems)
   model$scalePars <- attr(train, 'scalePars')
   
   # add s correlation
@@ -92,13 +93,9 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL,
 # --------------- QeFairRidgeBase -------------
 
 # base function for the ridge models. 
-# The output object is a list, with the base item being a qeML model object.
-# The rest of the function adds more items to that list.
-# Also calculates s correlation, and test accuracies
-#
 # Creates its own training and testing sets 
 # training set is modified w/ ridgeModify, according to EDF paper
-# trains the base model with that training set. 
+# trains a qeML model with that training set as the base of the output list
 # appends additional variables via variables as list
 # appends testAcc, baseAcc, holdoutPreds with the testing set via predictHoldoutFair
 #
@@ -118,17 +115,15 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
     train <- scaledData[-holdIdxs,];
   } else train <- scaledData
   
+  # perform formula described in edffair paper
+  expandDW <- expandDeweights(deweightPars, data[1,])
   # in linear case: 0- in nonlinear: the no value
   yBlank <- if (linear) 0 else setdiff(levels(data[,yName]), yesYVal)
-  expandDW <- expandDeweights(deweightPars, data[1,])
-  # perform formula described in edffair paper
   dataExtended <- ridgeModify(train, expandDW, yBlank)
   
   base <- 
-    if (linear) 
-      qeML::qeLin(dataExtended,yName,holdout=NULL)
-    else
-      qeML::qeLogit(dataExtended,yName,holdout=NULL, yesYVal=yesYVal)
+    if (linear) qeML::qeLin(dataExtended,yName,holdout=NULL)
+    else        qeML::qeLogit(dataExtended,yName,holdout=NULL, yesYVal=yesYVal)
 
   # Append these variables to the model object
   classif <- !linear
@@ -143,10 +138,10 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
   # add test accuracy and s corr calculations
   if (!is.null(holdout)) {
     model$holdIdxs <- holdIdxs
-    model <- append(model, predictHoldoutFair(model, test, train))
+    testInfo <- predictHoldoutFair(model, test, train)
+    model <- append(model, testInfo)
     
     if (!is.null(sNames)) {
-      # sCorr requires data w/o the ycol
       xData <- data[,!colnames(data) %in% yName]
       model$corrs <- sCorr(model, xData, sNames)
     }
@@ -157,10 +152,13 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
 }
 
 # modify the training data as described in the edf fair paper
+# essentially, you append a diagonal matrix to the bottom of the training data
+# with each value of the diagonal optionally having a deweighting value
+# the yCol is expanded w/ 0s or a no 
 # 
 # train    - expanded factor + scaled training data
 # expandDW - expanded factor deweights
-# blank    - value to append to the y column to expand it. 0 in the linear case
+# yBlank   - value to append to the y column to expand it. 0 in the linear case
 #            the no value in the general case
 #
 ridgeModify <- function(train, expandDW, yBlank=0) {
@@ -168,17 +166,18 @@ ridgeModify <- function(train, expandDW, yBlank=0) {
   expandVals <- unlist(expandDW)
   
   xNames <- colnames(train[,-ncol(train)])
-  p <- ncol(train) - 1   # common length for how many predictors there are
-  n <- nrow(train)       # common length for how many rows in the data
+  p <- ncol(train) - 1    # common length for how many predictors there are
   
   # formula described in edffair paper
-  D <- setNames(rep(0, p), xNames)                                        # new row of 0s for each col
-  if (length(expandDW))                     
-    D[expandVars] <- sqrt(expandVals)                                     # set deweighted cols to sqrt of deweight
-  newx <- data.frame(diag(D))                                             # turn this vector into a diag matrix
-  newxy <- cbind(newx, rep(yBlank, p))                                    # append a blank y column
-  names(newxy) <- colnames(train)
-  dataExtended <- rbind(train, newxy)                                     # append this to the bottom of the training data
+  D <- setNames(rep(0, p), xNames)
+  if (length(expandDW))
+    D[expandVars] <- sqrt(expandVals)
+  
+  extension <- data.frame(diag(D))
+  extension <- cbind(extension, rep(yBlank, p))
+  
+  names(extension) <- colnames(train)
+  dataExtended <- rbind(train, extension)
   
   dataExtended
 }
