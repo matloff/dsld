@@ -1,8 +1,13 @@
 # -------- QeFairBase -----------
 #
 # base function to use in qefairRF and qefairKNN.  
-# scales the data/expands factors, trains the base model, then adds additional
-# information into the final model object
+# The output object is a list, with the base item being a qeML model object.
+# The rest of the function adds more items to that list.
+# Those items may be from the base model itself, or from appendedItems.
+# Also calculates s correlation
+#
+# The original data is scaled according to how the wrapper function specifies it
+# It then saves how the data was scaled in order to rescale newx in predict
 #
 # qeFUNC        - a qeML model generation function
 # data          - unmodified data to train the model on
@@ -20,13 +25,14 @@ qeFairBase <- function(qeFUNC, data, appendedItems, ...) {
   train <- fairScale(data, yName, sNames, scaling)
   base <- qeFUNC(train, yName, ...)
   
-  # construct the model with items from base, as from appendedItems
+  # construct the model with items from base, and from appendedItems
   transferredItems <- base[names(base) %in% 
                   c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")]
   model <- list(base=base)
   model <- append(model, append(appendedItems, transferredItems))
   model$scalePars <- attr(train, 'scalePars')
   
+  # add s correlation
   if (!is.null(sNames) && !is.null(model$holdIdxs)) {
     xData <- data[,!colnames(data) %in% yName]
     model$corrs <- sCorr(model, xData, sNames)
@@ -36,6 +42,10 @@ qeFairBase <- function(qeFUNC, data, appendedItems, ...) {
 }
 
 # -------------- QeFairRF -------------
+#
+# No scaling. Appends variables to the final model output via appendedItems
+# Deweights are expanded to match the scaled data
+#
 dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
                          minNodeSize=10, mtry = floor(sqrt(ncol(data))),
                          yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data)))) {
@@ -55,6 +65,10 @@ dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
 # predict.dsldQeFair(rf, fairml::compas[1,])
 
 # ----------------- QeFairKNN ------------
+#
+# May be scaled. Appends variables to the final model output via appendedItems
+# Deweights are expanded to match the scaled data
+#
 dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL, 
                           yesYVal=NULL,k=25,scaleX=TRUE,
                           holdout=floor(min(1000,0.1*nrow(data)))) {
@@ -78,22 +92,25 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL,
 # --------------- QeFairRidgeBase -------------
 
 # base function for the ridge models. 
-# scales and expands the data, expands the deweightPars, 
-# adds a diagonal matrix to the bottom of the data as described in the paper
-# before training the model on it. then calculates its own test accuracy metrics
+# The output object is a list, with the base item being a qeML model object.
+# The rest of the function adds more items to that list.
+# Also calculates s correlation, and test accuracies
+#
+# Creates its own training and testing sets 
+# training set is modified w/ ridgeModify, according to EDF paper
+# trains the base model with that training set. 
+# appends additional variables via variables as list
+# appends testAcc, baseAcc, holdoutPreds with the testing set via predictHoldoutFair
 #
 # linear - a logical value. if false, use linear model- if true, use logistic.
 #
 qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars, 
                             holdout, yesYVal) {
-  # data w/o sName and scaled xNames
+  # data w/o sName and scaled xNames. save scalePars for predict()
   scaling <- TRUE
   scaledData <- fairScale(data, yName, sNames, scaling)
   scalePars <- attr(scaledData, 'scalePars')
-  
-  # expanded deweight pars
-  expandDW <- expandDeweights(deweightPars, data[1,])
-  
+
   # test and training sets to use in testAcc section
   if (!is.null(holdout)){
     holdIdxs <- sample(1:nrow(scaledData),holdout);
@@ -102,9 +119,10 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
   } else train <- scaledData
   
   # in linear case: 0- in nonlinear: the no value
-  blank <- if (linear) 0 else setdiff(levels(data[,yName]), yesYVal)
+  yBlank <- if (linear) 0 else setdiff(levels(data[,yName]), yesYVal)
+  expandDW <- expandDeweights(deweightPars, data[1,])
   # perform formula described in edffair paper
-  dataExtended <- ridgeModify(train, expandDW, blank)
+  dataExtended <- ridgeModify(train, expandDW, yBlank)
   
   base <- 
     if (linear) 
@@ -112,7 +130,7 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
     else
       qeML::qeLogit(dataExtended,yName,holdout=NULL, yesYVal=yesYVal)
 
-  # add these variables as their own name to the model object
+  # Append these variables to the model object
   classif <- !linear
   appendedItems <- variablesAsList(
     sNames, yName, deweightPars, scaling, scalePars, classif)
@@ -145,7 +163,7 @@ qeFairRidgeBase <- function(linear, data, yName, sNames, deweightPars,
 # blank    - value to append to the y column to expand it. 0 in the linear case
 #            the no value in the general case
 #
-ridgeModify <- function(train, expandDW, blank=0) {
+ridgeModify <- function(train, expandDW, yBlank=0) {
   expandVars <- names(expandDW)
   expandVals <- unlist(expandDW)
   
@@ -158,7 +176,7 @@ ridgeModify <- function(train, expandDW, blank=0) {
   if (length(expandDW))                     
     D[expandVars] <- sqrt(expandVals)                                     # set deweighted cols to sqrt of deweight
   newx <- data.frame(diag(D))                                             # turn this vector into a diag matrix
-  newxy <- cbind(newx, rep(blank, p))                                     # append a blank y column
+  newxy <- cbind(newx, rep(yBlank, p))                                    # append a blank y column
   names(newxy) <- colnames(train)
   dataExtended <- rbind(train, newxy)                                     # append this to the bottom of the training data
   

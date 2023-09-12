@@ -1,7 +1,8 @@
 # ------------- data scaling --------------
-# called data2 in the edffair package. 
 # factor types are split into binary columns for each level
-# sNames is removed. all but yName may be scaled
+# sNames and yName are removed in order for them to be scaled
+# yName is added back.
+# scaledPars are added as an attribute in order to rescale the newx in predict
 #
 # scaling - wether or not the data is scaled
 #
@@ -11,7 +12,7 @@ fairScale <- function(data, yName, sNames, scaling=FALSE) {
   
   # expand factors
   predictors <- regtools::factorsToDummies(predictors, omitLast = TRUE)
-  if (scaling) { # if user chooses to scale the data,
+  if (scaling) { 
     predictors <- scale(predictors)
     # save scalePars in order to rescale newx in predict function
     scalePars <- list(
@@ -27,8 +28,8 @@ fairScale <- function(data, yName, sNames, scaling=FALSE) {
   data
 }
 
-# converts the prediction data to match the data the format 
-# that the model was trained on
+# factor types are split into binary columns for each level
+# newx is scaled to match how the training data was scaled
 #
 # newx      - data to be converted before predicted on
 # scaling   - was the model trained on scaled data
@@ -37,17 +38,18 @@ fairScale <- function(data, yName, sNames, scaling=FALSE) {
 scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
   newx <- regtools::factorsToDummies(newx, omitLast = TRUE)
   
-  center <- TRUE; scale <- TRUE
-  if (scaling) { # if user chooses to scale the data,
-    if (!is.null(scalePars)) { # default scaling
+  if (scaling) { 
+    center <- TRUE; scale <- TRUE
+    
+    if (!is.null(scalePars)) { 
       center <- scalePars$center
       scale <- scalePars$scale
     }
-    # save scalePars in order to rescale newx in predict function
-    # called from predict, with scaledPars
+
     newx <- scale(newx, center=center, scale=scale)
   }
-  newx <- data.frame(newx)
+  
+  newx <- data.frame(newx) # this changes the colnames for some reason
   newx
 }
 
@@ -60,13 +62,17 @@ scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
 #
 expandDeweights <- function(deweightPars, row1) {
   pars <- list()
-  for (item in names(deweightPars)) {
+  for (item in names(deweightPars)) {  # loop through every item
     if (is.factor(row1[,item])) {      # expand deweight if factor type
-      names <- names(regtools::factorToDummies(row1[,item], item, omitLast = TRUE)[1,])
+      names <- names(
+        data.frame(
+          regtools::factorToDummies(row1[,item], item, omitLast = TRUE)
+        )
+      )
       expanded <- Map(\(x) deweightPars[[item]], names)
       pars <- append(pars, expanded)
-    } else {                           # add deweight as usual
-      pars <- append(pars, deweightPars[item])
+    } else {                          
+      pars <- append(pars, deweightPars[item])  # add deweight as usual
     }
   }
   pars
@@ -75,10 +81,14 @@ expandDeweights <- function(deweightPars, row1) {
 # ----------------- S Corr ------------------
 # calculates s correlation as described in EDF fair github but idk how it works
 #
+# standardizes the various prediction formats that come with the various models
+# then, calculates s correlation according to various cases:
+# binary sName / nonbinary sName / continuous sName
+#
 # xData     - data w/o the y column
 #
 sCorr <- function(model, xData, sNames) {
-  # qeML functions have a lot of predict formats
+  # qeML functions have a lot of predict formats. 
   preds <- 
     if (is.list(model$holdoutPreds)) {
       probs <- model$holdoutPreds$probs
@@ -95,8 +105,8 @@ sCorr <- function(model, xData, sNames) {
   corrs <- NULL
   for (sName in sNames) {
     sCol <- xData[holdIdxs, sName]
-    if (is.factor(sCol)) { # classification case
-      corrs <- 
+    if (is.factor(sCol)) { 
+      corrs <- # classification case
         c(corrs, 
           if(length(levels(sCol)) == 2)
             binaryScorr(preds, xData, sName, holdIdxs)
@@ -111,8 +121,11 @@ sCorr <- function(model, xData, sNames) {
   }
   
   corrs
-} 
+}
 
+# I dont really know the math behind this
+# but this gets the correlation between two numeric vectors, names it
+#
 # preds     - numeric vector of predictions the model made
 # xData     - data w/o the y column
 # sName     - one of the names of the sensitive column
@@ -124,7 +137,9 @@ binaryScorr <- function(preds, xData, sName, holdIdxs) {
   cor <- cor(preds, sProbs)^2
   setNames(cor, sName)
 }
+# this gets the correlation for each level in sName, then names it
 nonBinScorr <- function(preds, xData, sName, holdIdxs) {
+  # warning with qeLogit(fairml::compas, "race")
   model <- suppressWarnings(
     qeML::qeLogit(xData, sName, holdout=NULL))
   corrs <- NULL
@@ -138,7 +153,7 @@ nonBinScorr <- function(preds, xData, sName, holdIdxs) {
 
 # ------------------ Predict Holdout Fair -----------------------
 # add holdout predictions and test accuracy to ridge regressions
-# test must not be scaled. train should be
+# outputs a list with: holdoutPreds, testAcc, baseAcc
 #
 # model - model to make predictions with
 # test  - data set to train the data on. must not be scaled
