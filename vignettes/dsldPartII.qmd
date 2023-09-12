@@ -70,8 +70,7 @@ dsldOHunting(cmp,'two_year_recid','race')
 
 The function **dsldOHunting** calculates the correlations between S and
 [It should be kept in mind that, as with any statistic, all utility and
-fairness measures are subject to sampling variation.  Better precision
-may be attained via the *bootstrap*; see @sec-boot.]{.column-margin}
+fairness measures are subject to sampling variation.]{.column-margin}
 all possible candidate O variables.  The output here  suggests possibly
 using, say, the **age** and **priors_count** variables as proxies.
 

@@ -578,8 +578,7 @@ having worked 52 weeks, women's average wage is 48,914 and for men it's
 As before, we see a substantial gender wage gap, but now we can feel
 more confident about it, since this analysis is unencumbered by
 assumptions on the form of the regression function.  On the other hand,
-there is no easy way to obtain standard errors; one approach is to use
-the *bootstrap* (Appendix C).
+there is no easy way to obtain standard errors. 
 
 ### The random forests algorithm
 
