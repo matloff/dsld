@@ -428,7 +428,7 @@ by the authors of the package.
 
 Let's see what it does with the COMPAS data:
 
-```{r}
+```{r,eval=FALSE}
 dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.1,family='binomial')
 dsldFgrrm(cmp,'two_year_recid','race',unfairness=0.01,family='binomial')
 ```
