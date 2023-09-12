@@ -16,21 +16,21 @@
 # this probably should be set to a larger value, or else each
 # intersection may be null
 
-dsldCHunting <- function(data,yName,sName,intersectDepth=10) 
-{
+dsldCHunting <- function(data, yName, sName, intersectDepth = 10) {
 
    ycol <- which(names(data) == yName)
    scol <- which(names(data) == sName)
-   y <- data[,ycol]
-   s <- data[,scol]
-   if (!is.factor(y) || !is.factor(s)) 
+   y <- data[, ycol]
+   s <- data[, scol]
+   if (!is.factor(y) || !is.factor(s)) {
       stop('Y and S must be R factors')
+   }
 
-   dataNoS <- data[,-scol]  # for predicting Y
-   dataNoY <- data[,-ycol]  # for predicting S
+   dataNoS <- data[, -scol]  # for predicting Y
+   dataNoY <- data[, -ycol]  # for predicting S
 
-   impY <- qeRF(dataNoS,yName)$importance
-   impS <- qeRF(dataNoY,sName)$importance
+   impY <- qeRF(dataNoS, yName)$importance
+   impS <- qeRF(dataNoY, sName)$importance
 
    # the 'importance' output format has several different cases, which
    # must be dealt with separately in extracting the actual importance
@@ -39,28 +39,28 @@ dsldCHunting <- function(data,yName,sName,intersectDepth=10)
    if (is.numeric(y) || nlevsY == 2) 
        impY1 <- impY[, 1]
    else if (is.factor(y)) {
-       impY1 <- impY[, nlevsY+1]
+       impY1 <- impY[, nlevsY + 1]
    }
    else stop("Y must be numeric or an R factor")
    if (!is.factor(s)) stop("S must be an R factor")
    nlevsS <- length(levels(s))
-   if (nlevsS == 2) impS1 <- impS[,1] else impS1 <- impS[,nlevsS+1]
+   if (nlevsS == 2) impS1 <- impS[, 1] else impS1 <- impS[, nlevsS + 1]
 
    # larger values mean higher importance
-   impY1 <- sort(impY1,decreasing=TRUE)
-   impS1 <- sort(impS1,decreasing=TRUE)
+   impY1 <- sort(impY1, decreasing = TRUE)
+   impS1 <- sort(impS1, decreasing = TRUE)
 
    # start assembling output
-   res <- list(impForY=impY1,impForS=impS1)
+   res <- list(impForY = impY1, impForS = impS1)
    nmsY <- names(impY1)
    nmsS <- names(impS1)
    res$inCommon <- list()
+
    # for each i, find the "top i" set of confounders, defined as being
    # highly correlated with both Y and S
-   for (i in 1:min(intersectDepth,ncol(data)-2)) {
-      res$inCommon[[i]] <- intersect(nmsY[1:i],nmsS[1:i])
+   for (i in 1:min(intersectDepth, ncol(data) - 2)) {
+      res$inCommon[[i]] <- intersect(nmsY[1:i], nmsS[1:i])
    }
-   res
 
-
+   return(res)
 }
