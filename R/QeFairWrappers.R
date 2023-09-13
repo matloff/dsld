@@ -223,10 +223,11 @@ dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL,
 # predict.dsldQeFair(lin, svcensus[1,])
 
 # only works in the binary classification case
-dsldQeFairRidgeLog <- function(data,yName,sNames,deweightPars=NULL,
-                               holdout=floor(min(1000,0.1*nrow(data))),
-                               yesYVal=levels(data[,yName])[2]) {
-  qeFairRidgeBase(data, yName, sNames, deweightPars, holdout, yesYVal)
+dsldQeFairRidgeLog <- function(data, yName, sNames, deweightPars = NULL,
+                               holdout = floor(min(1000, 0.1 * nrow(data))),
+                               yesYVal = levels(data[, yName])[2]) {
+  # wrap call directly
+  return(qeFairRidgeBase(data, yName, sNames, deweightPars, holdout, yesYVal))
 }
 
 # log <- dsldQeFairRidgeLog(fairml::compas, "two_year_recid", "race")
@@ -240,8 +241,9 @@ predict.dsldQeFair <- function(model, newx) {
   scaling <- model$scaling
   scalePars <- model$scalePars
 
-  newx <- newx[,!colnames(newx) %in% c(sNames, yName)]
+  newx <- newx[, !colnames(newx) %in% c(sNames, yName)]
+
   # rescale the data according to how the training data was scaled in the model
   newx <- scaleNewX(newx, scaling, scalePars)
-  predict(model$base, newx)
+  return(predict(model$base, newx))
 }
