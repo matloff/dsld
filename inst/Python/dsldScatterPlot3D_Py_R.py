@@ -78,9 +78,9 @@ def validateInputSP3D(sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
         print('Error: opacity must be an int type. Entered type:', type(opacity))
         exit(ERROR)
     
-def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL, sortedBy = "Name", numGroups = 8, maxPoints = R_NULL, xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL, colors = ["Paired"], opacity = "1", pointSize = "8"):
+def dsldPyScatterPlot3D(data, yNames = R_NULL, sName = R_NULL, sGroups = R_NULL, sortedBy = "Name", numGroups = 8, maxPoints = R_NULL, xlim = R_NULL, ylim = R_NULL, zlim = R_NULL, main = R_NULL, colors = ["Paired"], opacity = "1", pointSize = "8"):
     # ************************** ARGUMENTS *******************************************
-    
+
     # Type validation of everything except for data
     # TODO: Fix error: see above todo
     # validateInputSP3D(sName,yNames,sGroups,sortedBy,numGroups,maxPoints,xlim,ylim,zlim,main,colors,opacity,pointSize)
@@ -95,6 +95,11 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     robjects.r('r_data[string_cols] <- lapply(r_data[string_cols], as.factor)')
 
     r_data = robjects.r("r_data")    
+
+    # R function requires factorized sName, so we will do that for the user
+    robjects.r.assign("r_data", r_data)                      
+    robjects.r(f"r_data${sName} <- as.factor(r_data${sName})")  
+    r_data = robjects.r("r_data")                              
 
     if type(sName) == str:
         sName_r = robjects.StrVector([sName])    # Convert variable name to R character vector
@@ -132,15 +137,14 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     
     # All necessary arguments are in R format at this point
     # ************************** END ARGUMENTS *******************************************
-    
+
     # ************************** RETURN VALUE *******************************************
-    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
+    scatter_plot = dsld.dsldScatterPlot3D(r_data, yNames_r, sName_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
     # Convyrt the plot to a Plotly widget and display it
     plot_widget = rplotly.as_widget(scatter_plot)
     display(plot_widget)
     # ************************** END FUNCTION *******************************************
 
-    robjects.r['data']('pef')
 #************************** OS SHELL FUNCTIONALITY *************************************
 # TODO: OS Shell functionality is INCOMPLETE
 # if __name__ == "__main__":
@@ -154,37 +158,23 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
 #************************** END OS SHELL *******************************************
 
 
-#Example 1
-# robjects.r['data']('law.school.admissions')
-# data = robjects.r('law.school.admissions')
-# dsldPyScatterPlot3D(data, yNames=['ugpa', 'lsat', 'age'], sName='race1')
-
-
-
-
 '''
 # Need to install.packages("plotly") in R
-# Need to install qeML to get the pef data
 # Need to install Python's IPython
 # through the following command (enter in terminal): pip install IPython
     python
+
+    # Example 1
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
     import rpy2.robjects as robjects
-    # Must import qeML library into R environment
+    robjects.r['data']('svcensus')
     data = robjects.r('svcensus')
-    dsldPyScatterPlot3D(data, "gender")
+    dsldPyScatterPlot3D(data, ['occ', 'wageinc', 'wkswrkd'], "gender")
+    # can also reenter yNames as string numbers
 
-
-# Other Examples:
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyScatterPlot3D(data, "gender", ['occ', 'wageinc', 'wkswrkd'])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['3', '5', '6'], ['1', '2'], "Frequency", "2", "10000", ['80', '90'])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, xlim = ['80', '90'])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, ylim = ['0', '50000'])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, zlim = ['0', '10'])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, colors = ["salmon", "seagreen"])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, colors = ["salmon"])
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, pointSize = "20")
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, colors = ["yellow", "orange"], maxPoints = "20", ylim = ["50000", "100000"], xlim = ["20", "80"], pointSize = "5")
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data)
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import pandas as pd;data = pd.read_csv('../../data/svcensusFixed.csv');dsldPyScatterPlot3D(data)
-'''
+    # Example 2
+    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
+    import rpy2.robjects as robjects
+    robjects.r['data']('law.school.admissions')
+    data = robjects.r('law.school.admissions')
+    dsldPyScatterPlot3D(data, yNames=['ugpa', 'lsat', 'age'], sName='race1')

@@ -135,21 +135,23 @@
 \examples{
     # IMPORTANT: Before running any of these examples, go to /dsld/inst/Python
 
-    # IMPORTANT: It is better to run through the Python Shell Prompt (see 
-    # example 1b). If you run through the OS Shell Prompt instead, you have to 
-    # enter the arguments in their proper order. See the above note for more 
-    # information.
+    # OS Shell Examples don't work for this function
 
-    %# Example 1a: Running from the OS shell
-    %insert here
-
-    # Example 1b: Running from the Python shell prompt
-    # Must install qeML in R to access the pef data
+    # Example 1: Running from the Python shell prompt
     python # Open Python shell prompt
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
     import rpy2.robjects as robjects
-    robjects.r['data']('pef')
-    data = robjects.r('pef')
-    dsldPyScatterPlot3D(data, "sex", ['occ', 'wageinc', 'wkswrkd'])
+    robjects.r['data']('svcensus')
+    data = robjects.r('svcensus')
+    dsldPyScatterPlot3D(data, ['occ', 'wageinc', 'wkswrkd'], "gender")
+    # can also reenter yNames as string numbers
+
+    # Example 2
+    python # Open Python shell prompt
+    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
+    import rpy2.robjects as robjects
+    robjects.r['data']('law.school.admissions')
+    data = robjects.r('law.school.admissions')
+    dsldPyScatterPlot3D(data, yNames=['ugpa', 'lsat', 'age'], sName='race1')
 }
 
