@@ -1,4 +1,6 @@
 
+{{< pagebreak >}}
+
 # Part II:  Discovering/Mitigating Bias  in Machine Learning   
 
 In modern applications of machine learning as a predictive modeling tool, it 

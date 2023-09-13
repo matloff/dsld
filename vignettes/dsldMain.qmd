@@ -3,15 +3,15 @@
 title: "Data Science Looks at Discrimination"
 subtitle: "A toolkit for investigating bias in race, gender, age and so on"
 author: 
+  - Norman Matloff, Project Lead
   - Taha Abdullah
   - Arjun Ashok
   - Brandon Estrada
   - Shubhada Martha
-  - Norman Matloff
   - Aditya Mittal 
   - Billy Ouattara 
   - Jonathan Tran
-date: "8/9/2023"
+date: "9/13/2023"
 crossref:
    labels: roman i
    subref-labels: roman i
@@ -84,7 +84,7 @@ To set the stage, consider the following:
 
 ## UC Berkeley discrimination claims 
 
-![](SatherGate.jpg){width=15%}
+![UCB](SatherGate.jpg){width=15%}
 
 
 UC Berkeley was accused of discriminating against female applicants
@@ -102,7 +102,7 @@ rate to below that of men.
 
 ## US Census data {#sec-census}
 
-![](USCensus.png){width=25%}
+![US Census](USCensus.png){width=25%}
 
 The **svcensus** dataset is a subset of US census data from back in 2000,
 focusing on six engineering occupations.  [Included here in the **dsld**
