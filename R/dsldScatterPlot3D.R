@@ -1,52 +1,70 @@
 dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
-           sortedBy = "Name", numGroups = 8, maxPoints = NULL, xlim = NULL,
-           ylim = NULL, zlim = NULL, main = NULL, colors = "Paired", opacity = 1,
-           pointSize = 8) {
+                               sortedBy = "Name", numGroups = 8,
+                               maxPoints = NULL, xlim = NULL, ylim = NULL,
+                               zlim = NULL, main = NULL, colors = "Paired",
+                               opacity = 1, pointSize = 8) {
+    # environment setup
     getSuggestedLib("plotly")
     
-    # Limit amount of data points
-    if (!is.null(maxPoints)) 
-      data <- data[1:maxPoints,]
-    
+    # limit amount of data points
+    if (!is.null(maxPoints)) {
+      data <- data[1:maxPoints, ]
+    }
+
+    # args type-checking
     if (!class(data[, sName]) %in% c("factor", "character"))
       stop(
         "sName should be of factor or character data type. 
         Consider setting this as yName instead"
       )
     
-    if (length(yNames) != 3)
+    # check 3D plot compatibility
+    if (length(yNames) != 3) {
       stop("ScatterPlot3d requires 3 variables for the 3 axis")
+    }
     
     # sGroups <- a vector of the individual group names in the 'data'.
     # the user can supply sGroups as an vector of names they want to look at
-    if (is.null(sGroups))
+    if (is.null(sGroups)) {
       sGroups <- makeSGroups(data, sName, numGroups, sortedBy)
-    
+    }
+
     # limits dataset to include only those with a group in groupNames
     data <- data[data[, sName] %in% sGroups, ]
     data <- droplevels(data)
     
-    # Limit values of data points
+    # limit values of data points
     if (!is.null(xlim) | !is.null(ylim) | !is.null(zlim))
       data <- limitRange(data, yNames, xlim, ylim, zlim)
     
-    # Creates a title
+    # creates a title
     if (is.null(main)) {
-      for (yName in names(data[yNames]))
+      for (yName in names(data[yNames])) {
         main <- paste(main, yName)
+      }
+
       main <- paste(main, " by ", names(data[sName]))
     }
     
     # save this to print to the text of each point
     original <- data
+
     # numeric for a cleaner looking graph if the axis is factor type
     data[, yNames] <- sapply(data[, yNames], as.numeric)
+
     # info card for each data point
     text <- paste("<extra></extra>", sep = "")
-    for (i in 1:length(data))
-      text <-
-      paste(text, names(data[i]), ": ", original[, i], "<br>", sep = "")
-    
+    for (i in 1:length(data)) {
+      text <- paste(
+        text,
+        names(data[i]),
+        ": ",
+        original[, i],
+        "<br>",
+        sep = ""
+      )
+    }
+
     # plotting the points
     fig <- plotly::plot_ly(
       data,
@@ -56,10 +74,14 @@ dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
       color = data[, sName],
       colors = colors,
       hovertemplate = text,
-      marker = list(size = pointSize,
-                    opacity = opacity)
+      marker = list(
+        size = pointSize,
+        opacity = opacity
+      )
     )
+
     fig <- plotly::add_markers(fig)
+
     # add labels and axis
     fig <- plotly::layout(
       fig,
@@ -72,7 +94,7 @@ dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
       )
     )
     
-    fig
+    return(fig)
   }
 
 # ---- Test Cases ----
@@ -85,18 +107,20 @@ makeSGroups <- function(data, sName, numGroups = NULL, sortedBy = "Name") {
     # If there are 8 possible types the group variable can be, the vector is 8 long.
     # Sorted according to user
     sGroups <- NULL
-    switch( sortedBy,
+    switch(sortedBy,
       "Name" = sGroups <- levels(unique(data[, sName])),
       "Frequency" = sGroups <-
         names(sort(table(data[, sName]), decreasing = T)),
       "Frequency-Descending" = sGroups <-
         names(sort(table(data[, sName]), decreasing = F))
     )
+
     # otherwise the vector is cut off to only have numGroups number of sGroups
-    if (!is.null(numGroups) && length(sGroups) > numGroups)
+    if (!is.null(numGroups) && length(sGroups) > numGroups) {
       sGroups <- sGroups[1:numGroups]
-    
-    sGroups
+    }
+
+    return(sGroups)
   }
 
 
