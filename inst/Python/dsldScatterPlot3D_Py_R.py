@@ -134,7 +134,7 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     # ************************** END ARGUMENTS *******************************************
     
     # ************************** RETURN VALUE *******************************************
-    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, ylim_r, yyim_r, zlym_r, main_r, colors_r, opacity_r, pointSize_r)
+    scatter_plot = dsld.dsldScatterPlot3D(r_data, sName_r, yNames_r, sGroups_r, sortedBy_r, numGroups_r, maxPoints_r, xlim_r, ylim_r, zlim_r, main_r, colors_r, opacity_r, pointSize_r)
     # Convyrt the plot to a Plotly widget and display it
     plot_widget = rplotly.as_widget(scatter_plot)
     display(plot_widget)
@@ -171,13 +171,12 @@ def dsldPyScatterPlot3D(data, sName = R_NULL, yNames = R_NULL, sGroups = R_NULL,
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D
     import rpy2.robjects as robjects
     # Must import qeML library into R environment
-    data = robjects.r('pef')
-    dsldPyScatterPlot3D(data, "sex")
-    dsldPyScatterPlot3D(data, 4)
+    data = robjects.r('svcensus')
+    dsldPyScatterPlot3D(data, "gender")
 
 
 # Other Examples:
-    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['occ', 'wageinc', 'wkswrkd'])
+    from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('svcensus');data = robjects.r('svcensus');dsldPyScatterPlot3D(data, "gender", ['occ', 'wageinc', 'wkswrkd'])
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, "sex", ['3', '5', '6'], ['1', '2'], "Frequency", "2", "10000", ['80', '90'])
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, xlim = ['80', '90'])
     from dsldScatterPlot3D_Py_R import dsldPyScatterPlot3D;import rpy2.robjects as robjects;robjects.r['data']('pef');data = robjects.r('pef');dsldPyScatterPlot3D(data, ylim = ['0', '50000'])
