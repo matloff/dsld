@@ -84,22 +84,32 @@ dsldQeFairRF <- function(data, yName, sNames, deweightPars = NULL, nTree = 500,
 # May be scaled. Appends variables to the final model output via appendedItems
 # Deweights are expanded to match the scaled data
 #
-dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL, 
-                          yesYVal=NULL,k=25,scaleX=TRUE,
-                          holdout=floor(min(1000,0.1*nrow(data)))) {
+dsldQeFairKNN <- function(data, yName, sNames, deweightPars = NULL,
+                          yesYVal = NULL, k = 25, scaleX = TRUE,
+                          holdout = floor(min(1000, 0.1 * nrow(data)))) {
+  # setup for easier calls
   scaling <- scaleX
   appendedItems <- variablesAsList(yName, sNames, scaling, deweightPars)
+
   # expand deweights to match the expanded factors in the data in qeFairBase
-  expandedDW <- expandDeweights(deweightPars, data[1,])
-  expandVars <- names(expandedDW) 
+  expandedDW <- expandDeweights(deweightPars, data[1, ])
+  expandVars <- names(expandedDW)
   expandVals <- unlist(expandedDW) # to use as qeKNN pars
-  
-  model <- qeFairBase(qeML::qeKNN, data, yName, sNames, scaling, 
-                      
-                      k=k, yesYVal=yesYVal, holdout=holdout,
-                       expandVars=expandVars, expandVals=expandVals,
-                      appendedItems = appendedItems)
-  model
+
+  model <- qeFairBase(qeML::qeKNN,
+    data,
+    yName,
+    sNames,
+    scaling,
+    k = k,
+    yesYVal = yesYVal,
+    holdout = holdout,
+    expandVars = expandVars,
+    expandVals = expandVals,
+    appendedItems = appendedItems
+  )
+
+  return(model)
 }
 
 # knn <- dsldQeFairKNN(fairml::compas, "two_year_recid", "race")
@@ -114,87 +124,100 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL,
 # appends additional variables via variables as list
 # appends testAcc, baseAcc, holdoutPreds with the testing set via predictHoldoutFair
 #
-qeFairRidgeBase <- function(data, yName, sNames, deweightPars, 
-                            holdout, yesYVal=0) {
+qeFairRidgeBase <- function(data, yName, sNames, deweightPars,
+                            holdout, yesYVal = 0) {
   linear <- yesYVal == 0     # if we're using the default yesYVal, assume its linear
 
-  if (!is.null(holdout)){
-    holdIdxs <- sample(1:nrow(data),holdout);
-    test <- data[holdIdxs,];
-    train <- data[-holdIdxs,];
-  } else train <- data
-  
+  if (!is.null(holdout)) {
+    holdIdxs <- sample(1:nrow(data), holdout)
+    test <- data[holdIdxs,]
+    train <- data[-holdIdxs,]
+  } else {
+    train <- data
+  }
+
   # perform formula described in edffair paper
   dataExtended <- ridgeModify(train, yName, sNames, deweightPars, yesYVal)
-  scalePars <- attr(dataExtended, 'scalePars')
+  scalePars <- attr(dataExtended, "scalePars")
   
   base <- 
-    if (linear) qeML::qeLin(dataExtended,yName,holdout=NULL)
-    else        qeML::qeLogit(dataExtended,yName,holdout=NULL, yesYVal=yesYVal)
+    if (linear) qeML::qeLin(dataExtended, yName, holdout = NULL)
+    else        qeML::qeLogit(dataExtended, yName, holdout = NULL, yesYVal = yesYVal)
 
   # Append these variables to the model object
   classif <- !linear
   scaling <- TRUE
   appendedItems <- variablesAsList(
-    sNames, yName, deweightPars, scaling, scalePars, classif, yesYVal)
-  
+    sNames,
+    yName,
+    deweightPars,
+    scaling,
+    scalePars,
+    classif,
+    yesYVal
+  )
+
   # construct output model object
-  model <- list(base=base)
+  model <- list(base = base)
   model <- append(model, appendedItems)
-  
+
   # add test accuracy and s corr calculations
   if (!is.null(holdout)) {
     model$holdIdxs <- holdIdxs
     testInfo <- predictHoldoutFair(model, test, train)
     model <- append(model, testInfo)
-    
+
     if (!is.null(sNames)) {
-      xData <- data[,!colnames(data) %in% yName]
+      xData <- data[, !colnames(data) %in% yName]
       model$corrs <- sCorr(model, xData, sNames)
     }
   }
 
+  # return s3 object
   class(model) <- c("dsldQeFair")
-  model
+  return(model)
 }
 
 # modify the training data as described in the edf fair paper
 # essentially, you append a diagonal matrix to the bottom of the training data
 # with each value of the diagonal optionally having a deweighting value
-# the yCol is expanded w/ 0s or a no 
-# 
+# the yCol is expanded w/ 0s or a no
+#
 # yesYVal - the yes value in the binary yName. if 0, we're assuming its a linear model
 #
-ridgeModify <- function(data, yName, sNames, deweightPars, yesYVal=0) {
-  expandDW <- expandDeweights(deweightPars, data[1,])
+ridgeModify <- function(data, yName, sNames, deweightPars, yesYVal = 0) {
+  # setup expanddeweighting
+  expandDW <- expandDeweights(deweightPars, data[1, ])
   expandVars <- names(expandDW)
   expandVals <- unlist(expandDW)
-  
+
   data <- fairScale(data, yName, sNames, scaling = TRUE)
-  
+
   xNames <- colnames(data[,-ncol(data)])
-  noYVal <- setdiff(levels(data[,yName]), yesYVal)[[1]] 
+  noYVal <- setdiff(levels(data[,yName]), yesYVal)[[1]]
   yBlank <- if (yesYVal == 0) 0 else noYVal
   p <- ncol(data) - 1   # how many predictors
-  
+
   # formula described in edffair paper
   D <- setNames(rep(0, p), xNames)
-  if (!is.null(deweightPars))
+  if (!is.null(deweightPars)) {
     D[expandVars] <- sqrt(expandVals)
-  
+  }
+
   extension <- data.frame(diag(D))
   extension <- cbind(extension, rep(yBlank, p))
-  
+
   names(extension) <- colnames(data)
   dataExtended <- rbind(data, extension)
-  
-  attr(dataExtended, 'scalePars') <- attr(data, 'scalePars')
-  dataExtended
+
+  attr(dataExtended, "scalePars") <- attr(data, "scalePars")
+  return(dataExtended)
 }
 
-dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL, 
-                                      holdout=floor(min(1000,0.1*nrow(data)))) {
-  qeFairRidgeBase(data, yName, sNames, deweightPars, holdout)
+dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL,
+                               holdout = floor(min(1000, 0.1 * nrow(data)))) {
+  # wrap call directly
+  return(qeFairRidgeBase(data, yName, sNames, deweightPars, holdout))
 }
 # lin <- dsldQeFairRidgeLin(svcensus, "wageinc", "gender", deweightPars = list(occ=.4, age=.2))
 # predict.dsldQeFair(lin, svcensus[1,])
