@@ -1,8 +1,53 @@
 
+{{< pagebreak >}}
+
+# Author Bios
+
+**Norman Matloff** is Professor Emeritus of Computer Science, and was
+[![NM](NMHighDef.jpg){width=100%}]{.column-margin}
+formerly a Professor of Statistics at that university.  His
+participation in this project is informed in part by his experience
+serving in a number of litigation cases involving discrimination.  His
+work has been recognized in various forms, including the
+university-wide Distinguished Teaching Award, Outstanding Adviser Award,
+and Distinguished Public Service Award.  His book, *Statistical
+Regression and Classification: from Linear Models to Machine Learning*
+was the 2017 recipient of the Ziegal Award, given by the statistics
+journal *Technometrics*.
+
+{{< pagebreak >}}
 
 # Appendices {.appendix}
 
 ## Appendix A: Standard Errors and Statistical Inference
+
+Say I wish to find the mean weight $\mu$ of all students at the University of
+California, Davis.  It would be infeasible to measure them all, so I
+take a random sample of 100 students.  The mean weight of those
+students, denoted $\bar{X}$, is an estimate of $\mu$.
+
+I know that $\bar{X}$ will have some amount of error as an estimate of
+$\mu$.  One measure of this is its *standard error$ (SE).  What is this?
+
+Remember, we took a random sample of students.  Different samples will
+have different values of $\bar{X}$, i.e. $\bar{X}$ will have *sampling
+variation*.  Then the SE of $\bar{X}$ is defined to be the standard
+deviation of all possible $\bar{X}$ values, from all possible samples.
+
+The smaller the SE is, the more confident we are that the $\bar{X}$ from
+our particular sample is pretty accurate.  Of course, we can't be
+completely sure, but we can quantify it probabilistically:
+
+> An approximate 95% *confidence interval* for $\mu$, based on
+> $\bar{X}$, is $\bar{X} \pm 1.96 \times SE$.
+
+The reader may have heard of the Central Limit Theorem, which says that
+the sum of many random variables, itself a random variable, has an
+approximately normal distribution.  This is the case for most classical
+statistical estimators, such as estimated coefficients in linear and
+generalized linear models.  Hence we can find confidence intervals as
+above, taking the estimator plus and minus 1.96 times the SE of the
+estimator.
 
 Once one has obtained a statistical estimator, say of a linear
 regression coefficient,
