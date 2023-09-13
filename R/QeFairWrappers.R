@@ -14,27 +14,34 @@
 # ...           - additional parameters that are passed into the qeFUNC
 # appendedItems - list of items to be appended to the model object.
 #
-qeFairBase <- function(qeFUNC, data, yName, sNames, scaling, ..., appendedItems=list()) {
-
+qeFairBase <- function(qeFUNC, data, yName, sNames, scaling, ...,
+                       appendedItems = list()) {
   # scale data / expand factors, before training the model
   train <- fairScale(data, yName, sNames, scaling)
   base <- qeFUNC(train, yName, ...)
   
   # construct the model with items from base, and from appendedItems
-  transferredItems <- base[names(base) %in% 
-                  c("classif", "holdIdxs", "holdoutPreds", "testAcc", "baseAcc")]
-  model <- list(base=base)
+  transferredItems <- base[names(base) %in% c("classif",
+                        "holdIdxs",
+                        "holdoutPreds",
+                        "testAcc",
+                        "baseAcc"
+                      )]
+
+  model <- list(base = base)
   model <- append(model, transferredItems)
   model <- append(model, appendedItems)
-  model$scalePars <- attr(train, 'scalePars')
+  model$scalePars <- attr(train, "scalePars")
   
   # add s correlation
   if (!is.null(sNames) && !is.null(model$holdIdxs)) {
-    xData <- data[,!colnames(data) %in% yName]
+    xData <- data[, !colnames(data) %in% yName]
     model$corrs <- sCorr(model, xData, sNames)
   }
+
+  # return s3 object
   class(model) <- c("dsldQeFair")
-  model
+  return(model)
 }
 
 # -------------- QeFairRF -------------
@@ -42,20 +49,31 @@ qeFairBase <- function(qeFUNC, data, yName, sNames, scaling, ..., appendedItems=
 # No scaling. Appends variables to the final model output via appendedItems
 # Deweights are expanded to match the scaled data
 #
-dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
-                         minNodeSize=10, mtry = floor(sqrt(ncol(data))),
-                         yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data)))) {
-  scaling <- FALSE 
+dsldQeFairRF <- function(data, yName, sNames, deweightPars = NULL, nTree = 500,
+                         minNodeSize = 10, mtry = floor(sqrt(ncol(data))),
+                         yesYVal = NULL,
+                         holdout = floor(min(1000, 0.1 * nrow(data)))) {
+  # setup
+  scaling <- FALSE
   appendedItems <- variablesAsList(yName, sNames, scaling, deweightPars)
   
   # expand deweights to match the expanded factors in the data in qeFairBase
-  expandedDW <- expandDeweights(deweightPars, data[1,])
-  model <- qeFairBase(qeML::qeRFranger, data, yName, sNames, scaling, 
-                      
-                      nTree=nTree, minNodeSize=minNodeSize, mtry=mtry,
-                      yesYVal=yesYVal, holdout=holdout, deweightPars = expandedDW,
-                      appendedItems = appendedItems)
-  model
+  expandedDW <- expandDeweights(deweightPars, data[1, ])
+  model <- qeFairBase(qeML::qeRFranger,
+    data,
+    yName,
+    sNames,
+    scaling,
+    nTree = nTree,
+    minNodeSize = minNodeSize,
+    mtry = mtry,
+    yesYVal = yesYVal,
+    holdout = holdout,
+    deweightPars = expandedDW,
+    appendedItems = appendedItems
+  )
+
+  return(model)
 }
 
 # rf <- dsldQeFairRF(fairml::compas, "two_year_recid", "race")
