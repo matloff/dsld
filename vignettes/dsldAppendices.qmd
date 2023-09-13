@@ -142,3 +142,56 @@ mandatory for avoiding misleading or invalid results.
 
 ## Appendix D: Installing the Software
 
+<!-- Introduction/Pkg installation -->
+
+### Python Interface Example
+
+As previously mentioned, python wrappers are included for most functions. 
+As an example, let's use the python interface for dsldTakeALookAround 
+(the python equivalent function is called **dsldPyTakeALookAround**)  
+to view tabular information on how data features relate to Y and S. The 
+python function allows users to enter arguments using Python data types 
+and converts the resultant R dataframe into a Pandas dataframe.
+
+To run any dsld python functions, the user must have rpy2 installed
+[rpy2 can be installed using **pip**, the python package installer]{.column-margin} 
+and be using Python version 3.10. The user also needs  
+
+Additionally, different python functions require different libraries 
+depending on what the function does -- Pandas
+[These libraries can also (usually) be installed with **pip**]{.column-margin} 
+is required for dsldPyTakeALookAround.
+
+<!-- This part may change if installation method changes -- assuming that we 
+are using devtools::install_github and have access to /dsld folder -->
+The user should open the Python Shell Prompt by typing **python** from the 
+package Python directory (/dsld/inst/Python) in the terminal/cmd prompt.
+Then, to run the Python function, we can run the following commands in the 
+python shell:
+
+```{python, eval=FALSE}
+from dsldTakeALook_Py_R import dsldPyTakeALookAround    
+import rpy2.robjects as robjects   
+robjects.r['data']('svcensus')    
+data = robjects.r('svcensus')    
+result = dsldPyTakeALookAround(data, 'wageinc', 'gender')   
+print(result)
+```
+
+The result should look like this:
+           Feature Names             a             b         c
+1                    age  31418.916344  32740.298455  0.343068
+2                   educ  29825.916959  33002.163073  0.365887
+3                    occ  33716.251760  31785.931852  0.357190
+4                wkswrkd  28199.560055  28500.244000  0.368417
+5               age,educ  30555.945299  32453.014685  0.368561
+6                age,occ  28793.883816  32460.906078  0.353006
+7            age,wkswrkd  26557.443695  26854.324788  0.365556
+8               educ,occ  32023.232511  31462.174426  0.359196
+9           educ,wkswrkd  26231.093981  27206.071269  0.369169
+10           occ,wkswrkd  24261.538281  26210.683317  0.363173
+11          age,educ,occ  30486.926154  31065.518682  0.353264
+12      age,educ,wkswrkd  27189.628361  25444.329741  0.363154
+13       age,occ,wkswrkd  25297.435386  26784.866098  0.353492
+14      educ,occ,wkswrkd  27315.129697  24245.990611  0.359211
+15  age,educ,occ,wkswrkd  26113.867311  25504.748939  0.364125
