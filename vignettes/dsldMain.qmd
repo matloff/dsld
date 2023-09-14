@@ -17,6 +17,8 @@ crossref:
    subref-labels: roman i
 format: 
   pdf:
+     include-before-body:
+        - "WageIncByGender.png"
      toc: true
      number-sections: true
 ---

@@ -4,7 +4,7 @@
 # Author Bios
 
 **Norman Matloff** is Professor Emeritus of Computer Science, and was
-[![NM](NMHighDef.jpg){width=100%}]{.column-margin}
+[![NM](NMHighDef.jpg){width=50%}]{.column-margin}
 formerly a Professor of Statistics at that university.  His
 participation in this project is informed in part by his experience
 serving in a number of litigation cases involving discrimination.  His
@@ -15,19 +15,24 @@ Regression and Classification: from Linear Models to Machine Learning*
 was the 2017 recipient of the Ziegal Award, given by the statistics
 journal *Technometrics*.
 
+**Taha Abdullah** is studying for a B.S. in Computer Science at
+[![TA](Taha.jpg){width=35%}]{.column-margin}
+University of California, Davis. He has a keen interest in pursuing a
+career in Software Engineering.
+
 {{< pagebreak >}}
 
 # Appendices {.appendix}
 
-## Appendix A: Standard Errors and Statistical Inference
+## Appendix A: Standard Errors$\textemdash$Statistical Inference in a Nutshell
 
 Say I wish to find the mean weight $\mu$ of all students at the University of
 California, Davis.  It would be infeasible to measure them all, so I
-take a random sample of 100 students.  The mean weight of those
+take a random sample of 100 students.  The mean weight of those 100
 students, denoted $\bar{X}$, is an estimate of $\mu$.
 
-I know that $\bar{X}$ will have some amount of error as an estimate of
-$\mu$.  One measure of this is its *standard error$ (SE).  What is this?
+I know that $\bar{X}$ will have some unknowm amount of error as an estimate of
+$\mu$.  One measure of this is its *standard error* (SE).  What is this?
 
 Remember, we took a random sample of students.  Different samples will
 have different values of $\bar{X}$, i.e. $\bar{X}$ will have *sampling
@@ -35,6 +40,10 @@ variation*.  Then the SE of $\bar{X}$ is defined to be the standard
 deviation of all possible $\bar{X}$ values, from all possible samples.
 
 The smaller the SE is, the more confident we are that the $\bar{X}$ from
+[Meaning of that 95% probability figure: Think of all possible 
+samples. Each one has an $\bar{X}$ value, and an SE value. So, each
+possible sample, there is a different confidence interval (CI). 
+95% of those CIs will contain the true $\mu$.]{.column-margin}
 our particular sample is pretty accurate.  Of course, we can't be
 completely sure, but we can quantify it probabilistically:
 
@@ -48,10 +57,6 @@ statistical estimators, such as estimated coefficients in linear and
 generalized linear models.  Hence we can find confidence intervals as
 above, taking the estimator plus and minus 1.96 times the SE of the
 estimator.
-
-Once one has obtained a statistical estimator, say of a linear
-regression coefficient,
-
 
 ## Appendix B: A Note on Causal Inference {#sec-causal}
 
