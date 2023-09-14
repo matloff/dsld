@@ -18,7 +18,11 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    person("Brandon", "Zarate Estrada", email = "bdzarate@ucdavis.edu",
    role = c("aut"))
    )
-Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>
+Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>, 
+   Aditya Mittal <adityamittal2031@gmail.com>,
+   Arjun Ashok <arjun3.ashok@gmail.com>,
+   Shubhada Martha <shubhadam2003@gmail.com>,
+   Taha Abdullah <tahaabdullahtech@gmail.com>
 VignetteBuilder: knitr
 Depends: fairml, ranger, fairness
 License: GPL (>= 2) 
