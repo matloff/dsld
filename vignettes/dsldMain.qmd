@@ -17,8 +17,6 @@ crossref:
    subref-labels: roman i
 format: 
   pdf:
-     include-before-body:
-        - "WageIncByGender.png"
      toc: true
      number-sections: true
 ---
@@ -225,7 +223,7 @@ So, let's get started.  One key point first, though:
 ::: {.callout-note}
 ### Notes on modeling, the role of the software, etc.
 
-This book makes use of the **dsld** software, but is definitely not a
+This book makes use of the **dsld** software, but is definitely nota
 user manual for that package.  Instead, it is a guide to the statistical
 principles, with the software playing a supporting role.
 
