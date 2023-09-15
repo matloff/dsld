@@ -3,8 +3,8 @@
 
 # Author Bios
 
+[![NM](NMHighDef.jpg){width=45%}]{.column-margin}
 **Norman Matloff** is Professor Emeritus of Computer Science, and was
-[![NM](NMHighDef.jpg){width=50%}]{.column-margin}
 formerly a Professor of Statistics at that university.  His
 participation in this project is informed in part by his experience
 serving in a number of litigation cases involving discrimination.  His
@@ -13,19 +13,19 @@ university-wide Distinguished Teaching Award, Outstanding Adviser Award,
 and Distinguished Public Service Award.  His book, *Statistical
 Regression and Classification: from Linear Models to Machine Learning*
 was the 2017 recipient of the Ziegal Award, given by the statistics
+[![TA](Taha.jpg){width=35%}]{.column-margin}
 journal *Technometrics*.
 
 **Taha Abdullah** is studying for a B.S. in Computer Science at
-[![TA](Taha.jpg){width=35%}]{.column-margin}
 University of California, Davis. He has a keen interest in pursuing a
 career in Software Engineering.
 
 **Aditya Mittal** is pursuing a B.S. in Statistics with a minor in Computer
-[![AM](adityamittal.png){width=35%}]{.column-margin}
 Science at University of California, Davis. During the summer, he is
 employed as a Business Analyst Intern at Cisco and will be returning in
 summer 2024 for another round. He is interested in pursuing a career in
 machine learning/software engineering. Fun fact: He moved to the U.S.
+[![AM](adityamittal.png){width=35%}]{.column-margin}
 in 2014 from Mumbai, India.
 
 {{< pagebreak >}}
