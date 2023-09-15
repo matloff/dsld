@@ -20,6 +20,14 @@ journal *Technometrics*.
 University of California, Davis. He has a keen interest in pursuing a
 career in Software Engineering.
 
+**Aditya Mittal** is pursuing a B.S. in Statistics with a minor in Computer
+[![AM](adityamittal.png){width=35%}]{.column-margin}
+Science at University of California, Davis. During the summer, he is
+employed as a Business Analyst Intern at Cisco and will be returning in
+summer 2024 for another round. He is interested in pursuing a career in
+machine learning/software engineering. Fun fact: He moved to the U.S.
+in 2014 from Mumbai, India.
+
 {{< pagebreak >}}
 
 # Appendices {.appendix}
