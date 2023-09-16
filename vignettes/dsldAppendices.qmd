@@ -3,8 +3,10 @@
 
 # Author Bios
 
+## Norman Matloff 
+
+is Professor Emeritus of Computer Science, and was
 [![NM](NMHighDef.jpg){width=45%}]{.column-margin}
-**Norman Matloff** is Professor Emeritus of Computer Science, and was
 formerly a Professor of Statistics at that university.  His
 participation in this project is informed in part by his experience
 serving in a number of litigation cases involving discrimination.  His
@@ -13,20 +15,58 @@ university-wide Distinguished Teaching Award, Outstanding Adviser Award,
 and Distinguished Public Service Award.  His book, *Statistical
 Regression and Classification: from Linear Models to Machine Learning*
 was the 2017 recipient of the Ziegal Award, given by the statistics
-[![TA](Taha.jpg){width=35%}]{.column-margin}
 journal *Technometrics*.
+[![TA](Taha.jpg){width=35%}]{.column-margin}
 
-**Taha Abdullah** is studying for a B.S. in Computer Science at
+## Taha Abdullah 
+
+is studying for a B.S. in Computer Science at
 University of California, Davis. He has a keen interest in pursuing a
 career in Software Engineering.
 
-**Aditya Mittal** is pursuing a B.S. in Statistics with a minor in Computer
+## Arjun Ashok 
+
+is currently a sophomore undergraduate at UC Davis
+[![AA](AA.jpg){width=30%}]{.column-margin}
+double-majoring in Computer Science and Statistics with a minor in Economics.
+As indicated by his past research and publications, he's primarily interested
+in the R&D side of machine learning, although he's intent on taking his
+knowledge into real-world applications for developmental purposes.
+
+## Shubhada Martha
+
+is a third year Computer Science student pursuing her undergraduate
+studies at UC Davis. She's passionate about ethics in technology in the
+areas of full stack development and AI and Machine Learning. During her
+[![SM](SM.jpeg){width=35%}]{.column-margin}
+spare time, she likes to read spiritual and self-improvement books and
+paint.
+
+## Aditya Mittal 
+
+is pursuing a B.S. in Statistics with a minor in Computer
+[![AM](adityamittal.png){width=35%}]{.column-margin}
 Science at University of California, Davis. During the summer, he is
 employed as a Business Analyst Intern at Cisco and will be returning in
 summer 2024 for another round. He is interested in pursuing a career in
 machine learning/software engineering. Fun fact: He moved to the U.S.
-[![AM](adityamittal.png){width=35%}]{.column-margin}
 in 2014 from Mumbai, India.
+
+## Billy Ouattara
+
+is a senior Computer Science and Engineering student, I have had the
+[![BO](BO.jpg){width=35%}]{.column-margin}
+privilege of exploring my passion for Machine Learning (ML) and
+Artificial Intelligence (AI).  His academic journey has been defined by
+a strong commitment to ethical considerations in the development and
+deployment of ML/AI models. This dedication is one of the key reasons he
+eagerly participated in this project.
+
+## Brandon Zarate 
+
+is a senior student at UC Davis studying Computer Science.
+
+[![BZ](BZ.png){width=35%}]{.column-margin}
 
 {{< pagebreak >}}
 
