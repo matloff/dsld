@@ -6,12 +6,12 @@ author:
   - Norman Matloff, Project Lead
   - Taha Abdullah
   - Arjun Ashok
-  - Brandon Estrada
   - Shubhada Martha
   - Aditya Mittal 
   - Billy Ouattara 
   - Jonathan Tran
-date: "9/13/2023"
+  - Brandon Zarate
+date: "9/16/2023"
 crossref:
    labels: roman i
    subref-labels: roman i
@@ -62,8 +62,9 @@ well as introduction to use of the package.
 In addition to having rudimentary skill in R, the user should have a
 very basic [Python wrappers are included for most
 functions.]{.column-margin} knowledge of statistical inference--mean,
-variance, confidence intervals and tests, and histograms.  A "bare
-bones" refresher, with emphasis on intuition, is given in Appendix A.
+variance, confidence intervals and tests, and histograms.  A short,
+intuitive "bare bones" refresher, focused on confidence intervals, 
+is given in Appendix A.
 
 ## The dsld package
 

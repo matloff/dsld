@@ -749,7 +749,7 @@ print(w)
 The pattern here seems to be a bit uneven, but again, Black and white
 test takers seem to be on par with each other.
 
-## Case study: problems with significance testing
+## Case study: problems with significance testing {#sec-sig}
 
 In 2016, the American Statistical Association released its first-ever
 position paper, to warn of the problems of significance testing and
@@ -758,6 +758,11 @@ position paper, to warn of the problems of significance testing and
 school data to illustrate.
 
 There is concern that the LSAT and other similar tests may be
+[Review: To test the hypothesis $H_0: \beta_i = 0$, one computes
+twice the area to the right of $|b_i|$ in the standard normal
+distribution.  That number is the *significance* level, with values
+under 0.05 being termed *significant*; 0.01 is the criterion for *highly
+significant*, and so on.]{.column-margin}
 heavily influenced by family income, thus unfair, especially to 
 underrepresented minorities.  To investigate this, let's
 consider the b~i~, the estimated coefficients in our linear model
