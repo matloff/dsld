@@ -19,6 +19,8 @@ format:
   pdf:
      toc: true
      number-sections: true
+     fig_caption: no
+     fig_numbers: no
 ---
 
 ```{r}
@@ -29,13 +31,13 @@ library(qeML)
 
 {{< pagebreak >}}
 
-# Overview
-
 ```{r,echo=FALSE}  
 data(svcensus)
 dsldDensityByS(svcensus,'wageinc',
    'educ','plot',fill=TRUE)
 ```
+
+# Overview
 
 Discrimination is a key social issue in the US and in a number of other
 countries.  There is lots of available data with which one might
@@ -43,10 +45,10 @@ investigate possible discrimination.  But how might such investigations
 be conducted?
 
 Our **dsld** package provides both graphical and analytical tools
-for this purpose.  We see it as widely applicable; here are just a few
+for this purpose.  It is widely applicable; here are just a few
 use cases:
 
-* Quantitative analysis in instruction and research in social science.
+* Quantitative analysis in instruction and research in the social sciences.
 
 * Corporate HR analysis and research.
 
@@ -54,30 +56,33 @@ use cases:
 
 * Concerned citizenry. 
 
-This document provides a tutorial regarding applicable methodology, as
+This book provides a tutorial regarding applicable methodology, as
 well as introduction to use of the package.
 
 ## Prerequisite background
 
 In addition to having rudimentary skill in R, the user should have a
-very basic [Python wrappers are included for most
-functions.]{.column-margin} knowledge of statistical inference--mean,
-variance, confidence intervals and tests, and histograms.  A short,
-intuitive "bare bones" refresher, focused on confidence intervals, 
-is given in Appendix A.
+very basic knowledge of statistical inference--mean, variance,
+confidence intervals and tests, and histograms.  A short, intuitive,
+"bare bones" refresher, focused on confidence intervals, is given in
+Appendix A.
+
+Mathematical background, e.g. linear algebra, calculus and probability
+theory, are **not** required, and concepts are explained via intuitive
+language.
 
 ## The dsld package
 
-The **dsld** package, which this tutorial uses for examples, has two
+The R package **dsld**, which this tutorial uses for examples, has two
+[Python wrappers are included for many functions.]{.column-margin} 
 aims:
 
 * To enable exploratory analysis of possible discrimination effects
 through various graphical and tabular functions.
 
-* To enable formal statistical analysis of such effects via addition of
-a number of group-comparison operations to general R functions
-such as **lm()** and **glm()**, thereby facilitating comparisons across
-races, genders and so on.
+* To enable formal statistical analysis of such effects via both
+  enhanced access to general R functions such as **lm()** and **glm()**
+  and various functions from the **qeML** machine learning package.
 
 # Introduction and Motivating Examples
 
@@ -85,8 +90,7 @@ To set the stage, consider the following:
 
 ## UC Berkeley discrimination claims 
 
-![UCB](SatherGate.jpg){width=15%}
-
+![ ](SatherGate.jpg){width=35%}
 
 UC Berkeley was accused of discriminating against female applicants
 for graduate school, and indeed the overall acceptance rate for women
@@ -103,7 +107,7 @@ rate to below that of men.
 
 ## US Census data {#sec-census}
 
-![US Census](USCensus.png){width=25%}
+![ ](USCensus.png){width=40%}
 
 The **svcensus** dataset is a subset of US census data from back in 2000,
 focusing on six engineering occupations.  [Included here in the **dsld**
@@ -116,61 +120,64 @@ pay gap, of about 16%.
 
 ## Commonality
 
-In both examples, we have an outcome variable Y of interest--acceptance
-rate and wage income--and a sensitive variable S, which was gender in
-both examples.  But in both cases, were concerned that merely comparing
+In both examples, we have an outcome variable Y of interest$\textemdash$acceptance
+rate and wage income$\textemdash$and a sensitive variable S, which was gender in
+both examples.  But in both cases, were are concerned that merely comparing
 mean Y for each gender was an oversimplication, due to a possible
-*confounder* C--department in the first example, occupation in the
+*confounder* C$\textemdash$department in the first example, occupation in the
 second.  Failure to take confounders (there can be more than one, and 
 usually are so) into account can lead to spurious "relations" between S
 and Y.  
 
 ::: {.callout-note}
-### Confounder Adjustment Settings
+### Confounder adjustment analysis
 
-So, in general, we wish to investigate the impact of a sensitive
+So, in general, we wish to *estimate the impact* of a sensitive
 variable S on an outcome variable Y, but *accounting for confounders* C.
-Let's call them "confounder adjustment" settings.
+Let's call such analysis "confounder adjustment."
 
 :::
 
-Now contrast the above examples with a different kind:
+The above discussion summarizes the goal of Part I of this book.
+Now contrast the above examples with a different kind, which will
+concern Part II:
 
 ## COMPAS recidivism data
 
 COMPAS is a commercial machine learning software tool for aiding judges
-to predict recidivism by those convicted of crimes.  A 2016 [**Pro
-Publica**
-article](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing)
-investigated, finding  the tool to be racially biased; African-American
-defendants tended to be given harsher ratings--i.e. higher estimated
-probabilities of recidivism--than similarly situated white defendants.
+in sentencing defendants convicted of a crime.  The tool's main function
+is to predict recidivism by a defendant. But a 2016 [*Pro Publica*
+investigation](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing)
+found that the tool to be racially biased; African-American defendants
+tended to be given harsher ratings$\textemdash$i.e. higher estimated
+probabilities of recidivism$\textemdash$than similarly situated white
+defendants.
 
-Northpointe, the firm that developed COMPAS, [disagrees with the *Pro
-Publica*
+Northpointe, the firm that developed COMPAS, [rejects the *Pro Publica*
 analysis](https://www.equivant.com/response-to-propublica-demonstrating-accuracy-equity-and-predictive-parity/),
-and we are not supporting either side here.  But if the COMPAS tool were
+and we are not supporting either side here.  
+[Note that both *Pro Publica*'s analysis and that of Northpointe used
+methodology like that presented in this book.]{.column-margin}
+But if the COMPAS tool were
 in fact biased, how could the analysis be fixed?  
 
-**A key point is that any remedy must not only avoid using race directly,
-but must also minimize the impact of variables O that are separate from
-race but still correlated with it, known as *proxies*.**  If, say,
-educational attainment is correlated with race, its inclusion in our
-analysis will mean that race is still playing a role in our analysis
-after all.  
+A key point is that any remedy must not only avoid using race
+directly, but must also minimize the impact of variables O that are
+separate from race but still correlated with it, known as *proxies*.
+If, say, educational attainment is correlated with race, the inclusion
+of educational in our analysis will mean that race is still playing a
+role in our analysis after all.  
 
 ::: {.callout-note}
-### Fair ML Settings
+### Fair ML analysis
 
-Thus our goal is to predict the outcome variable Y, without 
+Thus our goal is to *predict the outcome* variable Y, without 
 using the sensitive variable S, while making only
 limited use of the proxy variables O.
 
 :::
 
 ## Summary:  the two kinds of discrimination analysis covered here
-
-This COMPAS example falls in the category of *fairness in machine learning ML*.
 
 Note the difference between accounting for confounders on the one hand,
 and fair ML on the other.  Here is a side-by-side comparison:
@@ -187,32 +194,33 @@ II, on fair ML, is more specific to discrimination settings.
 
 ## Summary of symbols
 
-We'll use X to denote the rest of the variables, i.e. those that are 
-related to Y but are not S, C or O.  The general terminology is that Y
-is variously termed the *outcome variable*, *target variable* or
-*dependent variable*; the X, C, S and O variables are known collectively
-as *covariates*, *features* or *independent variables*.
+The symbol X will at first denote all the the variables other than Y and
+S.  The general terminology is that Y is variously called the *outcome
+variable*, *target variable* or *dependent variable*; the X variables
+are known collectively as *covariates*, *features* or *independent
+variables*.
+
+Among the variables in X, we will separate out some to play the
+role of C (Part I) or O (Part II), after which X will refer to all
+variables other than Y, S, C and O.  
+
+In terms of the above examples, here are the roles of the variables:
+
 
   example      Y            C                S        O
   ---------    ---------    -------          ---      ---
-  UCB admits   acceptance   program          gender   \-
+  UCB admits   acceptance   department       gender   \-
   Census       wage         e.g. occupation  gender   \-
-  COMPAS       sentence     \-               race     e.g. education
+  COMPAS       recidivate   \-               race     e.g. education
 
 
-## Format of this tutorial
+## Plan of the book
 
-We treat the topics in this order:
+As noted, the book consists of two main topics:
 
-* adjusting for confounders
+* Part I, adjusting for confounders
 
-* fair ML
-
-Within each of the above topics, we cover:
-
-* graphical and tabular exploration
-
-* formal quantitative analysis
+* Part II, fair ML
 
 In each case, we present explanations of the relevant concepts, so that
 this is a general tutorial on methodology for analysis of
@@ -224,7 +232,7 @@ So, let's get started.  One key point first, though:
 ::: {.callout-note}
 ### Notes on modeling, the role of the software, etc.
 
-This book makes use of the **dsld** software, but is definitely nota
+This book makes use of the **dsld** software, but is definitely not a
 user manual for that package.  Instead, it is a guide to the statistical
 principles, with the software playing a supporting role.
 

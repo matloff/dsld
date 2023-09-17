@@ -250,9 +250,7 @@ mandatory for avoiding misleading or invalid results.
 
 ## Appendix D: Installing the Software
 
-<!-- Introduction/Pkg installation -->
-
-### Python Interface Example
+## Python Interface 
 
 As previously mentioned, python wrappers are included for most functions. 
 As an example, let's use the python interface for dsldTakeALookAround 
