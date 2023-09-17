@@ -354,10 +354,12 @@ summary(w)
 
 Ah, this is a more nuanced probe than the ones above in which we simply
 [This is an example of *Simpson's Paradox*, in which an overall average
-effect might be large than the terms that make up the average.]{.column-margin}
-used age as a confounder.  The male-female differences at both the older
-and younger age levels, about $9800 and $7800, are both substantial, but
-smaller than the $13,100 overall figure we obtained earlier.  
+effect might be larger than the terms that make up the average.  In
+fact, the algebraic signs may change, as we saw with the UC Berkeley
+admissionss data in @sec-ucb.]{.column-margin} used age as a confounder.
+The male-female differences at both the older and younger age levels,
+about $9800 and $7800, are both substantial, but smaller than the
+$13,100 overall figure we obtained earlier.  
 
 Note too the impact of age within genders.  Older women made about $8200
 more than younger women, but for men the figure was rather larger, about
@@ -380,7 +382,7 @@ Just as linear models are the most commonly used for numeric Y, in the
 binary-Y case the go-to standard is the logistic model.  To introduce
 it, let's first consider a very simple prediction problem, in which Y is
 gender, say 1 for male, 0 for female, and X is simply income, using the
-**svcensus** data.
+**svcensus** data (no C here).
 
 ::: {.callout-note}
 ### Probability is a special case of a mean
@@ -390,17 +392,20 @@ average of a bunch of 1s and 0s is the proportion of 1s.  In the data
 those numbers are 1s.
 :::
 
-Now consider a simple setting in which we are predicting Y = gender from
-a single variable X = income (no C here).  Suppose that within each
-gender, X has a normal (Gaussian) distribution, the familiar
-"bell-shaped" curve, with the same standard deviation for each gender.
-Then it turns out that one can show mathematically that
+Suppose that within each gender, X has a normal (Gaussian) distribution,
+the familiar "bell-shaped" curve, with the same standard deviation for
+each gender.  Then it turns out that one can show mathematically that
 
 probability male =
 $$
 \frac
 {1}{1 + e^{-(\beta_0 + \beta_1 income)}}
 $$
+
+The values $\beta_0$ and $\beta_1$ actually are expressions involving
+quantities such as the per-gender mean incomes, but the point is that in
+the end the probability has a linear component to it, $\beta_0 + \beta_1
+income$.
 
 That formula follows the form of the *logistic function*,
 $f(t) = 1 / [1 + e^{-t}]$, which has the shape of an S-curve:
@@ -476,10 +481,10 @@ The curves are no longer parallel; they even cross.  They typically
 don't cross in applied settings, but they are always nonparallel.
 
 The implication of this is the same as in the linear case.  We cannot
-speak of "the" impact of S on Y, as it will be the same at different
+speak of "the" impact of S on Y, as it will not be the same at different
 levels of the X and C variables.  So there is no direct analog of the
 no-interactions case for linear models, in which we could speak of
-$\beta_2$ is being "the" gender pay gap, frre.
+$\beta_2$ as being "the" gender pay gap.
 
 Some books motivate the logistic approach as the *log-odds* ratio,
 meaning in this example that the logarithm of the ratio (probability
