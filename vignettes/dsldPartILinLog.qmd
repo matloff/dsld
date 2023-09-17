@@ -495,8 +495,8 @@ male) / (probability female) is linear in age and income.
 
 So here we do have a formulation in which the impact of wage is the same
 [Note that a log-odds measure can take on any value betwen $-\infty$ and
-$\infty$.]{.column-margin}
-for any age level, albeit on a much less-interpretable scale.  
+$\infty$.]{.column-margin} for any age level, albeit on this much
+less-interpretable log scale.  
 
 ### Example: mortgage data
 
@@ -520,16 +520,16 @@ So, being Black resulted in an average increase in log-odds of about
 a similar estimated coefficient of about 0.6355.
 
 
-## Machine Learning Approaches
+## Machine learning approaches
 
 We referred to the quantities $\beta_i$ above as "parameters."  The
 linear and logistic models are thus called *parametric* models.  In each
 case, the regression function is modeled as linear, "S curve-shaped" and
-so on, that can be described with just a few quantities.
+so on, that can be described with just a few parameters.
 
 But these models make assumptions, such as assuming the regression
-function is approximately linear.  It would be nice to conduct
-analyses that don't rely on such assumptions.
+function is approximately linear.  It would be nice to have available
+methods that don't rely on such assumptions.
 
 *Machine learning* (ML) algorithms typically do not assume the regression
 function has any particular form.  They are thus "safer," though on the
@@ -540,7 +540,7 @@ errors available for regression function values at given points.
 ML is mainly concerned with prediction, while we here are interested in
 estimation of effect sizes.  However, ML algorithms either directly or
 indirectly do their prediction by estimating the regression function, as
-we do here, so they can be quite useful.
+we do here, so they can be quite useful in our context.
 
 ### The k-Nearest Neighbor algorithm
 
@@ -565,9 +565,9 @@ might use the full dataset, no holdout.
 
 ```{R}
 set.seed(9999)
-w <- dsldML('svcensus',quote(wageinc),'gender',
+z <- dsldML('svcensus',quote(wageinc),'gender',
    qeMLftnName='qeKNN',opts=list(k=50))  
-print(w)  
+print(z)  
 ```
 
 The first three arguments are as usual.  The fourth states that the ML
@@ -592,7 +592,7 @@ having worked 52 weeks, women's average wage is 48,914 and for men it's
 As before, we see a substantial gender wage gap, but now we can feel
 more confident about it, since this analysis is unencumbered by
 assumptions on the form of the regression function.  On the other hand,
-there is no easy way to obtain standard errors. 
+as noted, there is no easy way to obtain standard errors. 
 
 ### The random forests algorithm
 
@@ -617,12 +617,12 @@ at V4.  If it's under 28, we immediately predict status DH, and so on.
 The order in which variables are considered in building a tree is random
 for each tree.  So, while V6 is considered first in the tree displayed
 here, in some other tree it may be, say, V2.  The split points, e.g. 16
-in the root node in the picture, are through formulas that depend on the
-data in complex (though not terribly deep) ways.
+in the root node in the picture, are obtained through formulas that
+depend on the data in complex (though not terribly deep) ways.
 
 There is no "universally best" predictive algorithm, with performance of
 a given algorithm being dependent on the given dataset.  So, instead of
-doing a kNN analysis, we could try RF.
+doing a kNN analysis, we could try RF:
 
 ```{R}
 set.seed(9999)
@@ -631,7 +631,10 @@ w <- dsldML('svcensus',quote(wageinc),'gender',
 print(w)  
 ```
 
-The results here are rather different from what we obtained with kNN.   
+Though still indicating a gender wage gap, the results here are rather
+different from what we obtained with kNN.   Which one is better in this
+particular application?  Again, we may decide this on the basis of
+prediction accuracy on the holdout set:
 
 ### Other ML methods
 
