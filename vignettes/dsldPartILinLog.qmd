@@ -566,7 +566,7 @@ might use the full dataset, no holdout.
 ```{R}
 set.seed(9999)
 z <- dsldML('svcensus',quote(wageinc),'gender',
-   qeMLftnName='qeKNN',opts=list(k=50))  
+   qeMLftnName='qeKNN',opts=list(k=50),holdout=1000)  
 print(z)  
 ```
 
@@ -627,14 +627,14 @@ doing a kNN analysis, we could try RF:
 ```{R}
 set.seed(9999)
 w <- dsldML('svcensus',quote(wageinc),'gender',
-   qeMLftnName='qeRF')  
+   qeMLftnName='qeRF',holdout=1000)  
 print(w)  
 ```
 
 Though still indicating a gender wage gap, the results here are rather
 different from what we obtained with kNN.   Which one is better in this
 particular application?  Again, we may decide this on the basis of
-prediction accuracy on the holdout set:
+prediction accuracy on the holdout set.
 
 ### Other ML methods
 
