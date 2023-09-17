@@ -12,7 +12,7 @@
 #    for that function
 
 dsldML <- function(dataName, yName, sName, sComparisonPts = 'rand5',
-                   qeMLftnName, opts = NULL) {
+                   qeMLftnName, opts = NULL,holdout=NULL) {
 
   # args checking
   if (!inherits(yName,'name')) stop('specify yName via quote()')
@@ -37,12 +37,15 @@ dsldML <- function(dataName, yName, sName, sComparisonPts = 'rand5',
   {
     subData <- data[data[,scol]==sLevel,]
     subData <- subData[,-scol]
-    cmd <- buildQEcall(qeMLftnName,'subData',yName,opts)
+    cmd <- buildQEcall(qeMLftnName,'subData',yName,opts,holdout=holdout)
     evalr(cmd)
   }
   
   qeOut <- lapply(slevels,do1Slevel)
   names(qeOut) <- slevels
+
+  testAccs <- sapply(qeOut,function(qeo) qeo$testAcc)
+  res <- list(testAccs = testAccs)
 
   tmp <- sComparisonPts
   for (sl in slevels) {
@@ -55,8 +58,10 @@ dsldML <- function(dataName, yName, sName, sComparisonPts = 'rand5',
     } else preds <- as.vector(preds)
     tmp[[sl]] <- preds
   }
+
+  res$comparisons <- tmp
   
-  return(tmp) 
+  return(res) 
 }
 
 
