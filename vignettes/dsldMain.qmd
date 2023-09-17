@@ -121,11 +121,15 @@ pay gap, of about 16%.
 ## Commonality
 
 In both examples, we have an outcome variable Y of interest$\textemdash$acceptance
+[As noted earlier, this book avoids technical definitions, keeping to
+the intuitive, including our notion here of a confounder. Actually, a
+fully precise definition is rather
+[problematic](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4276366/).]{.column-margin}
 rate and wage income$\textemdash$and a sensitive variable S, which was gender in
 both examples.  But in both cases, were are concerned that merely comparing
 mean Y for each gender was an oversimplication, due to a possible
 *confounder* C$\textemdash$department in the first example, occupation in the
-second.  Failure to take confounders (there can be more than one, and 
+second$\textemdash$ that is related to both variables.  Failure to take confounders (there can be more than one, and 
 usually are so) into account can lead to spurious "relations" between S
 and Y.  
 
@@ -214,7 +218,7 @@ In terms of the above examples, here are the roles of the variables:
   COMPAS       recidivate   \-               race     e.g. education
 
 
-## Plan of the book
+## A word before getting started
 
 As noted, the book consists of two main topics:
 
@@ -239,9 +243,9 @@ principles, with the software playing a supporting role.
 Any statistical model is approximate.  [The pioneering statistician
 George Box famously said, "All models are wrong, but some are
 useful."]{.column-margin}  And virtually any relation of interest in
-practice is nonzero.  Modern statistical thinking shies away from
-p-values, and asks instead whether A has an effect on B that is
-substantial enough to be of interest.
+practice is nonzero.  Modern statistical thinking places reduced
+emphasis on significance tests and p-values, and asks instead whether A
+has an effect on B that is substantial enough to be of interest.
 
 A related point is that, unlike some readers may have experienced in
 some statistics courses, real-world statistical analysis is not

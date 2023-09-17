@@ -2,13 +2,12 @@
 # Part I:  Adjustment for Confounders   
 
 How do we adjust for confounders?  The most common approach involves
-[There will also be the question of *which* possible confounders to use.
-]{.column-margin} linear models, with which we express the mean Y for
-given values of the X, C and S variables in a linear form.  
+*linear models*, with which we express the mean Y for given values of
+the X, C and S variables in a linear form.  
 
 ::: {.callout-note}
 ### Important term: the *regression function*
-The relation of mean Y to the X, C and S variables is formally called
+The relation of mean Y to the X, C (or O) and S variables is formally called
 the *regression function* of Y on those variables. Our first model
 below, which expreses mean income as a function of age and gender,
 will assume this relation as linear, but the term *regression function*
@@ -30,7 +29,9 @@ investigating a possible gender pay gap.  So Y is wage and S is gender.
 We might treat age as a confounder C, reasoning as follows.  Older
 workers tend to have more experience and thus higher wages, and if there
 is an age differential in our data, say with female workers tending to
-be older, this may mask a gender pay gap.  
+be older, this may mask a gender pay gap:  If men make more money than
+women of the same age, but women tend to be old, the gender and age
+effects may largely cancel out.
 
 So, let's take the set of confounders C to consist of age, and for
 simplicity in this introductory example, not include any other
@@ -53,7 +54,7 @@ calls R's **lm**, which replaces that column by a dummy variable
 f categories, R will create f-1 dummies.]{.column-margin} 
 
 ```{r}
-svcensus1 <- 
+svcensus1 <-
    svcensus[,c(1,4,6)]  # age, wage, gender
 z <- dsldLinear(svcensus1,'wageinc','gender')
 coef(z)  # print the estimated coefficients b_i 
@@ -202,15 +203,21 @@ z <- dsldLinear(svcensus1,'wageinc','gender',interactions=T,
 summary(z)
 ```
 
-So the gender pay gap is estimated to be -13156.88 at age 36, -13039.27
-[The classical approach to choosing between the no-interaction and
-with-interaction models is of course to test the hypothesis $H_0:
-\beta_3=0$.  As noted earlier, modern practice discourages such
-approaches, which can be misleading.]{.column-margin}
-at age 43, only about $100.  The estimated gap between ages 36 and 53,
-not shown, is larger, close to $300, but it seems there is not much
-interaction here.  The no-interactions model should be adequate after
-all.
+In setting that **newData** argument, we need one row for every variable
+other than Y and S.  In this case, there is just one such variable, age.
+So, in the above call, we are fitting two linear models, one for men and
+another for women, then comparing regression function values at the two
+specified ages.
+
+So the gender pay gap is estimated to be -13156.88 at age 36, and
+-13039.27 [The classical approach to choosing between the no-interaction
+and with-interaction models is of course to test the hypothesis $H_0:
+\beta_3=0$.  As noted earlier and detailed in @sec-sig, modern practice
+discourages such approaches, which can be misleading.]{.column-margin}
+at age 43, differing by only about $100.  The estimated gap between ages
+36 and 53, not shown, is larger, close to $300, but it seems there is
+not much interaction here.  The no-interactions model should be adequate
+after all.
 
 ### Linearity and other assumptions
 
@@ -218,7 +225,7 @@ As noted, linear models are ubiquitous in observational data analysis.
 Open any professional journal in medicine, sociology, economics and so
 on, and you'll see many applications of this methodology.  But how would one
 check that most basic assumption, the linearity of the mean Y for given
-X, C and S values?
+X, C (or O) and S values?
 
 ::: {.callout-note}
 ### Assumptions--not just a formality
@@ -249,7 +256,7 @@ dsldConditDisparity(svcensus1,'wageinc','gender',
 The function plots a smoothed graph of Y against a user-specified C
 [The function has a 'conditions' argument; we have none here, so we just used a
 trival one, 'age > 0']{.column-margin} variable, once for each level of
-S.  So, the call here says, "Plot wage income against age, for each
+S.  So, the call here says, "Plot smoothed wage income against age, for each
 gender."  
 
 The model has mean Y being a linear of function of age, so we  should
@@ -280,7 +287,8 @@ coef(z)  # print the estimated coefficients b_i
 ```
 
 So we see that the original wage gap figure of about $13,000 was
-incorrect, underestimating it by about 15%.
+incorrect; it's actually estimated to be over $15,000, so the
+original model underestimated the gap by about 15%.
 
 We see in this example that misspecifying a linear model can have a
 major impact on its accuracy.  As usual, though, we will try to keep things
@@ -291,11 +299,12 @@ examples below.
 
 Other than linearity, the standard errors reported by **lm()** also [It
 is also assumed that wage income has a normal/gaussian distribution at
-each level, but the Central Limit Theorem's implications for the sums
-created by **lm()** are in fact approximately normal.]{.column-margin}
-assume that variance of wage income is approximately constant across
-ages and genders.  Lack of this property has some effect on the accuracy
-of reported standard errors, but this can be adjusted via the so-called
+each level, but the Central Limit Theorem's implication for the sums
+created by **lm()** is that the $b_i$ are in fact approximately normal.
+The normality assumption is not very important.]{.column-margin} assume
+that variance of wage income is approximately constant across ages and
+genders.  Lack of this property has some effect on the accuracy of
+reported standard errors, but this can be adjusted via the so-called
 *sandwich* operation, an option in **dsldLinear()**.
 
 ## S may consist of more than one factor 
