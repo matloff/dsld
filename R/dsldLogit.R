@@ -1,6 +1,5 @@
 ### --------------------------- DSLDCheckData ----------------------------------
 dsldCheckData <- function(data1, data2, yName) {
-  # check corresponding columns exist for data & interactions data
   data1 <- data1[, !(names(data1) == yName), drop = FALSE]
   missingCols <- setdiff(names(data1), names(data2))
   if (length(missingCols) > 0) {
@@ -25,76 +24,88 @@ dsldCheckData <- function(data1, data2, yName) {
       }
     }
   }
-
   return(data2)
 }
 
-
 ### ------------------------ DSLDLogit -----------------------------------------
-dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, yesYVal) {
-  # setup dsldGLM s3 object
+dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal) {
+  
   dsldModel <- list()
   data[[yName]] <- ifelse(data[[yName]] == yesYVal, 1, 0)
   
-  # raise error if user doesn't input sComparisonPts #
-  if (is.null(sComparisonPts)) {
-    sComparisonPts <- dsldGetRow5(data,yName, sName)
-  }
-  if (!is.data.frame(sComparisonPts)) {
-    stop(paste("Error: sComparisonPts must be a dataframe"))
-  }
-  
-  tempData <- data[, !(names(data) %in% sName)]
-  newData <- dsldCheckData(tempData, sComparisonPts, yName)
-  
-  # split data into list of dataframes by each level of sName #
-  dataSplit <- split(data, data[[sName]])
-  dataNames <- names(dataSplit)
-  
-  # loop and create model for each level in sName #
-  for (name in dataNames) {
+  # user wants interactions #
+  if (interactions) {
+    
+    # raise error if user doesn't input sComparisonPts #
+    if (is.null(sComparisonPts)) {
+      sComparisonPts = dsldGetRow5(data,yName, sName)
+    }
+    if (!is.data.frame(sComparisonPts)) {
+      stop(paste("Error: sComparisonPts must be a dataframe"))
+    }
+    
+    tempData <- data[, !(names(data) %in% sName)]
+    newData <- dsldCheckData(tempData, sComparisonPts, yName)
+    
+    # split data into list of dataframes by each level of sName #
+    dataSplit <- split(data, data[[sName]])
+    dataNames <- names(dataSplit)
+    
+    # loop and create model for each level in sName #
+    for (name in dataNames) {
+      # initialize instance of dsldDiffModel #
+      dsldDiffModel <- list()
+      
+      # get data for each specific S factor & drop sensitive column #
+      diffData <- dataSplit[[name]]
+      drop <- c(sName)
+      diffData <- diffData[, !(names(diffData) %in% drop)]
+      
+      # create the model #
+      diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
+                       family = "binomial", data = diffData)
+      
+      # setup individual instance of dsldDiffModel 
+      dsldDiffModel <- c(
+        dsldDiffModel,
+        yName,
+        sName,
+        list(diffModel),
+        list(newData),
+        list(summary(diffModel)),
+        list(coef(diffModel)),
+        list(diffData)
+      )
+      names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
+                                "summary", "coef", "data")
+      class(dsldDiffModel) <- "dsldDiffModel"
+      
+      # add instance into output list: dsldModel #
+      dsldModel[[name]] <- dsldDiffModel
+    }
+  } else {
     # initialize instance of dsldDiffModel #
     dsldDiffModel <- list()
     
-    # get data for each specific S factor & drop sensitive column #
-    diffData <- dataSplit[[name]]
-    drop <- c(sName)
-    diffData <- diffData[, !(names(diffData) %in% drop)]
+    # create model #
+    diffModel <- glm(formula = as.formula(paste(yName, "~ .")),
+                     family = "binomial", data = data)
     
-    # create the model #
-    diffModel <- glm(
-      formula = as.formula(paste(yName, "~ .")),
-      family = "binomial",
-      data = diffData
+    # setup instance of dsldDiffModel #
+    dsldDiffModel <- c(dsldDiffModel,
+                       yName,
+                       sName,
+                       list(diffModel),
+                       list(summary(diffModel)),
+                       list(coef(diffModel)),
+                       list(data)
     )
+    names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
+                              "coef", "data")
     
-    # setup instance of dsldDiffModel
-    dsldDiffModel <- c(
-      dsldDiffModel,
-      yName,
-      sName,
-      list(diffModel),
-      list(newData),
-      list(summary(diffModel)),
-      list(coef(diffModel)),
-      list(diffData)
-    )
-    names(dsldDiffModel) <- c(
-      "yName",
-      "sName",
-      "model",
-      "newData",
-      "summary",
-      "coef",
-      "data"
-    )
-    class(dsldDiffModel) <- "dsldDiffModel"
-    
-    # add instance into output list: dsldModel
-    dsldModel[[name]] <- dsldDiffModel
+    # add instance into dsldModel
+    dsldModel[[sName]] <- dsldDiffModel
   }
-
-  # return instance of the dsldGLM class
   class(dsldModel) <- "dsldGLM"
   return(dsldModel)
 }
@@ -119,7 +130,7 @@ coef.dsldGLM <- function(dsldGLM) {
 # coef(log1) 
 
 vcov.dsldGLM <- function(dsldGLM) {
-  # merge & return covariance matrix #
+  # merge & return coefficients #
   mergedCoef <- lapply(dsldGLM, function(x) vcov(x$model))
   return(mergedCoef)
 }
