@@ -879,20 +879,28 @@ view of many, no value at all, on significance testing.
 
 To be sure, not all statistical professionals are "modern." Some on the
 ASA committee that produced the position paper were more reserved on the
-matter, resulting in the paper going further than some would have
-preferred.  Nor is modernness necessarily a virtue.  But readers of this
-book are urged to always keep in mind the two examples
-above$\textemdash$family income and an interaction term each having
-minuscule impact even though the tests declared them
+matter, resulting in the paper not going further than some would have
+preferred.  Nor is modernness necessarily a virtue.  
+
+But readers of this book are urged to always keep in mind the two
+examples above$\textemdash$family income and an interaction term each
+having minuscule impact even though the tests declared them
 "significant"$\textemdash$in conducting future analyses, or assessing
 the analysis of others.
+
+Instead, form a confidence interval for the quantity of interest.  Do
+*not* just note whether the CI contains 0.  Where is the CI's center?
+How wide is it, relative to the accuracy you wish to have?   Then make
+your decision regarding importance of the effect on the basis of the
+overall situation, *not* by mechanically performing a test.
 
 ## Example: COMPAS dataset {#sec-compas}
 
 Recall that COMPAS is a tool developed to help judges decide on
 sentences in criminal trials, which it does by predicting whether the
-defendant is likely to recidivate.  Northpointe, the creator of the
-tool, disagrees.
+defendant is likely to recidivate.  As noted earlier, one study found
+the tool to be biased against African-Americans; the creator of the
+tool, Northpointe, disagrees.
 
 Let's investigate this, by predicting Y = the COMPAS score, with S =
 race and C = the remaining variables.  Does S have much effect on Y?
@@ -901,8 +909,10 @@ race and C = the remaining variables.  Does S have much effect on Y?
 data(compas1)
 w <- dsldLinear(compas1,'decile_score','race')
 summary(w)
-
 ```
+
+Y, the decile score, is the risk of recidivism; the larger the value of
+Y, the greater the risk.
 
 A 95% confidence interval for the mean difference between Black and
 Caucasian risk scores, holding age, juvenile felony count and so on
@@ -911,5 +921,7 @@ risk of recidivism is given in deciles, the value is 1,2,...,10, we see
 that the tool does indeed appear to be biased against Black defendants.
 Though the effect is rather small, around 0.6 of a decile point or less,  
 and as usual, one must keep in mind the possibility of unseen confounders,
-it is still a matter of serious concern.
+it is still a matter of serious concern.  Note that the estimated effect
+of being Blac, 0.4680, is actually larger than the estimated effect of
+having one additional juvenile felony count, 0.3948.
 
