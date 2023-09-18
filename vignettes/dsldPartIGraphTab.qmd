@@ -7,7 +7,7 @@ them all?  This section addresses those issues.
 
 We will address that second question first: Why not use all our
 variables, other than Y and S, as confounders?  We will see that if we
-have a large number of variables, there is good reason select only a
+have a large number of variables, there is good reason to select only a
 subset of potential confounders.  
 
 How might we do so?  We will first recommend some graphical and tabular
@@ -30,7 +30,7 @@ choose among for our confounders.  Which ones should we use?
 
 Technically, almost any variable is a confounder.  The impact may quite
 minuscule, but through a long chain of relations among many variables,
-there will usually be at least some connection, though possibly very
+there will usually be at least some connection, though again possibly very
 faint.
 
 Well, then, why not use them all?  That is what we've done in our
@@ -53,7 +53,7 @@ $2^{19}$ possibilities here, about half a million.
 
 Our specific purpose here is to find a reasonable set of  confounders.
 In essence, that means find variables C such that C is substantially
-correlated with both Y and S.  One way to approach that is that do
+correlated with both Y and S.  One way to approach that is to do
 separate predictions of Y and S, and see which features turn out to
 predict both well.  
 
@@ -61,7 +61,7 @@ predict both well.
 
 One useful tool here is the function **dsldFrequencyByS()**, which aims
 to analyze categorical (not numeric) columns by printing out a list of
-frequencies. Since education level in the **svcensus* data is
+frequencies. Since education level in the **svcensus** data is
 categorical, we can call the function as follows:
 
 ```{r}
@@ -82,23 +82,23 @@ data(svcensus)
 dsldFrequencyByS(svcensus, "occ", "gender")
 ```
 
-Notice the difference between the proportion of males in occupation 106
-[One might consider conducting formal statistical inference in this
-comparison, but the relevance to the issue of our ultimate statistical
-analysis of Y is unclear.  At any rate, here we are merely doing an
-exploratory analysis anyway.]{.column-margin} vs females in that same
-occupation--a difference of approximately 11%.  The difference in
-frequencies here is much greater than with the 'educ' example, which
-suggests using occupation as a confounder.  Since different occupations
-correlate with different wages, it is possible that this difference in
-occupations that men have compared with what women have could be
-affecting the relationship between gender and wage. 
+Notice for instance the difference between the proportion of males in
+occupation 106 [One might consider conducting formal statistical
+inference in this comparison, but the relevance to the issue of our
+ultimate statistical analysis of Y is unclear.  At any rate, here we are
+merely doing an exploratory analysis anyway.]{.column-margin} versus
+females in that same occupation--a difference of approximately 11%.  The
+difference in frequencies here is much greater than with the 'educ'
+example, which suggests using occupation as a confounder.  Since
+different occupations correlate with different wages, it is possible
+that this gender difference in occupations proportions could be
+affecting the perceived relationship between gender and wage. 
 
 ### Exploratory example: Law school admissions data
 
 Suppose we are investigating the relationship between LSAT exams scores
-and race, and wish to graphically explore the effects of the C, family
-income, on the relationship between Y = LSAT score, and S = race.
+and race, and wish to graphically explore the effects of C, family
+income, on the relationship between Y = LSAT score, with S = race.
 
 We have to look at both the relationship between race and LSAT scores
 and the relationship between race and family income. We may also want to
@@ -109,8 +109,8 @@ plot them in a 3D scatter plot:
 <!-- Placement pending -->
 ```{r, eval=FALSE}
 data(law.school.admissions)
-dsldScatterPlot3D(law.school.admissions, c('lsat','fam_inc','ugpa'), 'race1',
-                  pointSize = 4)
+dsldScatterPlot3D(law.school.admissions, 
+   c('lsat','fam_inc','ugpa'), 'race1', pointSize = 4)
 ```
 
 ![](graphTab/lawscatterplot3d2.png){width="90%"}
