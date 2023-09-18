@@ -84,8 +84,9 @@ dsldFrequencyByS(svcensus, "occ", "gender")
 
 Notice for instance the difference between the proportion of males in
 occupation 106 [One might consider conducting formal statistical
-inference in this comparison, but the relevance to the issue of our
-ultimate statistical analysis of Y is unclear.  At any rate, here we are
+inference in this comparison, calculating a p-value from a *chi-square
+test*.  But as we saw in @sec-sig. testing for model fit suffers from
+the same problems as testing for nonzero effects.  At any rate, here we are
 merely doing an exploratory analysis anyway.]{.column-margin} versus
 females in that same occupation--a difference of approximately 11%.  The
 difference in frequencies here is much greater than with the 'educ'
