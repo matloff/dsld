@@ -866,16 +866,26 @@ quantity is *exactly* 0, i.e.  0.000... to infinitely many decimal
 places.  Indeed, in most cases our measuring instrument is not this
 accurate in the first place, and there will always be systemic bias or
 missingness, unobserved variables and so on, so exact zeroness is not
-answerable..
+even a meaningful concept.
 
 Thus in almost all cases, significance tests don't address the issue of
 interest, which is whether some population quantity is substantial
 enough to be considered important.  Analysts should not be misled by
-words like "significant." [Modern statistical
+words like "significant." [As noted, modern statistical
 practice](https://tinyurl.com/2s7x6h2v) places reduced value, or in the
 view of many, no value at all, on significance testing.
 
 :::
+
+To be sure, not all statistical professionals are "modern." Some on the
+ASA committee that produced the position paper were more reserved on the
+matter, resulting in the paper going further than some would have
+preferred.  Nor is modernness necessarily a virtue.  But readers of this
+book are urged to always keep in mind the two examples
+above$\textemdash$family income and an interaction term each having
+minuscule impact even though the tests declared them
+"significant"$\textemdash$in conducting future analyses, or assessing
+the analysis of others.
 
 ## Example: COMPAS dataset {#sec-compas}
 
