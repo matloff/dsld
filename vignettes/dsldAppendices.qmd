@@ -253,18 +253,51 @@ mandatory for avoiding misleading or invalid results.
 ## Python Interface 
 
 As previously mentioned, python wrappers are included for most functions. 
+
+### Requirements For All Python Functions
+
+To use these python functions, users need to have **Python** version **3.10** 
+installed on their system. 
+
+If the user has a later version of Python 
+installed (such as 3.11), and wants to keep that version of Python in 
+their system, they will have to manage multiple Python versions on their 
+system. One easy way to manage multiple environments 
+(in our case, multiple versions of Python for users who need it) is to 
+use [Conda](https://docs.conda.io/projects/conda/en/stable/), which is 
+a package and environment manager included in both 
+[Anaconda](https://docs.conda.io/projects/conda/en/stable/glossary.html#anaconda-glossary) 
+and [Miniconda](https://docs.conda.io/projects/conda/en/stable/glossary.html#miniconda-glossary).
+For our purposes, Miniconda is more useful as a minimalistic way to install 
+and use Conda. See [this guide](https://docs.conda.io/projects/miniconda/en/latest/) 
+for information on how to install Miniconda -- keep in mind that, at 
+this time, this package requires Python 3.10 (NOT the latest version of 
+Python), so when the guide prompts you to choose a Miniconda installer, 
+you can choose a link for Python 3.10 from this 
+[list](https://docs.conda.io/projects/miniconda/en/latest/miniconda-other-installer-links.html)
+which is also linked in the aforementioned guide.
+
+After installing miniconda, refer to [this section](https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html) 
+and later sections of the Conda user guide to set up an environment with 
+Python 3.10.
+
+Python 3.10 conveniently comes with **pip**, the python package installer. 
+It can be used to install various Python packages/modules that will be 
+required to run the dsld Python functions. **All** of our Python functions
+[To install rpy2, run **pip install rpy2** within the Python 3.10 environment, 
+or see [this link](https://rpy2.github.io/doc/latest/html/overview.html#install-from-source)]{.column-margin} 
+require **rpy2**, which allows for Python/R environment interaction.
+
+### Running dsld Python Functions
+
 As an example, let's use the python interface for dsldTakeALookAround 
-(the python equivalent function is called **dsldPyTakeALookAround**)  
+(the python-equivalent function is called **dsldPyTakeALookAround**)  
 to view tabular information on how data features relate to Y and S. The 
 python function allows users to enter arguments using Python data types 
 and converts the resultant R dataframe into a Pandas dataframe.
 
-To run any dsld python functions, the user must have rpy2 installed
-[rpy2 can be installed using **pip**, the python package installer]{.column-margin} 
-and be using Python version 3.10. The user also needs  
-
-Additionally, different python functions require different libraries 
-depending on what the function does -- Pandas
+Different python functions will require different libraries 
+depending on what the function does -- **Pandas**
 [These libraries can also (usually) be installed with **pip**]{.column-margin} 
 is required for dsldPyTakeALookAround.
 
