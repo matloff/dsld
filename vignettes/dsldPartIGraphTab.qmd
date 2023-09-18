@@ -97,17 +97,10 @@ affecting the perceived relationship between gender and wage.
 
 ### Exploratory example: Law school admissions data
 
-Suppose we are investigating the relationship between LSAT exams scores
-and race, and wish to graphically explore the effects of C, family
-income, on the relationship between Y = LSAT score, with S = race.
+Suppose we are investigating the relationships among the
+variables LSAT score, GPA and race.  One way to visualize these
+relationships would be through **dsldScatterPlot3D**:
 
-We have to look at both the relationship between race and LSAT scores
-and the relationship between race and family income. We may also want to
-look at the effects of GPA as well. A quick way to view multiple
-variables (and their relation to the sensitive variable) at once is to
-plot them in a 3D scatter plot:
-
-<!-- Placement pending -->
 ```{r, eval=FALSE}
 data(law.school.admissions)
 dsldScatterPlot3D(law.school.admissions, 
@@ -116,15 +109,23 @@ dsldScatterPlot3D(law.school.admissions,
 
 ![](graphTab/lawscatterplot3d2.png){width="90%"}
 
-Looking at the fam_inc axis, the lowest quintile of family income is
 [This is a **plotly** interactive graph.  To fully understand this
-function, the reader should execute the function outside of Quarto,
-trying features such as move, rotate, show annotation etc.]{.column-margin}
-mostly populated by Black and Latino students, while the upper two
-levels are almost entirely made up of white students. Interestingly on
-the lsat axis, most of those with a lower score happen to be non-white,
-across all income levels. On the other hand, the ugpa axis has a similar
-trend to that of the lsat axis, albeit to a much weaker extent.
+function, the reader should execute the function outside of Quarto, i.e.
+run the above code directly from R.  Try try features such as move,
+rotate, annotation display and so on.]{.column-margin} Of course,
+visualizing a 3-dimensional scatter plog is more challenging than
+viewing the ordinary 2-dimensional kind.  But it does enable richer
+search for relationships.  Here are a few trends suggested by the plot:
+
+* On the **fam_inc** axis, the lowest quintile of family income is
+  mostly populated by Black and Latino students, while the upper two
+  levels are almost entirely made up of white students. 
+
+* On the **lsat** axis, most of those with a lower score happen to be
+  non-white, across all income levels. 
+
+* The **ugpa** axis has a similar trend to that of the **lsat** axis, albeit
+  to a much weaker extent.
 
 Once again, this analysis is merely exploratory, but the graph lends
 some credence to claims that family income may confound the relationship
@@ -133,7 +134,7 @@ answer the question of whether, in this case, that relationship is substantial.
 The formal analysis we did earlier indicates that it is not.
 
 Returning to the question of whether race have a substantial impact on
-results, we can look at the density plot of LSAT scores against
+exam results, we can look at the density plot of LSAT scores against
 different races.
 
 ```{r, eval=FALSE}
@@ -144,9 +145,9 @@ dsldDensityByS(law.school.admissions, cName = "lsat", sName = "race1")
 
 ![](graphTab/lawdensitylsat.png){width="120%"}
 
-Each curve represents the distribution of LSAT scores for each race.
-From this, its easy to see the possibility of racial bias in the LSAT.
-But again, this bias may be confounded.
+Each curve represents the distribution of LSAT scores for one race.  The
+graph suggests the possibility of racial bias in the LSAT.  But again,
+this bias may be confounded.
 
 Recall that the scatter plot also suggested some trend between family
 income and race. We can investigate this possible relationship by
@@ -159,23 +160,22 @@ dsldDensityByS(law.school.admissions, cName = "fam_inc", sName = "race1")
 
 ![](graphTab/lawdensityfam.png){width="120%"}
 
-White students have larger peaks at income levels 3, 4, and 5,
-indicating that [Recall that the **fam_inc** variable is measured in
-terms of quintiles, 1 through 5.  This is the reason behind the
-seemingly-odd alignment of, say, the Black and Latino
-curves.]{.column-margin} a larger proportion of white students are in
-the higher income brackets than non-white students. Conversely, a larger
-proportion of black and Latino students occupy the lower income bracket
-levels.
+[Recall that the **fam_inc** variable is measured in terms of quintiles,
+1 through 5.  This is the reason behind the seemingly-odd alignment of,
+say, the Black and Latino curves.]{.column-margin} White students have
+larger peaks at income levels 3, 4, and 5, indicating that a larger
+proportion of white students are in the higher income brackets than
+non-white students. Conversely, a larger proportion of black and Latino
+students occupy the lower income bracket levels.
 
-[If we wanted to investigate other potential confounders, we can call 
+[If we want to investigate other potential confounders, we can call 
 **dsldConfounders()** with 'race1' as our sensitive variable.]{.column-margin}
 
 This suggests that family income could be confounding the potential 
 relationship between race and LSAT scores.  But, as noted, our earlier analysis indicated that the degree of this relationship is very small.
 
 ::: {.callout-note}
-### Almost anything is a Confounder
+### Almost anything is a confounder
 
 Once one accounts for links of two variables, then links of links and so
 on, virtually everything in practice is a confounder to *some* degree,
@@ -208,24 +208,12 @@ more important we deem the variable.
 
 ### The dsldCHunting() function
 
-This function serves as an aid to selecting confounders, using the 
-following approach.  Denote our dataset by **d**.
+This function serves as an aid to selecting confounders, using the
+permutation-based computation in the **randomForests** package.
 
-* Two columnwise subsets of **d** are formed, **dNoS** and **doNoY**,
-  deleting the respective column.
-
-* We fit a random forests model to **dNoS**, predicting Y, resulting in
-  variable importance measure **vY**.
-
-* We fit a random forests model to **dNoY**, predicting S, resulting in
-  variable importance measure **vS**.
-
-* We sort each of the two 'v' measures, from largest to smallest.
-
-* For each i, we take the intersection of the top-i 'v' measures in each set.
-
-By taking the intersection, we are focusing on variables that are
-correlated with both Y and S, as desired.
+Its operation is best described by example, which we will present next.
+Before reading it, though, recall that we are interested in finding
+variables that are correlated with, i.e. predict well, both Y and S.
 
 ### Example:  Boston mortgage data
 
@@ -239,18 +227,28 @@ dsldCHunting(mortgageSE,'deny','black')
 The importance measures are printed out (the ranking is what matters),
 followed by the "top-i" sets in common.
 
+For instance, the variables (excluding S) that predict Y well are
+first **p_irat**, then **denpmi** and so on.  In predicting S, excluding Y,
+the best are **p_irat**, then **loan_val** et cetera.
+
+Since we are focusing on variables that are correlated with both Y and
+S, we take the intersection.  For example, the intersection of the top
+three Y predictors and top three S predicts is  **p_irat** and
+**loan_val**.
+
 As usual, there are no magic formulas to use here.  The analyst is given
-a choice.  One might use just two confounders, 'p_irat' and 'loan_val';
-for a set of three, the software suggests 'p_irat', 'loan_val' and 'hse_inc',
+a choice.  One might use just the top two confounders, or the top three
 and so on.
+
 
 ### Example:  Employer bias test
 
 In the paper "Are Emily and Greg More Employable Than Lakisha and Jamal?
-A Field Experiment on Labor Market Discrimination" (*Am. Econ. Rev.,
+A Field Experiment on Labor Market Discrimination" (*Am. Econ. Rev.*,
 Sept. 2004), researcher "test" employers by sending CVs with
-"white-sounding" and "Black-sounding" names, checking for bias.  The
-resulting data is **lak* in **dsld**.
+"white-sounding" and "Black-sounding" names, checking for bias.  Did
+employers call "whites" more often than "Blacks" for an interview?  The
+resulting data is **lak** in **dsld**.
 
 ```{r}
 data(lak)
@@ -266,9 +264,9 @@ Actually, it's even worse.  Many rows of the dataset contain missing
 values (coded NA in R).  The version here uses only intact rows, of
 which there are 447.  (The original data had 4870 rows.)  A rough rule
 of thumb commonly cited in statistics is that in regression estimation,
-the number of features should be less than the square of the number of
+the number of features should be less than the square root of the number of
 data points; by this or almost any other measure, 61 predictors is well
-beyond the capacity of 4447 data points.  And, as noted, that number of
+beyond the capacity of 447 data points.  And, as noted, that number of
 variables is unwieldy.  Let's see what we can do to reduce that.
 
 ```{r}
@@ -276,6 +274,7 @@ dsldCHunting(lak,'call','race',25)
 ```
 
 We are seeking variables that are correlated both with Y and S, yet
-there appear to be many that correlate with just one of these.  But
+there appear to be many that correlate with just one of these.  That's
+to be expected for datasets having a large number pf variables.  But
 still, in the end we see a few that meet our goals.
 
