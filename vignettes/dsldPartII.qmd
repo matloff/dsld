@@ -24,15 +24,15 @@ still maintaining good predictive ability?
 
 ## Comparison to Part I
 
-First, recall our notation: [Actually, think of X as, at first,
+First, recall our notation: [As before with C, think of X as, at first,
 consisting of all variables other than Y and S, but then selecting some
 of X as O, with X then being all variables but Y, S and O.]{.column-margin}
 
-* Y; our outcome variable, to be predicted
+* Y: outcome variable, to be predicted
 
-* S: our sensitive variable
+* S: sensitive variable
 
-* O: our proxy variables
+* O: proxy variables
 
 * X: other variables to be used to predict Y
 
@@ -42,38 +42,40 @@ Part I:
 
 * In Part I, we fit models for predicting Y, but with the goal of using
 such models to assess the effect of S on Y; we were not interested in
-actually predicting Y.  We made central use of S, but wished to find
+actually predicting Y.  We included S in our models, but wished to find
 variables C that were correlated with both Y and S, so as to avoid
 distorting our look at the impact of S on Y.  Any X variable unrelated
 to Y was not of interest.
 
-* Here in Part II, prediction of Y is our central goal.  We will omit S,
-relying our prediction fully on X and partly on O.  We find the
-variables O by investigating which variables are related to S; the
-stronger the relation of an O variable to S, the less weight we will put
-on that variable in predicting Y.
+* Here in Part II, prediction of Y is our central goal, rather than
+  effect assessment.  We will omit S, relying our prediction fully on X
+  and partly on O.  The variables O are related to S; the stronger the
+  relation of an O variable to S, the less weight we will put on that
+  variable in predicting Y.
 
-Below we will describe some common measures of unfairness.  But first,
+We will describe some common measures of unfairness shortly.  But first,
 how do we choose the O variables?
 
 ### Deciding proxies  
 
-So, how does one choose those proxies O?
+As with choosing confounders in Part I, the analyst may simply choose
+[It should be kept in mind that, as with any statistic, all utility and
+fairness measures are subject to sampling variation.]{.column-margin}
+all possible candidate O variables.  
+the proxies based on his/her domain expertise.  But a more formal
+approach may involve correlation.  The function **dsldOHunting**
+calculates the correlations between S and
 
-As with choosing confounders in Part I, analyst may simply choose the
-proxies by using his/her domain expertise.  But a more formal approach
-may involve correlation.  Here's an example, using the COMPAS data:
+Here's an example, using the COMPAS data:
 
 ```{r}
 data(compas1) 
-cmp <- compas1[,-3]  # omit decile, as we are developing our own tool
+cmp <- compas1[,-3]  # omit decile; we are developing our own risk tool
 dsldOHunting(cmp,'two_year_recid','race')
 ```
 
-The function **dsldOHunting** calculates the correlations between S and
-[It should be kept in mind that, as with any statistic, all utility and
-fairness measures are subject to sampling variation.]{.column-margin}
-all possible candidate O variables.  The output here  suggests possibly
+
+The output here  suggests possibly
 using, say, the **age** and **priors_count** variables as proxies.
 
 The function does not use the classic *Pearson product moment*
