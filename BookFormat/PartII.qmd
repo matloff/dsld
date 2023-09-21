@@ -191,6 +191,8 @@ set.]{.column-margin} For instance, let's consider our mortgage example,
 say with k-Nearest Neighbors as our ML prediction tool:
 
 ```{r}
+library(dsld)
+library(qeML)
 z <- qeKNN(cmp,'two_year_recid',holdout=NULL,yesYVal='Yes') 
 # look at the fitted model's probability of recidivism,
 # i.e. regression estimates
@@ -213,6 +215,7 @@ non-classification problems, say predicting wage income, and take age as
 our sensitive variable S:
 
 ```{r}
+data(svcensus)
 z <- qeKNN(svcensus,'wageinc',holdout=NULL)
 cor(z$regests,svcensus$age,method='kendall') 
 ```
