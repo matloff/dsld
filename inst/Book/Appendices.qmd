@@ -3,22 +3,74 @@
 
 # Author Bios
 
-**Norman Matloff** is Professor Emeritus of Computer Science, and was
-[![NM](NMHighDef.jpg){width=50%}]{.column-margin}
-formerly a Professor of Statistics at that university.  His
-participation in this project is informed in part by his experience
-serving in a number of litigation cases involving discrimination.  His
-work has been recognized in various forms, including the
-university-wide Distinguished Teaching Award, Outstanding Adviser Award,
-and Distinguished Public Service Award.  His book, *Statistical
-Regression and Classification: from Linear Models to Machine Learning*
-was the 2017 recipient of the Ziegal Award, given by the statistics
-journal *Technometrics*.
+## Norman Matloff {-}
 
-**Taha Abdullah** is studying for a B.S. in Computer Science at
+is Professor Emeritus of Computer Science, and was
+[![NM](NMHighDef.jpg){width=45%}]{.column-margin} formerly a Professor
+of Statistics at that university.  His participation in this project is
+informed in part by his experience serving as an expert witness in in a
+number of litigation cases involving discrimination.  His work has been
+recognized in various forms, including the university-wide Distinguished
+Teaching Award, Outstanding Adviser Award, and Distinguished Public
+Service Award.  His book, *Statistical Regression and Classification:
+from Linear Models to Machine Learning* was the 2017 recipient of the
+Ziegal Award, given by the statistics journal *Technometrics*.
 [![TA](Taha.jpg){width=35%}]{.column-margin}
+
+## Taha Abdullah {-}
+
+is studying for a B.S. in Computer Science at
 University of California, Davis. He has a keen interest in pursuing a
 career in Software Engineering.
+
+## Arjun Ashok {-}
+
+is currently a sophomore undergraduate at UC Davis
+[![AA](AA.jpg){width=30%}]{.column-margin}
+double-majoring in Computer Science and Statistics with a minor in Economics.
+As indicated by his past research and publications, he's primarily interested
+in the R&D side of machine learning, although he's intent on taking his
+knowledge into real-world applications for developmental purposes.
+
+## Shubhada Martha{-}
+
+is a third year Computer Science student pursuing her undergraduate
+studies at UC Davis. She's passionate about ethics in technology in the
+areas of full stack development and AI and Machine Learning. During her
+[![SM](SM.jpeg){width=35%}]{.column-margin}
+spare time, she likes to read spiritual and self-improvement books and
+paint.
+
+## Aditya Mittal {-}
+
+[![AM](adityamittal.png){width=25%}]{.column-margin}
+is pursuing a B.S. in Statistics with a minor in Computer
+Science at University of California, Davis. During the summer, he is
+employed as a Business Analyst Intern at Cisco and will be returning in
+summer 2024 for another round. He is interested in pursuing a career in
+machine learning/software engineering. Fun fact: He moved to the U.S.
+in 2014 from Mumbai, India.
+[![BO](BO.jpg){width=35%}]{.column-margin} 
+
+## Billy Ouattara{-}
+
+is a senior Computer Science and Engineering student,
+His academic journey has been
+defined by a strong commitment to ethical considerations in the
+development and deployment of ML/AI models. This dedication is one of
+the key reasons he eagerly participated in this project.
+
+## Jonathan Tran {-}
+
+[![JT](JT.jpg){width=35%}]{.column-margin} 
+is studying computer science at UC Davis, with an interest in machine
+learning and large language models.
+
+## Brandon Zarate {-}
+
+is a senior student at UC Davis studying Computer Science.
+
+[![BZ](BZ.png){width=35%}]{.column-margin}
 
 {{< pagebreak >}}
 
@@ -57,6 +109,11 @@ statistical estimators, such as estimated coefficients in linear and
 generalized linear models.  Hence we can find confidence intervals as
 above, taking the estimator plus and minus 1.96 times the SE of the
 estimator.
+
+CIs are generally taught together with *hypothesis testing* or
+*significance testing*, which in many cases uses standard errors.  
+@sec-sig reviews the notion, and discusses problems with this kind of
+analysis.
 
 ## Appendix B: A Note on Causal Inference {#sec-causal}
 
@@ -116,6 +173,7 @@ More interesting, though, is the lack of a causal arc from gender to
 wage income.  This is in stark contrast to what **dsldLinear** suggests:
 
 ```{r}
+library(dsld)
 data(svcensus)
 w <- dsldLinear(svcensus,'wageinc','gender',interactions=FALSE)
 coef(w)
@@ -192,23 +250,54 @@ mandatory for avoiding misleading or invalid results.
 
 ## Appendix D: Installing the Software
 
-<!-- Introduction/Pkg installation -->
-
-### Python Interface Example
+## Python Interface 
 
 As previously mentioned, python wrappers are included for most functions. 
+
+### Requirements For All Python Functions
+
+To use these python functions, users need to have **Python** version **3.10** 
+installed on their system. 
+
+If the user has a later version of Python 
+installed (such as 3.11), and wants to keep that version of Python in 
+their system, they will have to manage multiple Python versions on their 
+system. One easy way to manage multiple environments 
+(in our case, multiple versions of Python for users who need it) is to 
+use [Conda](https://docs.conda.io/projects/conda/en/stable/), which is 
+a package and environment manager included in both 
+[Anaconda](https://docs.conda.io/projects/conda/en/stable/glossary.html#anaconda-glossary) 
+and [Miniconda](https://docs.conda.io/projects/conda/en/stable/glossary.html#miniconda-glossary).
+For our purposes, Miniconda is more useful as a minimalistic way to install 
+and use Conda. See [this guide](https://docs.conda.io/projects/miniconda/en/latest/) 
+for information on how to install Miniconda -- keep in mind that, at 
+this time, this package requires Python 3.10 (NOT the latest version of 
+Python), so when the guide prompts you to choose a Miniconda installer, 
+you can choose a link for Python 3.10 from this 
+[list](https://docs.conda.io/projects/miniconda/en/latest/miniconda-other-installer-links.html)
+which is also linked in the aforementioned guide.
+
+After installing miniconda, refer to [this section](https://docs.conda.io/projects/conda/en/stable/user-guide/tasks/manage-environments.html) 
+and later sections of the Conda user guide to set up an environment with 
+Python 3.10.
+
+Python 3.10 conveniently comes with **pip**, the python package installer. 
+It can be used to install various Python packages/modules that will be 
+required to run the dsld Python functions. **All** of our Python functions
+[To install rpy2, run **pip install rpy2** within the Python 3.10 environment, 
+or see [this link](https://rpy2.github.io/doc/latest/html/overview.html#install-from-source)]{.column-margin} 
+require **rpy2**, which allows for Python/R environment interaction.
+
+### Running dsld Python Functions
+
 As an example, let's use the python interface for dsldTakeALookAround 
-(the python equivalent function is called **dsldPyTakeALookAround**)  
+(the python-equivalent function is called **dsldPyTakeALookAround**)  
 to view tabular information on how data features relate to Y and S. The 
 python function allows users to enter arguments using Python data types 
 and converts the resultant R dataframe into a Pandas dataframe.
 
-To run any dsld python functions, the user must have rpy2 installed
-[rpy2 can be installed using **pip**, the python package installer]{.column-margin} 
-and be using Python version 3.10. The user also needs  
-
-Additionally, different python functions require different libraries 
-depending on what the function does -- Pandas
+Different python functions will require different libraries 
+depending on what the function does -- **Pandas**
 [These libraries can also (usually) be installed with **pip**]{.column-margin} 
 is required for dsldPyTakeALookAround.
 
