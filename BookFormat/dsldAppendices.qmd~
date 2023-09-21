@@ -1,0 +1,232 @@
+
+{{< pagebreak >}}
+
+# Author Bios
+
+**Norman Matloff** is Professor Emeritus of Computer Science, and was
+[![NM](NMHighDef.jpg){width=50%}]{.column-margin}
+formerly a Professor of Statistics at that university.  His
+participation in this project is informed in part by his experience
+serving in a number of litigation cases involving discrimination.  His
+work has been recognized in various forms, including the
+university-wide Distinguished Teaching Award, Outstanding Adviser Award,
+and Distinguished Public Service Award.  His book, *Statistical
+Regression and Classification: from Linear Models to Machine Learning*
+was the 2017 recipient of the Ziegal Award, given by the statistics
+journal *Technometrics*.
+
+**Taha Abdullah** is studying for a B.S. in Computer Science at
+[![TA](Taha.jpg){width=35%}]{.column-margin}
+University of California, Davis. He has a keen interest in pursuing a
+career in Software Engineering.
+
+{{< pagebreak >}}
+
+# Appendices {.appendix}
+
+## Appendix A: Standard Errors$\textemdash$Statistical Inference in a Nutshell
+
+Say I wish to find the mean weight $\mu$ of all students at the University of
+California, Davis.  It would be infeasible to measure them all, so I
+take a random sample of 100 students.  The mean weight of those 100
+students, denoted $\bar{X}$, is an estimate of $\mu$.
+
+I know that $\bar{X}$ will have some unknowm amount of error as an estimate of
+$\mu$.  One measure of this is its *standard error* (SE).  What is this?
+
+Remember, we took a random sample of students.  Different samples will
+have different values of $\bar{X}$, i.e. $\bar{X}$ will have *sampling
+variation*.  Then the SE of $\bar{X}$ is defined to be the standard
+deviation of all possible $\bar{X}$ values, from all possible samples.
+
+The smaller the SE is, the more confident we are that the $\bar{X}$ from
+[Meaning of that 95% probability figure: Think of all possible 
+samples. Each one has an $\bar{X}$ value, and an SE value. So, each
+possible sample, there is a different confidence interval (CI). 
+95% of those CIs will contain the true $\mu$.]{.column-margin}
+our particular sample is pretty accurate.  Of course, we can't be
+completely sure, but we can quantify it probabilistically:
+
+> An approximate 95% *confidence interval* for $\mu$, based on
+> $\bar{X}$, is $\bar{X} \pm 1.96 \times SE$.
+
+The reader may have heard of the Central Limit Theorem, which says that
+the sum of many random variables, itself a random variable, has an
+approximately normal distribution.  This is the case for most classical
+statistical estimators, such as estimated coefficients in linear and
+generalized linear models.  Hence we can find confidence intervals as
+above, taking the estimator plus and minus 1.96 times the SE of the
+estimator.
+
+## Appendix B: A Note on Causal Inference {#sec-causal}
+
+An *observational study* is, in essence, one that is not planned. For
+instance, say we are comparing an old and a new drug for hypertension.
+Suppose that, unknown to us, the new medication does well on younger
+patients but not on older ones.  Say the nature of the data collection
+process results in disproportionately sampling older patients, but our
+data itself does not include patient ages.  This could unfairly make the
+new drug appear ineffective.
+
+In a *randomized clinical trial* (RCTs), we would randomly assign
+treatments to patients, so there would likely be no strong imbalance in
+age distribution in the two drug groups.  So, even if our data still did
+not record patient age, there would be no age bias in our analysis.
+
+In many cases, RCTs are infeasible or impossible (we cannot "assign"
+race).  *Causal inference* CI can be viewed both as a way to deal with
+unseen variables in observational studies, and in its graphical forms,
+as a descriptive alternative to traditional statistical relational
+analysis.  Though CI takes on many forms, our discussion here will focus
+on *directed acyclic graphs* (DAGs).  
+
+### DAGS
+
+In a DAG, an arrow from A to B signifies that A "causes" B.
+
+For instance, a graphical description of a situation in which older
+people (say who came of age before anti-smoking campaigns) might be more
+likely to smoke, and for other reasons may be more likely to develop
+cancer even if they are nonsmokers.  A graphical description would be
+
+![](appendixB/ascdag.png){width=40%}
+
+Here is an example the **bnlearn** package on our **svcensus** dataset:
+
+``` r
+   library(bnlearn)
+   library(dsld)
+   data(svcensus)
+   svcensus$wageinc <- as.numeric(svcensus$wageinc)
+   svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
+   svcdag <- iamb(svcensus)  # default argument values
+   plot(svcdag)
+```
+
+![](svcensusDAG.png){width=100%}
+
+There are a couple of undirected arcs, e.g. between gender and [Though
+again we omit a detailed treatment of CI DAGs here, we note that that
+field defines a confounder of two variables as a variable that is an
+"ancestor" to both, education being a confounder for income and
+occupation.]{.column-margin} occupation--found to be relations, but 
+with indeterminate direction, using available data.
+
+More interesting, though, is the lack of a causal arc from gender to
+wage income.  This is in stark contrast to what **dsldLinear** suggests:
+
+```{r}
+data(svcensus)
+w <- dsldLinear(svcensus,'wageinc','gender',interactions=FALSE)
+coef(w)
+```
+
+Here, even correcting for age, education and so on, we still find a
+substantial gender pay gap.  Gender does seem to matter, on its own.
+
+It should be noted that if the **bnlearn** function **hc** is used
+instead of **iamb** (not shown), there is indeed a link from 'gender' to
+'wageinc', but apparently at the cost of other anomalies.  For example,
+there is no arc, or path of arcs, from 'wkswrkd' to 'wageinc'.
+
+CI DAGs are of course quite visually appealing, and many people find
+causal concepts helpful in their thoughts processes regarding the data.
+But as pointed out by the developers of such methodology, the graphs can
+be very misleading.  Using DAGs effectively requires deep understanding
+of the concepts.  A treatment of these concepts is well beyond the scope
+of this course, but we urge users and consumers of CI to keep the
+following points in mind:
+
+
+* The definition of *cause* is of course central to proper use of CI
+  DAGs.  It does *not* mean what one ordinarily thinks of as causal ("The
+  sidewalk was icy, so the man slipped and fell"), and it can become quite
+  complex; "wrapping one's head around" the definition can be a
+  challenge even for experienced probabilistic modelers.
+
+* Unseen variables, such as age in the above example, can be just as
+harmful in CI contexts as in observational data.
+
+* Causal analysis is just as much at the mercy of sample size as is
+  classical statistical analysis, indeed even more so, since the causal
+  version in effect estimates many more parameters.  Absence of a link
+  may be due to insufficient data, and nonlinks at the population level
+  may appear as "links" in our graph by random chance in small datasets.   
+
+* Most important, DAGs have a highly concerning uniqueness problem:
+
+::: {.callout-note}
+### DAGS are not unique
+
+* Most important, for any given dataset, there is typically no unique
+  DAG: [CMU professor C. Shalizi has [bluntly
+  noted](https://www.stat.cmu.edu/~cshalizi/uADA/16/lectures/25.pdf)
+  that in cases of nonuniqueness, presenting just one DAG without
+  mentioning the equivalent ones, "...[which] is often what people seem
+  to do," might be viewed as "lying by omission."  Recognizing the
+  nonuniqueness is "simply a matter of scientific
+  honesty."]{.column-margin} DAG.  Typically many DAGs can fit the
+  dataset equally well, and they can be in conflict with each other.
+  One DAG might say that A causes B, while another, equally credible in
+  terms of data fit, might have B causing A, while a third says A and B
+  are independent.
+
+  M. Scutari, author of **bnlearn**, shows an example in his Cambridge lectures:
+
+  ![](TwoEquivDAGs.png){width=100%}
+
+  The nonuniqueness is of course very concerning.  In recent years, there
+  has been much handwringing in science about the Replication Crisis, in
+  which scientists try to replicate the findings of an earlier published
+  paper, and discover serious problems with the earlier results.
+  Imagine the replication problems that can arise if authors of a paper
+  present just one of many equally-credible DAGs, as is usually the
+  case.
+:::
+
+DAGs can indeed lead to valuable insight, but can be misleading as well.
+A healthy skepticism and a solid understanding of the concepts are
+mandatory for avoiding misleading or invalid results. 
+
+## Appendix C: Standard Errors via the Bootstrap {#sec-boot}
+
+## Appendix D: Installing the Software
+
+<!-- Introduction/Pkg installation -->
+
+### Python Interface Example
+
+As previously mentioned, python wrappers are included for most functions. 
+As an example, let's use the python interface for dsldTakeALookAround 
+(the python equivalent function is called **dsldPyTakeALookAround**)  
+to view tabular information on how data features relate to Y and S. The 
+python function allows users to enter arguments using Python data types 
+and converts the resultant R dataframe into a Pandas dataframe.
+
+To run any dsld python functions, the user must have rpy2 installed
+[rpy2 can be installed using **pip**, the python package installer]{.column-margin} 
+and be using Python version 3.10. The user also needs  
+
+Additionally, different python functions require different libraries 
+depending on what the function does -- Pandas
+[These libraries can also (usually) be installed with **pip**]{.column-margin} 
+is required for dsldPyTakeALookAround.
+
+<!-- This part may change if installation method changes -- assuming that we 
+are using devtools::install_github and have access to /dsld folder -->
+The user should open the Python Shell Prompt by typing **python** from the 
+package Python directory (/dsld/inst/Python) in the terminal/cmd prompt.
+Then, to run the Python function, we can run the following commands in the 
+python shell:
+
+```{python, eval=FALSE}
+from dsldTakeALook_Py_R import dsldPyTakeALookAround    
+import rpy2.robjects as robjects   
+robjects.r['data']('svcensus')    
+data = robjects.r('svcensus')    
+result = dsldPyTakeALookAround(data, 'wageinc', 'gender')   
+print(result)
+```
+
+The result should be the same information from the R dataframe, but 
+converted to a Pandas dataframe.

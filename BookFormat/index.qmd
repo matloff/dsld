@@ -1,0 +1,48 @@
+
+# Overview {.unnumbered}
+
+Discrimination is a key social issue in the US and in a number of other
+countries.  There is lots of available data with which one might
+investigate possible discrimination.  But how might such investigations
+be conducted?
+
+Our **dsld** package provides both graphical and analytical tools
+for this purpose.  It is widely applicable; here are just a few
+use cases:
+
+* Quantitative analysis in instruction and research in the social sciences.
+
+* Corporate HR analysis and research.
+
+* Litigation involving discrimination and related issues.
+
+* Concerned citizenry. 
+
+This book provides a tutorial regarding applicable methodology, as
+well as introduction to use of the package.
+
+## Prerequisite background
+
+In addition to having rudimentary skill in R, the user should have a
+very basic knowledge of statistical inference--mean, variance,
+confidence intervals and tests, and histograms.  A short, intuitive,
+"bare bones" refresher, focused on confidence intervals, is given in
+Appendix A.
+
+Mathematical background, e.g. linear algebra, calculus and probability
+theory, are **not** required, and concepts are explained via intuitive
+language.
+
+## The dsld package
+
+The R package **dsld**, which this tutorial uses for examples, has two
+[Python wrappers are included for many functions.]{.column-margin} 
+aims:
+
+* To enable exploratory analysis of possible discrimination effects
+through various graphical and tabular functions.
+
+* To enable formal statistical analysis of such effects via both
+  enhanced access to general R functions such as **lm()** and **glm()**
+  and various functions from the **qeML** machine learning package.
+
