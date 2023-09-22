@@ -28,12 +28,13 @@ dsldCheckData <- function(data1, data2, yName) {
 }
 
 ### ------------------------ DSLDLogit -----------------------------------------
-dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal) {
+dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, yesYVal) {
   
   dsldModel <- list()
   data[[yName]] <- ifelse(data[[yName]] == yesYVal, 1, 0)
   
   # user wants interactions #
+  interactions <- TRUE
   if (interactions) {
     
     # raise error if user doesn't input sComparisonPts #
