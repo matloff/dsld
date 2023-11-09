@@ -373,3 +373,31 @@ summary.dsldGLM <- function(dsldGLM) {
 # ------------------------------- Test run -------------------------------------
 # summary(log1)
 # summary(log2)
+
+# ---------------------------- add predict() -----------------------------------
+predict.dsldGLM <- function(dsldGLM, xNew){
+  df <- data.frame()
+  yName = dsldGLM[[1]]$yName
+  if (length(dsldGLM) == 1) {
+    data <- dsldGLM[[1]]$data
+    model <- dsldGLM[[1]]$model
+    predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
+    pred <- predictions$fit
+    se <- predictions$se.fit
+    tempDF <- data.frame(row = 1:nrow(xNew), prediction = pred, standardError = se)
+    df <- rbind(df, tempDF)
+    return (df)
+  } else {
+    sNames <- names(dsldGLM)
+    for (i in sNames) {         # loop through each level of S name to compute estimates and standard errors
+      data <- dsldGLM[[i]]$data
+      model <- dsldGLM[[i]]$model
+      predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
+      pred <- predictions$fit
+      se <- predictions$se.fit
+      tempDF <- data.frame(level = i, row = 1:nrow(xNew), prediction = pred, standardError = se)
+      df <- rbind(df, tempDF)
+    }
+    return (df)
+  }
+}
