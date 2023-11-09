@@ -445,3 +445,74 @@ summary.dsldLM <- function(dsldLM) {
 # summary(lin11)
 # summary(lin2)
 # summary(lin22)
+
+### ---------------- Copy pasted code for predict() ---------------------------
+predict.dsldLM <- function(dsldLM, xNew) {
+  df <- data.frame()
+  yName = dsldLM[[1]]$yName
+  if (length(dsldLM) == 1) {
+    data <- dsldLM[[1]]$data
+    colName <- names(data)
+    colName <- colName[colName != yName]
+    model <- dsldLM[[1]]$model
+    C <- (dsldLM[[1]]$covarianceMatrix)
+    u_names <- names(coef(dsldLM[[1]]$model))
+    for (j in 1:nrow(xNew)) {
+      row <- xNew[j, ]
+      if (!is.data.frame(row)) {
+        row <- data.frame(x = row)
+        colnames(row) <- colName
+      }
+      if (!is.numeric(row)) {
+        x <- regtools::factorsToDummies(row,omitLast=FALSE)
+      } else {
+        x <- as.vector(row)
+      }
+      full_u <- x[1,]
+      cleaned_vector1_names <- names(full_u)
+      cleaned_vector1_names <- gsub("\\.", "", cleaned_vector1_names)
+      matched_names <- intersect(cleaned_vector1_names, u_names)
+      subset_values <- full_u[match(matched_names, cleaned_vector1_names)]
+      subset_values <- c(1,subset_values)
+      pred <- predict(model,row)
+      standard_error <- sqrt(t(subset_values) %*% C %*% subset_values)
+      tempDf <- data.frame(row = j, prediction = pred, standardError = standard_error)
+      df <- rbind(df, tempDf)
+    }
+    return(df)
+  }
+  else {
+    sNames <- names(dsldLM)
+    for (i in sNames) {
+      data <- dsldLM[[i]]$data  ## all this calculation is done for the sandwich 
+      colName <- names(data)
+      colName <- colName[colName != yName]
+      model <- dsldLM[[i]]$model
+      C <- (dsldLM[[i]]$covarianceMatrix)
+      u_names <- names(coef(dsldLM[[i]]$model))
+      for (j in 1:nrow(xNew)) {
+        row <- xNew[j, ]
+        if (!is.data.frame(row)) {
+          row <- data.frame(x = row)
+          colnames(row) <- colName
+        }
+        if (!is.numeric(row)) {
+          x <- regtools::factorsToDummies(row,omitLast=FALSE)
+        } else {
+          x <- as.vector(row)
+        }
+        full_u <- x[1,]
+        cleaned_vector1_names <- names(full_u)
+        cleaned_vector1_names <- gsub("\\.", "", cleaned_vector1_names)
+        matched_names <- intersect(cleaned_vector1_names, u_names)
+        subset_values <- full_u[match(matched_names, cleaned_vector1_names)]
+        subset_values <- c(1,subset_values)
+        pred <- predict(model,row)
+        standard_error <- sqrt(t(subset_values) %*% C %*% subset_values)
+        tempDf <- data.frame(level = i, row = j, prediction = pred, standardError = standard_error)
+        df <- rbind(df, tempDf)
+      }
+    }
+    return(df)
+  }
+}
