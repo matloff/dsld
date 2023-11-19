@@ -16,6 +16,7 @@ summary(dsldGLM)                # summary of all attributes
 coef(dsldGLM)                   # coefficients of the underlying GLM model
 vcov(dsldGLM)
 dsldDiffSLog(dsldGLM, newData) 	# compare P (Y = 1|X) for additional data in the full interactions case
+predict(dsldGLM, newData)
 }
 
 \arguments{
