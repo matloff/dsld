@@ -6,6 +6,7 @@
 #
 # scaling - wether or not the data is scaled
 #
+# returns - a dataframe with a scalePars attribute
 fairScale <- function(data, yName, sNames, scaling=FALSE) {
   predictors <- data[,!colnames(data) %in% c(sNames, yName)]
   response <- data[,yName]
@@ -35,6 +36,7 @@ fairScale <- function(data, yName, sNames, scaling=FALSE) {
 # scaling   - was the model trained on scaled data
 # scalePars - a list of (center, scale) that describes how the data was scaled
 #
+# returns   - a dataframe
 scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
   newx <- regtools::factorsToDummies(newx, omitLast = TRUE)
   
@@ -60,6 +62,7 @@ scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
 # row1         - doesnt have to be 1 row, but the only thing this needs is
 #                information on the data type and name of every column
 #
+# returns      - an expanded list(var_value=value) 
 expandDeweights <- function(deweightPars, row1) {
   pars <- list()
   for (item in names(deweightPars)) {  # loop through every item
@@ -87,6 +90,7 @@ expandDeweights <- function(deweightPars, row1) {
 #
 # xData     - data w/o the y column
 #
+# returns   - a named numeric vector
 sCorr <- function(model, xData, sNames) {
   # qeML functions have a lot of predict formats. 
   preds <- 
@@ -130,6 +134,8 @@ sCorr <- function(model, xData, sNames) {
 # xData     - data w/o the y column
 # sName     - one of the names of the sensitive column
 # holdIdxs  - the row numbers of the holdout set 
+#
+# returns   - a named number (binary) or named numeric vector (non-binary)
 binaryScorr <- function(preds, xData, sName, holdIdxs) {
   formula <- formula(paste(sName, '~.'))
   model <- glm(formula, xData, family=binomial())
@@ -153,12 +159,15 @@ nonBinScorr <- function(preds, xData, sName, holdIdxs) {
 
 # ------------------ Predict Holdout Fair -----------------------
 # add holdout predictions and test accuracy to ridge regressions
-# outputs a list with: holdoutPreds, testAcc, baseAcc
 #
-# model - model to make predictions with
-# test  - data set to train the data on. must not be scaled
-# train - the data set the model was trained on. 
+# model   - model to make predictions with
+# test    - data set to train the data on. must not be scaled
+# train   - the data set the model was trained on. 
 #
+# returns - list with: 
+#           holdoutPreds: numeric vector
+#                testAcc: number 
+#                baseAcc: number
 predictHoldoutFair <- function(model, test, train) {
   yName <- model$yName
   preds <- predict.dsldQeFair(model, test)
@@ -178,7 +187,9 @@ predictHoldoutFair <- function(model, test, train) {
 # utility to add variables to a list as an item w/ their own name
 # ex. 'model$yName <- yName' for a list of variables
 #
-# ...    - one or more variables to be turned into a list
+# ...     - one or more variables to be turned into a list
+#
+# returns - a list
 variablesAsList <- function(...) {
   names <- as.list(substitute(list(...)))[-1]
   values <- list(...)

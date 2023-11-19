@@ -14,6 +14,7 @@
 # ...           - additional parameters that are passed into the qeFUNC
 # appendedItems - list of items to be appended to the model object.
 #
+# returns       - list with the class "dsldQeFair"
 qeFairBase <- function(qeFUNC, data, yName, sNames, scaling, ...,
                        appendedItems = list()) {
   # scale data / expand factors, before training the model
