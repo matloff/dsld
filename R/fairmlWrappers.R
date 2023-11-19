@@ -34,17 +34,20 @@ fairmlBase <- function(fairmlFUNC, data, yName, sName, unfairness, ...) {
 # wrapper for nclm
 dsldNclm <- function(data, yName, sName, unfairness, covfun = cov, 
                      lambda = 0, save.auxiliary = FALSE) {
+  dsld::getSuggestedLib('cccp')
   fairmlBase(fairml::nclm, data, yName, sName, unfairness, covfun, 
              lambda, save.auxiliary)
 }
 
 # wrapper for zlm
 dsldZlm <- function(data, yName, sName, unfairness) {
+  dsld::getSuggestedLib('CVXR')
   fairmlBase(fairml::zlm, data, yName, sName, unfairness)
 }
 
 # wrapper for zlrm
 dsldZlrm <- function(data, yName, sName, unfairness) {
+  dsld::getSuggestedLib('CVXR')
   fairmlBase(fairml::zlrm, data, yName, sName, unfairness)
 }
 

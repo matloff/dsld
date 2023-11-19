@@ -31,8 +31,8 @@
 
 \examples{
     # Example 1
-    library(dsld)
-    data(svcensus)
-    dsldConfounders(svcensus, cName = "educ", sName = "gender")
+    library(dsld) 
+    data(svcensus) 
+    dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 }
 
