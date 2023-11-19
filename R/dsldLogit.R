@@ -1,45 +1,16 @@
-### --------------------------- DSLDCheckData ----------------------------------
-dsldCheckData <- function(data1, data2, yName) {
-  data1 <- data1[, !(names(data1) == yName), drop = FALSE]
-  missingCols <- setdiff(names(data1), names(data2))
-  if (length(missingCols) > 0) {
-    stop(paste("Invalid column(s) in sComparisonPts:", paste(missingCols, collapse = ", ")))
-  }
-  
-  if (!identical(sort(names(data1)), sort(names(data2)))) {
-    stop("Error: Column names do not match")
-  }
-  data2 <- data2[names(data1)]
-  
-  char <- sapply(data2, is.character)
-  for (colName in names(data2)[char]) {
-    if (colName %in% names(data1) && is.factor(data1[[colName]])) {
-      levels_data1 <- levels(data1[[colName]])
-      data2[[colName]] <- factor(data2[[colName]], levels = levels_data1)
-      
-      invalid_levels <- !data2[[colName]] %in% levels_data1
-      if (any(invalid_levels)) {
-        stop(paste("Invalid", colName, "level(s) in sComparisonPts:", 
-                   paste(data2[[colName]][invalid_levels], collapse = ", ")))
-      }
-    }
-  }
-  return(data2)
-}
-
 ### ------------------------ DSLDLogit -----------------------------------------
-dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, yesYVal) {
+dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal) {
   
   dsldModel <- list()
   data[[yName]] <- ifelse(data[[yName]] == yesYVal, 1, 0)
   
   # user wants interactions #
-  interactions <- TRUE
   if (interactions) {
     
     # raise error if user doesn't input sComparisonPts #
     if (is.null(sComparisonPts)) {
-      sComparisonPts = dsldGetRow5(data,yName, sName)
+      stop(paste("Please enter the sComparisonPts input to compare for ",
+                 "interactions in summary()"))
     }
     if (!is.data.frame(sComparisonPts)) {
       stop(paste("Error: sComparisonPts must be a dataframe"))
