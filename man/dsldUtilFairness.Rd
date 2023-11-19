@@ -37,13 +37,13 @@
 }
 
 \examples{
-    library(regtools); library(Kendall); library(qeML); library(dsld)
+    library(dsld)
     data(svcensus)
 
     # example w/ categorical cName
-    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')
+    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')
 
     # example w/ continuous cName
-    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender', deweight_increment = 0.05)
+    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender', deweight_increment = 0.05)
 }
 

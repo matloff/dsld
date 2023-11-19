@@ -5,7 +5,7 @@ dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_incr
   getSuggestedLib('Kendall')
   
   if (is.factor(data[[cName]])) {
-    cGroups <- factorToDummies(data[, cName], cName, omitLast = TRUE)    
+    cGroups <- regtools::factorToDummies(data[, cName], cName, omitLast = TRUE)    
     newData <- cbind(data,cGroups)                    
     newData <- newData[,!names(newData) %in% c(cName,sName)]
   } else {
@@ -26,13 +26,13 @@ dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_incr
     utils = c()
     fair = c()
     for (k in 1: count) {
-      run = qeKNN(newData,yName,expandVars=colnames(cGroups),expandVals=rep(i, length(colnames(cGroups))),scaleX = TRUE)
+      run = qeML::qeKNN(newData,yName,expandVars=colnames(cGroups),expandVals=rep(i, length(colnames(cGroups))),scaleX = TRUE)
       test_acc = run$testAcc
       index <- run$holdIdxs 
       subsetted_data = data[index,]
       S_val = subsetted_data[,sName]
       predicted_val = run$holdoutPreds
-      v = Kendall(predicted_val,S_val)
+      v = Kendall::Kendall(predicted_val,S_val)
       cor_val = v$tau[1]
       utils = c(utils, test_acc)
       fair = c(fair, cor_val)
@@ -54,7 +54,7 @@ dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_incr
 }
 
 # Example:
-# library(regtools); library(Kendall); library(qeML); library(dsld)
+# library(dsld)
 # data(svcensus)
 # dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')     # example w/ categorical cName
 # dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender', deweight_increment = 0.05) # example w/ continuous cName
