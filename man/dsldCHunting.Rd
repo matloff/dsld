@@ -35,7 +35,7 @@
 
 \examples{  
     data(law.school.admissions) 
-    dsldCHunting(law.school.admissions,'gender','race1')
+    dsldCHunting(law.school.admissions,'bar','race1')
     # e.g. suggests confounders 'cluster', 'decile3', 'decile1'
     
     data(mortgageSE)
