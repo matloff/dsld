@@ -1,8 +1,21 @@
 
+# arguments
+
+#   data: input data frame or equivalewnt
+#   yName: response variable 
+#   sName: sensitive variable (R factor)
+#   xName: horizontal axis variables
+#   condits: conditions, a vector of conditions, expressed in
+#      names(data); must have at least 1, even if trivial
+#   qeFtn: qeML predictive function
+#   minS: if 'data' has fewer than this many rows for a give S level,
+#      don't use that level
+#   useLoess: if TRUE, use loess smoothing
+
 dsldConditDisparity <- function(data, yName, sName, xName, condits,
-                                qeFtn = qeKNN, minS = 50, yLim = NULL,
-                                useLoess = TRUE) {
-    # args type checking#
+                                qeFtn = qeKNN, minS = 50, useLoess = TRUE) 
+{
+    # args type checking
     if (!is.data.frame(data)) {
         stop("data must be a dataframe.")
     }
@@ -16,16 +29,8 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
         stop("xName must refer to a numeric column in data.")
     }
 
-    # function setup #
-    # library requirements
-    library(qeML)
+    require(qeML)
 
-    # fill plotting limits
-    if (is.null(yLim)) {
-        yLim <- c(0, max(data[[yName]]))                    # [0, max(y)]
-    }
-
-    
     # data engineering #
     # restrict data to fit conditions
     if (length(condits) > 1) {
@@ -34,8 +39,6 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
     }
     restrictions <- sprintf('focusedData <- subset(data, %s)', condits)
     eval(parse(text = restrictions))
-
-    # won't use the restricting variables anymore
     focusedData <- focusedData[c(yName, xName, sName)]
     sCol <- which(names(focusedData) == sName)
 
@@ -44,74 +47,80 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
     groupByS <- split(focusedData, s)
     sizes <- sapply(groupByS, nrow)
     tiny <- which(sizes < minS)
-
-    # remove too small groups
+    # remove too-small groups
     if (length(tiny) > 0)
     {
         groupByS <- groupByS[-tiny]
     }
 
+    # plotting 
 
-    # plotting #
     # consider only the remaining S-levels
     sLevels <- names(groupByS)
     remainingS <- length(sLevels)
-    colors <- colorRampPalette(c("blue", "red"))(remainingS)
 
-    # plot each sensitive var wrt x
-    for (i in 1:remainingS) {
-        # setup data for training
-        curData <- groupByS[[i]][,-sCol]                    # data for current s-level w/o sensitive column
-        curXData <- unique(curData[[xName]])                # data for only the numeric x column
-        curXDF <- as.data.frame(curXData)                   # x-data as a dataframe
-        names(curXDF) <- xName                              # adjust column name
 
-        # fit ML model
-        model <- qeFtn(curData, yName, holdout=NULL)        # `holdout=NULL` to best predict [overfit] dataset
-        preds <- predict(model, curXDF)
+   # prepare to plot each sensitive level against X; in this loop, fit
+   # the models, and then plot in the following loop
+   curXDataList <- list()
+   predsList <- list()
+   for (i in 1:remainingS) {
 
-        # sort data for time series plotting
-        curXData <- as.vector(curXData)
-        preds <- as.vector(preds)
-        orderedXData <- order(curXData)
+       # setup data for training
+       curData <- groupByS[[i]][,-sCol]  # current s-level w/o sensitive column
+       curXData <- unique(curData[[xName]]) # only the numeric x column
+       curXDF <- as.data.frame(curXData)  
+       names(curXDF) <- xName  # adjust column name
 
-        curXData <- curXData[orderedXData]
-        preds <- preds[orderedXData]
-        plotdf <- data.frame(curXData, preds)               # store dataframe w/ sorted data for plotting
+       # fit ML model
+       model <- qeFtn(curData, yName, holdout=NULL) 
+       preds <- predict(model, curXDF)
 
-        # check Loess
-        if (useLoess) {
-            preds <- loess(preds ~ curXData, plotdf)$fitted # loess smoothing
-        }
+       # sort data so that lines() will make sense
+       curXData <- as.vector(curXData)
+       preds <- as.vector(preds)
+       orderedXData <- order(curXData)
+       curXData <- curXData[orderedXData]
+       preds <- preds[orderedXData]
 
-        # plotting method
-        if (i == 1) {
-            # create plot
-            plot(
-                curXData,
-                preds,
-                type = "l",
-                lty = "solid",
-                ylim = yLim,
-                col = colors[i],
-                xlab = xName,
-                ylab = yName,
-                main = paste("Underlying Effects of ", sName, " on ", yName, " wrt ", xName)
-            )
+       # store dataframe w/ sorted data for plotting
+       # check Loess
+       plotdf <- data.frame(curXData, preds)               
+       if (useLoess) {
+           preds <- loess(preds ~ curXData, plotdf)$fitted # loess smoothing
+       }
 
-            # create legend
-            legend(
-                x = "bottomright",
-                lty = c(4,6),
-                text.font = 4,
-                col = colors,
-                text.col = "black",
-                legend = sLevels
-            )
-        } else {
-            # plot points
-            points(curXData, preds, type = "l", lty = "solid", col = colors[i])
-        }
-    }
+       # these 2 will be used in call to lines()
+       curXDataList[[i]] <- curXData
+       predsList[[i]] <- preds
+   }
+
+   # create plot
+   colors <- rainbow(remainingS)
+   predsMax <- max(sapply(predsList,max))
+   currXMax <- max(sapply(curXData,max))
+   currXMin <- min(sapply(curXData,min))
+   plot(NULL,
+       ylim = c(0,1.1*predsMax),
+       xlim = c(currXMin,currXMax),
+       xlab = xName,
+       ylab = yName,
+       main = paste("Underlying Effects of ", sName, " on ", 
+          yName, " wrt ", xName)
+   )
+
+   for (i in 1:remainingS) {
+      lines(curXDataList[[i]],predsList[[i]],type="l",lty="solid",col=colors[i])
+   }
+
+   legend(
+       x = "topright",
+       lty = rep(1,remainingS),
+       text.font = 4,
+       col = colors,
+       text.col = "black",
+       legend = sLevels
+   )
 }
+
 
