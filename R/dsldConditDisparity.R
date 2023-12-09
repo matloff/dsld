@@ -19,9 +19,13 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
     if (!is.data.frame(data)) {
         stop("data must be a dataframe.")
     }
-    if (!is.numeric(data[[yName]])) {
-        stop("yName must refer to a numeric column in data.")
-    }
+    y <- data[[yName]]
+    dichotY <- inherits(y,'factor') && length(levels(y)==2)
+    if (!inherits(y,'numeric') &&
+        !inherits(y,'integer') &&
+        !dichotY
+       )
+        stop("yName must refer to a numeric or 2-level factor column in data.")
     if (!is.factor(data[[sName]])) {
         stop("sName must refer to a factor column in data.")
     }
@@ -75,6 +79,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
        # fit ML model
        model <- qeFtn(curData, yName, holdout=NULL) 
        preds <- predict(model, curXDF)
+       if (dichotY) preds <- preds$probs
 
        # sort data so that lines() will make sense
        curXData <- as.vector(curXData)
