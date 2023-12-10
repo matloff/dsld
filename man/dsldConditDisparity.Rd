@@ -16,15 +16,17 @@
 
 \arguments{
 \item{data}{Data frame or equivalent}
-\item{yName}{As in qeML functions, predicted variable, must be numeric}
-\item{sName}{name of the sensitive variable, an R factor}
-\item{xName}{name of a numeric column to take comparisons with}
-\item{condits}{an R vector; each component is a character string for an R logical 
-expression representing a desired condition; these must NOT involve sName}
-\item{qeFtn}{reg function (defaults only), defaults to qeKNN}
-\item{minS}{minimum size for an S group to be retained in the analysis, defaults to 50}
-\item{yLim}{a 2-element vector specifying the lower and upper vertical plot limits, defaults to fit data}
-\item{useLoess}{if TRUE, do Loess smoothing on the regression values, defaults to TRUE}
+\item{yName}{As in qeML functions, predicted variable, must be numeric 
+   or dichtomous R factor.}
+\item{sName}{Name of the sensitive variable, an R factor}
+\item{xName}{Name of a numeric column for the X-axis.}
+\item{condits}{An R vector; each component is a character 
+   string for an R logical expression representing a desired 
+   condition involving \code{names(data) other than S and Y.}
+\item{QeFtn}{qeML predictive function function (only default arguments
+   will be used.})
+\item{minS}{Minimum size for an S group to be retained in the analysis.}
+\item{useLoess}{if TRUE, do loess smoothing on the fitted regression values.}
 }
 
 \author{
@@ -32,39 +34,11 @@ expression representing a desired condition; these must NOT involve sName}
 }
 
 \examples{
-    # The dsldConditDisparity function aims to provide a seamless experience, requiring minimal effort to utilize its
-    # capabilities. Once the package is successfully downloaded and installed, the function can be leveraged by simply 
-    # employing similar commands shown in the examples.
-
-    #   Example 1:
-    #   Let's investigate the statistics about RECIDIVISM that generalize across race and fail to take into account 
-    #   specifics about underlying differences between subgroups (i.e. African-American, Caucasian, Hispanic). 
-    #
-    #   First, choose the COMPAS dataset. Make sure to convert the yName column to numeric before calling the function.
-    #   The function arguments here are (data = compas, yName = 'two_year_recid', sName = 'race', xName = 'age', 
-    #   condits = c('priors_count <= 4','decile_score>=6'), qeFtn = qeKNN).
 
     compas <- fairml::compas
     compas$two_year_recid <- as.numeric(compas$two_year_recid == 'Yes')
-    dsldConditDisparity(compas,'two_year_recid', 'race', 'age', c('priors_count <= 4','decile_score>=6'), qeKNN)
-
-    # figures functionality coming soon
-    # \figure{
-    #   \includegraphics{man/Example1.png}
-    #   \label{Example 1 Plot}
-    # }
-
-    #   The blue (African-American) and red (Hispanic) curves exhibit the behavior that during middle age, the probability 
-    #   of recidivism declines. But the purple curve (Caucasian) shows the opposite. This shows the importance of exploring 
-    #   interactions between variables. Otherwise, we would have generalized that the probability of recidivism declines
-    #   during middle age for all races.
-
-    #   Example 2:
-    #   Let's investigate the same statistics about RECIDIVISM explored in example 1 but this time use a different qeML
-    #   function.
-
-    #   The function arguments here are (data = compas, yName = 'two_year_recid', sName = 'race', xName = 'age', 
-    #   condits = c('priors_count <= 4','decile_score>=6'), qeFtn = qeGBoost).
+    dsldConditDisparity(compas,'two_year_recid', 'race', 'age', 
+       c('priors_count <= 4','decile_score>=6'), qeKNN)
 
     compas <- fairml::compas
     compas$two_year_recid <- as.numeric(compas$two_year_recid == 'Yes')
