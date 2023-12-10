@@ -103,10 +103,13 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
    # create plot
    colors <- rainbow(remainingS)
    predsMax <- max(sapply(predsList,max))
+   predsMin <- min(sapply(predsList,min))
+   ylow = if (predsMin >= 0) 0.9*predsMin else 1.1*predsMin
+   yhigh = if (predsMax >= 0) 1.1*predsMax else 0.9*predsMax
    currXMax <- max(sapply(curXData,max))
    currXMin <- min(sapply(curXData,min))
    plot(NULL,
-       ylim = c(0,1.1*predsMax),
+       ylim = c(ylow,yhigh),
        xlim = c(currXMin,currXMax),
        xlab = xName,
        ylab = yName,
