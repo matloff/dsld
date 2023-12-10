@@ -1,5 +1,3 @@
-\name{dsldConditDisparity}
-\alias{dsldConditDisparity}
 
 \title{DSLDConditDisparity}
 \description{
