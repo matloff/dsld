@@ -1,7 +1,8 @@
+\name{dsldConditDisparity}
+\alias{dsldConditDisparity}
+\title{dsldConditDisparity}
 
-\title{DSLDConditDisparity}
 \description{
-
     Plots (estimated) mean Y against X, separately for each level of S,
     with restrictions `condits`. May reveal Simpson's Paradox-like
     differences not seen in merely plotting mean Y against X.
@@ -13,18 +14,18 @@
 }
 
 \arguments{
-\item{data}{Data frame or equivalent}
-\item{yName}{As in qeML functions, predicted variable, must be numeric 
-   or dichtomous R factor.}
-\item{sName}{Name of the sensitive variable, an R factor}
-\item{xName}{Name of a numeric column for the X-axis.}
-\item{condits}{An R vector; each component is a character 
-   string for an R logical expression representing a desired 
-   condition involving \code{names(data) other than S and Y.}
-\item{QeFtn}{qeML predictive function function (only default arguments
-   will be used.})
-\item{minS}{Minimum size for an S group to be retained in the analysis.}
-\item{useLoess}{if TRUE, do loess smoothing on the fitted regression values.}
+   \item{data}{Data frame or equivalent}
+   \item{yName}{As in qeML functions, predicted variable, must be numeric 
+      or dichtomous R factor.}
+   \item{sName}{Name of the sensitive variable, an R factor}
+   \item{xName}{Name of a numeric column for the X-axis.}
+   \item{condits}{An R vector; each component is a character 
+      string for an R logical expression representing a desired 
+      condition involving \code{names(data) other than S and Y.}}
+   \item{QeFtn}{qeML predictive function function (only default arguments
+      will be used.)}
+   \item{minS}{Minimum size for an S group to be retained in the analysis.}
+   \item{useLoess}{if TRUE, do loess smoothing on the fitted regression values.}
 }
 
 \author{

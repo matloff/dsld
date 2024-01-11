@@ -1,6 +1,6 @@
 \name{dsldDensityByS}
 \alias{dsldDensityByS}
-\title{Graphs densities of a response variable, grouped by a sensitive variable}
+\title{dsldDensityByS}
 
 \usage{
     dsldDensityByS(data, cName, sName)
