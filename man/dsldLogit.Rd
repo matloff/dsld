@@ -1,5 +1,6 @@
 \name{dsldLogit}
 \alias{dsldLogit}
+\alias{summary.dsldGLM}
 \title{dsldLogit}
 
 \description{ 
