@@ -11,8 +11,9 @@ dsldQeSU <- function(data, yName, deweightPars,
   #           holdout=holdout)
   {
 
-   require(qeML)
-   require(fairml)
+   # These libraries were recently added to the DESCRIPTION file
+   # require(qeML)
+   # require(fairml)
 
    data <- na.exclude(data)
 

@@ -1,6 +1,5 @@
 \name{dsldLinear}
 \alias{dsldLinear}
-\alias{summary.dsldLM}
 \title{dsldLinear}
 
 \description{ 
@@ -49,8 +48,8 @@ predict(dsldLM, newData)        # predict()
         Output from dsldLinear function
         [dsldLM]
     }
-    \item{newdata}{
-        newdata intended to compare S levels, must be in the same format as original data
+    \item{newData}{
+        newData intended to compare S levels, must be in the same format as original data
         [dataframe]
     }
 }
