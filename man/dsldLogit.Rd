@@ -15,9 +15,9 @@ dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYV
 summary(dsldGLM)                # summary of all attributes
 coef(dsldGLM)                   # coefficients of the underlying GLM model
 vcov(dsldGLM)
-dsldDiffSLog(dsldGLM, newData) 	# compare P (Y = 1|X) for additional data in the 
+dsldDiffSLog(dsldGLM, sComparisonPts) 	# compare P (Y = 1|X) for additional data in the 
                                 # full interactions case
-predict(dsldGLM, newData)
+predict(dsldGLM, xNew)
 }
 
 \arguments{
@@ -47,9 +47,11 @@ predict(dsldGLM, newData)
         Output from dsldLinear function
         [dsldLM]
     }
-    \item{newData}{
-        newData intended to compare S levels, must be in the same format as original data
-        [dataframe]
+    \item{sComparisonPts}{
+
+    }
+    \item{xNew}{
+
     }
 }
 
