@@ -14,7 +14,7 @@
 }
 
 \arguments{
-    \item{dataName}{
+    \item{data}{
         Data frame comprising the input data.
     }
     \item{yName}{
@@ -23,7 +23,6 @@
     \item{sName}{
         Quoted name of the sensitive variable S, an R factor.
     }
-
     \item{intersectDepth}{
         Maximum size of Y predictor set and S predictor set to intersect.
     }
