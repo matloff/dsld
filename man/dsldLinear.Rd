@@ -44,6 +44,14 @@ predict(dsldLM, newData)        # predict()
         whether or not to use sandwich variance estimator; defaults to FALSE
         [logical]
     }
+    \item{dsldLM}{
+        Output from dsldLinear function
+        [dsldLM]
+    }
+    \item{newdata}{
+        newdata intended to compare S levels, must be in the same format as original data
+        [dataframe]
+    }
 }
 
 \author{
