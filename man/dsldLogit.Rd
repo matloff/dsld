@@ -36,6 +36,10 @@ predict(dsldGLM, newData)
         will be compared between each pairs of S levels; defaults to NULL for 
         the no-interactions case [dataframe]
     }
+    \item{interactions}{
+        a logical value indicating whether or not to fit interactions with the
+        sensitive variable. Defaults to FALSE [logical]
+    }
     \item{yesYVal}{
         Y value to be considered "yes," to be coded 1 rather than 0.[character]
     }
