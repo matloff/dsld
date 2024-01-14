@@ -8,9 +8,9 @@
 }
 
 \usage{
-  dsldQeFairKNN <- function(data, yName, sNames, deweightPars=NULL, 
-                          yesYVal=NULL,k=25,scaleX=TRUE,
-                          holdout=floor(min(1000,0.1*nrow(data))))
+  dsldQeFairKNN(data, yName, sNames, deweightPars=NULL, 
+                yesYVal=NULL,k=25,scaleX=TRUE,
+                holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{

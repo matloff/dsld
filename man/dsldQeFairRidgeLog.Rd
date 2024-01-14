@@ -9,9 +9,9 @@
 }
 
 \usage{
-  dsldQeFairRidgeLog <- function(data,yName,sNames,deweightPars=NULL,
-                               yesYVal=levels(data[,yName])[2],
-                               holdout=floor(min(1000,0.1*nrow(data))))
+  dsldQeFairRidgeLog(data,yName,sNames,deweightPars=NULL,
+                     yesYVal=levels(data[,yName])[2],
+                     holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{

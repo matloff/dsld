@@ -8,8 +8,8 @@
 }
 
 \usage{
-  dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL, 
-                                      holdout=floor(min(1000,0.1*nrow(data))))
+  dsldQeFairRidgeLin(data, yName, sNames, deweightPars = NULL, 
+                     holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{

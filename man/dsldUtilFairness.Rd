@@ -7,8 +7,8 @@
 }
 
 \usage{
-    dsldUtilFairness <- function(data, yName, cName, sName, count = 5, 
-                                deweight_increment = 0.1)
+    dsldUtilFairness(data, yName, cName, sName, count = 5, 
+                     deweight_increment = 0.1)
 }
 
 \arguments{

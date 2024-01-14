@@ -8,9 +8,9 @@
 }
 
 \usage{
-dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
-                         minNodeSize=10,mtry = floor(sqrt(ncol(data))),
-                         yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data))))
+dsldQeFairRF(data,yName,sNames,deweightPars=NULL, nTree=500,
+             minNodeSize=10,mtry = floor(sqrt(ncol(data))),
+             yesYVal=NULL,holdout=floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{

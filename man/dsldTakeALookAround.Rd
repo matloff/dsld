@@ -37,9 +37,9 @@
 }
 
 \usage{
-    dsldTakeALookAround <- function(data, yName, sName, 
-        maxFeatureSetSize = (ncol(data) - 2), 
-        holdout = floor(min(1000,0.1*nrow(data))))
+    dsldTakeALookAround(data, yName, sName, 
+                        maxFeatureSetSize = (ncol(data) - 2), 
+                        holdout = floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{
