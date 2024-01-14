@@ -50,6 +50,7 @@
 }
 
 \examples{
-  log <- dsld::dsldQeFairRidgeLog(fairml::compas, "two_year_recid", "race", list(decile_score=1))
+  log <- dsld::dsldQeFairRidgeLog(fairml::compas, "two_year_recid", "race", 
+      list(decile_score=1))
   predict(log, fairml::compas[1,])
 }

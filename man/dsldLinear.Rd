@@ -16,7 +16,8 @@ dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL,
 summary(dsldLM)                 # summary of all attributes
 coef(dsldLM)                    # coefficients of the underlying linear model
 vcov(dsldLM)
-dsldDiffSLin(dsldLM, newData)   # compare mean Y | X for additional data in the full interactions case
+dsldDiffSLin(dsldLM, newData)   # compare mean Y | X for additional data in the 
+                                # full interactions case
 predict(dsldLM, newData)        # predict()
 }
 

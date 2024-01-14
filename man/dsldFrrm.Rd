@@ -26,8 +26,8 @@
     }
     \item{unfairness}{
         A positive number in [0, 1], how unfair is the model allowed to be. 
-        A value of 0 means the model is completely fair, while a value of 1 means 
-        the model is not constrained to be fair at all.
+        A value of 0 means the model is completely fair, while a value of 1 
+        means the model is not constrained to be fair at all.
     }
     \item{definition}{
         A character string, the label of the definition of fairness used in 
@@ -63,7 +63,8 @@
     the sanitized response variable (\code{y}), the design matrix for the
     sanitized sensitive attributes (\code{S}), the design matrix for the
     sanitized decorrelated predictors (\code{U}) and the character string
-    identifying the family the model belongs to (\code{family}) (Marco Scutari (2023)).
+    identifying the family the model belongs to (\code{family}) (Marco Scutari 
+    (2023)).
 
     The arguments yName and sName are used to internally estimate the xName 
     as xName includes everything in the dataset except the yName
