@@ -16,7 +16,8 @@ dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYV
 summary(dsldGLM)                # summary of all attributes
 coef(dsldGLM)                   # coefficients of the underlying GLM model
 vcov(dsldGLM)
-dsldDiffSLog(dsldGLM, newData) 	# compare P (Y = 1|X) for additional data in the full interactions case
+dsldDiffSLog(dsldGLM, newData) 	# compare P (Y = 1|X) for additional data in the 
+                                # full interactions case
 predict(dsldGLM, newData)
 }
 
@@ -44,8 +45,8 @@ predict(dsldGLM, newData)
         [dsldLM]
     }
     \item{newdata}{
-        newdata intended to compare S levels, must be in the same format as original data
-        [dataframe]
+        newdata intended to compare S levels, must be in the same format as 
+        original data [dataframe]
     }
 }
 
@@ -65,7 +66,8 @@ lsa <- law.school.admissions # **abbreviated name** for ease of use
 # select subset of original data for sComparisonPts argument
 newData <- lsa[c(2,22,222,2222),-c(8,11)]
 
-log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')	# we are predicting lsat score       
+# we are predicting lsat score
+log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')
 
 # Extract individual regression coefficients AND compare differences in
 # P(Y = 'TRUE'| X) between each pairs of sName levels:
@@ -78,7 +80,8 @@ dat1 <- dsldDiffSLog(log1, xNew)
 
 # Example 2: ‘bar’ as yName; 'gender' as sName; interactions == FALSE;
 # newData = NULL
-log2 <- dsldLogit(data = law.school.admissions,yName = 'bar',sName = 'gender', interactions = FALSE, yesYVal = 'TRUE')
+log2 <- dsldLogit(data = law.school.admissions,yName = 'bar',sName = 'gender', 
+    interactions = FALSE, yesYVal = 'TRUE')
 
 # Extract individual regression coefficients AND compare differences in
 # regression coefficients between each pairs of S levels:

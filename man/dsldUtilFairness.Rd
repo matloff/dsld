@@ -41,9 +41,11 @@
     data(svcensus)
 
     # example w/ categorical cName
-    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')
+    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', 
+        sName = 'gender')
 
     # example w/ continuous cName
-    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender', deweight_increment = 0.05)
+    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', 
+        sName = 'gender', deweight_increment = 0.05)
 }
 

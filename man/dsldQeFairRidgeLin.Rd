@@ -46,7 +46,8 @@
 \examples{  
   library(dsld)
   data(svcensus)
-  lin <- dsld::dsldQeFairRidgeLin(svcensus, "wageinc", "gender", deweightPars = list(occ=.4, age=.2))
+  lin <- dsld::dsldQeFairRidgeLin(svcensus, "wageinc", "gender", 
+      deweightPars = list(occ=.4, age=.2))
   lin$testAcc
   lin$corrs
   predict(lin, svcensus[1,])

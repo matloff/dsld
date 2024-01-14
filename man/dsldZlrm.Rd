@@ -33,7 +33,11 @@ From fairml:
 
 zlm() and zlrm() define fairness as statistical parity.
 
-Estimation minimizes the log-likelihood of the regression models under the constraint that the correlation between each sensitive attribute and the fitted values (on the linear predictor scale, in the case of logistic regression) is smaller than unfairness in absolute value. Both models include predictors as explanatory variables; the variables sensitive only appear in the constraints.
+Estimation minimizes the log-likelihood of the regression models under the 
+constraint that the correlation between each sensitive attribute and the fitted 
+values (on the linear predictor scale, in the case of logistic regression) is 
+smaller than unfairness in absolute value. Both models include predictors as 
+explanatory variables; the variables sensitive only appear in the constraints.
 }
 \value{
   An object of class "dsldZlrm", which has a $data attribute that contains
@@ -43,7 +47,7 @@ Estimation minimizes the log-likelihood of the regression models under the const
 https://cran.r-project.org/web/packages/fairml/index.html
 }
 \author{
-  Jonathan Tran
+  N. Matloff, J. Tran
 }
 \examples{
   data <- fairml::compas

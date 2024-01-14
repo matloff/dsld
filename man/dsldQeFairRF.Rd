@@ -24,8 +24,8 @@ dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
         A vector or single string, representing the sensitive column(s)
     }
     \item{deweightPars}{
-        Values for de-emphasizing variables in a split, e.g. 'list(age=0.2,gender=0.5)'
-        Lower values means more deweighting.
+        Values for de-emphasizing variables in a split, e.g. 
+        'list(age=0.2,gender=0.5)'. Lower values means more deweighting.
     }
     \item{nTree}{
         Number of trees.
@@ -54,7 +54,8 @@ dsldQeFairRF <- function(data,yName,sNames,deweightPars=NULL, nTree=500,
 }
 
 \examples{  
-  rf <- dsld::dsldQeFairRF(fairml::compas, "two_year_recid", "race", list(decile_score=.3))
+  rf <- dsld::dsldQeFairRF(fairml::compas, "two_year_recid", "race", 
+      list(decile_score=.3))
   predict(rf, fairml::compas[1,])
 }
         

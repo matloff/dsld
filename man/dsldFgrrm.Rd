@@ -63,7 +63,8 @@
     the sanitized response variable (\code{y}), the design matrix for the
     sanitized sensitive attributes (\code{S}), the design matrix for the
     sanitized decorrelated predictors (\code{U}) and the character string
-    identifying the family the model belongs to (\code{family}) (Marco Scutari (2023)).
+    identifying the family the model belongs to (\code{family}) (Marco Scutari 
+    (2023)).
 
 }
 

@@ -17,7 +17,8 @@ dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL,
 summary(dsldLM)                 # summary of all attributes
 coef(dsldLM)                    # coefficients of the underlying linear model
 vcov(dsldLM)
-dsldDiffSLin(dsldLM, newData)   # compare mean Y | X for additional data in the full interactions case
+dsldDiffSLin(dsldLM, newData)   # compare mean Y | X for additional data in the 
+                                # full interactions case
 predict(dsldLM, newData)        # predict()
 }
 
@@ -50,8 +51,8 @@ predict(dsldLM, newData)        # predict()
         [dsldLM]
     }
     \item{newdata}{
-        newdata intended to compare S levels, must be in the same format as original data
-        [dataframe]
+        newdata intended to compare S levels, must be in the same format as 
+        original data [dataframe]
     }
 }
 

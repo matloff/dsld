@@ -24,8 +24,8 @@
         A vector or single string, representing the sensitive column(s)
     }
     \item{deweightPars}{
-        Values for de-emphasizing variables in a split, e.g. 'list(age=0.2,gender=0.5)'
-        Lower values means more deweighting.
+        Values for de-emphasizing variables in a split, e.g. 
+        'list(age=0.2,gender=0.5)'. Lower values means more deweighting.
     }
     \item{scaleX}{
         Scale the features. Defaults to TRUE.
@@ -34,8 +34,9 @@
         Y value to be considered "yes," to be coded 1 rather than 0.
     }
     \item{k}{
-        Number of nearest neighbors. In functions other than qeKNN for which this is an argument, 
-        it is the number of neighbors to use in finding conditional probabilities via knnCalib.
+        Number of nearest neighbors. In functions other than qeKNN for which 
+        this is an argument, it is the number of neighbors to use in finding 
+        conditional probabilities via knnCalib.
     } 
     \item{holdout}{
         How many rows to use as the holdout/testing set. Can be NULL.
