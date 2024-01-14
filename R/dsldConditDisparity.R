@@ -36,8 +36,6 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
         stop("xName must refer to a numeric column in data.")
     }
 
-    getSuggestedLib("qeML")
-
     # data engineering #
     # restrict data to fit conditions
     if (length(condits) > 1) {
@@ -91,7 +89,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
 
        # store dataframe w/ sorted data for plotting
        # check Loess
-       plotdf <- data.frame(curXData, preds)               
+       plotdf <- data.frame(curXData, preds)
        if (useLoess) {
            preds <- loess(preds ~ curXData, plotdf)$fitted # loess smoothing
        }

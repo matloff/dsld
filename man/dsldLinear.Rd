@@ -9,8 +9,8 @@
 
 \usage{
 ## Fit linear model
-dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
-           useSandwich = FALSE) 
+dsldLinear <- function(data, yName, sName, interactions = FALSE, 
+                       sComparisonPts = NULL, useSandwich = FALSE)
 
 ## s3 polymorphic functionalities for class 'dsldLM'
 summary(dsldLM)                 # summary of all attributes

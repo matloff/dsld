@@ -39,8 +39,8 @@ dsldCheckData <- function(data1, data2, yName) {
 }
 
 ### -------------------------- DSLD Linear -------------------------------------
-dsldLinear <- function (data, yName, sName, interactions = FALSE, 
-                        sComparisonPts = NULL, useSandwich = FALSE) {
+dsldLinear <- function(data, yName, sName, interactions = FALSE, 
+                       sComparisonPts = NULL, useSandwich = FALSE) {
   
   # execute params
   if (useSandwich) {
