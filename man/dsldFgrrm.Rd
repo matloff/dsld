@@ -9,9 +9,9 @@
 }
 
 \usage{
-    dsldFgrrm <- function(data, yData, xData, sName, unfairness,
-                      definition = "sp-komiyama", family = "binomial", 
-                      lambda = 0, save.auxiliary = FALSE) 
+    dsldFgrrm(data, yData, xData, sName, unfairness,
+              definition = "sp-komiyama", family = "binomial", 
+              lambda = 0, save.auxiliary = FALSE) 
 }
 
 \arguments{

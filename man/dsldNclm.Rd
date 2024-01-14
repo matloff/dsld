@@ -10,8 +10,8 @@
     Constraints from Komiyama et al. (2018) (link in See also).
 }
 \usage{
-    dsldNclm <- function (data, yName, sName, unfairness, covfun, 
-                     lambda = 0, save.auxiliary = FALSE)
+    dsldNclm(data, yName, sName, unfairness, covfun, 
+             lambda = 0, save.auxiliary = FALSE)
 }
 
 \arguments{

@@ -9,8 +9,8 @@
 }
 
 \usage{
-    dsldConditDisparity <- function(data, yName, sName, xName, condits,
-                                qeFtn = qeKNN, minS = 50, useLoess = TRUE)
+    dsldConditDisparity(data, yName, sName, xName, condits,
+                        qeFtn = qeKNN, minS = 50, useLoess = TRUE)
 }
 
 \arguments{

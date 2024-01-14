@@ -9,9 +9,9 @@
 }
 
 \usage{
-    dsldFrrm <- function(data, yName, sName, unfairness,
-                     definition = "sp-komiyama", lambda = 0, 
-                     save.auxiliary = FALSE) 
+    dsldFrrm(data, yName, sName, unfairness,
+             definition = "sp-komiyama", lambda = 0, 
+             save.auxiliary = FALSE) 
 }
 
 \arguments{
