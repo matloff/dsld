@@ -82,16 +82,6 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
   return(dsldModel)
 }
 
-# ------------------------------------- Test Run dsldLogit ---------------------
-#library(fairml)
-#data(law.school.admissions)                      
-#drop <- c('fulltime','cluster')
-#law.school.admissions <- law.school.admissions[, !(names(law.school.admissions) %in% drop)]
-#newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), lsat = c(44,44), fam_inc = c(3,3), ugpa = c(3.5, 3.5), race1 = c('asian', 'black')) 
-#log1 <- dsldLogit(law.school.admissions,'bar','gender', newData, TRUE, 'TRUE'); log1 # we are predicting lsat score 
-#log2 <- dsldLogit(data = law.school.admissions,yName = 'bar',sName = 'gender', interactions = FALSE,yesYVal = 'FALSE'); log2
-# ------------------------------------------------------------------------------
-
 # ----------------------- Auxiliary Functions ---------------------------------#
 coef.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
@@ -99,24 +89,18 @@ coef.dsldGLM <- function(dsldGLM) {
   return(mergedCoef)
 }
 
-# coef(log1) 
-
 vcov.dsldGLM <- function(dsldGLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldGLM, function(x) vcov(x$model))
   return(mergedCoef)
 }
 
-# vcov(log1)
-
 dsldGetData <- function(dsldGLM) {
   # merge & return datasets #
   mergedData <- lapply(dsldGLM, function(x) x$data)
   return(mergedData)
 }
-
-# dsldGetData(log1)
-
+                       
 #------------------------- dsldDiffSLog function ------------------------------#
 dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
   # get sName and yName from the output of dsldLogistic #
@@ -280,12 +264,7 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
   }
 }
 
-# ---------------------------- Test runs  -------------------------------------#
-# newData <- data.frame(age = c(18,18), decile1 = c(5,5),decile3 = c(4,4), lsat = c(25,25), fam_inc = c(3,3), ugpa = c(3.5, 3.5), race1 = c('asian', 'black')) 
-# dsldDiffSLog(log1, newData) # run with interactions 
-# dsldDiffSLog(log2, newData) # run with interactions 
-# -----------------------------------------------------------------------------#
-
+## ------------------------------ summary() ------------------------------
 summary.dsldGLM <- function(dsldGLM) {
   diffS <- list()
   # get sName and yName from the output of dsldLogistic #
@@ -340,10 +319,6 @@ summary.dsldGLM <- function(dsldGLM) {
     return(diffS)
   }
 }
-
-# ------------------------------- Test run -------------------------------------
-# summary(log1)
-# summary(log2)
 
 # ---------------------------- add predict() -----------------------------------
 predict.dsldGLM <- function(dsldGLM, xNew){
