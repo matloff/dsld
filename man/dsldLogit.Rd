@@ -38,6 +38,14 @@ predict(dsldGLM, newData)
     \item{yesYVal}{
         Y value to be considered "yes," to be coded 1 rather than 0.[character]
     }
+    \item{dsldGLM}{
+        Output from dsldLinear function
+        [dsldLM]
+    }
+    \item{newdata}{
+        newdata intended to compare S levels, must be in the same format as original data
+        [dataframe]
+    }
 }
 
 \author{
