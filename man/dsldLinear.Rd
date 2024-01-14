@@ -1,7 +1,7 @@
 \name{dsldLinear}
 \alias{dsldLinear}
 \title{dsldLinear}
-
+% TODO: Resolve issue with polymorphic function aliases
 \description{ 
     Comparison of conditions for sensitive groups via linear models, with and
     without interactions.
@@ -119,7 +119,7 @@ summary(lin2)
            @ data
 
     Furthermore, summary() is a polymorphic method that takes in an object of
-    the ‘dsldLM’ class and outputs an S3 object containing several dataframes.
+    the 'dsldLM' class and outputs an S3 object containing several dataframes.
     In the full interactions case, the first m elements (where m is the number
     of levels in sName) contain information regarding regression coefficients,
     standard errors, p-values etc. for each model fitted across each level in

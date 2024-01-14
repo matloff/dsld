@@ -1,7 +1,7 @@
 \name{dsldLogit}
 \alias{dsldLogit}
 \title{dsldLogit}
-
+% TODO: Resolve issue with polymorphic function aliases
 \description{ 
     Comparison of conditions for sensitive groups via logistic regression
     models, with and without interactions.
@@ -117,7 +117,7 @@ summary(log2)
            @ data
 
     Furthermore, summary() is a polymorphic method that takes in an object of
-    the ‘dsldGLM’ class and outputs an S3 object containing several dataframes.
+    the 'dsldGLM' class and outputs an S3 object containing several dataframes.
     In the full interactions case, the first m elements (where m is the number
     of levels in sName) contain information regarding regression coefficients,
     standard errors, p-values etc. for each model fitted across each level in
