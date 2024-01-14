@@ -9,7 +9,6 @@ dsldGetRow5 <- function(data, yName, sName) {
   return(newDat)
 }
 
-
 ### --------------------------- DSLDCheckData ----------------------------------
 dsldCheckData <- function(data1, data2, yName) {
   data1 <- data1[, !(names(data1) == yName), drop = FALSE]
@@ -39,11 +38,10 @@ dsldCheckData <- function(data1, data2, yName) {
   return(data2)
 }
 
-
 ### -------------------------- DSLD Linear -------------------------------------
 dsldLinear <- function (data, yName, sName, interactions = FALSE, 
                         sComparisonPts = NULL, useSandwich = FALSE) {
-
+  
   # execute params
   if (useSandwich) {
     library(sandwich)
@@ -156,26 +154,17 @@ dsldLinear <- function (data, yName, sName, interactions = FALSE,
 }
 
 # ----------------------- Auxiliary Functions ---------------------------------#
-
 coef.dsldLM <- function(dsldLM) {
   # merge & return coefficients #
   mergedCoef <- lapply(dsldLM, function(x) x$coef)
   return(mergedCoef)
 }
 
-
-# coef(lin1) # test run
-# coef(lin11)
-
-# added vcov generic
 vcov.dsldLM <- function(dsldLM) {
   # merge & return covariance matrix #
   mergedCov <- lapply(dsldLM, function(x) x$covarianceMatrix)
   return(mergedCov)
 }
-
-# vcov(lin1)
-# vcov(lin11)
 
 dsldGetData <- function(dsldLM) {
   # merge separated datasets & return #
@@ -183,9 +172,7 @@ dsldGetData <- function(dsldLM) {
   return(mergedData)
 }
 
-
 #------------------------- dsldDiffS function ---------------------------------#
-
 dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
   library(regtools)
   # get sName and yName from the output of dsldLinear #
@@ -368,12 +355,7 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
   }
 }
 
-# ---------------------------- Test runs  -------------------------------------#
-# educ_data <- data.frame(age = c(18,60), educ = c("zzzOther", "zzzOther"), wkswrkd = c(50, 50),occ = c("106", "106")) 
-# dsldDiffSLin(lin1, educ_data) # run with interactions 
-# dsldDiffSLin(lin11, educ_data)
-# -----------------------------------------------------------------------------#
-                                
+#------------------------- summary function ---------------------------------#
 summary.dsldLM <- function(dsldLM) {
   # the goal of the summary is to generate all attributes a user may want to
   # inspect with a given dsldLM object, which ends up as a list of these key
@@ -440,13 +422,7 @@ summary.dsldLM <- function(dsldLM) {
   }
 }
 
-# Test runs --------------------------------------------------------------------
-# summary(lin1)
-# summary(lin11)
-# summary(lin2)
-# summary(lin22)
-
-### ---------------- Copy pasted code for predict() ---------------------------
+### ---------------- predict() method -----------------------------------
 predict.dsldLM <- function(dsldLM, xNew) {
   df <- data.frame()
   yName = dsldLM[[1]]$yName
@@ -484,7 +460,7 @@ predict.dsldLM <- function(dsldLM, xNew) {
   else {
     sNames <- names(dsldLM)
     for (i in sNames) {
-      data <- dsldLM[[i]]$data  ## all this calculation is done for the sandwich 
+      data <- dsldLM[[i]]$data  
       colName <- names(data)
       colName <- colName[colName != yName]
       model <- dsldLM[[i]]$model
