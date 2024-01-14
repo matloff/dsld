@@ -1,5 +1,6 @@
 \name{dsldLinear}
 \alias{dsldLinear}
+\alias{dsldLinear.summary}
 \title{dsldLinear}
 
 \description{ 
