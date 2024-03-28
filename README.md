@@ -3,8 +3,8 @@
 
 Authors: 
 - Norm Matloff
-- Taha Abdulla
 - Aditya Mittal
+- Taha Abdullah
 - Arjun Ashok
 - Shubhada Martha
 - Billy Ouattara
@@ -27,9 +27,13 @@ This is an R package. It is widely applicable, here are just a few use cases:
 - Litigation involving discrimination and related issues.
 - Concerned citizenry.
 
+The package is broadly aimed at users ranging from instructors of statistics classes to legal professionals, 
+offering a powerful yet intuitive approach to discrimination analysis.  It also includes an 80 page Quarto book 
+to serve as a guide to key statistical principles and their applications.
+
 ## Installation:
 
-The package can be installed using the **devtools** package:
+As of now, the package may be installed using the **devtools** package:
 
 ```R
 library(devtools)
@@ -39,6 +43,14 @@ install_github("matloff/dsld", force = TRUE)
 [WAITING TO PUT ON CRAN]
 
 ## Analysis categories:
+
+See full function list by typing:
+
+```R
+?dsld
+```
+
+Here are the main categories:
 
 - In the estimation realm, say investigating a possible gender pay gap.
 In doing so, we must be careful to account for *confounders*, variables
@@ -52,7 +64,7 @@ that may be strongly related to race.
 In the first case, we are checking for *societal* or *institutional*
 bias. In the second, the issue is *algorithmic* bias.
 
-To distinguished between a "fair ML" dataset and a "statistics" one. Here is a side-by-side comparison:
+To distinguish between a "fair ML" and a "statistics" dataset. Here is a side-by-side comparison:
 
 <table border="1">
 
@@ -83,27 +95,42 @@ To distinguished between a "fair ML" dataset and a "statistics" one. Here is a s
 
 </table>
 
-## Quarto Book
+Here we will take a quick tour of a subset of dsld features, using data **svcensus** that is included in the package.
 
-A quarto book is provided to serve as a guide to key statistical principles and their applications, providing a more detailed analysis of the examples denoted below. 
+### The data
+
+The **svcensus** dataset consists of recorded income from 6 different engineering occupations. We will use only a few features, to keep 
+things simple:
+
+```R
+> data(svcensus)
+> head(svcensus)
+       age     educ occ wageinc wkswrkd gender
+1 50.30082 zzzOther 102   75000      52 female
+2 41.10139 zzzOther 101   12300      20   male
+3 24.67374 zzzOther 102   15400      52 female
+4 50.19951 zzzOther 100       0      52   male
+5 51.18112 zzzOther 100     160       1 female
+6 57.70413 zzzOther 100       0       0   male
+```
 
 ## Part One: Adjustment for Confounders 
 
-In this case, we wish to *estimate the impact* of a sensitive variable S on an outcome variable Y, 
-while *accounting for confounders* C. Let's call such analysis "confounder adjustment." The package 
-provides several graphical and analytical tools for this purpose.
+The *Quarto Book* provides an extensive analysis of examples shown below.
+
+We wish to *estimate the impact* of a sensitive variable S on an outcome variable Y, while *accounting for confounders* C. 
+Let's call such analysis "confounder adjustment." The package provides several graphical and analytical tools for this purpose.
 
 ### Example
 
-We are investigating a possible gender pay gap using **svcensus** data. [Y] is wage and [S] is gender. 
+We are investigating a possible gender pay gap between men and women. Here, [Y] is wage and [S] is gender. 
 We will treat age as a confounder [C], using a linear model.
 
 ```R
 > data(svcensus)
-> svcensus <- svcensus[,c(1,4,6)]  # subset: age, wage, gender
+> svcensus <- svcensus[,c(1,4,6)]  # subset columns: age, wage, gender
 > z <- dsldLinear(svcensus,'wageinc','gender')
-> coef(z)
-
+> coef(z) # show coefficients of linear model
 $gender
 (Intercept)         age  gendermale 
  31079.9174    489.5728  13098.2091 
@@ -118,16 +145,18 @@ Thus, we can speak of $\beta_2$ as *the* gender wage gap, at any age. According 
 younger women, with the *same-sized* gap between older men and older women. 
 
 Note that we chose only one [C] variable here, age.  We might also choose "occupation", or any other combination depending on the dataset.
+The package provides a function **dsldCHunting()** to aid with this need. 
 
 ## Part Two: Discovering/Mitigating Bias in Machine Learning
 
-In this case, our goal is to predict [Y] from [X] and [O], omitting [S]. We are concerned that we may be indirectly using [S] via proxies [O] and want to limit their usage.
-The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power/accuracy). The package provides wrappers for several functions for this purpose.
+Our goal is to predict [Y] from [X] and [O], omitting the sensitive variable [S]. Though, we are concerned that we may be indirectly using [S] via proxies [O] 
+and want to limit their usage. The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power/accuracy). 
+The package provides wrappers for several functions for this purpose.
 
 ### Example
 
-Consider the **svcensus** example again. We are predicting the wage [Y], the sensitive variable [S] is gender, with the proxy [O] as occupation. 
-The proxy [O] "occupation" will be deweighted to 0.2 using the *dsldQeFairKNN* function to limit its predictive power.
+We are predicting the wage [Y], the sensitive variable [S] is gender, with the proxy [O] as occupation. The proxy [O] "occupation" will be deweighted
+to 0.2 using the *dsldQeFairKNN()* function to limit its predictive power.
 
 <table border="1">
 
@@ -150,7 +179,7 @@ The proxy [O] "occupation" will be deweighted to 0.2 using the *dsldQeFairKNN* f
    </tr>
 </table>
 
-We can see that the correlation between predicted wage income and gender has decreased significantly. Conversely, test Accuracy increased by about \$700 dollars. Thus, we see an increase in fairness at some expense of accuracy.
+We see that the correlation between predicted wage and gender has decreased significantly. Conversely, test accuracy increased by about \$700 dollars. Thus, we see an increase in fairness at some expense of accuracy. 
 
 ## Function List
 - **DsldLinear**/**DsldLogit**: Comparison of conditions for sensitive groups via linear/logistic models
