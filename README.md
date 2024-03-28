@@ -83,6 +83,10 @@ To distinguished between a "fair ML" dataset and a "statistics" one. Here is a s
 
 </table>
 
+## Quarto Book
+
+A quarto book is provided to serve as a guide to key statistical principles and their applications, providing a more detailed analysis of the examples denoted below. 
+
 ## Part One: Adjustment for Confounders 
 
 In this case, we wish to *estimate the impact* of a sensitive variable S on an outcome variable Y, 
