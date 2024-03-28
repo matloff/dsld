@@ -63,8 +63,8 @@ We wish to *estimate the impact* of a sensitive variable S on an outcome variabl
 Investigating a possible gender pay gap using svcensus data. [Y] is wage and [S] is gender. We will treat age as a confounder [C] using a linear model.
 
 ```R
-library(dsld)
 data(svcensus)
+svcensus <- svcensus[,c(1,4,6)]  # subset: age, wage, gender
 z <- dsldLinear(svcensus,'wageinc','gender')
 coef(z)
 ```
@@ -75,17 +75,7 @@ The inherent tradeoff of increasing fairness is reduced utility (reduced predict
 
 ### Example
 
-- Concerning racial differences: Two very similar people (same quality law school, undergraduate/law school grades, bar passage
-status) will have LSAT scores differing on average Y by almost 6 points if one person is Black and
-the other is white.
-Exploratory Data Analysis
-Fig. 2:Distribution of LSAT Scores by Race
-• Distribution of LSAT scores for white students
-appears to be higher than others, particularly than the black students
-Fig. 3:Distribution of Family Income by Race
-• White students tend to fall under higher family
-income group as opposed to other races
-• The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power over the dataset)
+UNDER CONSTRUCTION
 
 ## Function List
 - DsldLinear/DsldLogit: Comparison of conditions for sensitive groups via linear/logistic models
