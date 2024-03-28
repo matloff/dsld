@@ -44,12 +44,6 @@ install_github("matloff/dsld", force = TRUE)
 
 ## Analysis categories:
 
-See full function list by typing:
-
-```R
-?dsld
-```
-
 Here are the main categories:
 
 - In the estimation realm, say investigating a possible gender pay gap.
