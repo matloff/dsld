@@ -23,7 +23,7 @@ that may be strongly related to race.
 In the first case, we are checking for *societal* or *institutional*
 bias.  In the second, the issue is *algorithmic* bias.
 
-To expand on what I said today about the suitability of datasets for our Term Project, I distinguished between a "fair ML" dataset and a "statistics" one. Here is a side-by-side comparison:
+To distinguished between a "fair ML" dataset and a "statistics" one. Here is a side-by-side comparison:
 
 <table border="1">
 
@@ -56,19 +56,46 @@ To expand on what I said today about the suitability of datasets for our Term Pr
 
 ## Adjustment for Confounders 
 
-Under Construction
+We wish to *estimate the impact* of a sensitive variable S on an outcome variable Y, but *accounting for confounders* C. Let's call such analysis "confounder adjustment."
+
+### Example
+
+Investigating a possible gender pay gap using svcensus data. [Y] is wage and [S] is gender. We will treat age as a confounder [C] using a linear model.
+
+```R
+library(dsld)
+data(svcensus)
+z <- dsldLinear(svcensus,'wageinc','gender')
+coef(z)
+```
 
 ## Discovering/Mitigating Bias in Machine Learning
-Under Construction
+Our goal is to predict Y from X and O, omitting S. We are concerned that we may be indirectly using S via O and want to limit the usage of proxies.
+The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power over the dataset).
+
+### Example
+
+- Concerning racial differences: Two very similar people (same quality law school, undergraduate/law school grades, bar passage
+status) will have LSAT scores differing on average Y by almost 6 points if one person is Black and
+the other is white.
+Exploratory Data Analysis
+Fig. 2:Distribution of LSAT Scores by Race
+• Distribution of LSAT scores for white students
+appears to be higher than others, particularly than the black students
+Fig. 3:Distribution of Family Income by Race
+• White students tend to fall under higher family
+income group as opposed to other races
+• The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power over the dataset)
 
 ## Function List
-- DsldLinear/DsldLogit/DsldML:
-- DsldTakeLookAround: 
-- DsldScatterPlot3D: 
-- DsldCHunting:
-- DsldOHunting:
-- DsldConditsDisparity:
-- DsldConfounders:
-- DsldFreqPCoord:
-- FairML wrappers:
-- EDFFair Wrappers:
+- DsldLinear/DsldLogit: Comparison of conditions for sensitive groups via linear/logistic models
+- DsldML: Comparison of conditions for sensitive groups via ML algorithm
+- DsldTakeLookAround: Evaluates feature sets for predicting Y while considering correlation with sensitive variable S
+- DsldScatterPlot3D: Plots a dataset on 3 axes, with the color of the point depending on a 4th variable.
+- DsldCHunting: Confounder hunting--searches for variables C that predict both Y and S  
+- DsldOHunting: Proxy hunting--searches for variables O that predict S.
+- DsldConditsDisparity: Plots mean Y against X for each level of S, revealing potential Simpson's Paradox-like differences under specified conditions
+- DsldConfounders: Analyzes confounding variables in a dataframe 
+- DsldFreqPCoord:  wrapper for the freqparcoord function from the freqparcoord package
+- FairML wrappers: wrappers for FairML functions from FairML package
+- EDFFair Wrappers: wrappers for EDFFair functions from EDFFair package
