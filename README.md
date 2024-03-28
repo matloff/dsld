@@ -1,13 +1,15 @@
 
-# Data Science Looks at Discrimination
+# DSLD: Data Science Looks at Discrimination (An R Package)
 
-UNDER CONSTRUCTION.
+Authors: Norm Matloff (UC Davis), Taha Abdulla, Aditya Mittal, Arjun Ashok
+
+## Overview
 
 Statistical and graphical tools for detecting and measuring
 discrimination and bias, be it racial, gender, age or other. 
 This is an R package, with Python interfaces available.
 
-Analysis categories:
+## Analysis categories:
 
 * In the estimation realm, say investigating a possible gender pay gap.
 In doing so, we must be careful to account for *covariates*, variables
@@ -52,3 +54,21 @@ To expand on what I said today about the suitability of datasets for our Term Pr
 
 </table>
 
+## Adjustment for Confounders 
+
+Under Construction
+
+## Discovering/Mitigating Bias in Machine Learning
+Under Construction
+
+## Function List
+- DsldLinear/DsldLogit/DsldML:
+- DsldTakeLookAround: 
+- DsldScatterPlot3D: 
+- DsldCHunting:
+- DsldOHunting:
+- DsldConditsDisparity:
+- DsldConfounders:
+- DsldFreqPCoord:
+- FairML wrappers:
+- EDFFair Wrappers:
