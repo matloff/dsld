@@ -2,7 +2,7 @@
 # DSLD: Data Science Looks at Discrimination (An R Package)
 
 Authors: 
-- Norm Matloff (UC Davis)
+- Norm Matloff
 - Taha Abdulla
 - Aditya Mittal
 - Arjun Ashok
@@ -98,31 +98,54 @@ coef(z)  # print the estimated coefficients b_i
 ```
 Our linear model would thus be
 
-> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+> E(W) = $\beta_0$~ + $\beta_1$~ A + $\beta_2$~ M
 
 where W is wage, A is age and M is an indicator variable, with M = 1 for men and M = 0 for women.
 
-Thus, we can speak of $\beta$~2~ as *the* gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than
-younger women, with the *same-sized* gap between older men and older
-women.
+Thus, we can speak of $\beta_2$ as *the* gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than
+younger women, with the *same-sized* gap between older men and older women.
 
-## Discovering/Mitigating Bias in Machine Learning
+## Part Two: Discovering/Mitigating Bias in Machine Learning
+
 Our goal is to predict Y from X and O, omitting S. We are concerned that we may be indirectly using S via O and want to limit the usage of proxies.
-The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power over the dataset).
+The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power over the dataset). The package provides several wrappers for this purpose.
 
 ### Example
 
-UNDER CONSTRUCTION
+Consider the **svcensus** example again. We are predicting the wage [Y], the sensitive variable [S] is gender, the proxy [O] is occupation. The proxy [O] "occupation" will be deweighted to 0.2 using *dsldQeFairKNN* to limit its effect.
+
+<table border="1">
+
+   <tr>
+   <th>Fairness/Utility Tradeoff</th>
+   <th>Fairness</th>
+   <th>Accuracy</th>
+   </tr>
+
+   <tr>
+   <td>K-Nearest Neighbors</td>
+   <td>0.1943313</td>
+   <td>25452.08</td>
+   </tr>
+
+   <tr>
+   <td>Fair K-NN (via EDFFair)</td>
+   <td>0.0814919</td>
+   <td>26291.38</td>
+   </tr>
+</table>
+
+The correlation between predicted [Y] and gender has decreased significantly. Conversely, test Accuracy increased by about \$700 dollars. Thus, we see an increase in fairness at loss of accuracy.
 
 ## Function List
-- DsldLinear/DsldLogit: Comparison of conditions for sensitive groups via linear/logistic models
-- DsldML: Comparison of conditions for sensitive groups via ML algorithm
-- DsldTakeLookAround: Evaluates feature sets for predicting Y while considering correlation with sensitive variable S
-- DsldScatterPlot3D: Plots a dataset on 3 axes, with the color of the point depending on a 4th variable.
-- DsldCHunting: Confounder hunting--searches for variables C that predict both Y and S  
-- DsldOHunting: Proxy hunting--searches for variables O that predict S.
-- DsldConditsDisparity: Plots mean Y against X for each level of S, revealing potential Simpson's Paradox-like differences under specified conditions
-- DsldConfounders: Analyzes confounding variables in a dataframe 
-- DsldFreqPCoord:  wrapper for the freqparcoord function from the freqparcoord package
-- FairML wrappers: wrappers for FairML functions from FairML package
-- EDFFair Wrappers: wrappers for EDFFair functions from EDFFair package
+- **DsldLinear**/**DsldLogit**: Comparison of conditions for sensitive groups via linear/logistic models
+- **DsldML**: Comparison of conditions for sensitive groups via ML algorithm
+- **DsldTakeLookAround**: Evaluates feature sets for predicting Y while considering correlation with sensitive variable S
+- **DsldScatterPlot3D**: Plots a dataset on 3 axes, with the color of the point depending on a 4th variable
+- **DsldCHunting**: Confounder hunting--searches for variables C that predict both Y and S  
+- **DsldOHunting**: Proxy hunting--searches for variables O that predict S.
+- **DsldConditsDisparity**: Plots mean Y against X for each level of S, revealing potential Simpson's Paradox-like differences under specified conditions
+- **DsldConfounders**: Analyzes confounding variables in a dataframe 
+- **DsldFreqPCoord**:  wrapper for the freqparcoord function from the freqparcoord package
+- **FairML wrappers**: wrappers for FairML functions from FairML package
+- **EDFFair Wrappers**: wrappers for EDFFair functions from EDFFair package
