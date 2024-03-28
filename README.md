@@ -91,14 +91,18 @@ We wish to *estimate the impact* of a sensitive variable S on an outcome variabl
 We are investigating a possible gender pay gap using svcensus data. [Y] is wage and [S] is gender. We will treat age as a confounder [C], using a linear model.
 
 ```R
-data(svcensus)
-svcensus <- svcensus[,c(1,4,6)]  # subset: age, wage, gender
-z <- dsldLinear(svcensus,'wageinc','gender')
-coef(z)  # print the estimated coefficients b_i 
+> data(svcensus)
+> svcensus <- svcensus[,c(1,4,6)]  # subset: age, wage, gender
+> z <- dsldLinear(svcensus,'wageinc','gender')
+> coef(z)
+
+$gender
+(Intercept)         age  gendermale 
+ 31079.9174    489.5728  13098.2091 
 ```
 Our linear model would thus be
 
-> E(W) = $\beta_0$~ + $\beta_1$~ A + $\beta_2$~ M
+> E(W) = $\beta_0$ + $\beta_1$ A + $\beta_2$ M
 
 where W is wage, A is age and M is an indicator variable, with M = 1 for men and M = 0 for women.
 
