@@ -25,7 +25,17 @@ This is an R package. It is widely applicable; here are just a few use cases:
 - Quantitative analysis in instruction and research in the social sciences.
 - Corporate HR analysis and research.
 - Litigation involving discrimination and related issues.
-- Concerned citizenry. 
+- Concerned citizenry.
+
+## Installation:
+
+The package can be installed using the devtools package:
+
+```R
+library(devtools)
+install_github("matloff/dsld", force = TRUE)
+```
+[WAITING TO PUT ON CRAN]
 
 ## Analysis categories:
 
@@ -72,20 +82,29 @@ To distinguished between a "fair ML" dataset and a "statistics" one. Here is a s
 
 </table>
 
-## Adjustment for Confounders 
+## Part One: Adjustment for Confounders 
 
-We wish to *estimate the impact* of a sensitive variable S on an outcome variable Y, but *accounting for confounders* C. Let's call such analysis "confounder adjustment."
+We wish to *estimate the impact* of a sensitive variable S on an outcome variable Y, but *accounting for confounders* C. Let's call such analysis "confounder adjustment." The package provides graphical and analytical tools for this purpose.
 
 ### Example
 
-Investigating a possible gender pay gap using svcensus data. [Y] is wage and [S] is gender. We will treat age as a confounder [C] using a linear model.
+We are investigating a possible gender pay gap using svcensus data. [Y] is wage and [S] is gender. We will treat age as a confounder [C], using a linear model.
 
 ```R
 data(svcensus)
 svcensus <- svcensus[,c(1,4,6)]  # subset: age, wage, gender
 z <- dsldLinear(svcensus,'wageinc','gender')
-coef(z)
+coef(z)  # print the estimated coefficients b_i 
 ```
+Our linear model would thus be
+
+> mean W = $\beta$~0~ + $\beta$~1~ A + $\beta$~2~ M
+
+where W is wage, A is age and M is an indicator variable, with M = 1 for men and M = 0 for women.
+
+Thus, we can speak of $\beta$~2~ as *the* gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than
+younger women, with the *same-sized* gap between older men and older
+women.
 
 ## Discovering/Mitigating Bias in Machine Learning
 Our goal is to predict Y from X and O, omitting S. We are concerned that we may be indirectly using S via O and want to limit the usage of proxies.
