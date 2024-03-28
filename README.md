@@ -1,27 +1,45 @@
 
 # DSLD: Data Science Looks at Discrimination (An R Package)
 
-Authors: Norm Matloff (UC Davis), Taha Abdulla, Aditya Mittal, Arjun Ashok
+Authors: 
+- Norm Matloff (UC Davis)
+- Taha Abdulla
+- Aditya Mittal
+- Arjun Ashok
+- Shubhada Martha
+- Billy Ouattara
+- Jonathan Tran
+- Brandon Zarate
 
 ## Overview
 
-Statistical and graphical tools for detecting and measuring
-discrimination and bias, be it racial, gender, age or other. 
-This is an R package, with Python interfaces available.
+Discrimination is a key social issue in the US and in a number of other
+countries. There is lots of available data with which one might
+investigate possible discrimination. But how might such investigations
+be conducted?
+
+Our **dsld** Statistical and graphical tools for tools for detecting and 
+measuring discrimination and bias, be it racial, gender, age or other. 
+This is an R package. It is widely applicable; here are just a few use cases:
+
+- Quantitative analysis in instruction and research in the social sciences.
+- Corporate HR analysis and research.
+- Litigation involving discrimination and related issues.
+- Concerned citizenry. 
 
 ## Analysis categories:
 
-* In the estimation realm, say investigating a possible gender pay gap.
-In doing so, we must be careful to account for *covariates*, variables
+- In the estimation realm, say investigating a possible gender pay gap.
+In doing so, we must be careful to account for *confounders*, variables
 that may affect wages other than through gender.
 
-* In a prediction context, with concern that an AI algorithm has built-in
+- In a prediction context, with concern that an AI algorithm has built-in
 bias against some racial group.  We want to eliminate race from the
 analysis, and to also limit the effect of *proxies*, other variables
 that may be strongly related to race.
 
 In the first case, we are checking for *societal* or *institutional*
-bias.  In the second, the issue is *algorithmic* bias.
+bias. In the second, the issue is *algorithmic* bias.
 
 To distinguished between a "fair ML" dataset and a "statistics" one. Here is a side-by-side comparison:
 
