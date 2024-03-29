@@ -1,4 +1,5 @@
 ### ------------------------ DSLDLogit -----------------------------------------
+### creates the dsldLogit object
 dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal) {
   
   dsldModel <- list()
@@ -6,19 +7,14 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
   
   # user wants interactions #
   if (interactions) {
-    
-    # raise error if user doesn't input sComparisonPts #
+
+    # generate interactions data if not provided / stop if erroneous
     if (is.null(sComparisonPts)) {
-      stop(paste("Please enter the sComparisonPts input to compare for ",
-                 "interactions in summary()"))
-    }
-    if (!is.data.frame(sComparisonPts)) {
+      sComparisonPts <- dsldGetRow5(data,yName, sName)
+    } else if (!is.data.frame(sComparisonPts)) {
       stop(paste("Error: sComparisonPts must be a dataframe"))
-    }
-    
-    tempData <- data[, !(names(data) %in% sName)]
-    newData <- dsldCheckData(tempData, sComparisonPts, yName)
-    
+    } 
+  
     # split data into list of dataframes by each level of sName #
     dataSplit <- split(data, data[[sName]])
     dataNames <- names(dataSplit)
@@ -43,7 +39,7 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
         yName,
         sName,
         list(diffModel),
-        list(newData),
+        list(sComparisonPts),
         list(summary(diffModel)),
         list(coef(diffModel)),
         list(diffData)
@@ -83,24 +79,24 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
 }
 
 # ----------------------- Auxiliary Functions ---------------------------------#
-coef.dsldGLM <- function(dsldGLM) {
+coef.dsldGLM <- function(object) {
   # merge & return coefficients #
-  mergedCoef <- lapply(dsldGLM, function(x) x$coef)
+  mergedCoef <- lapply(object, function(x) x$coef)
   return(mergedCoef)
 }
 
-vcov.dsldGLM <- function(dsldGLM) {
+vcov.dsldGLM <- function(object) {
   # merge & return coefficients #
-  mergedCoef <- lapply(dsldGLM, function(x) vcov(x$model))
+  mergedCoef <- lapply(object, function(x) vcov(x$model))
   return(mergedCoef)
 }
 
-dsldGetData <- function(dsldGLM) {
+dsldGetData <- function(object) {
   # merge & return datasets #
-  mergedData <- lapply(dsldGLM, function(x) x$data)
+  mergedData <- lapply(object, function(x) x$data)
   return(mergedData)
 }
-                       
+
 #------------------------- dsldDiffSLog function ------------------------------#
 dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
   # get sName and yName from the output of dsldLogistic #
@@ -215,8 +211,8 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
       stop(paste("Error: sComparisonPts must be a dataframe"))
     } 
     
-    tempData <- dsldGLM[[1]]$data
-    xNew <- dsldCheckData(tempData, sComparisonPts, yName)
+    # naming
+    xNew <- sComparisonPts
     
     # get vector of all levels in sName #
     sNames <- names(dsldGLM)
@@ -265,18 +261,18 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
 }
 
 ## ------------------------------ summary() ------------------------------
-summary.dsldGLM <- function(dsldGLM) {
+summary.dsldGLM <- function(object) {
   diffS <- list()
   # get sName and yName from the output of dsldLogistic #
-  sName <- dsldGLM[[1]]$sName
-  yName <- dsldGLM[[1]]$yName
+  sName <- object[[1]]$sName
+  yName <- object[[1]]$yName
   
-  sNames <- names(dsldGLM)
-  newData <- dsldGLM[[1]]$newData
+  sNames <- names(object)
+  newData <- object[[1]]$newData
   
-  if (length(dsldGLM) == 1) {
-    data <- dsldGetData(dsldGLM)[[1]]
-    summary_output <- summary(dsldGLM[[1]]$model)
+  if (length(object) == 1) {
+    data <- dsldGetData(object)[[1]]
+    summary_output <- summary(object[[1]]$model)
     coef <- summary_output$coefficients[, 1]
     std_err <- summary_output$coefficients[, 2]
     pValues <- summary_output$coefficients[, 4]
@@ -292,14 +288,14 @@ summary.dsldGLM <- function(dsldGLM) {
     )
     
     diffS[['Summary Coefficients']] <- df
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLog(dsldGLM)
+    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLog(object)
     
     return(diffS)
   } else { 
     # loop through each level of S name to compute estimates and standard errors
     for (i in sNames) {
-      data <- dsldGLM[[i]]$data
-      summaryOutput <- summary(dsldGLM[[i]]$model)
+      data <- object[[i]]$data
+      summaryOutput <- summary(object[[i]]$model)
       coef <- summaryOutput$coefficients[, 1]
       stdErr <- summaryOutput$coefficients[, 2]
       pValues <- summaryOutput$coefficients[, 4]
@@ -314,19 +310,19 @@ summary.dsldGLM <- function(dsldGLM) {
       )
       diffS[[i]] <- df
     }
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLog(dsldGLM,
+    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLog(object,
                                                                   newData)
     return(diffS)
   }
 }
 
 # ---------------------------- add predict() -----------------------------------
-predict.dsldGLM <- function(dsldGLM, xNew){
+predict.dsldGLM <- function(object, xNew){
   df <- data.frame()
-  yName = dsldGLM[[1]]$yName
-  if (length(dsldGLM) == 1) {
-    data <- dsldGLM[[1]]$data
-    model <- dsldGLM[[1]]$model
+  yName = object[[1]]$yName
+  if (length(object) == 1) {
+    data <- object[[1]]$data
+    model <- object[[1]]$model
     predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
     pred <- predictions$fit
     se <- predictions$se.fit
@@ -334,10 +330,10 @@ predict.dsldGLM <- function(dsldGLM, xNew){
     df <- rbind(df, tempDF)
     return (df)
   } else {
-    sNames <- names(dsldGLM)
+    sNames <- names(object)
     for (i in sNames) {         # loop through each level of S name to compute estimates and standard errors
-      data <- dsldGLM[[i]]$data
-      model <- dsldGLM[[i]]$model
+      data <- object[[i]]$data
+      model <- object[[i]]$model
       predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
       pred <- predictions$fit
       se <- predictions$se.fit
