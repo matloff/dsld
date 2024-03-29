@@ -9,9 +9,9 @@
 }
 
 \usage{
-  dsldQeFairRidgeLog(data,yName,sNames,deweightPars=NULL,
-                     yesYVal=levels(data[,yName])[2],
-                     holdout=floor(min(1000,0.1*nrow(data))))
+  dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
+                   floor(min(1000, 0.1 * nrow(data))), yesYVal =
+                   levels(data[, yName])[2])
 }
 
 \arguments{
@@ -28,14 +28,14 @@
         E.g list(age=0.2, gender=0.5), used to deweight proxy variables. 
         Higher values mean more deweighting.
     }
-    \item{yesYVal}{
-        Y value to be considered "yes," to be coded 1 rather than 0. By default
-        this is the 2nd factor level.
-    }
     \item{holdout}{
         How many rows to use as the holdout/testing set. Can be NULL.
         The testing set is used to calculate s correlation and test accuracy.
     } 
+    \item{yesYVal}{
+        Y value to be considered "yes," to be coded 1 rather than 0. By default
+        this is the 2nd factor level.
+    }
 }
 
 \author{
