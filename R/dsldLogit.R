@@ -99,12 +99,12 @@ dsldGetData <- function(object) {
 
 #------------------------- dsldDiffSLog function ------------------------------#
 dsldDiffSLog <- function(object, sComparisonPts = NULL) {
+  # naming
+  dsldGLM <- object
+  
   # get sName and yName from the output of dsldLogistic #
   sName <- dsldGLM[[1]]$sName
   yName <- dsldGLM[[1]]$yName
-
-  # naming
-  dsldGLM <- object
   
   # diffS results when interaction == FALSE in dsldLinear #
   if (length(dsldGLM) == 1) {
