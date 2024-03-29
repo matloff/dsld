@@ -1,23 +1,22 @@
 \name{dsldLogit}
 \alias{dsldLogit}
 \title{dsldLogit}
-% TODO: Resolve issue with polymorphic function aliases
+
 \description{ 
     Comparison of conditions for sensitive groups via logistic regression
     models, with and without interactions.
 }
 
 \usage{
-## Fit logistic model
 dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal)
 
-## s3 polymorphic functionalities for class 'dsldGLM'
-summary(dsldGLM)                # summary of all attributes
-coef(dsldGLM)                   # coefficients of the underlying GLM model
-vcov(dsldGLM)
-dsldDiffSLog(dsldGLM, sComparisonPts) 	# compare P (Y = 1|X) for additional data in the 
-                                # full interactions case
-predict(dsldGLM, xNew)
+\method{summary}{dsldGLM}(object,...)
+\method{predict}{dsldGLM}(object,xNew,...)
+\method{coef}{dsldGLM}(object,...)
+\method{vcov}{dsldGLM}(object,...)
+
+dsldDiffSLog(dsldGLM, sComparisonPts = NULL) 
+
 }
 
 \arguments{
@@ -33,8 +32,9 @@ predict(dsldGLM, xNew)
     }
     \item{sComparisonPts}{
         dataframe of new cases (minus Y,S) for which P(Y = 1| X) 
-        will be compared between each pairs of S levels; defaults to NULL for 
-        the no-interactions case [dataframe]
+        will be compared between each pairs of S levels. Must be
+        in the same format as the original data. Defaults to NULL for 
+        the no-interactions case. [dataframe]
     }
     \item{interactions}{
         a logical value indicating whether or not to fit interactions with the
@@ -44,19 +44,13 @@ predict(dsldGLM, xNew)
         Y value to be considered "yes," to be coded 1 rather than 0.[character]
     }
     \item{dsldGLM}{
-        Output from dsldLinear function
-        [dsldLM]
-    }
-    \item{sComparisonPts}{
-
-    }
-    \item{xNew}{
-
+        Output from dsldLogit function
+        [dsldGLM]
     }
 }
 
 \author{
-    N. Matloff, A. Ashok, A. Mittal
+    N. Matloff, A. Mittal, A. Ashok
 }
 
 \examples{
@@ -74,14 +68,21 @@ newData <- lsa[c(2,22,222,2222),-c(8,11)]
 # we are predicting lsat score
 log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')
 
+# Extract model coefficients and covariances 
+cov(log1)
+vcov(log1) 
+
 # Extract individual regression coefficients AND compare differences in
 # P(Y = 'TRUE'| X) between each pairs of sName levels:
 summary(log1)
+
+# Generate predictions across each level of sName
+predict(log1, newData)
             
 # Users can also make additional comparisons with new data as well using
 # dsldDiffS to compare mean P(Y = 1|X) between each pair of S levels.
 xNew <- lsa[c(100,1000,120),-c(8,11)]
-dat1 <- dsldDiffSLog(log1, xNew)
+dsldDiffSLog(log1, xNew)
 
 # Example 2: ‘bar’ as yName; 'gender' as sName; interactions == FALSE;
 # newData = NULL
@@ -94,7 +95,7 @@ summary(log2)
 }
 
 \note{
-    The output of dsldDiffSLog is the same dataframe format as summary().
+    The output of dsldDiffSLin is the same included in the output of summary().
 }
 
 \details{
