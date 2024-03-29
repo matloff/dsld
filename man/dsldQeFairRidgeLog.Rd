@@ -9,7 +9,7 @@
 }
 
 \usage{
-  dsldQeFairRidgeLog(data,yName,sName,deweightPars=NULL,
+  dsldQeFairRidgeLog(data,yName,sNames,deweightPars=NULL,
                      yesYVal=levels(data[,yName])[2],
                      holdout=floor(min(1000,0.1*nrow(data))))
 }
@@ -21,7 +21,7 @@
     \item{yName}{
         A string representing a binary factor reponse column
     }
-    \item{sName}{
+    \item{sNames}{
         A vector or single string, representing the sensitive column(s)
     }
     \item{deweightPars}{
