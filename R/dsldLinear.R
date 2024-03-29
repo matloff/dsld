@@ -135,9 +135,12 @@ dsldGetData <- function(object) {
 ### computes the differences in predicted values across levels of sensitive variables
 ### result is included in the output of the summary() function.
 
-dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
+dsldDiffSLin <- function(object, sComparisonPts = NULL) {
   
   library(regtools)
+
+  # naming 
+  dsldLM <- object
   
   # get sName and yName from the output of dsldLinear #
   sName <- dsldLM[[1]]$sName
