@@ -14,11 +14,11 @@
 
 \usage{
 dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal)
-\method{summary}{dsldGLM}(dsldGLM,...)
-\method{predict}{dsldGLM}(dsldGLM,xNew,...)
-\method{coef}{dsldGLM}(dsldGLM,...)
-\method{vcov}{dsldGLM}(dsldGLM,...)
-dsldDiffSLog(dsldGLM, sComparisonPts = NULL) 
+\method{summary}{dsldGLM}(object,...)
+\method{predict}{dsldGLM}(object,xNew,...)
+\method{coef}{dsldGLM}(object,...)
+\method{vcov}{dsldGLM}(object,...)
+dsldDiffSLog(object, sComparisonPts = NULL) 
 }
 
 \arguments{
@@ -45,7 +45,7 @@ dsldDiffSLog(dsldGLM, sComparisonPts = NULL)
     \item{yesYVal}{
         Y value to be considered "yes," to be coded 1 rather than 0.[character]
     }
-    \item{dsldGLM}{
+    \item{object}{
         Output from dsldLogit function
         [dsldGLM]
     }
