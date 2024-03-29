@@ -67,11 +67,11 @@ dsldFgrrm <- function(data, yName, sName, unfairness,
              definition, family, lambda, save.auxiliary)
 }
 
-summary.dsldFairML <- function(object){
+summary.dsldFairML <- function(object,...){
   summary(object$base)
 }
 
-predict.dsldFairML <- function(object, newx) {
+predict.dsldFairML <- function(object, newx,...) {
   # fairml requires char and factor cols
   newx <- toNumericFactor(newx)
   
