@@ -1,6 +1,10 @@
 \name{dsldLinear}
 \alias{dsldLinear}
 \alias{dsldDiffSLin}
+\alias{predict.dsldLM}
+\alias{coef.dsldLM}
+\alias{vcov.dsldLM}
+\alias{summary.dsldLM}
 \title{dsldLinear}
 
 \description{ 
