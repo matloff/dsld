@@ -15,11 +15,11 @@
 \usage{
 dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
     useSandwich = FALSE)
-\method{summary}{dsldLM}(dsldLM,...)
-\method{predict}{dsldLM}(dsldLM,xNew,...)
-\method{coef}{dsldLM}(dsldLM,...)
-\method{vcov}{dsldLM}(dsldLM,...)
-dsldDiffSLin(dsldLM, sComparisonPts = NULL) 
+\method{summary}{dsldLM}(object,...)
+\method{predict}{dsldLM}(object,xNew,...)
+\method{coef}{dsldLM}(object,...)
+\method{vcov}{dsldLM}(object,...)
+dsldDiffSLin(object, sComparisonPts = NULL) 
 }
 
 \arguments{
@@ -46,7 +46,7 @@ dsldDiffSLin(dsldLM, sComparisonPts = NULL)
         whether or not to use sandwich variance estimator; defaults to FALSE
         [logical]
     }
-    \item{dsldLM}{
+    \item{object}{
         Output from dsldLinear function
         [dsldLM]
     }
