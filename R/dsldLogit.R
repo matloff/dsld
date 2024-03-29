@@ -98,7 +98,7 @@ dsldGetData <- function(object) {
 }
 
 #------------------------- dsldDiffSLog function ------------------------------#
-dsldDiffSLog <- function(dsldGLM, sComparisonPts) {
+dsldDiffSLog <- function(dsldGLM, sComparisonPts = NULL) {
   # get sName and yName from the output of dsldLogistic #
   sName <- dsldGLM[[1]]$sName
   yName <- dsldGLM[[1]]$yName
