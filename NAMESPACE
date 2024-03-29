@@ -1,7 +1,10 @@
-import('qeML')
-import('regtools')
-import('gtools')
-import('ranger')
+importFrom("grDevices", "dev.copy", "dev.cur", "dev.off", "dev.set",
+               "jpeg", "pdf", "png", "rainbow")
+importFrom("graphics", "legend", "lines", "par", "polygon", "title")
+importFrom("stats", "as.formula", "binomial", "coef", "cor", "cov",
+               "density", "glm", "lm", "loess", "na.exclude", "pnorm",
+               "predict", "pt", "setNames", "vcov")
+importFrom("utils", "combn")
 
 export(
    getSuggestedLib,
