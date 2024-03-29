@@ -235,7 +235,7 @@ dsldQeFairRidgeLog <- function(data, yName, sNames, deweightPars = NULL,
 # predict.dsldQeFair(log, fairml::compas[1,])
 
 # -------- Predict -----------------
-predict.dsldQeFair <- function(model, newx) {
+predict.dsldQeFair <- function(model, newx,...) {
   # extract params from the model
   yName <- model$yName
   sNames <- model$sNames
