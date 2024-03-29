@@ -3,11 +3,10 @@
 \title{ScatterPlot3D in dsld}
 \description{ Plots a dataset on 3 axes, with the color of the point depending 
 on a 4th variable.}
-\usage{dsldScatterPlot3D(data, yNames=NULL, sName=NULL, sGroups=NULL, 
-                              sortedBy="Name", numGroups=8, maxPoints=NULL,
-                              xlim=NULL, ylim=NULL, zlim=NULL,
-                              main=NULL, colors="Paired", opacity=1, 
-                              pointSize=8)}
+\usage{dsldScatterPlot3D(data, yNames, sName, sGroups = NULL, sortedBy =
+                   "Name", numGroups = 8, maxPoints = NULL, xlim = NULL,
+                   ylim = NULL, zlim = NULL, main = NULL, colors =
+                   "Paired", opacity = 1, pointSize = 8)}
 
 \arguments{
   \item{data}{
