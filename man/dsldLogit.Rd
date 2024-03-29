@@ -69,7 +69,7 @@ newData <- lsa[c(2,22,222,2222),-c(8,11)]
 log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')
 
 # Extract model coefficients and covariances 
-cov(log1)
+coef(log1)
 vcov(log1) 
 
 # Extract individual regression coefficients AND compare differences in
