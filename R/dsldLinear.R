@@ -1,13 +1,7 @@
 ### -------------------------- DSLD Linear -------------------------------------
 ### creates the dsldLinear model; useful to call summary(), predict() etc.
 dsldLinear <- function(data, yName, sName, interactions = FALSE, 
-                       sComparisonPts = NULL, useSandwich = FALSE) {
-  
-  # execute params
-  if (useSandwich) {
-    library(sandwich)
-  }
-  
+                       sComparisonPts = NULL, useSandwich = FALSE) { 
   # setup
   dsldModel <- list()
   
@@ -36,7 +30,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       
       # sandwich branch for covariance matrix
       if (useSandwich) {
-        covMatrix <- sandwich(diffModel)
+        covMatrix <- sandwich::sandwich(diffModel)
       } else {
         covMatrix <- vcov(diffModel)
       }
@@ -136,9 +130,6 @@ dsldGetData <- function(object) {
 ### result is included in the output of the summary() function.
 
 dsldDiffSLin <- function(object, sComparisonPts = NULL) {
-  
-  library(regtools)
-
   # naming 
   dsldLM <- object
   
