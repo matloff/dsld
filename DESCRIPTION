@@ -24,7 +24,7 @@ Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>,
    Shubhada Martha <shubhadam2003@gmail.com>,
    Taha Abdullah <tahaabdullahtech@gmail.com>
 VignetteBuilder: knitr
-Depends: fairml, ranger, fairness, gtools, qeML, regtools, freqparcoord
+Depends: fairml, ranger, fairness, gtools, qeML, regtools
 Suggests: knitr
 License: GPL (>= 2) 
 Description: Statistical and graphical tools for detecting and measuring
