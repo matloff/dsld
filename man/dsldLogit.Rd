@@ -68,7 +68,7 @@ dsldDiffSLog(object, sComparisonPts = NULL)
 # Example 1: ‘bar’ as yName; 'gender' as sName; interactions == TRUE,
 # 			 newData [dataframe]
 data(law.school.admissions) # predicting probability of passing the ‘bar’
-lsa <- law.school.admissions # **abbreviated name** for ease of use
+lsa <- law.school.admissions # abbreviated name for ease of use
 
 # select subset of original data for sComparisonPts argument
 newData <- lsa[c(2,22,222,2222),-c(8,11)]
