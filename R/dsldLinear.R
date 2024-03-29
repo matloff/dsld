@@ -113,13 +113,13 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
 }
 
 # ----------------------- Auxiliary Functions ---------------------------------#
-coef.dsldLM <- function(object) {
+coef.dsldLM <- function(object,...) {
   # merge & return coefficients #
   mergedCoef <- lapply(object, function(x) x$coef)
   return(mergedCoef)
 }
 
-vcov.dsldLM <- function(object) {
+vcov.dsldLM <- function(object,...) {
   # merge & return covariance matrix #
   mergedCov <- lapply(object, function(x) x$covarianceMatrix)
   return(mergedCov)
@@ -328,7 +328,7 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
 # inspect with a given dsldLM object, which ends up as a list of these key
 # underlying attributes (sensitive comparison (interactions, etc.), and more)
 
-summary.dsldLM <- function(object) {
+summary.dsldLM <- function(object,...) {
   diffS <- list()
   
   # get sName and yName from the output of dsldLinear #
@@ -392,7 +392,7 @@ summary.dsldLM <- function(object) {
 
 ### ---------------- predict() method ----------------------------------------##
 ### produces predictions for data supplied in dsldLinear
-predict.dsldLM <- function(object, xNew) {
+predict.dsldLM <- function(object, xNew,...) {
   df <- data.frame()
   yName = object[[1]]$yName
   if (length(object) == 1) {
