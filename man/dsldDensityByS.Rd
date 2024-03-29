@@ -3,7 +3,8 @@
 \title{dsldDensityByS}
 
 \usage{
-    dsldDensityByS(data, cName, sName)
+    dsldDensityByS(data, cName, sName, graphType = "plotly", fill =
+                   FALSE)
 }
 
 \arguments{
@@ -15,6 +16,12 @@
     }
     \item{sName}{
         [character] name of the sensitive variable column, an R factor
+    }
+    \item{graphType}{
+        [character] type of graph created. Defaults to "plotly".
+    }
+    \item{sName}{
+        [logical] to fill the graph
     }
 }
 
