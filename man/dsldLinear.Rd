@@ -1,24 +1,23 @@
 \name{dsldLinear}
 \alias{dsldLinear}
 \title{dsldLinear}
-% TODO: Resolve issue with polymorphic function aliases
+
 \description{ 
     Comparison of conditions for sensitive groups via linear models, with and
     without interactions.
 }
 
 \usage{
-## Fit linear model
-dsldLinear <- function(data, yName, sName, interactions = FALSE, 
-                       sComparisonPts = NULL, useSandwich = FALSE)
 
-## s3 polymorphic functionalities for class 'dsldLM'
-summary(dsldLM)                 # summary of all attributes
-coef(dsldLM)                    # coefficients of the underlying linear model
-vcov(dsldLM)
-dsldDiffSLin(dsldLM, newData)   # compare mean Y | X for additional data in the 
-                                # full interactions case
-predict(dsldLM, newData)        # predict()
+dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
+    useSandwich = FALSE)
+
+\method{summary}{dsldLM}(object,...)
+\method{predict}{dsldLM}(object,xNew,...)
+\method{coef}{dsldLM}(object,...)
+\method{vcov}{dsldLM}(object,...)
+
+dsldDiffSLin(dsldLM, sComparisonPts = NULL) 
 }
 
 \arguments{
@@ -38,8 +37,8 @@ predict(dsldLM, newData)        # predict()
     }
     \item{sComparisonPts}{
         dataframe of new cases for which mean Y | X will be compared between
-        each pairs of S levels. Defaults to NULL for the no-interactions case
-        [dataframe]
+        each pairs of S levels. Must be in the same format as original data
+        Defaults to NULL for the no-interactions case [dataframe]
     }
     \item{useSandwich}{
         whether or not to use sandwich variance estimator; defaults to FALSE
@@ -49,42 +48,41 @@ predict(dsldLM, newData)        # predict()
         Output from dsldLinear function
         [dsldLM]
     }
-    \item{newData}{
-        newData intended to compare S levels, must be in the same format as original data
-        [dataframe]
-    }
 }
 
 \author{
-    N. Matloff, A. Ashok, A. Mittal
+    N. Matloff, A. Mittal, A. Ashok
 }
 
 \examples{  
 # The examples provided are done with the svcensus dataset
-data(svcensus) # load updated dataset w/ sName as 'gender'
+data(svcensus) 
 
-# Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE, 
-# newData [dataframe]
+# Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE 
 
 # compare early vs late career
-newData <- data.frame(age = c(18, 60), educ = c("zzzOther", 'zzzOther'), 
-    wkswrkd = c(50, 50), occ = c("106", "106"))
+newData <- svcensus[c(1, 18), -c(4,6)] # age 22 vs 50
 lin1 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = TRUE,
     newData)
+
+# Extract model coefficients and covariances
+coef(lin1)
+vcov(lin1) 
 
 # Extract individual regression coefficients AND compare differences in 
 #   Y | X between each pairs of sName levels:
 summary(lin1)
 
+# Use predict() to generate predictions across each individual S level
+predict(lin1, newData)
+
 # Users can also make additional comparisons with new data as well using 
-#   dsldDiffS to compare mean Y|X between each pair of S levels.
-xNew  <- data.frame(age = c(18, 60), educ = c("16", '16'), 
-    occ = c("106", "106"), wkswrkd = c(50, 50)) # Note: educLevel = '16' 
-                                                # not educLevel = 'zzzOther'
-dat1 <- dsldDiffSLin(lin1, xNew)
+# dsldDiffS to compare mean Y|X between each pair of S levels.
+xNew  <- svcensus[c(10:15), -c(4,6)] 
+dsldDiffSLin(lin1, xNew)
 
 # Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; 
-#   newData = NULL
+# sComparisonPts = NULL
 lin2 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = FALSE)
 
 # Extract individiual regression coefficients AND compare differences in 
@@ -93,7 +91,7 @@ summary(lin2)
 }
 
 \note{
-    The output of dsldDiffS is the same dataframe format as summary().
+    The output of dsldDiffSLin is the same included in the output of summary().
 }
 
 \details{
