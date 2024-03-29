@@ -54,6 +54,7 @@ dsldDiffSLog(object, sComparisonPts = NULL)
         as original data.
         [dataframe]
     }
+    \item{...}{Further arguments.}
 }
 
 \author{
