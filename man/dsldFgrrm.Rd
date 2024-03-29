@@ -9,9 +9,9 @@
 }
 
 \usage{
-    dsldFgrrm(data, yData, xData, sName, unfairness,
-              definition = "sp-komiyama", family = "binomial", 
-              lambda = 0, save.auxiliary = FALSE) 
+    dsldFgrrm(data, yName, sName, unfairness,
+                      definition = "sp-komiyama", family = "binomial", 
+                      lambda = 0, save.auxiliary = FALSE)
 }
 
 \arguments{
@@ -84,7 +84,6 @@
   data <- fairml::compas
   yName <- "two_year_recid"
   sName <- "race"
-  
-  model <- dsldFgrrm(data, yName, sName, 0)
+  model <- dsldFgrrm(data, yName, sName, 0.1)
   predict(model, data)
 }
