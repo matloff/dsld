@@ -15,10 +15,10 @@
 \usage{
 dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
     useSandwich = FALSE)
-\method{summary}{dsldLM}(object,...)
-\method{predict}{dsldLM}(object,xNew,...)
-\method{coef}{dsldLM}(object,...)
-\method{vcov}{dsldLM}(object,...)
+\method{summary}{dsldLM}(dsldLM,...)
+\method{predict}{dsldLM}(dsldLM,xNew,...)
+\method{coef}{dsldLM}(dsldLM,...)
+\method{vcov}{dsldLM}(dsldLM,...)
 dsldDiffSLin(dsldLM, sComparisonPts = NULL) 
 }
 
@@ -39,7 +39,7 @@ dsldDiffSLin(dsldLM, sComparisonPts = NULL)
     }
     \item{sComparisonPts}{
         dataframe of new cases for which mean Y | X will be compared between
-        each pairs of S levels. Must be in the same format as original data
+        each pairs of S levels. Must be in the same format as original data.
         Defaults to NULL for the no-interactions case [dataframe]
     }
     \item{useSandwich}{
@@ -49,6 +49,11 @@ dsldDiffSLin(dsldLM, sComparisonPts = NULL)
     \item{dsldLM}{
         Output from dsldLinear function
         [dsldLM]
+    }
+    \item{xNew}{
+        Dataframe to predict new cases for which mean Y | X. Must be in the same format 
+        as original data.
+        [dataframe]
     }
 }
 
