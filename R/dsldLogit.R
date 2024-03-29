@@ -79,13 +79,13 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
 }
 
 # ----------------------- Auxiliary Functions ---------------------------------#
-coef.dsldGLM <- function(object) {
+coef.dsldGLM <- function(object,...) {
   # merge & return coefficients #
   mergedCoef <- lapply(object, function(x) x$coef)
   return(mergedCoef)
 }
 
-vcov.dsldGLM <- function(object) {
+vcov.dsldGLM <- function(object,...) {
   # merge & return coefficients #
   mergedCoef <- lapply(object, function(x) vcov(x$model))
   return(mergedCoef)
@@ -261,7 +261,7 @@ dsldDiffSLog <- function(dsldGLM, sComparisonPts = NULL) {
 }
 
 ## ------------------------------ summary() ------------------------------
-summary.dsldGLM <- function(object) {
+summary.dsldGLM <- function(object,...) {
   diffS <- list()
   # get sName and yName from the output of dsldLogistic #
   sName <- object[[1]]$sName
@@ -317,7 +317,7 @@ summary.dsldGLM <- function(object) {
 }
 
 # ---------------------------- add predict() -----------------------------------
-predict.dsldGLM <- function(object, xNew){
+predict.dsldGLM <- function(object, xNew,...){
   df <- data.frame()
   yName = object[[1]]$yName
   if (length(object) == 1) {
