@@ -44,7 +44,7 @@
         A non-negative number, a ridge-regression penalty coefficient. 
         It defaults to zero.
     }
-    \item{save.auxillary}{
+    \item{save.auxiliary}{
         A logical value, whether to save the fitted values and the residuals 
         of the auxiliary model that constructs the decorrelated predictors. 
         The default value is FALSE.
