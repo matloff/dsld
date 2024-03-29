@@ -20,7 +20,7 @@
     \item{graphType}{
         [character] type of graph created. Defaults to "plotly".
     }
-    \item{sName}{
+    \item{fill}{
         [logical] to fill the graph
     }
 }
