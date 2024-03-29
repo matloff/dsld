@@ -9,7 +9,7 @@
 }
 
 \usage{
-  dsldQeFairRidgeLog(data,yName,sNames,deweightPars=NULL,
+  dsldQeFairRidgeLog(data,yName,sName,deweightPars=NULL,
                      yesYVal=levels(data[,yName])[2],
                      holdout=floor(min(1000,0.1*nrow(data))))
 }
