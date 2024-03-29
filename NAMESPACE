@@ -2,7 +2,6 @@ import('qeML')
 import('regtools')
 import('gtools')
 import('ranger')
-import('freqparcoord')
 
 export(
    getSuggestedLib,
