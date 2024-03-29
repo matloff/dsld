@@ -10,8 +10,8 @@
 
 \usage{
     dsldFrrm(data, yName, sName, unfairness,
-             definition = "sp-komiyama", lambda = 0, 
-             save.auxiliary = FALSE) 
+                     definition = "sp-komiyama", lambda = 0, 
+                     save.auxiliary = FALSE)
 }
 
 \arguments{
@@ -34,17 +34,11 @@
         fitting the model. Currently either "sp-komiyama", "eo-komiyama" or 
         "if-berk". It may also be a custom function: see below for details.
     }
-    \item{family}{
-        A character string, either "gaussian" to fit a linear regression, 
-        "binomial" to fit a logistic regression, "poisson" to fit a log-linear 
-        regression, "cox" to fit a Cox proportional hazards regression of 
-        "multinomial" to fit a multinomial logistic regression.
-    }
     \item{lambda}{
         A non-negative number, a ridge-regression penalty coefficient. 
         It defaults to zero.
     }
-    \item{save.auxillary}{
+    \item{save.auxiliary}{
         A logical value, whether to save the fitted values and the residuals 
         of the auxiliary model that constructs the decorrelated predictors. 
         The default value is FALSE.
