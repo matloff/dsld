@@ -1,44 +1,5 @@
-### --------------------------- dsldGetRow5 ------------------------------------
-dsldGetRow5 <- function(data, yName, sName) {
-  ## The function creates sComparisonPts with 5 random rows
-  rows <- sample(nrow(data), 5)
-  reducedData <- data[rows, ]
-  columns <- c(yName, sName)
-  newDat <- reducedData[, !(names(reducedData) %in% columns)]
-  result <- sprintf("No user sComparisonPts supplied. The following rows are selected: %s,%s,%s,%s,%s", rows[1],rows[2],rows[3],rows[4],rows[5]); print(result)
-  return(newDat)
-}
-
-### --------------------------- DSLDCheckData ----------------------------------
-dsldCheckData <- function(data1, data2, yName) {
-  data1 <- data1[, !(names(data1) == yName), drop = FALSE]
-  missingCols <- setdiff(names(data1), names(data2))
-  if (length(missingCols) > 0) {
-    stop(paste("Invalid column(s) in sComparisonPts:", paste(missingCols, collapse = ", ")))
-  }
-  
-  if (!identical(sort(names(data1)), sort(names(data2)))) {
-    stop("Error: Column names do not match")
-  }
-  data2 <- data2[names(data1)]
-  
-  char <- sapply(data2, is.character)
-  for (colName in names(data2)[char]) {
-    if (colName %in% names(data1) && is.factor(data1[[colName]])) {
-      levels_data1 <- levels(data1[[colName]])
-      data2[[colName]] <- factor(data2[[colName]], levels = levels_data1)
-      
-      invalid_levels <- !data2[[colName]] %in% levels_data1
-      if (any(invalid_levels)) {
-        stop(paste("Invalid", colName, "level(s) in sComparisonPts:", 
-                   paste(data2[[colName]][invalid_levels], collapse = ", ")))
-      }
-    }
-  }
-  return(data2)
-}
-
 ### -------------------------- DSLD Linear -------------------------------------
+### creates the dsldLinear model; useful to call summary(), predict() etc.
 dsldLinear <- function(data, yName, sName, interactions = FALSE, 
                        sComparisonPts = NULL, useSandwich = FALSE) {
   
@@ -46,10 +7,10 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
   if (useSandwich) {
     library(sandwich)
   }
-
+  
   # setup
   dsldModel <- list()
-
+  
   # branch on interactions
   if (interactions) {
     # generate interactions data if not provided / stop if erroneous
@@ -60,11 +21,9 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     } 
     
     # setup interactions data
-    tempData <- data[, !(names(data) %in% sName)]
-    newData <- dsldCheckData(tempData, sComparisonPts, yName)
     dataSplit <- split(data, data[[sName]])
-    
     dataNames <- names(dataSplit)
+    
     for (name in dataNames) {
       dsldDiffModel <- list()
       diffData <- dataSplit[[name]]
@@ -74,21 +33,21 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
         formula = as.formula(paste(yName, "~ .")),
         data = diffData
       )
-
+      
       # sandwich branch for covariance matrix
       if (useSandwich) {
         covMatrix <- sandwich(diffModel)
       } else {
         covMatrix <- vcov(diffModel)
       }
-
+      
       # generate diff model s3 object with attributes & names
       dsldDiffModel <- c(
         dsldDiffModel,
         yName,
         sName,
         list(diffModel),
-        list(newData),
+        list(sComparisonPts),
         list(summary(diffModel)),
         list(coef(diffModel)),
         list(covMatrix),
@@ -105,7 +64,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
         "data"
       )
       class(dsldDiffModel) <- "dsldDiffModel"
-
+      
       # add diff model to dsldLM object
       dsldModel[[name]] <- dsldDiffModel
     }
@@ -116,7 +75,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       formula = as.formula(paste(yName, "~ .")),
       data = data
     )
-
+    
     # branch covariance matrix on sandwich
     if (useSandwich) {
       covMatrix <- sandwich(diffModel)
@@ -126,13 +85,13 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     
     # generate diff model s3 object with attributes & names
     dsldDiffModel <- c(dsldDiffModel,
-      yName,
-      sName,
-      list(diffModel),
-      list(summary(diffModel)),
-      list(coef(diffModel)),
-      list(covMatrix),
-      list(data)
+                       yName,
+                       sName,
+                       list(diffModel),
+                       list(summary(diffModel)),
+                       list(coef(diffModel)),
+                       list(covMatrix),
+                       list(data)
     )
     names(dsldDiffModel) <- c(
       "yName",
@@ -143,44 +102,50 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       "covarianceMatrix",
       "data"
     )
-
+    
     # add diff model to dsldLM object
     dsldModel[[sName]] <- dsldDiffModel
   }
-
+  
   # finalize dsldLM s3 object & return
   class(dsldModel) <- "dsldLM"
   return(dsldModel)
 }
 
 # ----------------------- Auxiliary Functions ---------------------------------#
-coef.dsldLM <- function(dsldLM) {
+coef.dsldLM <- function(object) {
   # merge & return coefficients #
-  mergedCoef <- lapply(dsldLM, function(x) x$coef)
+  mergedCoef <- lapply(object, function(x) x$coef)
   return(mergedCoef)
 }
 
-vcov.dsldLM <- function(dsldLM) {
+vcov.dsldLM <- function(object) {
   # merge & return covariance matrix #
-  mergedCov <- lapply(dsldLM, function(x) x$covarianceMatrix)
+  mergedCov <- lapply(object, function(x) x$covarianceMatrix)
   return(mergedCov)
 }
 
-dsldGetData <- function(dsldLM) {
+dsldGetData <- function(object) {
   # merge separated datasets & return #
-  mergedData <- lapply(dsldLM, function(x) x$data)
+  mergedData <- lapply(object, function(x) x$data)
   return(mergedData)
 }
 
 #------------------------- dsldDiffS function ---------------------------------#
+### computes the differences in predicted values across levels of sensitive variables
+### result is included in the output of the summary() function.
+
 dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
+  
   library(regtools)
+  
   # get sName and yName from the output of dsldLinear #
   sName <- dsldLM[[1]]$sName
   yName <- dsldLM[[1]]$yName
   
   # diffS results when interaction == FALSE in dsldLinear #
   if (length(dsldLM) == 1) {
+    
     # extract pairwise combination of [dummy level in glm - factor levels]
     # from summary output
     data <- dsldGetData(dsldLM)[[1]]
@@ -276,17 +241,20 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
     names(df) <- c("Factors Compared", "Estimates", "Standard Errors",
                    "P-Value")
     return(df)
+    
   } else { # with interactions
     
     # raise error if the user doesn't input new data #
     if (is.null(sComparisonPts)) {
       stop("Please enter the sComparisonPts argument to compare for interactions")
     }
+    
     if (!is.data.frame(sComparisonPts)) {
       stop(paste("Error: sComparisonPts is not a dataframe"))
     } 
-    tempData <- dsldLM[[1]]$data
-    xNew <- dsldCheckData(tempData, sComparisonPts, yName)
+    
+    # change naming 
+    xNew <- sComparisonPts
     
     # get vector of all levels in sName #
     sNames <- names(dsldLM)
@@ -356,22 +324,22 @@ dsldDiffSLin <- function(dsldLM, sComparisonPts = NULL) {
 }
 
 #------------------------- summary function ---------------------------------#
-summary.dsldLM <- function(dsldLM) {
-  # the goal of the summary is to generate all attributes a user may want to
-  # inspect with a given dsldLM object, which ends up as a list of these key
-  # underlying attributes (sensitive comparison (interactions, etc.), and more)
+# the goal of the summary is to generate all attributes a user may want to
+# inspect with a given dsldLM object, which ends up as a list of these key
+# underlying attributes (sensitive comparison (interactions, etc.), and more)
 
+summary.dsldLM <- function(object) {
   diffS <- list()
   
   # get sName and yName from the output of dsldLinear #
-  sName <- dsldLM[[1]]$sName
-  yName <- dsldLM[[1]]$yName
+  sName <- object[[1]]$sName
+  yName <- object[[1]]$yName
   
-  if (length(dsldLM) == 1) {
-    data <- dsldGetData(dsldLM)[[1]]
-    summaryOutput <- summary(dsldLM[[1]]$model)
+  if (length(object) == 1) {
+    data <- dsldGetData(object)[[1]]
+    summaryOutput <- summary(object[[1]]$model)
     coef <- summaryOutput$coefficients[, 1]
-    covMatrix <- dsldLM[[1]]$covarianceMatrix
+    covMatrix <- object[[1]]$covarianceMatrix
     stdErr <- sqrt(diag(covMatrix))
     testStat <- coef / stdErr
     pValues <- 2 * (1 - pnorm(abs(testStat)))
@@ -387,20 +355,20 @@ summary.dsldLM <- function(dsldLM) {
     )
     
     diffS[['Summary Coefficients']] <- df
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLin(dsldLM)
+    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLin(object)
     
     return(diffS)
   } else {
-    sNames <- names(dsldLM)
-    newData <- dsldLM[[1]]$newData
+    sNames <- names(object)
+    newData <- object[[1]]$newData
     
     # loop through each level of S name to compute estimates and standard
     # errors
     for (i in sNames) {
-      data <- dsldLM[[i]]$data
-      summaryOutput <- summary(dsldLM[[i]]$model)
+      data <- object[[i]]$data
+      summaryOutput <- summary(object[[i]]$model)
       coef <- summaryOutput$coefficients[, 1]
-      covMatrix <- dsldLM[[i]]$covarianceMatrix
+      covMatrix <- object[[i]]$covarianceMatrix
       stdErr <- sqrt(diag(covMatrix))
       testStat <- coef / stdErr
       pValues <- 2 * (1 - pnorm(abs(testStat)))
@@ -416,23 +384,24 @@ summary.dsldLM <- function(dsldLM) {
       
       diffS[[i]] <- df
     }
-    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLin(dsldLM,
+    diffS[['Sensitive Factor Level Comparisons']] <- dsldDiffSLin(object,
                                                                   newData)
     return(diffS)
   }
 }
 
-### ---------------- predict() method -----------------------------------
-predict.dsldLM <- function(dsldLM, xNew) {
+### ---------------- predict() method ----------------------------------------##
+### produces predictions for data supplied in dsldLinear
+predict.dsldLM <- function(object, xNew) {
   df <- data.frame()
-  yName = dsldLM[[1]]$yName
-  if (length(dsldLM) == 1) {
-    data <- dsldLM[[1]]$data
+  yName = object[[1]]$yName
+  if (length(object) == 1) {
+    data <- object[[1]]$data
     colName <- names(data)
     colName <- colName[colName != yName]
-    model <- dsldLM[[1]]$model
-    C <- (dsldLM[[1]]$covarianceMatrix)
-    u_names <- names(coef(dsldLM[[1]]$model))
+    model <- object[[1]]$model
+    C <- (object[[1]]$covarianceMatrix)
+    u_names <- names(coef(object[[1]]$model))
     for (j in 1:nrow(xNew)) {
       row <- xNew[j, ]
       if (!is.data.frame(row)) {
@@ -458,14 +427,14 @@ predict.dsldLM <- function(dsldLM, xNew) {
     return(df)
   }
   else {
-    sNames <- names(dsldLM)
+    sNames <- names(object)
     for (i in sNames) {
-      data <- dsldLM[[i]]$data  
+      data <- object[[i]]$data  
       colName <- names(data)
       colName <- colName[colName != yName]
-      model <- dsldLM[[i]]$model
-      C <- (dsldLM[[i]]$covarianceMatrix)
-      u_names <- names(coef(dsldLM[[i]]$model))
+      model <- object[[i]]$model
+      C <- (object[[i]]$covarianceMatrix)
+      u_names <- names(coef(object[[i]]$model))
       for (j in 1:nrow(xNew)) {
         row <- xNew[j, ]
         if (!is.data.frame(row)) {
