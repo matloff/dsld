@@ -1,5 +1,6 @@
 \name{dsldLinear}
 \alias{dsldLinear}
+\alias{dsldDiffSLin}
 \title{dsldLinear}
 
 \description{ 
@@ -8,15 +9,12 @@
 }
 
 \usage{
-
 dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
     useSandwich = FALSE)
-
 \method{summary}{dsldLM}(object,...)
 \method{predict}{dsldLM}(object,xNew,...)
 \method{coef}{dsldLM}(object,...)
 \method{vcov}{dsldLM}(object,...)
-
 dsldDiffSLin(dsldLM, sComparisonPts = NULL) 
 }
 
