@@ -14,10 +14,10 @@
 
 \usage{
 dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal)
-\method{summary}{dsldGLM}(object,...)
-\method{predict}{dsldGLM}(object,xNew,...)
-\method{coef}{dsldGLM}(object,...)
-\method{vcov}{dsldGLM}(object,...)
+\method{summary}{dsldGLM}(dsldGLM,...)
+\method{predict}{dsldGLM}(dsldGLM,xNew,...)
+\method{coef}{dsldGLM}(dsldGLM,...)
+\method{vcov}{dsldGLM}(dsldGLM,...)
 dsldDiffSLog(dsldGLM, sComparisonPts = NULL) 
 }
 
@@ -48,6 +48,11 @@ dsldDiffSLog(dsldGLM, sComparisonPts = NULL)
     \item{dsldGLM}{
         Output from dsldLogit function
         [dsldGLM]
+    }
+    \item{xNew}{
+        Dataframe to predict new cases for which mean Y | X. Must be in the same format 
+        as original data.
+        [dataframe]
     }
 }
 
