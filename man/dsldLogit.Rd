@@ -1,5 +1,6 @@
 \name{dsldLogit}
 \alias{dsldLogit}
+\alias{dsldDiffSLog}
 \title{dsldLogit}
 
 \description{ 
@@ -9,14 +10,11 @@
 
 \usage{
 dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal)
-
 \method{summary}{dsldGLM}(object,...)
 \method{predict}{dsldGLM}(object,xNew,...)
 \method{coef}{dsldGLM}(object,...)
 \method{vcov}{dsldGLM}(object,...)
-
 dsldDiffSLog(dsldGLM, sComparisonPts = NULL) 
-
 }
 
 \arguments{
