@@ -65,12 +65,13 @@ on a 4th variable.}
   }
 }
 
+
 \references{
-Plotly's 3 scatterplot:
-\link{ https://plotly.com/r/3d-scatter-plots/}
+   https://plotly.com/r/3d-scatter-plots/
 }
+
 \author{
-Jonathan Tran and Brandon Zarate }
+Jonathan Tran and Brandon Zarate}
 
 \examples{
   # Example 1: Using sName, yNames, and xlim
