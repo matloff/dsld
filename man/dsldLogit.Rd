@@ -1,6 +1,10 @@
 \name{dsldLogit}
 \alias{dsldLogit}
 \alias{dsldDiffSLog}
+\alias{predict.dsldGLM}
+\alias{coef.dsldGLM}
+\alias{vcov.dsldGLM}
+\alias{summary.dsldGLM}
 \title{dsldLogit}
 
 \description{ 
