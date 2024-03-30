@@ -176,14 +176,29 @@ to 0.2 using the *dsldQeFairKNN()* function to limit its predictive power.
 We see that the correlation between predicted wage and gender has decreased significantly. Conversely, test accuracy increased by about \$700 dollars. Thus, we see an increase in fairness at some expense of accuracy. 
 
 ## Function List
+
 - **DsldLinear**/**DsldLogit**: Comparison of conditions for sensitive groups via linear/logistic models
+  
 - **DsldML**: Comparison of conditions for sensitive groups via ML algorithm
+  
 - **DsldTakeLookAround**: Evaluates feature sets for predicting Y while considering correlation with sensitive variable S
+  
 - **DsldScatterPlot3D**: Plots a dataset on 3 axes, with the color of the point depending on a 4th variable
-- **DsldCHunting**: Confounder hunting--searches for variables C that predict both Y and S  
+  
+- **DsldCHunting**: Confounder hunting--searches for variables C that predict both Y and S
+
 - **DsldOHunting**: Proxy hunting--searches for variables O that predict S.
+  
 - **DsldConditsDisparity**: Plots mean Y against X for each level of S, revealing potential Simpson's Paradox-like differences under specified conditions
-- **DsldConfounders**: Analyzes confounding variables in a dataframe 
+  
+- **DsldConfounders**: Analyzes confounding variables in a dataframe
+  
 - **DsldFreqPCoord**:  Wrapper for the freqparcoord function from the freqparcoord package
+
+- **DsldDensityByS**: Graphs densities of a response variable, grouped by a sensitive variable.
+
+- **DsldFrequencyByS**: assess possible confounding relationship between a sensitive variable and a categorical variable via graphical means
+  
 - **FairML wrappers**: Wrappers for several FairML functions via the FairML package
+  
 - **EDFFair Wrappers**: Wrappers for several EDFFair functions via the EDFFair package
