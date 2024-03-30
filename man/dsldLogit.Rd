@@ -112,7 +112,7 @@ summary(log2)
     dataset. The user may select for full interactions across the sensitive
     variable, sName, in which case the function will fit m separate models,
     where m is the number of levels of sName.
-
+    
     The function produces an instance of the `dsldGLM` class (an S3 object) that
     houses several instances of the `dsldDiffModel` class for each unique level
     of the sensitive column specified.
@@ -126,7 +126,7 @@ summary(log2)
         5. Coef of beta parameters; [character] @ coef \cr
         6. Data used in the model (useful to see for interactions); [dataframe]
            @ data
-
+           
     Furthermore, summary() is a polymorphic method that takes in an object of
     the 'dsldGLM' class and outputs an S3 object containing several dataframes.
     In the full interactions case, the first m elements (where m is the number
@@ -142,7 +142,7 @@ summary(log2)
     standard errors, p-values etc. for the fitted model; the second element
     compares differences in regression coefficients between each pairs of sName
     levels.
-
+    
     For differences in regression coefficients for no-interactions case,
     summary() returns a data frame with 4 columns: \cr
         1. Pairs of S level names  \cr 
