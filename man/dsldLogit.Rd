@@ -65,9 +65,9 @@ dsldDiffSLog(object, sComparisonPts = NULL)
 # The examples provided are done with the lsa dataset; the
 # dataset requires some minimal preparation prior to running dsldLogit.
 
-# Example 1: ‘bar’ as yName; 'gender' as sName; interactions == TRUE,
+# Example 1: 'bar' as yName; 'gender' as sName; interactions == TRUE,
 # 			 newData [dataframe]
-data(law.school.admissions) # predicting probability of passing the ‘bar’
+data(law.school.admissions) # predicting probability of passing the 'bar'
 lsa <- law.school.admissions # abbreviated name for ease of use
 
 # select subset of original data for sComparisonPts argument
@@ -92,7 +92,7 @@ predict(log1, newData)
 xNew <- lsa[c(100,1000,120),-c(8,11)]
 dsldDiffSLog(log1, xNew)
 
-# Example 2: ‘bar’ as yName; 'gender' as sName; interactions == FALSE;
+# Example 2: 'bar' as yName; 'gender' as sName; interactions == FALSE;
 # newData = NULL
 log2 <- dsldLogit(data = law.school.admissions,yName = 'bar',sName = 'gender', 
     interactions = FALSE, yesYVal = 'TRUE')
