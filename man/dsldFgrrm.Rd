@@ -81,9 +81,13 @@
 }
 
 \examples{
-  data <- fairml::compas
-  yName <- "two_year_recid"
-  sName <- "race"
-  model <- dsldFgrrm(data, yName, sName, 0.1)
-  predict(model, data)
+    data(compas1) # load dataset
+
+    yName <- "two_year_recid"
+    sName <- "age"
+
+    # sName is "age", unfairness parameter set at 0.2
+    model <- dsldFgrrm(compas1, yName, sName, 0.2, definition = "sp-komiyama")
+
+    predict(model, compas1[c(1:10),]) # generate new predictions
 }
