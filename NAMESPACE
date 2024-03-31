@@ -1,4 +1,4 @@
-import('fairml', 'fairness', 'ranger', 'qeML', 'Kendall', 'ggplot2', 'plotly', 'freqparcoord')
+import('fairml', 'fairness', 'ranger', 'qeML', 'Kendall', 'ggplot2', 'plotly', 'freqparcoord', 'gtools', 'regtools')
 
 importFrom("grDevices", "dev.copy", "dev.cur", "dev.off", "dev.set",
                "jpeg", "pdf", "png", "rainbow")
