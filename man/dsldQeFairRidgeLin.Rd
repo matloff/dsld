@@ -38,18 +38,21 @@
 
 \details{
     The algorithm used to perform ridge regression is described in the paper
-    described in Matloff's EDFfair package.
-    testAcc is in mean absolute prediction error. corrs is the correlation
-    on every level of S.
+    described in Matloff's EDFfair package. Test Accuracy is in mean absolute prediction error. 
+    Corrs is the correlation between predicted Y across every level of S.
 }
 
 \examples{  
-  library(dsld)
-  data(svcensus)
-  lin <- dsld::dsldQeFairRidgeLin(svcensus, "wageinc", "gender", 
+  data(svcensus) # load dataset
+
+  # deweight "occupation" and "age" columns
+  lin <- dsldQeFairRidgeLin(svcensus, "wageinc", "gender", 
       deweightPars = list(occ=.4, age=.2))
-  lin$testAcc
-  lin$corrs
-  predict(lin, svcensus[1,])
+
+  lin$testAcc # compute accuracy on holdout set
+
+  lin$corrs # compute correlation between predicted Y and sensitive variables
+
+  predict(lin, svcensus[1,]) # generate predictions for new cases
 }
         
