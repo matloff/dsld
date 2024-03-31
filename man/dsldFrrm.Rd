@@ -92,7 +92,7 @@
     sName <- "age"
 
     # sName is age, unfairness parameter set to 0.2
-    model <- dsldFrrm(data, yName, sName, 0.2, definition = "sp-komiyama")
+    model <- dsldFrrm(svcensus, yName, sName, 0.2, definition = "sp-komiyama")
 
     predict(model, svcensus) # generate predictions for new cases
 }
