@@ -66,6 +66,6 @@ explanatory variables; the variables sensitive only appear in the constraints.
   zlmOut <- dsldZlm(svcensus, yName, sName, 0.2)
 
   # create predictions for future cases
-  predict(zlmOut, data)
+  predict(zlmOut, svcensus[c(1:10),])
 }
 
