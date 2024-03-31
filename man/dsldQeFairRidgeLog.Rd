@@ -4,8 +4,7 @@
 \title{dsldQeFairRidgeLog}
 
 \description{ 
-  Fair Logistic Ridge Regression
-  Only works with binary classifications
+  Fair Logistic Ridge Regression. Intended for binary classification cases.
 }
 
 \usage{
@@ -44,13 +43,20 @@
 
 \details{
     The algorithm used to perform ridge regression is described in the paper
-    described in Matloff's EDFfair package.
-    testAcc is in mean absolute prediction error. corrs is the correlation
-    on every level of S.
+    described in Matloff's EDFfair package. Test Accuracy is the misclassification rate.  
+    Corrs is the correlation between predicted Y across every level of S.
 }
 
 \examples{
-  log <- dsld::dsldQeFairRidgeLog(fairml::compas, "two_year_recid", "race", 
-      list(decile_score=1))
-  predict(log, fairml::compas[1,])
+  data(compas1) # load dataset
+
+  # deweight "race" column
+  log <- dsldQeFairRidgeLog(compas1, "two_year_recid", "race", 
+                          list(decile_score=0.1), yesYVal = "Yes")
+
+  log$testAcc # accuracy on holdout set
+
+  log$corrs # compute correlation between predicted Y and sensitive variables
+
+  predict(log, compas1[1,]) # generate predictions for new cases
 }
