@@ -1,17 +1,19 @@
 \name{dsldZlm}
 \alias{dsldZlm}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
   dsldZlm
 }
+
 \description{
     This is a wrapper for the zlrm function from the fairML package
     (link in references).
 }
+
 \usage{
 dsldZlm(data, yName, sName, unfairness)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
     \item{data}{
         The data, in data frame or matrix form.
@@ -28,8 +30,9 @@ dsldZlm(data, yName, sName, unfairness)
         the model is not constrained to be fair at all.
     }
 }
+
 \details{
-From fairml:
+Via fairml:
 
 zlm() and zlrm() define fairness as statistical parity.
 
@@ -39,23 +42,30 @@ values (on the linear predictor scale, in the case of logistic regression) is
 smaller than unfairness in absolute value. Both models include predictors as 
 explanatory variables; the variables sensitive only appear in the constraints.
 }
+
 \value{
   An object of class "dsldZlm", which has a $data attribute that contains
     an object of class c("zlm", "fair.model").
 }
-\references{
-https://cran.r-project.org/web/packages/fairml/index.html
+
+\references {
+  https://cran.r-project.org/web/packages/fairml/index.html
 }
+
 \author{
   N. Matloff, J. Tran
 }
+
 \examples{
-  data(svcensus)
-  data <- svcensus
+  data(svcensus) # load dataset
+
   yName <- "wageinc"
-  sName <- "gender"
-  
-  model <- dsldZlm(data, yName, sName, 0)
-  predict(model, data)
+  sName <- "age"
+
+  # unfairness parameter set at 0.2
+  zlmOut <- dsldZlm(svcensus, yName, sName, 0.2)
+
+  # create predictions for future cases
+  predict(zlmOut, data)
 }
 
