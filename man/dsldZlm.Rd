@@ -56,6 +56,14 @@ explanatory variables; the variables sensitive only appear in the constraints.
   N. Matloff, J. Tran
 }
 
+\seealso{
+%% ~~objects to See Also as \code{\link{help}}, ~~~
+    Komiyama J, Takeda A, Honda J, Shimao H (2018). "Nonconvex Optimization for
+    Regression with Fairness Constraints". Proceedints of the 35th International
+    Conference on Machine Learning (ICML), PMLR \strong{80}:2737--2746. \cr
+    \code{http://proceedings.mlr.press/v80/komiyama18a/komiyama18a.pdf}
+}
+
 \examples{
   data(svcensus) # load dataset
 
