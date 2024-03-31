@@ -1,5 +1,5 @@
 
-dsldFreqPCoord <- function(data, m, columns = 1:ncols(data), sName = NULL,
+dsldFreqPCoord <- function(data, m, columns = 1:ncol(data), sName = NULL,
                            method = "maxdens", faceting = "vert", k = 50,
                            klm = 5 * k, keepidxs = NULL, plotidxs = FALSE,
                            cls = NULL, plot_filename = NULL) {
