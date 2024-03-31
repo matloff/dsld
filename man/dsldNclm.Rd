@@ -50,7 +50,6 @@
 } 
 
 \details{
-  % Probably need to edit this section
     dsldNclm serves as a function wrapper for Nclm, which bounds the proportion 
     of the variance that is explained by the sensitive attributes over 
     the total explained variance.
@@ -85,12 +84,14 @@
 }
 
 \examples{
-  data(svcensus)
-  data <- svcensus
-  yName <- "wageinc"
-  sName <- "gender"
-  
-  model <- dsldNclm(data, yName, sName, 0)
-  predict(model, data)
+    data("law.school.admissions") # load dataset
+
+    yName <- "lsat"
+    sName <- "fam_inc"
+
+    # sName is 'fam_inc', unfairness parameter set to 0.2
+    model <- dsldNclm(law.school.admissions, yName, sName, 0.2)
+    
+    predict(model, law.school.admissions[c(1:10),]) # generate predictions
 }
 
