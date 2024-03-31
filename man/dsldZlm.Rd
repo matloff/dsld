@@ -48,7 +48,7 @@ explanatory variables; the variables sensitive only appear in the constraints.
     an object of class c("zlm", "fair.model").
 }
 
-\references {
+\references{
   https://cran.r-project.org/web/packages/fairml/index.html
 }
 
