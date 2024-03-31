@@ -228,6 +228,7 @@ dsldDiffSLog <- function(object, sComparisonPts = NULL) {
       predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
       pred <- predictions$fit
       se <- predictions$se.fit
+      level <- row <- prediction <- standardError <-  NULL
       tempDF <- data.frame(level = i, row = 1:nrow(xNew), prediction = pred, standardError = se)
       df <- rbind(df, tempDF)
     }
