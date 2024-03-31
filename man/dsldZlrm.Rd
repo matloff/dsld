@@ -1,17 +1,19 @@
 \name{dsldZlrm}
 \alias{dsldZlrm}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
   dsldZlrm
 }
+
 \description{
     This is a wrapper for the zlrm function from the fairML package
     (link in references).
 }
+
 \usage{
 dsldZlrm(data, yName, sName, unfairness)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
     \item{data}{
         The data, in data frame or matrix form.
@@ -28,8 +30,9 @@ dsldZlrm(data, yName, sName, unfairness)
         the model is not constrained to be fair at all.
     }
 }
+
 \details{
-From fairml:
+Via fairml:
 
 zlm() and zlrm() define fairness as statistical parity.
 
@@ -39,22 +42,30 @@ values (on the linear predictor scale, in the case of logistic regression) is
 smaller than unfairness in absolute value. Both models include predictors as 
 explanatory variables; the variables sensitive only appear in the constraints.
 }
+
 \value{
   An object of class "dsldZlrm", which has a $data attribute that contains
     an object of class c("zlrm", "fair.model").
 }
+
 \references{
 https://cran.r-project.org/web/packages/fairml/index.html
 }
+
 \author{
   N. Matloff, J. Tran
 }
+
 \examples{
-  data <- fairml::compas
+  data(compas1) # load dataset
+
   yName <- "two_year_recid"
-  sName <- "race"
-  
-  model <- dsldZlrm(data, yName, sName, 0)
-  predict(model, data)
+  sName <- "age"
+
+  # unfairness parameter set at 0.2
+  zlrmOut <- dsldZlrm(compas1, yName, sName, 0.2)
+
+  # create predictions for future cases
+  predict(zlrmOut, compas1[c(1:10),])
 }
 
