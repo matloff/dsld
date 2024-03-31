@@ -8,7 +8,7 @@
     package (link in references).
 }
 \usage{
-    dsldFreqPCoord(data, m, columns = 1:ncols(data), sName = NULL, method
+    dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
                    = "maxdens", faceting = "vert", k = 50, klm = 5 * k,
                    keepidxs = NULL, plotidxs = FALSE, cls = NULL,
                    plot_filename = NULL)
