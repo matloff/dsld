@@ -4,7 +4,7 @@
 \title{DSLDQeFairKNN}
 
 \description{ 
-  To-do
+  Fair K-Nearest Neighbors.
 }
 
 \usage{
@@ -31,7 +31,8 @@
         Scale the features. Defaults to TRUE.
     }
     \item{yesYVal}{
-        Y value to be considered "yes," to be coded 1 rather than 0.
+        Y value to be considered "yes," in the binary case;
+        to be coded 1 rather than 0.
     }
     \item{k}{
         Number of nearest neighbors. In functions other than qeKNN for which 
@@ -49,12 +50,23 @@
 }
 
 \details{
-    To-do
+    The algorithm used to perform ridge regression is described in the paper
+    described in Matloff's EDFfair package. Depending on regression vs. classification, 
+    test Accuracy is mean absolute prediction error or the misclassification rate.  
+    Corrs is the correlation between predicted Y across every level of S.
 }
 
 \examples{  
-  knn <- dsld::dsldQeFairKNN(fairml::compas, "two_year_recid", "race", 
-              list(decile_score=.2), yesYVal = "Yes")
-  predict(knn, fairml::compas[1,])
+  data(compas1) # load dataset
+
+  # deweight "decile score" column with "race" as the sensitive variable
+  knnOut <- dsldQeFairKNN(compas1, "two_year_recid", "race", 
+              list(decile_score=.1), yesYVal = "Yes")
+
+  knnOut$testAcc # accuracy on holdout set
+
+  knnOut$corrs # compute correlation between predicted Y and sensitive variables
+
+  predict(knnOut, compas1[1,]) # generate predictions for new cases
 }
         
