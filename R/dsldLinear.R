@@ -282,6 +282,7 @@ dsldDiffSLin <- function(object, sComparisonPts = NULL) {
         subset_values <- c(1,subset_values)
         pred <- predict(model,row)
         standard_error <- sqrt(t(subset_values) %*% C %*% subset_values)
+        level <- row <- prediction <- standardError <-  NULL
         tempDf <- data.frame(level = i, row = j, prediction = pred, standardError = standard_error)
         df <- rbind(df, tempDf)
       }
