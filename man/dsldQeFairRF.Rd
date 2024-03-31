@@ -4,7 +4,7 @@
 \title{DSLDQeFairRF}
 
 \description{ 
-  Fair Random Forest w/ deweighted nodes
+    Fair Random Forest with deweighted nodes.
 }
 
 \usage{
@@ -50,12 +50,22 @@ dsldQeFairRF(data,yName,sNames,deweightPars=NULL, nTree=500,
 }
 
 \details{
-    To-do
+    The algorithm used to perform ridge regression is described in the paper
+    described in Matloff's EDFfair package. Test Accuracy is the misclassification rate.  
+    Corrs is the correlation between predicted Y across every level of S.
 }
 
 \examples{  
-  rf <- dsld::dsldQeFairRF(fairml::compas, "two_year_recid", "race", 
-      list(decile_score=.3))
-  predict(rf, fairml::compas[1,])
+  data(compas1) # load dataset
+
+  # deweight "decile score" column with "race" as sensitive variable
+  rfOut <- dsldQeFairRF(compas1, "two_year_recid", "race", 
+      list(decile_score=.3), yesYVal = "Yes")
+
+  rfOut$testAcc # accuracy on holdout set
+
+  rfOut$corrs # compute correlation between predicted Y and sensitive variables
+
+  predict(rfOut, fairml::compas[1,]) # generate predictions for new cases
 }
         
