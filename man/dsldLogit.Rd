@@ -50,7 +50,7 @@ dsldDiffSLog(object, sComparisonPts = NULL)
         [dsldGLM]
     }
     \item{xNew}{
-        Dataframe to predict new cases for which mean Y | X. Must be in the same format 
+        Dataframe to predict new cases for which P(Y = 1| X). Must be in the same format 
         as original data.
         [dataframe]
     }
@@ -154,8 +154,10 @@ summary(log2)
     For differences in P(Y = 1 | X) in the full-interactions case, summary()
     returns a data frame with 3 columns: \cr
         1. Col. number of diffs argument \cr
-        2. Estimate of the difference in mean Y at that X value \cr
-        3. Associated std. err. \cr
+        2. P(Y = 1 | X) for Factor A \cr
+        3. P(Y = 1 | X) for Factor B \cr
+        4. Estimate of the difference in P(Y = 1| X) between the factors \cr
+        5. Associated std. err. \cr
     There will be one row for each pair of S levels.
 
     The dsldDiffS() function allows users to compare P(Y = 1) at that X between
