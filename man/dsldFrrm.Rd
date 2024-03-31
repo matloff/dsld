@@ -77,13 +77,23 @@
     S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
 }
 
-\examples{
-  data(svcensus)
-  data <- svcensus
-  yName <- "wageinc"
-  sName <- "gender"
-  
-  model <- dsldFrrm(data, yName, sName, 0)
-  predict(model, data)
+\seealso{
+%% ~~objects to See Also as \code{\link{help}}, ~~~
+    Komiyama J, Takeda A, Honda J, Shimao H (2018). "Nonconvex Optimization for
+    Regression with Fairness Constraints". Proceedints of the 35th International
+    Conference on Machine Learning (ICML), PMLR \strong{80}:2737--2746. \cr
+    \code{http://proceedings.mlr.press/v80/komiyama18a/komiyama18a.pdf}
+}
+
+
+\examples{    
+    data(svcensus) # load dataset
+    yName <- "wageinc"
+    sName <- "age"
+
+    # sName is age, unfairness parameter set to 0.2
+    model <- dsldFrrm(data, yName, sName, 0.2, definition = "sp-komiyama")
+
+    predict(model, svcensus) # generate predictions for new cases
 }
 
