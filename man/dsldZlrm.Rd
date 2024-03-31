@@ -76,4 +76,3 @@ https://cran.r-project.org/web/packages/fairml/index.html
   # create predictions for future cases
   predict(zlrmOut, compas1[c(1:10),])
 }
-
