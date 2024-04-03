@@ -1,7 +1,6 @@
 ### -------------------------------- DsldUtilFairness ----------------------------------------
 dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_increment = 0.1) {
   getSuggestedLib('qeML')                                                        
-  getSuggestedLib('regtools')
   getSuggestedLib('Kendall')
   
   if (is.factor(data[[cName]])) {
