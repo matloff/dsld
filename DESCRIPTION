@@ -25,8 +25,8 @@ Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>,
    Taha Abdullah <tahaabdullahtech@gmail.com>
 VignetteBuilder: knitr
 Imports: sandwich, Kendall, qeML, ranger, ggplot2, plotly, freqparcoord
-Depends: R (>= 3.5.0), fairml, fairness, gtools, regtools
-Suggests: knitr
+Depends: R (>= 3.5.0), fairml, gtools, regtools
+Suggests: knitr, fairness
 License: GPL (>= 2) 
 Description: Statistical and graphical tools for detecting and measuring
    discrimination and bias, be it racial, gender, age or other.
