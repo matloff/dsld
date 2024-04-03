@@ -4,17 +4,14 @@
 \alias{dsldNclm}
 \alias{dsldZlm}
 \alias{dsldZlrm}
+\alias{predict.dsldFairML}
+\alias{summary.dsldFairML}
 
 \title{dsldFairML Wrappers}
 
 \description{
-    This is a wrapper for the frrm function from the fairML package
+    The following functions provide wrappers from the fairML package
     (link in references).
-
-  This is a wrapper for the Nclm function from the fairml package  
-    (link in references). The fairml package bases their fair regression 
-    model based on the nonconvex Optimization for Regression with Fairness 
-    Constraints from Komiyama et al. (2018) (link in See also).
 }
 
 \usage{
@@ -29,7 +26,7 @@
     dsldZlm(data, yName, sName, unfairness)
     dsldZlrm(data, yName, sName, unfairness)
     \method{summary}{dsldFairML}(object,...)
-  \method{predict}{dsldFairML}(object,newx,...)
+    \method{predict}{dsldFairML}(object,newx,...)
 }
 
 \arguments{
@@ -37,7 +34,7 @@
         The data, in data frame or matrix form.
     }
     \item{yName}{
-        Column name indicating a binary outcome variable
+        Column name indicating a binary outcome variable.
     }
     \item{sName}{
         A string vector of column names, the sensitive attributes.
@@ -72,15 +69,14 @@
         The default value is FALSE.
     }
     \item{object}{
-        Output from dsldLinear function
-        [dsldLM]
+        An object returned by a dsld-fairML wrapper.  
     }
     \item{xNew}{
-        Dataframe to predict new cases for which mean Y | X. Must be in the same format 
-        as original data.
-        [dataframe]
+        New data to be predicted. Must be in the same format as original data.
     }
-    \item{...}{Further arguments.}
+    \item{...}{
+    Further arguments.
+    }
 }
 
 \details{
@@ -104,13 +100,13 @@
 }
 
 \value{
-    An object of class "dsldFrrm", which has a $data attribute that contains
-    an object of class c("frrm", "fair.model").
+    An object of class "dsldFairML", including the model information, yName, and sName.
 }
 
-\references{
+\references {
     https://cran.r-project.org/web/packages/fairml/index.html
 }
+
 \author{
     S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
 }
@@ -124,13 +120,43 @@
 }
 
 
-\examples{    
-    data(svcensus) # load dataset
+\examples{  
+    data(svcensus) 
+    data(compas1)
+    data(law.school.admissions)
+
+    # dsldFrrm 
     yName <- "wageinc"
     sName <- "age"
+    frrmOut <- dsldFrrm(svcensus, yName, sName, 0.2, definition = "sp-komiyama") # sName is age, unfairness parameter set to 0.2
+    summary(frrmOut)
+    predict(frrmOut, svcensus[1:10,]) 
 
-    # sName is age, unfairness parameter set to 0.2
-    model <- dsldFrrm(svcensus, yName, sName, 0.2, definition = "sp-komiyama")
+    # dsldFgrrm
+    yName <- "two_year_recid"
+    sName <- "age"
+    fgrrmOut <- dsldFgrrm(compas1, yName, sName, 0.2, definition = "sp-komiyama")  # sName is "age", unfairness parameter set at 0.2
+    summary(fgrrmOut)
+    predict(fgrrmOut, compas1[c(1:10),]) 
 
-    predict(model, svcensus) # generate predictions for new cases
+    # dsldNclm
+    yName <- "lsat"
+    sName <- "race1"
+    nclmOut <- dsldNclm(law.school.admissions, yName, sName, 0.2) # sName is "race1", unfairness parameter set at 0.2
+    summary(nclmOut)
+    predict(nclmOut, law.school.admissions[c(1:10),]) # generate predictions
+
+    # dsldZlm
+    yName <- "wageinc"
+    sName <- "age"
+    zlmOut <- dsldZlm(svcensus, yName, sName, 0.2) # sName is "age", unfairness parameter set at 0.2
+    summary(zlmOut)
+    predict(zlmOut, svcensus[c(1:10),])
+
+    # dsldZlrm
+    yName <- "two_year_recid"
+    sName <- "age"
+    zlrmOut <- dsldZlrm(compas1, yName, sName, 0.2) # sName is "age", unfairness parameter set at 0.2
+    summary(zlrmOut)
+    predict(zlrmOut, compas1[c(1:10),])
 }
