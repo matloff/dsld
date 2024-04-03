@@ -34,20 +34,20 @@ fairmlBase <- function(fairmlFUNC, data, yName, sName, unfairness, ...) {
 # wrapper for nclm
 dsldNclm <- function(data, yName, sName, unfairness, covfun = cov, 
                      lambda = 0, save.auxiliary = FALSE) {
-  dsld::getSuggestedLib('cccp')
+  getSuggestedLib('cccp')
   fairmlBase(fairml::nclm, data, yName, sName, unfairness, covfun, 
              lambda, save.auxiliary)
 }
 
 # wrapper for zlm
 dsldZlm <- function(data, yName, sName, unfairness) {
-  dsld::getSuggestedLib('CVXR')
+  getSuggestedLib('CVXR')
   fairmlBase(fairml::zlm, data, yName, sName, unfairness)
 }
 
 # wrapper for zlrm
 dsldZlrm <- function(data, yName, sName, unfairness) {
-  dsld::getSuggestedLib('CVXR')
+  getSuggestedLib('CVXR')
   fairmlBase(fairml::zlrm, data, yName, sName, unfairness)
 }
 
@@ -67,6 +67,7 @@ dsldFgrrm <- function(data, yName, sName, unfairness,
              definition, family, lambda, save.auxiliary)
 }
 
+### S3 methods summary() and predict()
 summary.dsldFairML <- function(object,...){
   summary(object$base)
 }
@@ -90,35 +91,3 @@ predict.dsldFairML <- function(object, newx,...) {
   else
     predict(object$base, predictors, sensitive)
 }
-
-# --------- Tests ------------
-# 
-# library(dsld)
-# data(svcensus)
-# data <- svcensus
-# yName <- "wageinc"
-# sName <- "gender"
-# 
-# model <- dsldFrrm(data, yName, sName, 0)
-# summary(model)
-# predict(model, data[1,])
-# 
-# model <- dsldNclm(data, yName, sName, 0)
-# summary(model)
-# predict(model, data[1,])
-# 
-# model <- dsldZlm(data, yName, sName, 0)
-# summary(model)
-# predict(model, data[1,])
-# 
-# data <- fairml::compas
-# yName <- "two_year_recid"
-# sName <- c("race", "sex")
-# 
-# model <- dsldFgrrm(data, yName, sName, 0)
-# summary(model)
-# predict(model, data[1,])
-# 
-# model <- dsldZlrm(data, yName, sName, 0)
-# summary(model)
-# predict(model, data[1,])
