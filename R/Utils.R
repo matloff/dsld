@@ -12,6 +12,22 @@ getSuggestedLib <- function(pkgName) {
       stop(paste0(pkgName, ' not loaded'))
 }
 
+checkPkgLoaded <- function(pkgName,whereObtain='CRAN') 
+{
+      # workaround
+      cmd <- sprintf('%s <- NULL',pkgName)
+      evalr(cmd)
+   
+      cmd <- sprintf('require(%s)',pkgName)
+      if (!evalr(cmd)) {
+         pkgErr <- sprintf('%s is required',pkgName)
+         print(pkgErr)
+         obtain <- paste0('if not installed, obtain from ',whereObtain)
+         stop(sprintf('if not installed, obtain from %s',whereObtain))
+      }
+      requireNamespace(pkgName)
+}
+
 pr2file <- function(filename)
 {
    origdev <- dev.cur()
