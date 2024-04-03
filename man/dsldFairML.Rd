@@ -103,7 +103,7 @@
     An object of class "dsldFairML", including the model information, yName, and sName.
 }
 
-\references {
+\references{
     https://cran.r-project.org/web/packages/fairml/index.html
 }
 
