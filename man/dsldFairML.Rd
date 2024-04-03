@@ -80,7 +80,6 @@
 }
 
 \details{
-
 Via FairML: 
 
 Fairml implements key algorithms for learning machine learning models while enforcing fairness with respect 
@@ -94,13 +93,12 @@ to a set of observed sensitive (or protected) attributes. The following algorith
     5. zlrm(): a fair linear regression with covariance constraints following Zafar et al. (2019)
 
 Different fairness methods can also be employed in dsldFrrm() and dsldFgrrm(): \cr
-1. "sp-komiyama": the statistical parity fairness constraint from Komiyama et al. \cr
-2. "eo-komiyama": the analogous equality of opportunity constraint built on the proportion 
-of variance (or deviance) explained by sensitive attributes. \cr
-3. "if-berk": the individual fairness constraint from Berk et al. (2017) adapted in Scutari, Panero and Proissl. \cr
+    1. "sp-komiyama": the statistical parity fairness constraint from Komiyama et al. \cr
+    2. "eo-komiyama": the analogous equality of opportunity constraint built on the proportion 
+    of variance (or deviance) explained by sensitive attributes. \cr
+    3. "if-berk": the individual fairness constraint from Berk et al. (2017) adapted in Scutari, Panero and Proissl. \cr
 
 More details can be found in the references. 
-
 }
 
 \value{
