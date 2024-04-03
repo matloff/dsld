@@ -30,6 +30,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       
       # sandwich branch for covariance matrix
       if (useSandwich) {
+        checkPkgLoaded('sandwich')
         covMatrix <- sandwich::sandwich(diffModel)
       } else {
         covMatrix <- vcov(diffModel)
