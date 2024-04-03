@@ -7,7 +7,6 @@ import('fairness')
 import('Kendall')
 import('freqparcoord')
 import('ggplot2')
-import('plotly')
 import('sandwich')
 
 importFrom("grDevices", "dev.copy", "dev.cur", "dev.off", "dev.set",
@@ -17,6 +16,7 @@ importFrom("stats", "as.formula", "binomial", "coef", "cor", "cov",
                "density", "glm", "lm", "loess", "na.exclude", "pnorm",
                "predict", "pt", "setNames", "vcov")
 importFrom("utils", "combn")
+importFrom("plotly", "plot_ly", "add_lines","layout")
 
 export(
    getSuggestedLib,
