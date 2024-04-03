@@ -15,6 +15,8 @@
 dsldConditDisparity <- function(data, yName, sName, xName, condits,
                                 qeFtn = qeKNN, minS = 50, useLoess = TRUE)
 {
+    checkPkgLoaded('qeML') 
+  
     # args type checking
     if (!is.data.frame(data)) {
         stop("data must be a dataframe.")
