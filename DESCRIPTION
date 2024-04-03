@@ -19,7 +19,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    role = c("aut"))
    )
 Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>, 
-   Aditya Mittal <adityamittal2031@gmail.com>,
+   Aditya Mittal <adimittal@ucdavis.edu>,
    Arjun Ashok <arjun3.ashok@gmail.com>,
    Shubhada Martha <shubhadam2003@gmail.com>,
    Taha Abdullah <tahaabdullahtech@gmail.com>
