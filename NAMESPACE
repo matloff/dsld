@@ -2,6 +2,13 @@ import('qeML')
 import('regtools')
 import('gtools')
 import('ranger')
+import('fairml')
+import('fairness')
+import('Kendall')
+import('freqparcoord')
+import('ggplot2')
+import('plotly')
+import('sandwich')
 
 importFrom("grDevices", "dev.copy", "dev.cur", "dev.off", "dev.set",
                "jpeg", "pdf", "png", "rainbow")
