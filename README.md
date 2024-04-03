@@ -13,23 +13,23 @@ Authors:
 
 ## Overview
 
-Discrimination is a key social issue in the US and in a number of other
+Discrimination is a key social issue in the United States and in a number of other
 countries. There is lots of available data with which one might
 investigate possible discrimination. But how might such investigations
 be conducted?
 
-Our **DSLD** provides statistical and graphical tools for detecting and 
+Our **DSLD** package provides statistical and graphical tools for detecting and 
 measuring discrimination and bias; be it racial, gender, age or other. 
-This is an R package. It is widely applicable, here are just a few use cases:
+This is an R package. It is widely applicable, here are just a few possible use cases:
 
 - Quantitative analysis in instruction and research in the social sciences.
 - Corporate HR analysis and research.
 - Litigation involving discrimination and related issues.
 - Concerned citizenry.
 
-The package is broadly aimed at users ranging from instructors of statistics classes to legal professionals, 
-offering a powerful yet intuitive approach to discrimination analysis.  It also includes an 80 page Quarto book 
-to serve as a guide to key statistical principles and their applications.
+This package is broadly aimed at users ranging from instructors of statistics classes to legal professionals, 
+as it offers a powerful yet intuitive approach to discrimination analysis. It also includes an 80 page **Quarto book** 
+to serve as a guide of the key statistical principles and their applications.
 
 ## Installation:
 
@@ -50,9 +50,9 @@ Here are the main categories:
 In doing so, we must be careful to account for *confounders*, variables
 that may affect wages other than through gender.
 
-- In a prediction context, with concern that an AI algorithm has built-in
+- In a prediction context, with concern that an ML algorithm has built-in
 bias against some racial group.  We want to eliminate race from the
-analysis, and to also limit the effect of *proxies*, other variables
+analysis, while also controlling the effect of *proxies* – other variables
 that may be strongly related to race.
 
 In the first case, we are checking for *societal* or *institutional*
@@ -89,12 +89,12 @@ To distinguish between a "fair ML" and a "statistics" dataset. Here is a side-by
 
 </table>
 
-We will take a quick tour of a subset of dsld features, using the **svcensus** data included in the package.
+Here we will take a quick tour of a subset of dsld's features, using the **svcensus** data included in the package.
 
 ### The data
 
-The **svcensus** dataset consists of recorded income from 6 different engineering occupations. It consists of the columns 'age',
-'education level', 'occupation','wage income', 'weeks worked', 'gender'.
+The **svcensus** dataset consists of recorded income across 6 different engineering occupations. It consists of the columns 'age',
+'education level', 'occupation','wage income', 'number of weeks worked', 'gender'.
 
 ```R
 > data(svcensus)
@@ -127,6 +127,7 @@ are included in this example.
 > svcensus <- svcensus[,c(1,4,6)]  # subset columns: age, wage, gender
 > z <- dsldLinear(svcensus,'wageinc','gender')
 > coef(z) # show coefficients of linear model
+
 $gender
 (Intercept)         age  gendermale 
  31079.9174    489.5728  13098.2091 
@@ -138,13 +139,32 @@ Our linear model can be written as:
 Here *W* indicates wage income, *A* is age and *M* denotes an indicator variable, with M = 1 for men and M = 0 for women.
 
 We can speak of $\beta_2$ as *the* gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than
-younger women, with the *same-sized* gap between older men and older women. Furthermore, itt may be, for instance, that the 
-gender gap is small at younger ages but much larger for older people. Thus, we can account for an interaction by fitting two linear models, one for
-men and one for women. The gender pay gap is estimated to be -13156.88 at age 36, and -13039.27 at age 43, differing by only about $100. The estimated gap between ages
-36 and 53, not shown, is larger, close to $300, but it seems there is not much interaction here.
+younger women, with the *same-sized* gap between older men and older women. Furthermore, it may be, for instance that the gender gap is small at younger ages but much larger for older people. Thus, we can account for an interaction by fitting two linear models, one for men and one for women. Suppose we are comparing this difference between ages
 
-Note that we chose only one [C] variable here, age.  We might also choose "occupation", or any other combination depending on the application and dataset.
-The package provides a function **dsldCHunting()** for this purpose. 
+```R
+newData <- data.frame(age=c(36,43))
+z <- dsldLinear(svcensus,'wageinc','gender',interactions=T,
+                newData)
+summary(z)
+
+$female
+    Covariate   Estimate StandardError PValue
+1 (Intercept) 30551.4302    2123.44361      0
+2         age   502.9624      52.07742      0
+
+$male
+    Covariate  Estimate StandardError PValue
+1 (Intercept) 44313.159    1484.82216      0
+2         age   486.161      36.02116      0
+
+$`Sensitive Factor Level Comparisons`
+  Factors Compared New Data Row Estimates Standard Errors
+1    female - male            1 -13156.88        710.9696
+2    female - male            2 -13039.27        710.7782
+```
+
+The gender pay gap is estimated to be -13156.88 at age 36, and -13039.27 at age 43, differing by only about $100. The estimated gap between ages
+36 and 53, not shown, is larger, close to $300, but it seems there is not much interaction here. Note that we chose only one [C] variable here, age. We might also choose "occupation", or any other combination depending on the application and dataset to affect our results. The package provides several graphical and analytical tools for this purpose. 
 
 ## Part Two: Discovering/Mitigating Bias in Machine Learning
 
