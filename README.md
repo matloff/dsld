@@ -89,12 +89,12 @@ To distinguish between a "fair ML" and a "statistics" dataset. Here is a side-by
 
 </table>
 
-Here we will take a quick tour of a subset of dsld features, using data **svcensus** that is included in the package.
+We will take a quick tour of a subset of dsld features, using the **svcensus** data included in the package.
 
 ### The data
 
-The **svcensus** dataset consists of recorded income from 6 different engineering occupations. We will use only a few features, to keep 
-things simple:
+The **svcensus** dataset consists of recorded income from 6 different engineering occupations. It consists of the columns 'age',
+'education level', 'occupation','wage income', 'weeks worked', 'gender'.
 
 ```R
 > data(svcensus)
@@ -108,17 +108,19 @@ things simple:
 6 57.70413 zzzOther 100       0       0   male
 ```
 
+We will use only a few features, to keep things simple. Note that the *Quarto Book* provides an extensive 
+analysis of examples shown below.
+
 ## Part One: Adjustment for Confounders 
 
-The *Quarto Book* provides an extensive analysis of examples shown below.
-
-We wish to *estimate the impact* of a sensitive variable S on an outcome variable Y, while *accounting for confounders* C. 
+We wish to *estimate the impact* of a sensitive variable [S] on an outcome variable [Y], while *accounting for confounders* [C]. 
 Let's call such analysis "confounder adjustment." The package provides several graphical and analytical tools for this purpose.
 
-### Example
+### Estimation Example
 
 We are investigating a possible gender pay gap between men and women. Here, [Y] is wage and [S] is gender. 
-We will treat age as a confounder [C], using a linear model.
+We will treat age as a confounder [C], using a linear model. For simplicity, no other confounders (such as occupation) or any other predictors [X]
+are included in this example. 
 
 ```R
 > data(svcensus)
@@ -135,11 +137,14 @@ Our linear model can be written as:
 
 Here *W* indicates wage income, *A* is age and *M* denotes an indicator variable, with M = 1 for men and M = 0 for women.
 
-Thus, we can speak of $\beta_2$ as *the* gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than
-younger women, with the *same-sized* gap between older men and older women. 
+We can speak of $\beta_2$ as *the* gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than
+younger women, with the *same-sized* gap between older men and older women. Furthermore, itt may be, for instance, that the 
+gender gap is small at younger ages but much larger for older people. Thus, we can account for an interaction by fitting two linear models, one for
+men and one for women. The gender pay gap is estimated to be -13156.88 at age 36, and -13039.27 at age 43, differing by only about $100. The estimated gap between ages
+36 and 53, not shown, is larger, close to $300, but it seems there is not much interaction here.
 
-Note that we chose only one [C] variable here, age.  We might also choose "occupation", or any other combination depending on the dataset.
-The package provides a function **dsldCHunting()** to aid with this need. 
+Note that we chose only one [C] variable here, age.  We might also choose "occupation", or any other combination depending on the application and dataset.
+The package provides a function **dsldCHunting()** for this purpose. 
 
 ## Part Two: Discovering/Mitigating Bias in Machine Learning
 
@@ -147,7 +152,7 @@ Our goal is to predict [Y] from [X] and [O], omitting the sensitive variable [S]
 and want to limit their usage. The inherent tradeoff of increasing fairness is reduced utility (reduced predictive power/accuracy). 
 The package provides wrappers for several functions for this purpose.
 
-### Example
+### Prediction Example
 
 We are predicting the wage [Y], the sensitive variable [S] is gender, with the proxy [O] as occupation. The proxy [O] "occupation" will be deweighted
 to 0.2 using the *dsldQeFairKNN()* function to limit its predictive power.
@@ -173,7 +178,7 @@ to 0.2 using the *dsldQeFairKNN()* function to limit its predictive power.
    </tr>
 </table>
 
-We see that the correlation between predicted wage and gender has decreased significantly. Conversely, test accuracy increased by about \$700 dollars. Thus, we see an increase in fairness at some expense of accuracy. 
+In the base K-NN model, the correlation between predicted wage and gender was 0.1943, with mean prediction error of $25,500. Using *dsldQQeFairKNN*, we see that the correlation between predicted wage and gender has decreased significantly. On the other hand, test accuracy increased by about \$700 dollars. Hence, we see an increase in fairness at some expense of accuracy. 
 
 ## Function List
 
@@ -199,6 +204,6 @@ We see that the correlation between predicted wage and gender has decreased sign
 
 - **DsldFrequencyByS**: assess possible confounding relationship between a sensitive variable and a categorical variable via graphical means
   
-- **FairML wrappers**: Wrappers for several FairML functions via the FairML package
+- **DsldFairML**: Wrappers for several FairML functions via the FairML package
   
-- **EDFFair Wrappers**: Wrappers for several EDFFair functions via the EDFFair package
+- **DsldEDFFair**: Wrappers for several EDFFair functions via the EDFFair package
