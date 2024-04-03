@@ -1,5 +1,4 @@
 \name{dsldFrrm}
-\alias{dsldFrrm}
 
 \title{dsldFrrm}
 
