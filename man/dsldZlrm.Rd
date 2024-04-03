@@ -1,5 +1,4 @@
 \name{dsldZlrm}
-\alias{dsldZlrm}
 
 \title{
   dsldZlrm
