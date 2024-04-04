@@ -15,18 +15,13 @@
 }
 
 \usage{
-    dsldFrrm(data, yName, sName, unfairness,
-                     definition = "sp-komiyama", lambda = 0, 
-                     save.auxiliary = FALSE)
-    dsldFgrrm(data, yName, sName, unfairness,
-                      definition = "sp-komiyama", family = "binomial", 
-                      lambda = 0, save.auxiliary = FALSE)
-    dsldNclm(data, yName, sName, unfairness, covfun, 
-             lambda = 0, save.auxiliary = FALSE)
-    dsldZlm(data, yName, sName, unfairness)
-    dsldZlrm(data, yName, sName, unfairness)
-    \method{summary}{dsldFairML}(object,...)
-    \method{predict}{dsldFairML}(object,newx,...)
+dsldFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", lambda = 0, save.auxiliary = FALSE)
+dsldFgrrm(data, yName, sName, unfairness, definition = "sp-komiyama", family = "binomial", lambda = 0, save.auxiliary = FALSE)
+dsldNclm(data, yName, sName, unfairness, covfun, lambda = 0, save.auxiliary = FALSE)
+dsldZlm(data, yName, sName, unfairness)
+dsldZlrm(data, yName, sName, unfairness)
+\method{summary}{dsldFairML}(object,...)
+\method{predict}{dsldFairML}(object,newx,...)
 }
 
 \arguments{
@@ -85,18 +80,18 @@ Via FairML:
 Fairml implements key algorithms for learning machine learning models while enforcing fairness with respect 
 to a set of observed sensitive (or protected) attributes. The following algorithms are available: \cr
 
-    1. nclm(): the non-convex formulation of fair linear regression model from Komiyama et al. (2018). \cr
-    2. frrm(): the fair (linear) ridge regression model from Scutari, Panero and Proissl (2022). \cr
-    3. fgrrm(): thefair generalized (linear) ridge regression model from Scutari, Panero and Proissl 
+    1. *nclm():* the non-convex formulation of fair linear regression model from Komiyama et al. (2018). \cr
+    2. *frrm():* the fair (linear) ridge regression model from Scutari, Panero and Proissl (2022). \cr
+    3. *fgrrm():* thefair generalized (linear) ridge regression model from Scutari, Panero and Proissl 
     (2022), supporting the Gaussian, binomial, Poisson, multinomial and Cox (proportional hazards) families. \cr
-    4. zlrm(): the fair logistic regression with covariance constraints from Zafar et al. (2019). \cr
-    5. zlrm(): a fair linear regression with covariance constraints following Zafar et al. (2019)
+    4. *zlrm():* the fair logistic regression with covariance constraints from Zafar et al. (2019). \cr
+    5. *zlrm():* a fair linear regression with covariance constraints following Zafar et al. (2019)
 
 Different fairness methods can also be employed in dsldFrrm() and dsldFgrrm(): \cr
-    1. "sp-komiyama": the statistical parity fairness constraint from Komiyama et al. \cr
-    2. "eo-komiyama": the analogous equality of opportunity constraint built on the proportion 
+    1. *"sp-komiyama":* the statistical parity fairness constraint from Komiyama et al. \cr
+    2. *"eo-komiyama":* the analogous equality of opportunity constraint built on the proportion 
     of variance (or deviance) explained by sensitive attributes. \cr
-    3. "if-berk": the individual fairness constraint from Berk et al. (2017) adapted in Scutari, Panero and Proissl. \cr
+    3. *"if-berk":* the individual fairness constraint from Berk et al. (2017) adapted in Scutari, Panero and Proissl. \cr
 
 More details can be found in the references. 
 }
@@ -132,7 +127,9 @@ Fair Classification". Journal of Machine Learning Research, 30:1-42. \cr
 \code{https://www.jmlr.org/papers/volume20/18-262/18-262.pdf}
 }
 
-\examples{  
+\examples{ 
+
+\donttest {
     data(svcensus) 
     data(compas1)
     data(law.school.admissions)
@@ -172,5 +169,6 @@ Fair Classification". Journal of Machine Learning Research, 30:1-42. \cr
     sName <- "age"
     zlrmOut <- dsldZlrm(compas1, yName, sName, 0.2) 
     summary(zlrmOut)
-    predict(zlrmOut, compas1[c(1:10),])
+    predict(zlrmOut, compas1[c(1:10),]) 
+}
 }
