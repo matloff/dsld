@@ -1,7 +1,7 @@
 ### -------------------------------- DsldUtilFairness ----------------------------------------
 dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_increment = 0.1) {
-  getSuggestedLib('qeML')     
-  checkPkgLoaded('Kendall')
+  getSuggestedLib('qeML') 
+  getSuggestedLib('Kendall')   
   
   if (is.factor(data[[cName]])) {
     cGroups <- regtools::factorToDummies(data[, cName], cName, omitLast = TRUE)    
@@ -51,9 +51,3 @@ dsldUtilFairness <- function(data, yName, cName, sName, count = 5, deweight_incr
   title("Fairness against D")
   par(mfrow = c(1, 1))
 }
-
-# Example:
-# library(dsld)
-# data(svcensus)
-# dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', sName = 'gender')     # example w/ categorical cName
-# dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', sName = 'gender', deweight_increment = 0.05) # example w/ continuous cName
