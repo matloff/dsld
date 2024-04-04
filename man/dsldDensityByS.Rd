@@ -2,9 +2,14 @@
 \alias{dsldDensityByS}
 \title{dsldDensityByS}
 
+\description{
+    Graphs densities of a response variable, grouped by a sensitive variable. 
+    Has sliders to control the bandwidth of the density.
+}
+
 \usage{
-    dsldDensityByS(data, cName, sName, graphType = "plotly", fill =
-                   FALSE)
+dsldDensityByS(data, cName, sName, graphType = "plotly", fill =
+    FALSE)
 }
 
 \arguments{
@@ -25,18 +30,11 @@
     }
 }
 
-\description{
-    Graphs densities of a response variable, grouped by a sensitive variable. 
-    Has sliders to control the bandwidth of the density.
-}
-
 \author{
     N. Matloff, T. Abdullah, A. Ashok, J. Tran
 }
 
 \examples{
-    # Example 1
-    library(dsld)
     data(svcensus)
     dsld::dsldDensityByS(svcensus, cName = "wageinc", sName = "educ")
 }
