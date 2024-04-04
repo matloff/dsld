@@ -2,9 +2,9 @@
 \alias{lak}
 
 \title{
-  TBD
+  Labor Market Discrimination
 }
 
 \description{
-  TBD
+  To-Do
 }
