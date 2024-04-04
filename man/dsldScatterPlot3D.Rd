@@ -65,19 +65,18 @@ on a 4th variable.}
   }
 }
 
-
 \references{
    https://plotly.com/r/3d-scatter-plots/
 }
 
 \author{
-Jonathan Tran and Brandon Zarate}
+J. Tran and B. Zarate
+}
 
 \examples{
-  # Example 1: Using sName, yNames, and xlim
-  library(fairml)
-  data("law.school.admissions")
-  dsld::dsldScatterPlot3D(law.school.admissions, sName = "race1",
+# Example 1: Using sName, yNames, and xlim
+data("law.school.admissions")
+dsldScatterPlot3D(law.school.admissions, sName = "race1", 
   yNames=c("ugpa", "lsat","age"), xlim=c(2,4))
 }
 
