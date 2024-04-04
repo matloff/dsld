@@ -14,45 +14,44 @@
 
 \usage{
 dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal)
+dsldDiffSLog(object, sComparisonPts = NULL) 
 \method{summary}{dsldGLM}(object,...)
 \method{predict}{dsldGLM}(object,xNew,...)
 \method{coef}{dsldGLM}(object,...)
 \method{vcov}{dsldGLM}(object,...)
-dsldDiffSLog(object, sComparisonPts = NULL) 
 }
 
 \arguments{
     \item{data}{
-        data frame used to train the linear model; will be split according to
-        each level of sName in output if interactions = TRUE [dataframe]
+        Data-frame used to train the linear model; will be split according to
+        each level of sName in output if interactions = TRUE. 
     }
     \item{yName}{
-        a string, the response variable [character]
+        Name of the response variable column. 
     }
     \item{sName}{
-        a string, the sensitive variable (an R factor) [character]
-    }
-    \item{sComparisonPts}{
-        dataframe of new cases (minus Y,S) for which P(Y = 1| X) 
-        will be compared between each pairs of S levels. Must be
-        in the same format as the original data. Defaults to NULL for 
-        the no-interactions case. [dataframe]
+        Name(s) of the sensitive attribute column(s). 
     }
     \item{interactions}{
-        a logical value indicating whether or not to fit interactions with the
-        sensitive variable. Defaults to FALSE [logical]
+        A logical value indicating whether or not to fit interactions with the
+        sensitive variable. Defaults to FALSE.
+    }
+    \item{sComparisonPts}{
+        Dataframe of new cases (minus Y,S) for which P(Y = 1| X) 
+        will be compared between each pairs of S levels. Must be
+        in the same format as the original data. Defaults to NULL for 
+        the no-interactions case. 
     }
     \item{yesYVal}{
-        Y value to be considered "yes," to be coded 1 rather than 0.[character]
+        Y value to be considered "yes," to be coded 1 rather than 0.
     }
     \item{object}{
-        Output from dsldLogit function
+        An object returned by the dsldLogit. 
         [dsldGLM]
     }
     \item{xNew}{
         Dataframe to predict new cases for which P(Y = 1| X). Must be in the same format 
         as original data.
-        [dataframe]
     }
     \item{...}{Further arguments.}
 }
@@ -62,43 +61,25 @@ dsldDiffSLog(object, sComparisonPts = NULL)
 }
 
 \examples{
-# The examples provided are done with the lsa dataset; the
-# dataset requires some minimal preparation prior to running dsldLogit.
-
-# Example 1: 'bar' as yName; 'gender' as sName; interactions == TRUE,
-# 			 newData [dataframe]
-data(law.school.admissions) # predicting probability of passing the 'bar'
+data(law.school.admissions) 
 lsa <- law.school.admissions # abbreviated name for ease of use
 
-# select subset of original data for sComparisonPts argument
+# Example 1: 'bar' as yName; 'gender' as sName; interactions == TRUE,
 newData <- lsa[c(2,22,222,2222),-c(8,11)]
-
-# we are predicting lsat score
 log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')
 
-# Extract model coefficients and covariances 
 coef(log1)
 vcov(log1) 
-
-# Extract individual regression coefficients AND compare differences in
-# P(Y = 'TRUE'| X) between each pairs of sName levels:
-summary(log1)
-
-# Generate predictions across each level of sName
+summary(log1) # compare difference among S levels
 predict(log1, newData)
             
-# Users can also make additional comparisons with new data as well using
-# dsldDiffS to compare mean P(Y = 1|X) between each pair of S levels.
+# compare differences by S levels with new data
 xNew <- lsa[c(100,1000,120),-c(8,11)]
 dsldDiffSLog(log1, xNew)
 
 # Example 2: 'bar' as yName; 'gender' as sName; interactions == FALSE;
-# newData = NULL
 log2 <- dsldLogit(data = law.school.admissions,yName = 'bar',sName = 'gender', 
     interactions = FALSE, yesYVal = 'TRUE')
-
-# Extract individual regression coefficients AND compare differences in
-# regression coefficients between each pairs of S levels:
 summary(log2)
 }
 
