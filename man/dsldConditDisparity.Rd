@@ -33,14 +33,14 @@ dsldConditDisparity(data, yName, sName, xName, condits,
 }
 
 \examples{
-    data(compas)
-    compas$two_year_recid <- as.numeric(compas$two_year_recid == "Yes")
-    dsldConditDisparity(compas,"two_year_recid", "race", "age", 
-       c("priors_count <= 4","decile_score>=6"), qeKNN)
+data(compas)
+compas$two_year_recid <- as.numeric(compas$two_year_recid == "Yes")
+dsldConditDisparity(compas,"two_year_recid", "race", "age", 
+    c("priors_count <= 4","decile_score>=6"), qeKNN)
 
-    dsldConditDisparity(compas,"two_year_recid", "race", "age", 
-         c("priors_count <= 4","decile_score>=6"), qeGBoost)
+dsldConditDisparity(compas,"two_year_recid", "race", "age", 
+    c("priors_count <= 4","decile_score>=6"), qeGBoost)
 
-    dsldConditDisparity(compas,"two_year_recid","sex","age",
-         c("priors_count <= 4","decile_score>=6"),qeKNN)
+dsldConditDisparity(compas,"two_year_recid","sex","age",
+    c("priors_count <= 4","decile_score>=6"),qeKNN)
 }
