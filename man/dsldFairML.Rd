@@ -15,8 +15,10 @@
 }
 
 \usage{
-dsldFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", lambda = 0, save.auxiliary = FALSE)
-dsldFgrrm(data, yName, sName, unfairness, definition = "sp-komiyama", family = "binomial", lambda = 0, save.auxiliary = FALSE)
+dsldFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
+lambda = 0, save.auxiliary = FALSE)
+dsldFgrrm(data, yName, sName, unfairness, definition = "sp-komiyama", family = "binomial", 
+lambda = 0, save.auxiliary = FALSE)
 dsldNclm(data, yName, sName, unfairness, covfun, lambda = 0, save.auxiliary = FALSE)
 dsldZlm(data, yName, sName, unfairness)
 dsldZlrm(data, yName, sName, unfairness)
