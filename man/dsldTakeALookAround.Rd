@@ -4,6 +4,34 @@
 \title{dsldTakeALookAround}
 
 \description{
+    Evaluates feature sets for predicting Y while considering correlation with sensitive variable S.
+}
+
+\usage{
+dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2), holdout = floor(min(1000,0.1*nrow(data))))
+}
+
+\arguments{
+    \item{data}{
+        Data frame comprising the input data.
+    }
+    \item{yName}{
+        Name of the response variable column. 
+    }
+    \item{sName}{
+        Name of the sensitive attribute column.
+    }
+    \item{maxFeatureSetSize}{
+        Maximum number of combinations of features to be included in the dataframe; 
+        default argument set as: maxFeatureSetSize = (ncol(data) - 2).
+    }
+    \item{holdout}{
+        If not NULL, form a holdout set of the specified size. After fitting to the 
+        remaining data, evaluate accuracy on the test set.
+    }
+}
+
+\details{
     The dsldTakeALookAround function is an exploratory tool for users to see 
     which features in a dataset are good predictors of Y, the response variable, 
     but may also be highly correlated with S, the sensitive variable.  
@@ -36,57 +64,19 @@
     qeLogit() for the categorical case. 
 }
 
-\usage{
-    dsldTakeALookAround(data, yName, sName, 
-                        maxFeatureSetSize = (ncol(data) - 2), 
-                        holdout = floor(min(1000,0.1*nrow(data))))
-}
-
-\arguments{
-    \item{data}{
-        dataset in dataframe form
-    }
-    \item{yName}{
-        as in qeML functions, the response variable
-    }
-    \item{sName}{
-        name of the sensitive variable, an R factor
-    }
-    \item{maxFeatureSetSize}{
-        maximum number of combinations of features to be included in the dataframe; 
-        default argument set as: maxFeatureSetSize = (ncol(data) - 2)
-    }
-    \item{holdout}{
-        If not NULL, form a holdout set of the specified size. After fitting to the 
-        remaining data, evaluate accuracy on the test set.
-    }
-}
-
 \author{
     N. Matloff, A. Ashok, S. Martha, A. Mittal
 }
 
 \examples{
-    # The dsldTakeALookAround function aims to provide a seamless experience, 
-    # requiring minimal effort to utilize its capabilities. Once the package is 
-    # successfully downloaded and installed, the function can be leveraged by 
-    # simply employing similar commands shown in the examples.
-        
-    # The examples are conducted using the 'svcensus' dataset. 
-
-    # Example 1: We investigate the predictive accuracy for a continuous Y,
-    #            'wageinc', using the default arguments for maxFeatureSetSize = 4
+    donttest{
+    # Example 1: investigate predictive accuracy for a continuous Y,
+    # 'wageinc', using the default arguments for maxFeatureSetSize = 4
     data(svcensus)
     dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
 
     # Example 2:  We investigate the predictive accuracy for a categorical Y, 
-    #             'educ', using the default arguments for maxFeatureSetSize = 4
-    data(svcensus)
-    dsldTakeALookAround(svcensus, 'educ', 'occ')
-
-    # Example 3:  We investigate the predictive accuracy for a continuous Y, 
-    #             'wageinc', using the maxFeatureSetSize = 1
-    data(svcensus)
-    dsldTakeALookAround(svcensus, 'wageinc', 'gender', 1)
+    # 'educ', using the default arguments for maxFeatureSetSize = 4
+    dsldTakeALookAround(svcensus, 'educ', 'gender')
+    }
 }
-
