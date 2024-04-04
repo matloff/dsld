@@ -44,6 +44,6 @@ dsldConfounders(data, sName, graphType = "plotly", fill = FALSE)
 }
 
 \examples{
-    data(svcensus)
-    dsldConfounders(svcensus, "educ")
+data(svcensus)
+dsldConfounders(svcensus, "educ")
 }
