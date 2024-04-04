@@ -1,5 +1,5 @@
 \name{dsldQeFairKNN}
-\alias{dsldQeFairKNN}
+
 
 \title{DSLDQeFairKNN}
 
