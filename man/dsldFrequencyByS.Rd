@@ -30,8 +30,6 @@
 }
 
 \examples{
-    # Example 1
-    library(dsld) 
     data(svcensus) 
     dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 }
