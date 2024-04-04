@@ -8,7 +8,7 @@
 
 \usage{
 dsldUtilFairness(data, yName, cName, sName, count = 5, 
-                     deweight_increment = 0.1)
+    deweight_increment = 0.1)
 }
 
 \arguments{
