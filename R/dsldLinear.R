@@ -30,7 +30,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       
       # sandwich branch for covariance matrix
       if (useSandwich) {
-        checkPkgLoaded('sandwich')
+        getSuggestedLib('sandwich')
         covMatrix <- sandwich::sandwich(diffModel)
       } else {
         covMatrix <- vcov(diffModel)
@@ -73,7 +73,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     
     # branch covariance matrix on sandwich
     if (useSandwich) {
-      checkPkgLoaded('sandwich')
+      getSuggestedLib('sandwich')
       covMatrix <- sandwich::sandwich(diffModel)
     } else {
       covMatrix <- vcov(diffModel)
