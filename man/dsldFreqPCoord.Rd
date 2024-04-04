@@ -102,7 +102,7 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
 }
 
 \examples{
-    data(svcensus)
-    dsldFreqPCoord(svcensus,10,c(1,4,5),'gender')
+data(svcensus)
+dsldFreqPCoord(svcensus,10,c(1,4,5),'gender')
 }
 
