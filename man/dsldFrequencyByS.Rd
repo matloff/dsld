@@ -10,18 +10,18 @@
 }
 
 \usage{
-    dsldFrequencyByS(data, cName, sName)
+dsldFrequencyByS(data, cName, sName)
 }
 
 \arguments{
     \item{data}{
-        [dataframe] dataset with labeled column names and at least 2 columns
+        Dataset with labeled column names and at least 2 columns
     }
     \item{cName}{
-        [character] possible confounding variable column, an R factor
+        Possible confounding variable column, an R factor
     }
     \item{sName}{
-        [character] name of the sensitive variable column, an R factor
+        Name of the sensitive variable column, an R factor
     }
 }
 
@@ -30,7 +30,7 @@
 }
 
 \examples{
-    data(svcensus) 
-    dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
+data(svcensus) 
+dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 }
 
