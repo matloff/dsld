@@ -207,12 +207,14 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
 - **DsldML**: Comparison of conditions for sensitive groups via ML algorithms
   
 - **DsldTakeLookAround**: Evaluates feature sets for predicting Y while considering correlation with sensitive variable S
-  
-- **DsldScatterPlot3D**: Plots a dataset on 3 axes, with the color of the point depending on a 4th variable
+
+- **DsldUtilFairness**: Generates 2 plots depicting the Utility against D and Fairness against D
   
 - **DsldCHunting**: Confounder hunting--searches for variables C that predict both Y and S
 
 - **DsldOHunting**: Proxy hunting--searches for variables O that predict S
+
+- **DsldScatterPlot3D**: Plots a dataset on 3 axes, with the color of the point depending on a 4th variable
   
 - **DsldConditsDisparity**: Plots mean Y against X for each level of S, revealing potential Simpson's Paradox-like differences under specified conditions
   
@@ -223,8 +225,6 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
 - **DsldDensityByS**: Graphs densities of a response variable, grouped by a sensitive variable
 
 - **DsldFrequencyByS**: Assess possible confounding relationship between a sensitive variable and a categorical variable via graphical means
-
-- **DsldUtilFairness**: Generates 2 plots depicting the Utility against D and Fairness against D
   
 - **DsldFairML**: Wrappers for several fair machine learning algorithms functions provided via the FairML package
   
