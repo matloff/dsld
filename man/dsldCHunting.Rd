@@ -1,4 +1,4 @@
-\name{dsldCHunting and dsldCHunting}
+\name{dsldCHunting and dsldOHunting}
 \alias{dsldCHunting}
 \alias{dsldOHunting}
 \title{Confounder and Proxy Hunting}
@@ -33,7 +33,6 @@ dsldOHunting(data,yName,sName)
 }
 
 \examples{  
-
     \donttest{
     data(law.school.admissions) 
     dsldCHunting(law.school.admissions,'bar','race1')
@@ -47,14 +46,14 @@ dsldOHunting(data,yName,sName)
 
 \details{
 
-    dsldCHunting:
+    dsldCHunting: \cr
     
     The specified \code{qeML} function will be on the indicated data once
     for each level of the sensitive variable.  For each such level, estimated
     regression function values will be obtained for each row in
     \code{sComparisonPts}.
     
-    dsldOHunting:
+    dsldOHunting: \cr
     
     Factors, if any, will be converted to dummy variables, and then the
     Kendall Tau correlations will be calculated betwene S and potential O
