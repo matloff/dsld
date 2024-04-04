@@ -37,13 +37,13 @@ dsldUtilFairness(data, yName, cName, sName, count = 5,
 }
 
 \examples{
-    data(svcensus)
-    \donttest{
-    # example w/ categorical cName
-    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', 
-        sName = 'gender')
+data(svcensus)
+\donttest{
+# example w/ categorical cName
+dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', 
+    sName = 'gender')
 
-    # example w/ continuous cName
-    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', 
-        sName = 'gender', deweight_increment = 0.05)}
+# example w/ continuous cName
+dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', 
+    sName = 'gender', deweight_increment = 0.05)}
 }
