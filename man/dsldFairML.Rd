@@ -127,9 +127,9 @@ Fair Classification". Journal of Machine Learning Research, 30:1-42. \cr
 \code{https://www.jmlr.org/papers/volume20/18-262/18-262.pdf}
 }
 
-\examples{ 
 
-\donttest {
+\examples{ 
+    \donttest{
     data(svcensus) 
     data(compas1)
     data(law.school.admissions)
@@ -169,6 +169,5 @@ Fair Classification". Journal of Machine Learning Research, 30:1-42. \cr
     sName <- "age"
     zlrmOut <- dsldZlrm(compas1, yName, sName, 0.2) 
     summary(zlrmOut)
-    predict(zlrmOut, compas1[c(1:10),]) 
-}
+    predict(zlrmOut, compas1[c(1:10),])}
 }
