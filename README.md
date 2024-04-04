@@ -136,10 +136,10 @@ Our linear model can be written as:
 
 > E(W) = $\beta_0$ + $\beta_1$ A + $\beta_2$ M
 
-Here *W* indicates wage income, *A* is age and *M* denotes an indicator variable, with M = 1 for men and M = 0 for women.
+Consider the case without any interaction: Here *W* indicates wage income, *A* is age and *M* denotes an indicator variable, with M = 1 for men and M = 0 for women.
 
 We can speak of $\beta_2$ as *the* gender wage gap, at any age. According to the model, younger men earn an estimated $13,000 more than
-younger women, with the *same-sized* gap between older men and older women. Furthermore, it may be, for instance that the gender gap is small at younger ages but much larger for older people. Thus, we can account for an interaction by fitting two linear models, one for men and one for women. Suppose we are comparing this difference between ages
+younger women, with the *same-sized* gap between older men and older women. Furthermore, it may be, for instance that the gender gap is small at younger ages but much larger for older people. Thus, we can account for an interaction by fitting two linear models, one for men and one for women. Suppose we are comparing this difference between ages 36 and 43:
 
 ```R
 newData <- data.frame(age=c(36,43))
@@ -164,7 +164,7 @@ $`Sensitive Factor Level Comparisons`
 ```
 
 The gender pay gap is estimated to be -13156.88 at age 36, and -13039.27 at age 43, differing by only about $100. The estimated gap between ages
-36 and 53, not shown, is larger, close to $300, but it seems there is not much interaction here. Note that we chose only one [C] variable here, age. We might also choose "occupation", or any other combination depending on the application and dataset to affect our results. The package provides several graphical and analytical tools for this purpose. 
+36 and 53, not shown, is larger, close to $300, but it seems there is not much interaction here. Note that we chose only one [C] variable here, age, for our analysis. We might also choose "occupation", or any other combination depending on the application and dataset which can affect our results. The package also provides several graphical and analytical tools to aid users further. 
 
 ## Part Two: Discovering/Mitigating Bias in Machine Learning
 
@@ -228,4 +228,4 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
   
 - **DsldFairML**: Wrappers for several fair machine learning algorithms functions provided via the FairML package
   
-- **DsldEDFFair**: Wrappers for several EDFFair functions via the EDFFair package
+- **DsldEDFFair**: Wrappers for several EDFFair functions provided via the EDFFair package
