@@ -4,7 +4,7 @@
 
 \description{
     Graphs densities of a response variable, grouped by a sensitive variable. 
-    Has sliders to control the bandwidth of the density.
+    Includes sliders to control the bandwidth of the density.
 }
 
 \usage{
