@@ -131,45 +131,45 @@ Fair Classification". Journal of Machine Learning Research, 30:1-42. \cr
 
 
 \examples{ 
-    \donttest{
-    data(svcensus) 
-    data(compas1)
-    data(law.school.admissions)
+\donttest{
+data(svcensus) 
+data(compas1)
+data(law.school.admissions)
 
-    # unfairness parameter set at 0.2 for all examples
+# unfairness parameter set at 0.2 for all examples
 
-    # dsldFrrm 
-    yName <- "wageinc"
-    sName <- "age"
-    frrmOut <- dsldFrrm(svcensus, yName, sName, 0.2, definition = "sp-komiyama") 
-    summary(frrmOut)
-    predict(frrmOut, svcensus[1:10,]) 
+# dsldFrrm 
+yName <- "wageinc"
+sName <- "age"
+frrmOut <- dsldFrrm(svcensus, yName, sName, 0.2, definition = "sp-komiyama") 
+summary(frrmOut)
+predict(frrmOut, svcensus[1:10,]) 
 
-    # dsldFgrrm
-    yName <- "two_year_recid"
-    sName <- "age"
-    fgrrmOut <- dsldFgrrm(compas1, yName, sName, 0.2, definition = "sp-komiyama")  
-    summary(fgrrmOut)
-    predict(fgrrmOut, compas1[c(1:10),]) 
+# dsldFgrrm
+yName <- "two_year_recid"
+sName <- "age"
+fgrrmOut <- dsldFgrrm(compas1, yName, sName, 0.2, definition = "sp-komiyama")  
+summary(fgrrmOut)
+predict(fgrrmOut, compas1[c(1:10),]) 
 
-    # dsldNclm
-    yName <- "lsat"
-    sName <- "race1"
-    nclmOut <- dsldNclm(law.school.admissions, yName, sName, 0.2)
-    summary(nclmOut)
-    predict(nclmOut, law.school.admissions[c(1:10),]) 
+# dsldNclm
+yName <- "lsat"
+sName <- "race1"
+nclmOut <- dsldNclm(law.school.admissions, yName, sName, 0.2)
+summary(nclmOut)
+predict(nclmOut, law.school.admissions[c(1:10),]) 
 
-    # dsldZlm
-    yName <- "wageinc"
-    sName <- "age"
-    zlmOut <- dsldZlm(svcensus, yName, sName, 0.2) 
-    summary(zlmOut)
-    predict(zlmOut, svcensus[c(1:10),])
+# dsldZlm
+yName <- "wageinc"
+sName <- "age"
+zlmOut <- dsldZlm(svcensus, yName, sName, 0.2) 
+summary(zlmOut)
+predict(zlmOut, svcensus[c(1:10),])
 
-    # dsldZlrm
-    yName <- "two_year_recid"
-    sName <- "age"
-    zlrmOut <- dsldZlrm(compas1, yName, sName, 0.2) 
-    summary(zlrmOut)
-    predict(zlrmOut, compas1[c(1:10),])}
+# dsldZlrm
+yName <- "two_year_recid"
+sName <- "age"
+zlrmOut <- dsldZlrm(compas1, yName, sName, 0.2) 
+summary(zlrmOut)
+predict(zlrmOut, compas1[c(1:10),])}
 }
