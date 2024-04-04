@@ -14,19 +14,19 @@ dsldDensityByS(data, cName, sName, graphType = "plotly", fill =
 
 \arguments{
     \item{data}{
-       [dataframe] datasetwith at least 1 numerical column and 1 factor column
+       Datasetwith at least 1 numerical column and 1 factor column
     }
     \item{cName}{
-        [character] possible confounding variable column, an R numeric
+        Possible confounding variable column, an R numeric
     }
     \item{sName}{
-        [character] name of the sensitive variable column, an R factor
+        Name of the sensitive variable column, an R factor
     }
     \item{graphType}{
-        [character] type of graph created. Defaults to "plotly".
+        Type of graph created. Defaults to "plotly".
     }
     \item{fill}{
-        [logical] to fill the graph
+        To fill the graph. Defaults to "FALSE".
     }
 }
 
@@ -35,6 +35,6 @@ dsldDensityByS(data, cName, sName, graphType = "plotly", fill =
 }
 
 \examples{
-    data(svcensus)
-    dsld::dsldDensityByS(svcensus, cName = "wageinc", sName = "educ")
+data(svcensus)
+dsldDensityByS(svcensus, cName = "wageinc", sName = "educ")
 }
