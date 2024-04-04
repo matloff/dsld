@@ -15,47 +15,46 @@
 \usage{
 dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
     useSandwich = FALSE)
+dsldDiffSLin(object, sComparisonPts = NULL) 
 \method{summary}{dsldLM}(object,...)
 \method{predict}{dsldLM}(object,xNew,...)
 \method{coef}{dsldLM}(object,...)
 \method{vcov}{dsldLM}(object,...)
-dsldDiffSLin(object, sComparisonPts = NULL) 
 }
 
 \arguments{
     \item{data}{
-        data frame used to train the linear model; will be split according to
-        each level of sName in output if interactions = TRUE [dataframe]
+        Data-frame used to train the linear model; will be split according to
+        each level of sName in output if interactions = TRUE. 
     }
     \item{yName}{
-        a string, the response variable [character]
+       Name of the response variable column. 
     }
     \item{sName}{
-        a string, the sensitive variable (an R factor) [character]
+        Name(s) of the sensitive attribute column(s). 
     }
     \item{interactions}{
-        a logical value indicating whether or not to fit interactions with the
-        sensitive variable. Defaults to FALSE [logical]
+        A logical value indicating whether or not to fit interactions with the
+        sensitive variable. Defaults to FALSE. 
     }
     \item{sComparisonPts}{
-        dataframe of new cases for which mean Y | X will be compared between
-        each pairs of S levels. Must be in the same format as original data.
-        Defaults to NULL for the no-interactions case [dataframe]
+        Dataframe of new cases for which mean Y | X will be compared across
+        each pair of S levels. Must be in the same format as original data.
+        Defaults to NULL for the no-interactions case.
     }
     \item{useSandwich}{
-        whether or not to use sandwich variance estimator; defaults to FALSE
-        [logical]
+        Whether or not to use sandwich variance estimator. Defaults to FALSE.
     }
     \item{object}{
-        Output from dsldLinear function
+        An object returned by the dsldLinear.  
         [dsldLM]
     }
     \item{xNew}{
-        Dataframe to predict new cases for which mean Y | X. Must be in the same format 
-        as original data.
-        [dataframe]
+        New data to be predicted. Must be in the same format as original data.
     }
-    \item{...}{Further arguments.}
+    \item{...}{
+        Further arguments.
+    }
 }
 
 \author{
@@ -63,7 +62,6 @@ dsldDiffSLin(object, sComparisonPts = NULL)
 }
 
 \examples{  
-# The examples provided are done with the svcensus dataset
 data(svcensus) 
 
 # Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE 
@@ -73,28 +71,16 @@ newData <- svcensus[c(1, 18), -c(4,6)] # age 22 vs 50
 lin1 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = TRUE,
     newData)
 
-# Extract model coefficients and covariances
 coef(lin1)
 vcov(lin1) 
-
-# Extract individual regression coefficients AND compare differences in 
-#   Y | X between each pairs of sName levels:
 summary(lin1)
-
-# Use predict() to generate predictions across each individual S level
 predict(lin1, newData)
 
-# Users can also make additional comparisons with new data as well using 
-# dsldDiffS to compare mean Y|X between each pair of S levels.
-xNew  <- svcensus[c(10:15), -c(4,6)] 
+xNew  <- svcensus[c(10:15), -c(4,6)] # compare differences by S levels with new data
 dsldDiffSLin(lin1, xNew)
 
 # Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; 
-# sComparisonPts = NULL
 lin2 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = FALSE)
-
-# Extract individiual regression coefficients AND compare differences in 
-#   regression coefficients between each pairs of S levels:
 summary(lin2)
 }
 
