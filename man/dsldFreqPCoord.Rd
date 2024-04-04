@@ -8,10 +8,9 @@
     package (link in references).
 }
 \usage{
-    dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
-                   = "maxdens", faceting = "vert", k = 50, klm = 5 * k,
-                   keepidxs = NULL, plotidxs = FALSE, cls = NULL,
-                   plot_filename = NULL)
+dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
+= "maxdens", faceting = "vert", k = 50, klm = 5 * k, keepidxs = NULL, 
+plotidxs = FALSE, cls = NULL, plot_filename = NULL)
 }
 
 \arguments{
@@ -103,14 +102,7 @@
 }
 
 \examples{
-    # Example 1
-    library(dsld)
     data(svcensus)
     dsldFreqPCoord(svcensus,10,c(1,4,5),'gender')
-    
-    # Example 2
-    library(qeML)
-    data(mlb)
-    dsldFreqPCoord(mlb,5,4:6,7)
 }
 
