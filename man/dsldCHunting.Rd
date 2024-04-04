@@ -1,16 +1,16 @@
-\name{dsldCHunting}
+\name{dsldCHunting and dsldCHunting}
 \alias{dsldCHunting}
 \alias{dsldOHunting}
 \title{Confounder and Proxy Hunting}
 
 \description{ 
     Confounder hunting--searches for variables C that predict both Y and
-    S--and proxy hunting--searches for variables O that predict S.
+    S. Proxy hunting--searches for variables O that predict S.
 }
 
 \usage{
-    dsldCHunting(data,yName,sName,intersectDepth=10)
-    dsldOHunting(data,yName,sName)
+dsldCHunting(data,yName,sName,intersectDepth=10)
+dsldOHunting(data,yName,sName)
 }
 
 \arguments{
@@ -18,10 +18,10 @@
         Data frame comprising the input data.
     }
     \item{yName}{
-        Quoted name of Y.
+        Name of the response variable column. 
     }
     \item{sName}{
-        Quoted name of the sensitive variable S, an R factor.
+        Name of the sensitive attribute column.
     }
     \item{intersectDepth}{
         Maximum size of Y predictor set and S predictor set to intersect.
@@ -33,6 +33,8 @@
 }
 
 \examples{  
+
+    donttest{
     data(law.school.admissions) 
     dsldCHunting(law.school.admissions,'bar','race1')
     # e.g. suggests confounders 'cluster', 'decile3', 'decile1'
@@ -40,7 +42,9 @@
     data(mortgageSE)
     dsldOHunting(mortgageSE,'deny','black')
     # e.g. suggests using loan value and condo purchase as proxies
+    }
 }
+
 \details{
 
     dsldCHunting:
@@ -57,4 +61,3 @@
     variales.  (The Y column will be ignored.)
 
 }
-
