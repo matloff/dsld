@@ -202,7 +202,7 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
 
 ## Function List
 
-- **DsldLinear**/**DsldLogit**: Comparison of conditions for sensitive groups via linear/logistic models
+- **DsldLinear**/**DsldLogit**: Comparison of conditions for sensitive groups via linear & logistic models
   
 - **DsldML**: Comparison of conditions for sensitive groups via ML algorithm
   
