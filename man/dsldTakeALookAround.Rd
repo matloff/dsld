@@ -35,18 +35,18 @@ holdout = floor(min(1000,0.1*nrow(data))))
 \details{
     This function provides an exploratory tool to see which features in a dataset are 
     good predictors of Y, the response variable, but may also be highly correlated with 
-    S, the sensitive variable.  
+    S, the sensitive variable. 
 
-    The return value will be a data frame with 4 columns: 
+    The return value will be a data frame with 4 columns: \cr
     1. The first will be a character string consisting of the names of the given 
-       feature set. 
+       feature set. \cr
     2. Prediction accuracy for Y of this feature set. 
     3. Prediction accuracy for Y of this feature set plus S. (i.e. how much are
-       we giving up by NOT using S?)
+       we giving up by NOT using S?) \cr
     4. Prediction accuracy for S of this feature set. (the better the accuracy, 
-       the less fairness value there is in omitting S from prediction model). 
+       the less fairness value there is in omitting S from prediction model). \cr
        There will be one row in the d.f. for each feature set. All possible 
-       feature sets of size up to maxFeatureSetSize will be tested.
+       feature sets of size up to maxFeatureSetSize will be tested.\cr
 
     This function uses the qeML package to compute the respective predictive 
     test accuracies. More specifically, it uses the qeLin() for numeric Y or S, 
