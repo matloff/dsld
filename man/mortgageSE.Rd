@@ -11,5 +11,5 @@
                                               loan information,
                                               etc.) The response
   variable is whether or not the applicant was approved for the 
-  loan. 
+  loan. Additional details can be found in the \code{SortedEffects} package.
 }
