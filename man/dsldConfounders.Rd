@@ -3,18 +3,11 @@
 \title{dsldConfounders}
 
 \description{
-    This function is designed to assess possible confounding between a
-    sensitive variable and the other variables in a data frame. By iterating
-    every column in a dataframe, it analyzes each column agins the sensitive
-    feature in the context of finding confounding variables. Depending on the
-    type of data stored in the column (numeric, categorical), `dsldConfounders`
-    will dispatch to `dsldDensityByS()` to graph numeric data in the specified
-    format or `dsldFrequencyByS()` to tally distribution for categorical data
-    in a dataframe.
+    Analyzes confounding variables in a dataframe via plots.
 }
 
 \usage{
-    dsldConfounders(data, sName, graphType = "plotly", fill = FALSE)
+dsldConfounders(data, sName, graphType = "plotly", fill = FALSE)
 }
 
 \arguments{
@@ -35,14 +28,22 @@
     }
 }
 
+\details{
+    This function is designed to assess possible confounding between a
+    sensitive variable and the other variables in a data frame. By iterating
+    every column in a dataframe, it analyzes each column agins the sensitive
+    feature in the context of finding confounding variables. Depending on the
+    type of data stored in the column (numeric, categorical), `dsldConfounders`
+    will dispatch to `dsldDensityByS()` to graph numeric data in the specified
+    format or `dsldFrequencyByS()` to tally distribution for categorical data
+    in a dataframe.
+}
+
 \author{
     N. Matloff, T. Abdullah, A. Ashok, J. Tran
 }
 
 \examples{
-    # Example 1
-    library(dsld)
     data(svcensus)
     dsldConfounders(svcensus, "educ")
 }
-
