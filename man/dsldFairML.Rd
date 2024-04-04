@@ -116,19 +116,19 @@ More details can be found in the references.
 \seealso{
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 
-1. Berk R, Heidari H, Jabbari S, Joseph M, Kearns M, Morgenstern J, Neel S, Roth A (2017). "A Convex Framework for Fair Regression". FATML. \cr
+Berk R, Heidari H, Jabbari S, Joseph M, Kearns M, Morgenstern J, Neel S, Roth A (2017). "A Convex Framework for Fair Regression". FATML. \cr
 \code{https://www.fatml.org/media/documents/convex_framework_for_fair_regression.pdf}
 
-2. Komiyama J, Takeda A, Honda J, Shimao H (2018). "Nonconvex Optimization for
+Komiyama J, Takeda A, Honda J, Shimao H (2018). "Nonconvex Optimization for
 Regression with Fairness Constraints". Proceedints of the 35th International Conference on Machine Learning (ICML), 
 PMLR \strong{80}:2737--2746. \cr 
 \code{http://proceedings.mlr.press/v80/komiyama18a/komiyama18a.pdf}
 
-3. Scutari M, Panero F, Proissl M (2022). "Achieving Fairness with a Simple Ridge Penalty". Statistics and Computing, 32, 77. \cr
+Scutari M, Panero F, Proissl M (2022). "Achieving Fairness with a Simple Ridge Penalty". Statistics and Computing, 32, 77. \cr
 \code{https://link.springer.com/content/pdf/10.1007/s11222-022-10143-w.pdf}
 
-4. Zafar BJ, Valera I, Gomez-Rodriguez M, Gummadi KP (2019). "Fairness Constraints: a Flexible Approach for 
-Fair Classification". Journal of Machine Learning Research, 30:1–42. \cr
+Zafar BJ, Valera I, Gomez-Rodriguez M, Gummadi KP (2019). "Fairness Constraints: a Flexible Approach for 
+Fair Classification". Journal of Machine Learning Research, 30:1-42. \cr
 \code{https://www.jmlr.org/papers/volume20/18-262/18-262.pdf}
 }
 
