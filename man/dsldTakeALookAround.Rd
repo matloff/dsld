@@ -9,7 +9,7 @@
 
 \usage{
 dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2), 
-holdout = floor(min(1000,0.1*nrow(data))))
+    holdout = floor(min(1000,0.1*nrow(data))))
 }
 
 \arguments{
