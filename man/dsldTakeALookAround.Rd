@@ -58,14 +58,13 @@ dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2),
 }
 
 \examples{
-    \donttest{
-    # Example 1: investigate predictive accuracy for a continuous Y,
-    # 'wageinc', using the default arguments for maxFeatureSetSize = 4
-    data(svcensus)
-    dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
+\donttest{
+# Example 1: investigate predictive accuracy for a continuous Y,
+# 'wageinc', using the default arguments for maxFeatureSetSize = 4
+data(svcensus)
+dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
 
-    # Example 2:  We investigate the predictive accuracy for a categorical Y, 
-    # 'educ', using the default arguments for maxFeatureSetSize = 4
-    dsldTakeALookAround(svcensus, 'educ', 'gender')
-    }
+# Example 2:  We investigate the predictive accuracy for a categorical Y, 
+# 'educ', using the default arguments for maxFeatureSetSize = 4
+dsldTakeALookAround(svcensus, 'educ', 'gender')}
 }
