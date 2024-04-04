@@ -220,7 +220,7 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
   
 - **DsldFreqPCoord**:  Wrapper for the freqparcoord function from the freqparcoord package
 
-- **DsldDensityByS**: Graphs densities of a response variable, grouped by a sensitive variable.
+- **DsldDensityByS**: Graphs densities of a response variable, grouped by a sensitive variable
 
 - **DsldFrequencyByS**: Assess possible confounding relationship between a sensitive variable and a categorical variable via graphical means
 
