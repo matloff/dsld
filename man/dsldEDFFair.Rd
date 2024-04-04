@@ -65,7 +65,7 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Number of variables randomly tried at each split.
     }
     \item{object}{
-        An object returned by the dsld-fairML wrapper.  
+        An object returned by the dsld-EDFFAIR wrapper.  
     }
     \item{newx}{
         New data to be predicted. Must be in the same format as original data.
