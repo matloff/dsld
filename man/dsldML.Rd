@@ -3,7 +3,7 @@
 \title{dsldML}
 
 \description{ 
-Comparison of conditions for sensitive groups via ML algorithsm.
+Comparison of conditions for sensitive groups via ML algorithms.
 }
 
 \usage{
