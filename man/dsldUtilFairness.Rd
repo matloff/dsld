@@ -13,22 +13,22 @@
 
 \arguments{
     \item{data}{
-        dataset in dataframe form
+        Data frame comprising the input data.
     }
     \item{yName}{
-        name of the response column [character]
+        Name of the response variable column.
     }
-    \item{cName}{
-        name of proxy variable to deweight [character]
+    \item{cName}{  
+        Name of proxy variable column to deweight.
     }
     \item{sName}{
-        name of the sensitive variable, an R factor [character]
+        Name of the sensitive attribute column.
     }
     \item{count}{
-        Number of times to run the qeKNN function call [numeric]
+        Number of times to run the qeKNN function call.
     }
     \item{deweight_increment}{
-        Increment to weight the proxy by [numeric]
+        Increment to deweight the proxy by.
     }
 }
 
@@ -37,15 +37,13 @@
 }
 
 \examples{
-    library(dsld)
     data(svcensus)
-
+    \donttest{
     # example w/ categorical cName
-    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', 
+    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'occ', 
         sName = 'gender')
 
     # example w/ continuous cName
-    dsld::dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', 
-        sName = 'gender', deweight_increment = 0.05)
+    dsldUtilFairness(data = svcensus,yName ='wageinc', cName = 'wkswrkd', 
+        sName = 'gender', deweight_increment = 0.05)}
 }
-
