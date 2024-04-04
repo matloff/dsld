@@ -212,7 +212,7 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
   
 - **DsldCHunting**: Confounder hunting--searches for variables C that predict both Y and S
 
-- **DsldOHunting**: Proxy hunting--searches for variables O that predict S.
+- **DsldOHunting**: Proxy hunting--searches for variables O that predict S
   
 - **DsldConditsDisparity**: Plots mean Y against X for each level of S, revealing potential Simpson's Paradox-like differences under specified conditions
   
