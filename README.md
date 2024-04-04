@@ -224,6 +224,6 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
 
 - **DsldFrequencyByS**: assess possible confounding relationship between a sensitive variable and a categorical variable via graphical means
   
-- **DsldFairML**: Wrappers for several FairML functions via the FairML package
+- **DsldFairML**: Wrappers for several fair machine learning algorithms functions provided via the FairML package
   
 - **DsldEDFFair**: Wrappers for several EDFFair functions via the EDFFair package
