@@ -33,15 +33,15 @@ dsldOHunting(data,yName,sName)
 }
 
 \examples{  
-    \donttest{
-    data(law.school.admissions) 
-    dsldCHunting(law.school.admissions,'bar','race1')
-    # e.g. suggests confounders 'cluster', 'decile3', 'decile1'
+\donttest{
+data(law.school.admissions) 
+dsldCHunting(law.school.admissions,'bar','race1')
+# e.g. suggests confounders 'cluster', 'decile3', 'decile1'
     
-    data(mortgageSE)
-    dsldOHunting(mortgageSE,'deny','black')
-    # e.g. suggests using loan value and condo purchase as proxies
-    }
+data(mortgageSE)
+dsldOHunting(mortgageSE,'deny','black')
+# e.g. suggests using loan value and condo purchase as proxies
+}
 }
 
 \details{
