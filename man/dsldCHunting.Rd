@@ -34,7 +34,7 @@ dsldOHunting(data,yName,sName)
 
 \examples{  
 
-    donttest{
+    \donttest{
     data(law.school.admissions) 
     dsldCHunting(law.school.admissions,'bar','race1')
     # e.g. suggests confounders 'cluster', 'decile3', 'decile1'
