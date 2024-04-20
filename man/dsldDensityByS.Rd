@@ -4,7 +4,9 @@
 
 \description{
     Graphs densities of a response variable, grouped by a sensitive variable. 
-    Includes sliders to control the bandwidth of the density.
+    Similar to \code{dsldConfounders}, but includes sliders to control the 
+    bandwidth of the density estimate (analogous to controlling the bind
+    width in a histogram).
 }
 
 \usage{
