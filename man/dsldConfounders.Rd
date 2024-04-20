@@ -11,28 +11,29 @@ dsldConfounders(data, sName, graphType = "plotly", fill = FALSE)
 }
 
 \arguments{
-    \item{data}{
-        [dataframe] dataset with labeled column names, at least 2 columns
-    }
+    \item{data}{Dataframe, at least 2 columns.}
     \item{sName}{
-        [character] name of the sensitive variable column, an R factor
+        Name of the sensitive variable column, an R factor.
     }
     \item{graphType}{
-        [character] either "plot" or "plotly".
-        "plot" : static graphs are made with R's default plot() function. 
-        "plotly" : interactable graphs are made with the plotly package.
+        Either "plot" or "plotly", for static or interactive graphs.
+        The latter requires the \pkg{plotly} package.
     }
     \item{fill}{
-        [logical] only applicable to graphType = "plot" case. Setting to true
+        Only applicable to graphType = "plot" case. Setting to true
         will color each line down to the x-axis.
     }
 }
 
 \details{
     This function is designed to assess possible confounding between a
-    sensitive variable and the other variables in a data frame. By iterating
-    every column in a dataframe, it analyzes each column agins the sensitive
-    feature in the context of finding confounding variables. Depending on the
+    sensitive variable S and the other variables in a data frame. By iterating
+    every column in a dataframe, it analyzes each column against the sensitive
+    feature in the context of finding confounding variables. Each curve
+    will represent one level of S, so if there is no confounding, the
+    curves will be identical
+
+    Depending on the
     type of data stored in the column (numeric, categorical), `dsldConfounders`
     will dispatch to `dsldDensityByS()` to graph numeric data in the specified
     format or `dsldFrequencyByS()` to tally distribution for categorical data
