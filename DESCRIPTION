@@ -18,11 +18,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    person("Brandon", "Zarate Estrada", email = "bdzarate@ucdavis.edu",
    role = c("aut"))
    )
-Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>, 
-   Aditya Mittal <adimittal@ucdavis.edu>,
-   Arjun Ashok <arjun3.ashok@gmail.com>,
-   Shubhada Martha <shubhadam2003@gmail.com>,
-   Taha Abdullah <tahaabdullahtech@gmail.com>
+Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>
 VignetteBuilder: knitr
 Imports: sandwich, Kendall, ranger, ggplot2, plotly, freqparcoord, fairness
 Depends: R (>= 3.5.0), fairml, gtools, regtools,qeML

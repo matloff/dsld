@@ -4,7 +4,7 @@
 
 \description{
     Plots (estimated) mean Y against X, separately for each level of S,
-    with restrictions `condits`. May reveal Simpson's Paradox-like
+    with restrictions \code{condits}. May reveal Simpson's Paradox-like
     differences not seen in merely plotting mean Y against X.
 }
 
@@ -14,10 +14,10 @@ dsldConditDisparity(data, yName, sName, xName, condits,
 }
 
 \arguments{
-   \item{data}{Dataframe or equivalent}
+   \item{data}{Dataframe or equivalent.}
    \item{yName}{As in qeML functions, predicted variable, must be numeric 
       or dichtomous R factor.}
-   \item{sName}{Name of the sensitive variable, an R factor}
+   \item{sName}{Name of the sensitive variable S, an R factor}
    \item{xName}{Name of a numeric column for the X-axis.}
    \item{condits}{An R vector; each component is a character 
       string for an R logical expression representing a desired 
