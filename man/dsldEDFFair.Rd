@@ -8,16 +8,15 @@
 \title{dsldEDFFair Wrappers}
 
 \description{ 
-  Explicitly Deweighted Features: control the effect of proxies 
-  related to sensitive variables for prediction. The following 
-  functions provide wrappers from the EDFFair package (link in references).
+  Wrappers for Explicitly Deweighted Features method for reducing bias
+  toward a sensitive group in machine learning.
 }
 
 \usage{
 dsldQeFairKNN(data, yName, sNames, deweightPars=NULL, yesYVal=NULL,k=25,
   scaleX=TRUE, holdout=floor(min(1000,0.1*nrow(data))))
-dsldQeFairRF(data,yName,sNames,deweightPars=NULL, nTree=500, minNodeSize=10,
-  mtry = floor(sqrt(ncol(data))),yesYVal=NULL,
+dsldQeFairRF(data,yName,sNames,deweightPars=NULL, nTree=500, 
+  minNodeSize=10, mtry = floor(sqrt(ncol(data))),yesYVal=NULL,
   holdout=floor(min(1000,0.1*nrow(data))))
 dsldQeFairRidgeLin(data, yName, sNames, deweightPars = NULL, 
   holdout=floor(min(1000,0.1*nrow(data))))
@@ -37,23 +36,24 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Name(s) of the sensitive attribute column(s). 
     }
     \item{deweightPars}{
-        Values for de-emphasizing variables in a split, e.g. 
-        'list(age=0.2,gender=0.5)'. Lower values means more deweighting.
+        Values for de-emphasizing variables, e.g. 
+        'list(age=0.2,gender=0.5)'. Smaller values means more deweighting.
     }
     \item{scaleX}{
-        Scale the features. Defaults to TRUE.
+        Scale the features. 
     }
     \item{yesYVal}{
         Y value to be considered "yes," to be coded 1 rather than 0.
     }
     \item{k}{
-        Number of nearest neighbors. In functions other than qeKNN for which 
-        this is an argument, it is the number of neighbors to use in finding 
-        conditional probabilities via knnCalib.
+        Number of nearest neighbors. In functions other than \code{qeKNN} 
+        for which this is an argument, it is the number of 
+        neighbors to use in finding conditional probabilities via
+        \code{knnCalib}.
     } 
     \item{holdout}{
-        How many rows to use as the holdout/testing set. Can be NULL.
-        The testing set is used to calculate s correlation and test accuracy.
+        Number of rows to use as the holdout/testing set. 
+        The testing set is used to calculate S correlation and test accuracy.
     } 
     \item{nTree}{
         Number of trees.
@@ -62,10 +62,10 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Minimum number of data points in a tree node.
     }
     \item{mtry}{
-        Number of variables randomly tried at each split.
+        Number of variables randomly tried at each tree split.
     }
     \item{object}{
-        An object returned by the dsld-EDFFAIR wrapper.  
+        An object returned by the \code{dsld-EDFFAIR} wrapper.  
     }
     \item{newx}{
         New data to be predicted. Must be in the same format as original data.
@@ -80,23 +80,23 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
 }
 
 \details{
-    Via EDFFair:
   
-    EDF reduces the impact of each feature in the proxies of sensitive variables among the X features, 
-    with a different amount of deweighting appliable to each such feature. The goal is to give the user control 
-    over the Fairness/Utility Tradeoff, choosing the desired weighting of fairness and prediction accuracy.
+    EDF reduces the impact of each proxy feature for a sensitive
+    variable, with a different amount of deweighting appliable to each
+    such feature. The goal is to give the user control over the
+    Fairness/Utility Tradeoff, choosing the desired weighting of
+    fairness and prediction accuracy.
 
     More details can be found in the references. 
 }
 
 \references{
   https://github.com/matloff/EDFfair 
-}
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-Matloff, Norman, and Wenxi Zhang. "A novel regularization approach to fair ML." \cr
-\code{arXiv preprint arXiv:2208.06557} (2022).
+
+  Matloff, Norman, and Wenxi Zhang. "A novel regularization approach to
+  fair ML." \ \code{arXiv preprint arXiv:2208.06557} (2022).
+
 }
 
 \examples{  
@@ -105,8 +105,8 @@ data(compas1)
 data(svcensus) 
 
 # dsldQeFairKNN: deweight "decile score" column with "race" as the sensitive variable
-knnOut <- dsldQeFairKNN(compas1, "two_year_recid", "race", list(decile_score=.1),
-  yesYVal = "Yes")
+knnOut <- dsldQeFairKNN(compas1, "two_year_recid", "race", 
+   list(decile_score=.1), yesYVal = "Yes")
 knnOut$testAcc 
 knnOut$corrs 
 predict(knnOut, compas1[1,]) 
