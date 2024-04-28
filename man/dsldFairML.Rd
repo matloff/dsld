@@ -16,10 +16,11 @@
 
 \usage{
 dsldFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
-    lambda = 0, save.auxiliary = FALSE)
-dsldFgrrm(data, yName, sName, unfairness, definition = "sp-komiyama", family = "binomial", 
-    lambda = 0, save.auxiliary = FALSE)
-dsldNclm(data, yName, sName, unfairness, covfun, lambda = 0, save.auxiliary = FALSE)
+   lambda = 0, save.auxiliary = FALSE)
+dsldFgrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
+   family = "binomial", lambda = 0, save.auxiliary = FALSE)
+dsldNclm(data, yName, sName, unfairness, covfun, lambda = 0, 
+   save.auxiliary = FALSE)
 dsldZlm(data, yName, sName, unfairness)
 dsldZlrm(data, yName, sName, unfairness)
 \method{summary}{dsldFairML}(object,...)
@@ -37,9 +38,10 @@ dsldZlrm(data, yName, sName, unfairness)
         Name(s) of the sensitive attribute column(s). 
     }
     \item{unfairness}{
-        A positive number in [0, 1], how unfair is the model allowed to be. 
-        A value of 0 means the model is completely fair, while a value of 1 
-        means the model is not constrained to be fair at all.
+        A number in (0, 1]. Degree of  unfairness allowed in
+        the model.  A value (very near) 0 means the model is completely 
+        fair, while a value of 1 means the model is not 
+        constrained to be fair at all.
     }
     \item{covfun}{
         A function computing covariance matrices. It defaults to the cov() function 

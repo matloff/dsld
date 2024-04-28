@@ -112,8 +112,8 @@ knnOut$corrs
 predict(knnOut, compas1[1,]) 
 
 # dsldFairRF: deweight "decile score" column with "race" as sensitive variable
-rfOut <- dsldQeFairRF(compas1, "two_year_recid", "race", list(decile_score=.3), 
-  yesYVal = "Yes")
+rfOut <- dsldQeFairRF(compas1, "two_year_recid", "race", 
+   list(decile_score=.3), yesYVal = "Yes")
 rfOut$testAcc
 rfOut$corrs 
 predict(rfOut, fairml::compas[1,]) 

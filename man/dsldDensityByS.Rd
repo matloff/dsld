@@ -5,13 +5,12 @@
 \description{
     Graphs densities of a response variable, grouped by a sensitive variable. 
     Similar to \code{dsldConfounders}, but includes sliders to control the 
-    bandwidth of the density estimate (analogous to controlling the bind
+    bandwidth of the density estimate (analogous to controlling the bin
     width in a histogram).
 }
 
 \usage{
-dsldDensityByS(data, cName, sName, graphType = "plotly", fill =
-    FALSE)
+dsldDensityByS(data, cName, sName, graphType = "plotly", fill = FALSE)
 }
 
 \arguments{
