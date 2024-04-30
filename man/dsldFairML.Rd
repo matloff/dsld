@@ -11,9 +11,8 @@
 
 \description{
     Fair machine learning models: estimation and prediction. The following 
-    functions provide wrappers from the fairML package (link in references). 
-}
-
+    functions provide wrappers for some fundctions in the \pkg{fairML} package 
+    (link in references). 
 \usage{
 dsldFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
    lambda = 0, save.auxiliary = FALSE)
@@ -23,8 +22,6 @@ dsldNclm(data, yName, sName, unfairness, covfun, lambda = 0,
    save.auxiliary = FALSE)
 dsldZlm(data, yName, sName, unfairness)
 dsldZlrm(data, yName, sName, unfairness)
-\method{summary}{dsldFairML}(object,...)
-\method{predict}{dsldFairML}(object,newx,...)
 }
 
 \arguments{
@@ -38,7 +35,7 @@ dsldZlrm(data, yName, sName, unfairness)
         Name(s) of the sensitive attribute column(s). 
     }
     \item{unfairness}{
-        A number in (0, 1]. Degree of  unfairness allowed in
+        A number in (0, 1]. Degree of unfairness allowed in
         the model.  A value (very near) 0 means the model is completely 
         fair, while a value of 1 means the model is not 
         constrained to be fair at all.
