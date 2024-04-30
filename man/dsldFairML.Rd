@@ -13,12 +13,13 @@
     Fair machine learning models: estimation and prediction. The following 
     functions provide wrappers for some fundctions in the \pkg{fairML} package 
     (link in references). 
+}
 \usage{
 dsldFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
    lambda = 0, save.auxiliary = FALSE)
 dsldFgrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
    family = "binomial", lambda = 0, save.auxiliary = FALSE)
-dsldNclm(data, yName, sName, unfairness, covfun, lambda = 0, 
+dsldNclm(data, yName, sName, unfairness, covfun = cov, lambda = 0, 
    save.auxiliary = FALSE)
 dsldZlm(data, yName, sName, unfairness)
 dsldZlrm(data, yName, sName, unfairness)
@@ -41,28 +42,25 @@ dsldZlrm(data, yName, sName, unfairness)
         constrained to be fair at all.
     }
     \item{covfun}{
-        A function computing covariance matrices. It defaults to the cov() function 
-        from the stats package.  
+        A function computing covariance matrices. 
     }
     \item{definition}{
-        A character string, the label of the definition of fairness used in 
-        fitting the model. Currently either "sp-komiyama", "eo-komiyama" or 
-        "if-berk".
+        Character string, the label of the definition of fairness.
+        Currently either "sp-komiyama", "eo-komiyama" or "if-berk".
     }
     \item{family}{
         A character string, either "gaussian" to fit a linear regression, 
-        "binomial" to fit a logistic regression, "poisson" to fit a log-linear 
-        regression, "cox" to fit a Cox proportional hazards regression of 
-        "multinomial" to fit a multinomial logistic regression.
+        "binomial" to fit a logistic regression, or "poisson" to fit 
+        a log-linear regression, "cox" to fit a Cox proportional 
+        hazards regression, or "multinomial" to fit a 
+        multinomial logistic regression.
     }
     \item{lambda}{
-        A non-negative number, a ridge-regression penalty coefficient. 
-        It defaults to zero.
+        Non-negative number, a ridge-regression penalty coefficient. 
     }
     \item{save.auxiliary}{
         A logical value, whether to save the fitted values and the residuals 
         of the auxiliary model that constructs the decorrelated predictors. 
-        The default value is FALSE.
     }
     \item{object}{
         An object returned by the dsld-fairML wrapper.  
