@@ -4,7 +4,7 @@
 \title{dsldFreqPCoord}
 
 \description{
-    This is a wrapper for the freqparcoord function from the freqparcoord 
+    Wrapper for the \code{freqparcoord} function from the \pkg{freqparcoord} 
     package (link in references).
 }
 \usage{
@@ -19,9 +19,8 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
     }
     \item{m}{
         Number of lines to plot for each group. A negative value in conjunction 
-        with method being "maxdens" indicates that the lowest-density lines are 
-        to be plotted.
-        If method is "locmax", m is forced to 1.
+        with the method "maxdens" indicates that the lowest-density lines are 
+        to be plotted.  If method is "locmax", \code{m} is forced to 1.
     }
     \item{columns}{
         The columns of data to be displayed. This can be entered as either
@@ -29,8 +28,9 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
     }
     \item{sName}{
         Column number for the grouping variable, if any (if none, all the data 
-        is treated as a single group); vector or factor. Must not be in 
-        dispcols. If method is "locmax", grpvar is forced to NULL
+        is treated as a single group); the column must be a vector or factor. 
+        The number must not be in \code{dispcols}. If method is "locmax", 
+        \code{grpvar} is forced to NULL
     }
     \item{method}{
         What to display: "maxdens" for plotting the most
@@ -54,7 +54,7 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
         If not NULL, the indices of the rows of \code{data} that 
         are plotted will be stored in a component \code{idxs} of the
         return value.  The rows themselves will be in a component
-        \code{xdisp}, ordered by \code{data[,dispcols[1]}.]
+        \code{xdisp}, ordered by \code{data[,dispcols[1]}.
     }
     \item{plotidxs}{
         If TRUE, lines in the display will be annotated 
@@ -67,25 +67,23 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
     }
     \item{plot_filename}{
         Name of the file that will hold the saved graph image. 
+        If NULL, the graph will be generated and displayed without being saved.
         
-        If null, the graph will not be saved as an image -- it will be generated
-        and displayed without being saved.
-        
-        If a filename is provided, the graph will not be displayed, only saved 
-        to a file with this filename.
+        If a filename is provided, the graph will not be displayed, only
+        saved.
     }
 }
 
 \details{
-    dsldFreqPCoord serves as a function wrapper for freqparcoord, which uses a 
-    frequency-based parallel coordinates method to vizualize multiple variables 
-    simultaneously in graph form.
+    The \code{dsldFreqPCoord} function wraps \code{freqparcoord}.  The
+    which uses a frequency-based parallel coordinates method to 
+    vizualize multiple variables simultaneously in graph form.
     
     This is done by plotting either the "most typical" or "least typical"
     (i.e. highest or lowest estimated multivariate density values respectively)
     cases to discern relations between variables (Matloff, Xie).
     
-    The y-axis represents the distance from the mean of the column variable.
+    The Y-axis represents the centered and scaled values of the columns.
 }
 
 \value{
