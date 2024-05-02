@@ -15,7 +15,7 @@ dsldOHunting(data,yName,sName)
 
 \arguments{
     \item{data}{
-        Data frame comprising the input data.
+        Data frame
     }
     \item{yName}{
         Name of the response variable column. 
@@ -24,7 +24,8 @@ dsldOHunting(data,yName,sName)
         Name of the sensitive attribute column.
     }
     \item{intersectDepth}{
-        Maximum size of Y predictor set and S predictor set to intersect.
+        Maximum size of intersection of the Y predictor set and 
+        the S predictor se
     }
 }
 
@@ -57,6 +58,8 @@ dsldOHunting(mortgageSE,'deny','black')
     
     Factors, if any, will be converted to dummy variables, and then the
     Kendall Tau correlations will be calculated betwene S and potential O
-    variales.  (The Y column will be ignored.)
+    variables.  (The Y column will be ignored.)
+
+    Note: Run times may be long.
 
 }
