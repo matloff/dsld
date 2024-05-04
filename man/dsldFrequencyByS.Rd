@@ -4,11 +4,8 @@
 
 \description{
 
-Assesses possible confounding relationship between a sensitive variable
-S and a categorical variable C by extracting frequencies of a
-combination of levels, grouped by S and C.  
-
-}
+Informal assessment of C as a possible confounder in a relationship between a
+sensitive variable S and a variable Y.
 
 \usage{
 dsldFrequencyByS(data, cName, sName)
@@ -16,10 +13,10 @@ dsldFrequencyByS(data, cName, sName)
 
 \arguments{
     \item{data}{
-        Dataset with labeled column names and at least 2 columns
+        Data frame or equivalent.
     }
     \item{cName}{
-        Possible confounding variable column, an R factor
+        Name of the "C" column, an R factor.
     }
     \item{sName}{
         Name of the sensitive variable column, an R factor
@@ -28,11 +25,14 @@ dsldFrequencyByS(data, cName, sName)
 
 \details{
 
-Essentially an informal assessment of relation between S and C.
-Consider the \code{svcensus} dataset.  If for instance we are studying
+Essentially an informal assessment of the between S and C.  
+
+Consider the \code{ svcensus} dataset.  If for instance we are studying
 the effect of gender S on wage income Y, say C is occupation.  If S and
 C both affect income and are related to each other, we have a confounder
 issue.
+
+(Y does not explicitly appear here.)`
 
 
 }
