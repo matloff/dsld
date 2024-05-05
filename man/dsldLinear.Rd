@@ -24,30 +24,28 @@ dsldDiffSLin(object, sComparisonPts = NULL)
 
 \arguments{
     \item{data}{
-        Data-frame used to train the linear model; will be split according to
+        Data frame used to train the linear model; will be split according to
         each level of sName in output if interactions = TRUE. 
     }
     \item{yName}{
-       Name of the response variable column. 
+       Name of the response variable Y column. 
     }
     \item{sName}{
-        Name(s) of the sensitive attribute column(s). 
+        Name of the sensitive attribute S column. 
     }
     \item{interactions}{
-        A logical value indicating whether or not to fit interactions with the
-        sensitive variable. Defaults to FALSE. 
+        Logical value indicating whether or not to fit interactions with the
+        sensitive variable S. 
     }
     \item{sComparisonPts}{
-        Dataframe of new cases for which mean Y | X will be compared across
+        Data frame of new cases for which mean Y | X will be compared across
         each pair of S levels. Must be in the same format as original data.
-        Defaults to NULL for the no-interactions case.
     }
     \item{useSandwich}{
-        Whether or not to use sandwich variance estimator. Defaults to FALSE.
+        Whether to use the sandwich variance estimator.
     }
     \item{object}{
-        An object returned by the dsldLinear.  
-        [dsldLM]
+        An object returned by the \code{dsldLinear} function.  
     }
     \item{xNew}{
         New data to be predicted. Must be in the same format as original data.
@@ -103,24 +101,24 @@ summary(lin2)
     linear model; the following useful information will be stored:  \cr
         1. yName & sName; [character] @ yName, @ sName \cr
         2. Model; [character] @ model \cr
-        3. (Full Interactions only) New data input by user; [dataframe] @ data \cr
+        3. (Full Interactions only) New data input by user; [data frame] @ data \cr
         3. Summary Output of model; [character] @ summary \cr
         4. Coef of beta parameters; [character] @ coef \cr
         5. Covariance matrix of the model; [character] @ vcov \cr
-        6. Data used in the model (useful to see for interactions); [dataframe]
+        6. Data used in the model (useful to see for interactions); [data frame]
            @ data
 
     Furthermore, summary() is a polymorphic method that takes in an object of
-    the 'dsldLM' class and outputs an S3 object containing several dataframes.
+    the 'dsldLM' class and outputs an S3 object containing several data frames.
     In the full interactions case, the first m elements (where m is the number
     of levels in sName) contain information regarding regression coefficients,
     standard errors, p-values etc. for each model fitted across each level in
-    sName. The last element of the object is a dataframe comparing the
+    sName. The last element of the object is a data frame comparing the
     differences in mean Y | X for each row in the new data between each pair of
     sName levels. The intention is to allow users to see the comparisons of
     conditions for sensitive groups via linear models, with and without
     interactions, in a user-friendly data frame format. For the no-interactions
-    case: the first element of dsldSummary outputs a dataframe containing
+    case: the first element of dsldSummary outputs a data frame containing
     information regarding individual regression coefficients,  standard errors,
     p-values etc. for the fitted model; the second element compares differences
     in regression coefficients between each pairs of sName levels.
