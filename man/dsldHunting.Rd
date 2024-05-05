@@ -4,8 +4,8 @@
 \title{Confounder and Proxy Hunting}
 
 \description{ 
-    Confounder hunting--searches for variables C that predict both Y and
-    S. Proxy hunting--searches for variables O that predict S.
+    Confounder hunting:  searches for variables C that predict both Y and
+    S. Proxy hunting:  searches for variables O that predict S.
 }
 
 \usage{
@@ -15,7 +15,7 @@ dsldOHunting(data,yName,sName)
 
 \arguments{
     \item{data}{
-        Data frame
+        Data frame.
     }
     \item{yName}{
         Name of the response variable column. 
@@ -29,6 +29,28 @@ dsldOHunting(data,yName,sName)
     }
 }
 
+\details{
+
+    \code{dsldCHunting}: The random forests function
+    \code{qeML:qeRF} will be on the indicated data to indicate feature
+    importance in prediction of Y (without S) and S (without Y).  Call
+    these "important predictors" of Y and S.
+
+    Then for each \code{i} from 1 to \code{intersectDepth}, the
+    intersection of the top \code{i} important predictors of Y and the
+    the top \code{i} important predictors of S will be reported, thus
+    suggesting possible confounders. 
+
+    Note: Run times may be long.
+
+    \code{dsldOHunting}: Factors, if any, will be converted to dummy
+    variables, and then the Kendall Tau correlations will be calculated
+    betwene S and potential proxy variables O.  (The Y column will be
+    ignored.)
+
+
+}
+
 \author{
     N. Matloff
 }
@@ -37,29 +59,10 @@ dsldOHunting(data,yName,sName)
 \donttest{
 data(law.school.admissions) 
 dsldCHunting(law.school.admissions,'bar','race1')
-# e.g. suggests confounders 'cluster', 'decile3', 'decile1'
+# e.g. suggests confounders 'decile3', 'lsat'
     
 data(mortgageSE)
 dsldOHunting(mortgageSE,'deny','black')
 # e.g. suggests using loan value and condo purchase as proxies
 }
-}
-
-\details{
-
-    dsldCHunting: \cr
-    
-    The specified \code{qeML} function will be on the indicated data once
-    for each level of the sensitive variable.  For each such level, estimated
-    regression function values will be obtained for each row in
-    \code{sComparisonPts}.
-    
-    dsldOHunting: \cr
-    
-    Factors, if any, will be converted to dummy variables, and then the
-    Kendall Tau correlations will be calculated betwene S and potential O
-    variables.  (The Y column will be ignored.)
-
-    Note: Run times may be long.
-
 }
