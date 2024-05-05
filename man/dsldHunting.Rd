@@ -39,7 +39,9 @@ dsldOHunting(data,yName,sName)
     Then for each \code{i} from 1 to \code{intersectDepth}, the
     intersection of the top \code{i} important predictors of Y and the
     the top \code{i} important predictors of S will be reported, thus
-    suggesting possible confounders. 
+    suggesting possible confounders. Larger values of \code{i} will
+    report more potential confounders, though including progressively
+    weaker ones.
 
     Note: Run times may be long.
 
