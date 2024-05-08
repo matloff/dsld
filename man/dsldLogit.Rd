@@ -13,7 +13,8 @@
 }
 
 \usage{
-dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, yesYVal)
+dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, 
+   yesYVal)
 dsldDiffSLog(object, sComparisonPts = NULL) 
 \method{summary}{dsldGLM}(object,...)
 \method{predict}{dsldGLM}(object,xNew,...)
@@ -23,14 +24,14 @@ dsldDiffSLog(object, sComparisonPts = NULL)
 
 \arguments{
     \item{data}{
-        Data-frame used to train the linear model; will be split according to
-        each level of sName in output if interactions = TRUE. 
+        Data frame used to train the linear model; will be split according to
+        each level of \code{sName} in output if \code{interactions} = TRUE. 
     }
     \item{yName}{
         Name of the response variable column. 
     }
     \item{sName}{
-        Name(s) of the sensitive attribute column(s). 
+        Name of the sensitive attribute column. 
     }
     \item{interactions}{
         A logical value indicating whether or not to fit interactions with the
