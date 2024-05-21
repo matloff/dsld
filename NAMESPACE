@@ -21,7 +21,7 @@ importFrom("sandwich", "sandwich")
 export(
    getSuggestedLib,
    dsldFreqPCoord,
-   dsldTakeALookAround, dsldConditDisparity, dsldUtilFairness,
+   dsldTakeALookAround, dsldConditDisparity, 
    dsldScatterPlot3D,
    dsldLinear, dsldLogit, dsldDiffSLog, dsldDiffSLin,
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
