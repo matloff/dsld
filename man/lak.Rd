@@ -7,7 +7,7 @@
 
 \description{
 Fictional CVs sent to real employers to investigate discrimination via
-given names.
+given names. See Mullainathan and Bertran (2004).
 }
 
 \references{
