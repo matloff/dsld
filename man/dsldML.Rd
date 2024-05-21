@@ -47,6 +47,9 @@ data(svcensus)
 w<-dsldML('svcensus',quote(wageinc),'gender',
 qeMLftnName='qeKNN',opts=list(k=50))
 print(w)
+# 5 random data points will be chosen, and qeKNN will used to predict
+# svcensus at those points, once for gender='male and once for
+# gender='female
 }
 
 \details{
