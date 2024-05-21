@@ -1,8 +1,8 @@
 \name{dsldScatterPlot3D}
 \alias{dsldScatterPlot3D}
 \title{ScatterPlot3D in dsld}
-\description{ Plots a dataset on 3 axes, with the color of the point depending 
-on a 4th variable.}
+\description{ Plotly 3D visualization of  a dataset on 3 axes, 
+   with points color-coded on a 4th variable.}
 \usage{
 dsldScatterPlot3D(data, yNames, sName, sGroups = NULL, sortedBy =
   "Name", numGroups = 8, maxPoints = NULL, xlim = NULL,
@@ -11,8 +11,9 @@ dsldScatterPlot3D(data, yNames, sName, sGroups = NULL, sortedBy =
 
 \arguments{
   \item{data}{
-  A dataframe with at least 4 columns as response variables to be graphed on the 
-  3 axes, with an additional columm may be used as a sensitive variable.
+  A dataframe with at least 4 columns as response 
+  variables to be graphed on the 3 axes, with an 
+  additional columm may be used as a sensitive variable.
   }
   \item{yNames}{
   A vector of the indices or names of the columns of the dataframe to be 
@@ -66,6 +67,14 @@ dsldScatterPlot3D(data, yNames, sName, sGroups = NULL, sortedBy =
   }
 }
 
+\details{
+
+An interactive Plotly visualization will be created, with the three
+variables specified in \code{yNames}.  Points will be color-coded
+according to \code{sName}. The plot can be rotated etc. using the mouse.
+
+}
+
 \references{
    https://plotly.com/r/3d-scatter-plots/
 }
@@ -75,7 +84,6 @@ J. Tran and B. Zarate
 }
 
 \examples{
-# Example 1: Using sName, yNames, and xlim
 data("law.school.admissions")
 dsldScatterPlot3D(law.school.admissions, sName = "race1", 
   yNames=c("ugpa", "lsat","age"), xlim=c(2,4))
