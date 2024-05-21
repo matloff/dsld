@@ -3,7 +3,7 @@
 
 \title{dsldUtilFairness}
 \description{
-    Generates 2 plots depicting the Utility against D and Fairness against D.
+    Generate plots depicting Utility against D and Fairness against D.
 }
 
 \usage{
