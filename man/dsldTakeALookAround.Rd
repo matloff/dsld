@@ -4,7 +4,9 @@
 \title{dsldTakeALookAround}
 
 \description{
-    Evaluates feature sets for predicting Y while considering correlation with sensitive variable S.
+
+Evaluate feature sets for predicting Y while considering the
+Fairness-Utility Tradeoff.
 }
 
 \usage{
@@ -33,24 +35,23 @@ dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2),
 }
 
 \details{
-    This function provides an exploratory tool to see which features in a dataset are 
-    good predictors of Y, the response variable, but may also be highly correlated with 
-    S, the sensitive variable. 
 
-    The return value will be a data frame with 4 columns: \cr
-    1. The first will be a character string consisting of the names of the given 
-       feature set. \cr
-    2. Prediction accuracy for Y of this feature set. 
-    3. Prediction accuracy for Y of this feature set plus S. (i.e. how much are
-       we giving up by NOT using S?) \cr
-    4. Prediction accuracy for S of this feature set. (the better the accuracy, 
-       the less fairness value there is in omitting S from prediction model). \cr
-       There will be one row in the d.f. for each feature set. All possible 
-       feature sets of size up to maxFeatureSetSize will be tested.\cr
+This function provides a tool for exploring feature combinations to use
+in predicting an outcome Y from features X and a sensitive variable S. 
 
-    This function uses the qeML package to compute the respective predictive 
-    test accuracies. More specifically, it uses the qeLin() for numeric Y or S, 
-    qeLogit() for the categorical case. 
+The features in X will first be considered singly,
+then doubly and so on, up though feature combination size
+\code{maxFeatureSetSize}. Prediction is performed using either a linear
+model (numeric Y) or logit (dichotomous Y).
+
+The accuracy (based on qeML holdout) will be computed for each of these
+cases: (a) Y predicted from the given feature combination C, (b) Y
+predicted from the given feature combination C plus S, and (c) S predicted
+from C. The difference between columns 'a' and 'b' shows the sacrifice
+in utility stemming from not using S in our prediction of Y. (Due to
+sampling variation, it is possible for column 'b' to be larger than
+'a'.) The value in column 'c' shows fairness, the smaller the fairer.
+
 }
 
 \author{
@@ -59,12 +60,12 @@ dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2),
 
 \examples{
 \donttest{
-# Example 1: investigate predictive accuracy for a continuous Y,
+# investigate predictive accuracy for a continuous Y,
 # 'wageinc', using the default arguments for maxFeatureSetSize = 4
 data(svcensus)
 dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
 
-# Example 2:  We investigate the predictive accuracy for a categorical Y, 
+# investigate the predictive accuracy for a categorical Y, 
 # 'educ', using the default arguments for maxFeatureSetSize = 4
 dsldTakeALookAround(svcensus, 'educ', 'gender')}
 }
