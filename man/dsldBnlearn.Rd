@@ -6,6 +6,7 @@
 \description{
     Wrapper to functions in the \pkg{bnlearn} package.
 }
+
 \usage{
 dsldIamb(data)
 }
@@ -36,5 +37,6 @@ Under stringent assumptions, fits a causal model to \code{data}.
    data(svcensus)
    iambOut <- dsldIamb(svcensus)
    plot(iambOut)
+   }
 }
 

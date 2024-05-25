@@ -7,6 +7,8 @@
 Informal assessment of C as a possible confounder in a relationship between a
 sensitive variable S and a variable Y.
 
+}
+
 \usage{
 dsldFrequencyByS(data, cName, sName)
 }
