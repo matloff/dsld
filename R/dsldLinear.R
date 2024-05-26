@@ -11,7 +11,7 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
     if (is.null(sComparisonPts)) {
       sComparisonPts <- dsldGetRow5(data,yName, sName)
     } else if (!is.data.frame(sComparisonPts)) {
-      stop(paste("Error: sComparisonPts must be a dataframe"))
+      stop(paste("Error: sComparisonPts must be a dataframe or equivalent"))
     } 
     
     # setup interactions data

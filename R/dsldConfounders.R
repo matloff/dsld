@@ -1,7 +1,7 @@
 dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
     # Error checking
     if (is.null(sName)) {
-        stop(paste("sName must be provided as a string of a column name"))
+        stop(paste("sName must be provided as a quoted column name"))
     }
 
     # dispatch to appropriate auxiliary method

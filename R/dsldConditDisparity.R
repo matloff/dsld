@@ -19,7 +19,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
   
     # args type checking
     if (!is.data.frame(data)) {
-        stop("data must be a dataframe.")
+        stop("data must be a dataframe or equivalent")
     }
 
     y <- data[[yName]]

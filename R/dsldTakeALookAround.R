@@ -11,7 +11,7 @@ dsldTakeALookAround <- function(data, yName, sName,
     }
   
     if (!is.data.frame(data)) {
-        stop("data must be a dataframe.")       # error on types
+        stop("data must be a dataframe or equivalent")       # error on types
     }
     
     # subset dataset to remove sName and yName

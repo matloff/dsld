@@ -15,7 +15,7 @@ dsldML <- function(dataName, yName, sName, sComparisonPts = 'rand5',
                    qeMLftnName, opts = NULL,holdout=NULL) {
 
   # args checking
-  if (!inherits(yName,'name')) stop('specify yName via quote()')
+  # if (!inherits(yName,'name')) stop('specify yName via quote()')
   
   
   # execute params

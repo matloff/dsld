@@ -12,7 +12,7 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
     if (is.null(sComparisonPts)) {
       sComparisonPts <- dsldGetRow5(data,yName, sName)
     } else if (!is.data.frame(sComparisonPts)) {
-      stop(paste("Error: sComparisonPts must be a dataframe"))
+      stop(paste("Error: sComparisonPts must be a dataframe or equivalent"))
     } 
   
     # split data into list of dataframes by each level of sName #
@@ -211,7 +211,7 @@ dsldDiffSLog <- function(object, sComparisonPts = NULL) {
     }
     
     if (!is.data.frame(sComparisonPts)) {
-      stop(paste("Error: sComparisonPts must be a dataframe"))
+      stop(paste("Error: sComparisonPts must be a dataframe or equivalent"))
     } 
     
     # naming
