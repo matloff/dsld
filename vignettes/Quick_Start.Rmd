@@ -115,7 +115,7 @@ This does not necessarily imply that there is "something wrong" with the
 LSAT, but it does call for investigation.
 
 What about Black vs. white scores? As noted, here is an example of the
-extra capabilities that **dsldLindar** adds to the base-R **lm**.
+extra capabilities that **dsldLinear** adds to the base-R **lm**.
 Running
 
 ``` r
@@ -126,7 +126,6 @@ we find that the difference in dummy variables for Black and white
 scores is about 5.9954 points with a standard error of 0.1410. The other
 differences are reported as well.
 
-What about graphics?
 
 # Associated textbook
 

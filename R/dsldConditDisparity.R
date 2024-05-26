@@ -12,7 +12,7 @@
 #      don't use that level
 #   useLoess: if TRUE, use loess smoothing
 
-dsldConditDisparity <- function(data, yName, sName, xName, condits,
+dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
                                 qeFtn = qeKNN, minS = 50, useLoess = TRUE)
 {
     getSuggestedLib('qeML') 
@@ -40,6 +40,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits,
 
     # data engineering #
     # restrict data to fit conditions
+    if (is.null(condits)) condits <- '1 > 0'
     if (length(condits) > 1) {
         # combine conditions
         condits <- paste(condits, collapse = " & ")

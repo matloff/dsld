@@ -9,7 +9,7 @@
 }
 
 \usage{
-dsldConditDisparity(data, yName, sName, xName, condits,
+dsldConditDisparity(data, yName, sName, xName, condits = NULL,
     qeFtn = qeKNN, minS = 50, useLoess = TRUE)
 }
 
