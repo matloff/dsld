@@ -207,8 +207,6 @@ In the base K-NN model, the correlation between predicted wage and gender was 0.
 - **DsldML**: Comparison of conditions for sensitive groups via ML algorithms
   
 - **DsldTakeLookAround**: Evaluates feature sets for predicting Y while considering correlation with sensitive variable S
-
-- **DsldUtilFairness**: Generates 2 plots depicting the Utility against D and Fairness against D
   
 - **DsldCHunting**: Confounder hunting--searches for variables C that predict both Y and S
 
