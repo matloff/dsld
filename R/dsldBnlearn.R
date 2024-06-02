@@ -1,4 +1,6 @@
 
+# iamb method of causal discovery
+
 dsldIamb <- function(data)
 {
 
