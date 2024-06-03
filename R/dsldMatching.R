@@ -2,8 +2,8 @@
 # dsld wrapper for Matchinf::Match; optional propensFtn must be either
 # 'lm' or 'glm' logit
 
-dsldMatchedATE <- function(data,yName,sName,yesSVal,
-   propensFtn=NULL,yesYVal=NULL) 
+dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,
+   propensFtn=NULL) 
 {
    getSuggestedLib("Matching")
 
@@ -26,7 +26,7 @@ dsldMatchedATE <- function(data,yName,sName,yesSVal,
    
    x <- data[,-c(ycol,scol)]
    if (!allNumeric(x))
-      stop('X values must be numeric; use factorsToDummies on X')
+      x <- factorsToDummies(x,omitLast=TRUE,dfOut=TRUE)
 
    if (!is.null(propensFtn)) {
       if (propensFtn == 'lm') {
