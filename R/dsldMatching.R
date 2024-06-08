@@ -1,6 +1,6 @@
 
-# dsld wrapper for Matchinf::Match; optional propensFtn must be either
-# 'lm' or 'glm' logit
+# dsld wrapper for Matching::Match; optional propensFtn must be either
+# 'lm', 'glm' for logit, or a qeML function (default arguments only)
 
 dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,
    propensFtn=NULL) 
@@ -31,13 +31,17 @@ dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,
    if (!is.null(propensFtn)) {
       if (propensFtn == 'lm') {
          tmp <- lm(y ~ x)
-      } else {
+      } else if (propensFtn == 'glm') {
          tmp <- glm(y ~ x,family=binomial)
+      } else {  # qeML function
+         getSuggestedLib('qeML')
+         tmp <- do.call(propensFtn,
+            list(data=data[,-scol],yName=yName,holdout=NULL))$fitted.values
       }
       x <- tmp$fitted.values
    }
 
-   matchOut <- Match(Y=y,Tr=s,X=x,estimand='ATE')
+   matchOut <- Matching::Match(Y=y,Tr=s,X=x,estimand='ATE')
 
    matchOut
 
