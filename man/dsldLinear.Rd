@@ -8,7 +8,7 @@
 \title{dsldLinear}
 
 \description{ 
-    Comparison of conditions for sensitive groups via linear models, with and
+    Comparison of sensitive groups via linear models, with and
     without interactions.
 }
 
@@ -24,8 +24,7 @@ dsldDiffSLin(object, sComparisonPts = NULL)
 
 \arguments{
     \item{data}{
-        Data frame used to train the linear model; will be split according to
-        each level of sName in output if interactions = TRUE. 
+        Data frame. 
     }
     \item{yName}{
        Name of the response variable Y column. 
@@ -34,7 +33,7 @@ dsldDiffSLin(object, sComparisonPts = NULL)
         Name of the sensitive attribute S column. 
     }
     \item{interactions}{
-        Logical value indicating whether or not to fit interactions with the
+        Logical value indicating whether or not to model interactions with the
         sensitive variable S. 
     }
     \item{sComparisonPts}{
@@ -94,9 +93,8 @@ summary(lin2)
     the sensitive variable S. 
 
     The function produces an instance of the `dsldLM` class (an S3
-    object) that houses m instances of class `dsldDiffModel`, one for
-    each unique level of the sensitive column specified.  Instances of
-    the generic functions \code{summary} and \code{coef} are provided.
+    object).  Instances of the generic functions \code{summary} and
+    \code{coef} are provided.
 
     If \code{interactions is TRUE,} the function will fit m separate
     models, where m is the number of levels of S. The \code{summary} 
