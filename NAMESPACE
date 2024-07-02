@@ -27,7 +27,7 @@ export(
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
    dsldFgrrm, dsldFrrm, dsldNclm, dsldZlm, dsldZlrm,
    dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN, 
-   dsldML, dsldCHunting, dsldOHunting, dsldIamb
+   dsldML, dsldCHunting, dsldOHunting, dsldIamb, dsldMatchedATE
 )
 
 S3method(summary, dsldLM)
