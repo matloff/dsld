@@ -1,6 +1,15 @@
 
+
+# finds the estimated mean difference between`the matched Y in the
+# treated/nontreated (exposed and nonn-exposed) groups, with covariates
+# in 'data' other than the yName and sName columns
+
+# sName here is the "treatment" or "exposure"
+
 # dsld wrapper for Matching::Match; optional propensFtn must be either
 # 'glm' for logit or 'knn' for qeKNN
+
+# in that optional case, 
 
 dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,
    propensFtn=NULL) 
@@ -20,7 +29,6 @@ dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,
       yNum <- y
       dichotY <- FALSE
    }
-
 
    scol <- which(names(data) == sName)
    s <- data[,scol]
