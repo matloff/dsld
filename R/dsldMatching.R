@@ -16,8 +16,8 @@
 # types, we may generate several different versions of a variable; e.g.
 # S is a factor but we also need logical and numeric versions
 
-dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,
-   propensFtn=NULL) 
+dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,
+   propensFtn=NULL,k=NULL) 
 {
    getSuggestedLib("Matching")
 
@@ -43,6 +43,7 @@ dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,
    x <- data[,-c(ycol,scol)]
    if (!allNumeric(x))
       xNum <- factorsToDummies(x,omitLast=TRUE,dfOut=TRUE)
+   else xNum <- as.matrix(x)
 
    if (!is.null(propensFtn)) {
       if (propensFtn == 'glm') {
@@ -51,8 +52,8 @@ dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,
          tmp <- qeKNN(data[,-ycol],sName,yesYVal=yesSVal,k=k,holdout=NULL)
          matchVals <- tmp$regests
       }
-      X <- matchVals
-   } else X <- xNum
+      xNum <- matchVals
+   } 
 
    matchOut <- Matching::Match(Y=y,Tr=sLog,X=xNum,estimand='ATE',ties=FALSE)
    matchOut
