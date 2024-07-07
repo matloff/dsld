@@ -1,15 +1,20 @@
 
 
-# finds the estimated mean difference between`the matched Y in the
+# finds the estimated mean difference between`the matched Y pairs in the
 # treated/nontreated (exposed and nonn-exposed) groups, with covariates
-# in 'data' other than the yName and sName columns
+# X in 'data' other than the yName and sName columns
 
-# sName here is the "treatment" or "exposure"
+# sName here is the "treatment" or "exposure," S
 
 # dsld wrapper for Matching::Match; optional propensFtn must be either
 # 'glm' for logit or 'knn' for qeKNN
 
-# in that optional case, 
+# in that optional case, we estimate P(S = 1 | X), either by a logistic
+# or k-NN model
+
+# due to the fact that various function calls require different argument
+# types, we may generate several different versions of a variable; e.g.
+# S is a factor but we also need logical and numeric versions
 
 dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,
    propensFtn=NULL) 
@@ -43,13 +48,11 @@ dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,
       if (propensFtn == 'glm') {
          matchVals <- glm(sNum ~ xNum,family=binomial)$fitted.values
       } else {  # qeKNN 
-         tmp <- qeKNN(data[,-ycol],sName,yesYVal=yesSVal,k=k)
+         tmp <- qeKNN(data[,-ycol],sName,yesYVal=yesSVal,k=k,holdout=NULL)
          matchVals <- tmp$regests
       }
       X <- matchVals
    } else X <- xNum
-
-
 
    matchOut <- Matching::Match(Y=y,Tr=sLog,X=xNum,estimand='ATE',ties=FALSE)
    matchOut
