@@ -150,6 +150,10 @@ dsldConditDisparity(lsa,'bar','race1','lsat')
 
 ![alt text](conditdisparity.png){width=50%}
 
+Notably, all the nonwhite groups exhibited similar outcomes. However,
+all the groups, both white and nonwhite, converge
+at the higher LSAT score.  
+
 # Associated textbook
 
 The package is paired with a [free Quarto
