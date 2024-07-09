@@ -203,6 +203,7 @@ dsldDiffSLog <- function(object, sComparisonPts = NULL) {
     df <- data.frame(df, row.names = NULL)
     names(df) <- c("Factors Compared", "Estimates", "Standard Errors",
                    "P-Value")
+    return(df)
     
   } else {
     # raise error if the user doesn't input new data #
