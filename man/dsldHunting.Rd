@@ -25,7 +25,7 @@ dsldOHunting(data,yName,sName)
     }
     \item{intersectDepth}{
         Maximum size of intersection of the Y predictor set and 
-        the S predictor se
+        the S predictor set
     }
 }
 

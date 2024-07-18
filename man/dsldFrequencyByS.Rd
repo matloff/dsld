@@ -29,7 +29,7 @@ dsldFrequencyByS(data, cName, sName)
 
 Essentially an informal assessment of the between S and C.  
 
-Consider the \code{ svcensus} dataset.  If for instance we are studying
+Consider the \code{svcensus} dataset.  If for instance we are studying
 the effect of gender S on wage income Y, say C is occupation.  If S and
 C both affect income and are related to each other, we have a confounder
 issue.
