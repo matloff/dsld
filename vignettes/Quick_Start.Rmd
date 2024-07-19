@@ -250,7 +250,33 @@ Yes, thre is quite a bit of variation.
 So, we might consider treating occupation as a confounder but not
 education.
 
+# Python interface
 
+Many **dsld** functions have Python interfaces. See the **.py** files in
+**inst/Python**. The user's machine must have the Python libraries
+**pandas** and **rpy2** installed, the latter serving to translate
+Python calls to R calls.
+
+We note that the code should be considered "beta."
+
+Below is an example, run from the Python interactive REPL ('>>>' prompt),
+the latter running in **inst/Python**. We fit a linear model and run
+**summary**.
+
+```
+import rpy2.robjects as robjects
+from dsldLinear_Py_R import dsldPyLinear, dsldPyDiffS, dsldPyLinearSummary
+
+robjects.r['data']('svcensus')
+robjects.r('svcensus$occ <- as.factor(svcensus$occ)')
+robjects.r('svcensus$gender <- as.factor(svcensus$gender)')
+robjects.r('svcensus$educ <- as.factor(svcensus$educ)')
+data = robjects.r['svcensus'] 
+
+dsldLinRObject = dsldPyLinear(data, 'wageinc', 'gender')
+dsldPyLinearSummary(dsldLinRObject)
+
+```
 
 
 # Associated textbook
