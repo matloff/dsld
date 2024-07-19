@@ -13,7 +13,6 @@ ERROR = 1
 
 """ ***************************DSLD Class section*************************** """
 # Python dsldDiffModel Class to hold R equivalent class
-#TODO: Add methods that can convert the pythoP object to R s3 object
 class DsldDiffModel:
     def __init__(self, listVector):
         self.yName = ""
@@ -35,7 +34,6 @@ class DsldDiffModel:
             index = index + 1
 
 # Python dsldLinear Class to hold R equivalent class
-#TODO: Add methods that can convert the pythoP object to R s3 object
 class DsldLinear:
     def __init__(self, r_object):
         self.dsldModel = {}
