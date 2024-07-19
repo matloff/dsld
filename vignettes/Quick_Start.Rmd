@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 
-# The dsld Package: Analysis of Discrimination
+# The dsld Package: Data Science Looks at  Discrimination
 
 </br>
 </br>
@@ -27,14 +27,15 @@ knitr::opts_chunk$set(
 
 Discrimination, be it racial, gender, age or whatever, is often a major
 topic, and a natural application of Data Science. This package consists of
-graphical and analytical methods toward this end.
+graphical/tabular and analytical methods toward this end.
 
 The package enables two quite different aspects of discrimination
-involving a sensitive variable S:
+involving a sensitive variable S, an outcome variable Y, and a vector of
+covariates X:
 
 * The classical issue: Are two individuals, identical in all respects X
   other than the sensitive variable S, treated differently in terms of
-  some response variable Y? For instance, do men and women of the same
+  Y? For instance, do men and women of the same
   education, occupation and age (X) have the same mean for wage Y?
 
 * Fairness in machine learning (ML): Say we are using an ML method,
@@ -48,7 +49,7 @@ involving a sensitive variable S:
 # Form of the package
 
 Many of the functions in the package are wrappers for functions in
-base-R, **qeML** or other packages, with the wrappers adding
+base-R, **qeML** and other packages, with the wrappers adding
 discrimination analysis-specific features. For example, **dsldLinear**
 wraps the standard R linear model function **lm** (via **qeLin**), but
 adds dummy variables for the levels of the sensitive variable S, and
@@ -67,9 +68,9 @@ table or tibble
 response variable Y 
 
 * **sName**, specifying the name of the column 
-corresponding to the sensitive variable .  
+corresponding to the sensitive variable 
 
-Most functions are paired with generic **predict**
+Most analytical functions are paired with generic **predict**
 functions, and in some cases with generic **plot**.
 
 # Example
@@ -83,13 +84,16 @@ Running
 ``` r
 data(lsa)
 names(lsa)
+#  [1] "age"      "decile1"  "decile3"  "fam_inc"  "lsat"     "ugpa"
+#  [7] "gender"   "race1"    "cluster"  "fulltime" "bar"
+
 ```
 
-shows the predictors as age, two decile scores for first- and third-year
-law school grades, and so on. (This is of course an observational
-dataset.  While there may be methodological issues---possible collider
-effect, "predicting" the past etc.--here we are simply demonstrating the
-software.)
+shows the predictors as consisting of age, two decile scores for first-
+and third-year law school grades, and so on. (This is of course an
+observational dataset.  While there may be methodological
+issues---possible collider effect, "predicting" the past etc.--here we
+are simply demonstrating the software.)
 
 We'll take Y to be LSAT score, with S being race. There has been concern
 that the LSAT and other similar tests are biased against Black and
@@ -99,44 +103,86 @@ investigate, using **dsld**, trying a linear model.
 ``` r
 z <- dsldLinear(lsa,'lsat','race1')
 summary(z)
+# $`Summary Coefficients`
+#      Covariate    Estimate StandardError       PValue
+# 1  (Intercept) 31.98578856   0.448435264 0.000000e+00
+# 2          age  0.02082458   0.005841758 3.641634e-04
+# 3      decile1  0.12754812   0.020946536 1.134602e-09
+# 4      decile3  0.21495015   0.020918737 0.000000e+00
+# 5      fam_inc  0.30085804   0.035953051 0.000000e+00
+# 6         ugpa -0.27817274   0.080430542 5.430993e-04
+# 7   gendermale  0.51377385   0.060037102 0.000000e+00
+# 8   race1black -4.74826307   0.198088318 0.000000e+00
+# 9    race1hisp -2.00145969   0.203504412 0.000000e+00
+# 10  race1other -0.86803104   0.262528590 9.449471e-04
+# 11  race1white  1.24708760   0.154627086 6.661338e-16
+# 12    cluster2 -5.10668358   0.119798362 0.000000e+00
+# 13    cluster3 -2.43613709   0.074744210 0.000000e+00
+# 14    cluster4  1.21094567   0.088478368 0.000000e+00
+# 15    cluster5  3.79427535   0.124476695 0.000000e+00
+# 16    cluster6 -5.53216090   0.210750853 0.000000e+00
+# 17   fulltime2 -1.38882076   0.116212777 0.000000e+00
+# 18     barTRUE  1.74973262   0.102818692 0.000000e+00
+# 
+# $`Sensitive Factor Level Comparisons`
+#    Factors Compared Estimates Standard Errors      P-Value
+# 1     asian - black  4.748263       0.1980883 0.000000e+00
+# 2      asian - hisp  2.001460       0.2035044 0.000000e+00
+# 3     asian - other  0.868031       0.2625286 9.449471e-04
+# 4     asian - white -1.247088       0.1546271 6.661338e-16
+# 5      black - hisp -2.746803       0.1863750 0.000000e+00
+# 6     black - other -3.880232       0.2515488 0.000000e+00
+# 7     black - white -5.995351       0.1409991 0.000000e+00
+# 8      hisp - other -1.133429       0.2562971 9.764506e-06
+# 9      hisp - white -3.248547       0.1457509 0.000000e+00
+# 10    other - white -2.115119       0.2194472 0.000000e+00
 ```
 
 So again, Y is the LSAT score, S is race and the X variables are the
 remaining columns.  Note that factor variables have been converted to
-dummies such as **race1black**.  LSAT scores in this dataset ranged from
-11 to 48 points. 
+dummies such as **race1black**.  
 
 We can use the generic **summary** function to inspect coefficients and
-other output. Let's look at two in particular, **fam_inc** and
+other output. Again, note that much of the information here is specific
+to discrimination issues, reflecting the fact that **dsld** wrappers
+enhance output with discrimination-related material
+
+Let's look at two in particular, **fam_inc** and
 **race1black**, whose estimated coefficients are 0.3009 and -4.7483,
 respectively, with standard errors of about 0.0360 and 0.1981.  
 
-Family income here is reported in quintiles. We see that the difference
-between, say, the 3rd and 4th quintiles in terms of mean LSAT is about
-0.3 point.  By contrast, being African-American (relative to the
-default, which happens to be Asian here) accounts for a mean difference
-of nearly 5 points.
+Family income here is reported in quintiles, i.e. it takes on the values
+1,2,3,4,5. We see that the difference between, say, the 3rd and 4th
+quintiles in terms of mean LSAT is about 0.3 point. That's minuscule in
+view of the fact that LSAT scores in this dataset ranged from 11 to 48
+points. 
 
-This is of interest in a couple of aspects. Though test scores do tend
-to be correlated with family income and indeed that 0.3 number is
-statistically significant, its practical significance is very small.
-Second, the data suggest that---even restricting attention to people who
-come from, say, middle class families, have done well in law school and
-passed the bar examination--African-Americans fare poorly on the LSAT.
-This does not necessarily imply that there is "something wrong" with the
-LSAT, but it does call for investigation.
+By contrast, being African-American (relative to the default, which
+happens to be Asian here) accounts for a mean difference of nearly 5
+points.
 
-What about Black vs. white scores? As noted, here is an example of the
-extra capabilities that **dsldLinear** adds to the base-R **lm**.
-Running
+This is of interest in a couple of aspects. First, though test scores do tend
+to be correlated with family income and indeed that 0.3009 number is
+statistically significant -- p-value 0 to six figures -- its practical
+significance is very small.  
 
-``` r
-summary(z)$`Sensitive Factor Level Comparisons`
-```
+Second, the data suggest that even African-Americans from, say, middle
+class families fare relatively poorly on the LSAT.  This does not
+necessarily imply that there is "something wrong" with the LSAT, but it
+does call for more detailed analysis.
 
-we find that the difference in dummy variables for Black and white
-scores is about 6.0000 points with a standard error of 0.1410. The other
-differences are reported as well.
+What about Black vs. white scores?  We see that the difference in dummy
+variables for Black and white scores is about 6.0000 points with a
+standard error of 0.1410. The other differences are reported as well.
+
+This is another example of the extra capabilities that **dsldLinear**
+adds to the base-R **lm**. While the standard errors for the racial
+differences could be derived by applying R's **vcov** function to the
+output of **lm**, this would require background the distribution of
+linear combinations of random variables, something many users do not
+have; **dsld** provides it automatically.
+
+
 
 # Graphical/tabular operations
 
@@ -153,6 +199,59 @@ dsldConditDisparity(lsa,'bar','race1','lsat')
 Notably, all the nonwhite groups exhibited similar outcomes. However,
 all the groups, both white and nonwhite, converge
 at the higher LSAT score.  
+
+As another example, consider the **svcensus** file included with the
+package, which consists of some year 2000 census data for programmers
+and engineers in Silicon Valley.
+
+``` r
+data(svcensus)
+names(svcensus)
+# [1] "age"     "educ"    "occ"     "wageinc" "wkswrkd" "gender" 
+```
+
+Say we are interested in investigating possible wage discrimination in
+wages. We may, for example, suspect that education is a confounder.
+Let's take a look, using the **dsldConfounders** function.
+
+``` r
+dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
+#        Frequency of zzzOther Frequency of 14 Frequency of 16
+# female             0.2068052      0.02098615       0.7722086
+# male               0.2177579      0.04110130       0.7411408
+```
+
+(Codes 14 and 16 are for Master's and PhD, respectively.)
+
+No, men and women seem to have very similar patterns of education. How
+about occupation?  There are six occupational codes.
+
+``` r
+dsldFrequencyByS(svcensus, cName = "occ", sName = "gender")
+#$        Frequency of 102 Frequency of 101 Frequency of 100 Frequency of 141
+#$ female        0.3117359        0.2349226        0.3274246       0.04258354
+#$ male          0.2016862        0.2203267        0.3433671       0.01923330
+#$        Frequency of 140 Frequency of 106
+#$ female       0.02587612       0.05745721
+#$ male         0.04446055       0.17092610
+```
+
+Here there seems to be a substantial gender difference. But does it
+matter? Let's see how wages vary by occupation.
+
+``` r
+tapply(svcensus$wageinc,svcensus$occ,mean)
+#      100      101      102      106      140      141 
+# 50396.47 51373.53 68797.72 53639.86 67019.26 69494.44 
+```
+
+Yes, thre is quite a bit of variation. 
+
+So, we might consider treating occupation as a confounder but not
+education.
+
+
+
 
 # Associated textbook
 
