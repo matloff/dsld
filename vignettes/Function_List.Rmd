@@ -30,6 +30,8 @@ knitr::opts_chunk$set(
 * dsldDiffSLin
 
 * dsldDiffSLog
+
+* dsldTakeALookAround
      
 *Graphical confounder exploration*
 
@@ -38,4 +40,40 @@ knitr::opts_chunk$set(
 * dsldConfounders
 
 * dsldDensityByS
+
+* dsldScatterPlot3D
+
+*Statistical analysisfor group differences*
+
+* dsldLinear
+
+* dsldLogit
+
+* dsldML
+
+*Causal analysis*
+
+* dsldIamb
+
+* dsldMatchedATE
+
+*Fairness in prediction*
+
+* dsldFgrrm
+
+* dsldFrrm
+
+* dsldNclm
+
+* dsldOHunting
+
+* dsldQeFairRF
+
+* dsldQeFairRidgeLin
+
+* dsldQeFairRidgeLog
+
+* dsldZlrm
+
+* dsldZlm
 
