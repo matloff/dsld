@@ -23,7 +23,7 @@ export(
    dsldFreqPCoord,
    dsldTakeALookAround, dsldConditDisparity, 
    dsldScatterPlot3D,
-   dsldLinear, dsldLogit, dsldDiffSLog, 
+   dsldLinear, dsldLogit, 
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
    dsldFgrrm, dsldFrrm, dsldNclm, dsldZlm, dsldZlrm,
    dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN, 
