@@ -23,20 +23,15 @@ dsldMatchedATE(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,propensFtn=NULL)
     \item{propensFtn}{Either 'glm' (logistic), or 'knn'.}
 }
 
-\details{
-
-Under stringent assumptions, fits a causal treament model to \code{data}.
-
-}
-
 \value{
-    Object of class 'Match'. See documentation in the {\pkg}{Matching}
-    package.
+
+Object of class 'Match'. See documentation in the 
+\pkg{Matching} package.
 }
 
 \details{
 
-This is a {\pkg}{dsld wrapper for \code{Matching::Match}}. 
+This is a \pkg{dsld} wrapper for \code{Matching::Match}. 
 
 Finds the estimated mean difference between`the matched Y pairs in the
 treated/nontreated (exposed and nonn-exposed) groups, with covariates
@@ -46,9 +41,6 @@ sName here is the "treatment" or "exposure," S
 
 in that optional case, we estimate P(S = 1 | X), either by a logistic
 or k-NN model
-
-
-
 }
 
 \author{
