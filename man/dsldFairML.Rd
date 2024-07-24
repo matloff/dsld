@@ -11,7 +11,7 @@
 
 \description{
     Fair machine learning models: estimation and prediction. The following 
-    functions provide wrappers for some fundctions in the \pkg{fairML} package 
+    functions provide wrappers for some functions in the \pkg{fairML} package 
     (link in references). 
 }
 \usage{
@@ -27,7 +27,7 @@ dsldZlrm(data, yName, sName, unfairness)
 
 \arguments{
     \item{data}{
-        Dataframe, training set. 
+        Data frame
     }
     \item{yName}{
         Name of the response variable column. 
@@ -46,13 +46,13 @@ dsldZlrm(data, yName, sName, unfairness)
     }
     \item{definition}{
         Character string, the label of the definition of fairness.
-        Currently either "sp-komiyama", "eo-komiyama" or "if-berk".
+        Currently either 'sp-komiyama', 'eo-komiyama' or 'if-berk'.
     }
     \item{family}{
-        A character string, either "gaussian" to fit a linear regression, 
-        "binomial" to fit a logistic regression, or "poisson" to fit 
-        a log-linear regression, "cox" to fit a Cox proportional 
-        hazards regression, or "multinomial" to fit a 
+        A character string, either 'gaussian' to fit linear regression, 
+        'binomial' for logistic regression, 'poisson' for
+        log-linear regression, 'cox' for Cox proportional 
+        hazards regression, or 'multinomial' for
         multinomial logistic regression.
     }
     \item{lambda}{

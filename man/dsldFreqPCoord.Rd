@@ -76,19 +76,19 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
 }
 
 \details{
-    The \code{dsldFreqPCoord} function wraps \code{freqparcoord}.  The
+    The \code{dsldFreqPCoord} function wraps \code{freqparcoord},
     which uses a frequency-based parallel coordinates method to 
     vizualize multiple variables simultaneously in graph form.
     
     This is done by plotting either the "most typical" or "least typical"
     (i.e. highest or lowest estimated multivariate density values respectively)
-    cases to discern relations between variables (Matloff, Xie).
+    cases to discern relations between variables.  
     
     The Y-axis represents the centered and scaled values of the columns.
 }
 
 \value{
-    Object of type "gg" (\pkg{ggplot2} object), with components \code{idxs}
+    Object of type 'gg' (\pkg{ggplot2} object), with components \code{idxs}
     and \code{xdisp} added if \code{keepidxs} is not NULL (see argument
     \code{keepidxs} above).
 }
@@ -102,6 +102,7 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
 
 \examples{
 data(svcensus)
-dsldFreqPCoord(svcensus,10,c(1,4,5),'gender')
+dsldFreqPCoord(svcensus,10,c('age','wageinc','wkswrkd'),'gender')
+# e.g. women tending to be older, below-average wages
 }
 
