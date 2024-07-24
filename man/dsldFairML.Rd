@@ -60,13 +60,7 @@ dsldZlrm(data, yName, sName, unfairness)
     }
     \item{save.auxiliary}{
         A logical value, whether to save the fitted values and the residuals 
-        of the auxiliary model that constructs the decorrelated predictors. 
-    }
-    \item{object}{
-        An object returned by the dsld-fairML wrapper.  
-    }
-    \item{newx}{
-        New data to be predicted. Must be in the same format as original data.
+        of the auxiliary model that constructs the debiased predictors. 
     }
     \item{...}{
     Further arguments.
@@ -96,7 +90,7 @@ More details can be found in the references.
 }
 
 \value{
-    An object of class "dsldFairML", which includes the model information, yName, and sName.
+    An object of class 'dsldFairML', which includes the model information, yName, and sName.
 }
 
 \author{
