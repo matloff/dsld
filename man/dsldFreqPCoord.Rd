@@ -5,7 +5,7 @@
 
 \description{
     Wrapper for the \code{freqparcoord} function from the \pkg{freqparcoord} 
-    package (link in references).
+    package.
 }
 \usage{
 dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
@@ -15,32 +15,33 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
 
 \arguments{
     \item{data}{
-        The data, in data frame or matrix form.
+        Data frame or matrix
     }
     \item{m}{
         Number of lines to plot for each group. A negative value in conjunction 
-        with the method "maxdens" indicates that the lowest-density lines are 
-        to be plotted.  If method is "locmax", \code{m} is forced to 1.
+        with the method \code{maxdens} indicates that the 
+        lowest-density lines are to be plotted.  If method is \code{locmax},
+        then \code{m} is forced to 1.
     }
     \item{columns}{
         The columns of data to be displayed. This can be entered as either
         strings or integers, but not a mix.
     }
     \item{sName}{
-        Column number for the grouping variable, if any (if none, all the data 
+        Column for the grouping variable, if any (if none, all the data 
         is treated as a single group); the column must be a vector or factor. 
-        The number must not be in \code{dispcols}. If method is "locmax", 
-        \code{grpvar} is forced to NULL
+        The column must not be in \code{dispcols}. If 
+        method is \code{locmax}, \code{grpvar} is forced to NULL
     }
     \item{method}{
-        What to display: "maxdens" for plotting the most
-        (or least) typical lines, "locmax" for cluster hunting, or 
-        "randsamp" for plotting a random sample of lines.
+        What to display: 'maxdens' for plotting the most
+        (or least) typical lines, 'locmax' for cluster hunting, or 
+        'randsamp' for plotting a random sample of lines.
     }
     \item{faceting}{
-        How to display groups, if present.  Use "vert" for
-        vertical stacking of group plots, "horiz" for horizontal ones, or
-        "none" to draw all lines in one plot, color-coding by group.
+        How to display groups, if present.  Use 'vert' for
+        vertical stacking of group plots, 'horiz' for horizontal ones, or
+        'none' to draw all lines in one plot, color-coding by group.
     }
     \item{k}{
         Number of nearest neighbors to use for density estimation.
