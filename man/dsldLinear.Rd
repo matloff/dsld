@@ -8,8 +8,8 @@
 \title{dsldLinear}
 
 \description{ 
-    Comparison of sensitive groups via linear models, with and
-    without interactions.
+    Comparison of sensitive groups via linear models, with or
+    without interactions with the sensitive variable.
 }
 
 \usage{
@@ -37,11 +37,13 @@ dsldDiffSLin(object, sComparisonPts = NULL)
         sensitive variable S. 
     }
     \item{sComparisonPts}{
-        Data frame of new cases for which mean Y | X will be compared across
-        each pair of S levels. Must be in the same format as original data.
+        If \code{interactions} is TRUE, a data frame of new 
+        cases for which mean Y | X will be compared across
+        each pair of S levels. Must be in the same 
+        format as original data.
     }
     \item{useSandwich}{
-        Whether to use the sandwich variance estimator.
+        If TRUE, use the "sandwich" variance estimator.
     }
     \item{object}{
         An object returned by the \code{dsldLinear} function.  
@@ -61,52 +63,41 @@ dsldDiffSLin(object, sComparisonPts = NULL)
 \examples{  
 data(svcensus) 
 
-# Example 1: 'wageinc' as yName; 'gender' as sName; interactions == TRUE 
-
-# compare early vs late career
-newData <- svcensus[c(1, 18), -c(4,6)] # age 22 vs 50
+newData <- svcensus[c(1, 18), -c(4,6)] 
 lin1 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = TRUE,
     newData)
-
 coef(lin1)
 vcov(lin1) 
 summary(lin1)
 predict(lin1, newData)
-
-xNew  <- svcensus[c(10:15), -c(4,6)] # compare differences by S levels with new data
+xNew  <- svcensus[c(10:15), -c(4,6)] 
 dsldDiffSLin(lin1, xNew)
 
-# Example 2: 'wageinc' as yName; 'gender' as sName; interactions == FALSE; 
 lin2 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = FALSE)
 summary(lin2)
-}
-
-\note{
-    The output of dsldDiffSLin is the same included in the output of summary().
 }
 
 \details{
 
     The \code{dsldLinear} function fits a linear model to the response
-    variable Y using all other available covariates in the user
-    provided dataset. The user may select for full interactions across
-    the sensitive variable S. 
+    variable Y using all other variables in \code{data}.  The user may
+    select for interactions with the sensitive variable S. 
 
     The function produces an instance of the `dsldLM` class (an S3
     object).  Instances of the generic functions \code{summary} and
     \code{coef} are provided.
 
-    If \code{interactions is TRUE,} the function will fit m separate
-    models, where m is the number of levels of S. The \code{summary} 
+    If \code{interactions} is TRUE, the function will fit m separate
+    models, where m is the number of levels of S. Then \code{summary} 
     will contain m+1 data frames; the first m of which will be the
     outputs from the individual models.  
 
-    The last element will be a data frame comparing the differences
+    The m+1st data frame will compare the differences
     in conditional mean Y|X for each pair of S levels, and for each
     value of X in \code{sComparisonPts}.
     The intention is to allow users to see the comparisons
     of conditions for sensitive groups via linear models, with 
-    interactions.
+    interactions with S.
 
     The \code{dsldDiffS} function allows users to compare mean Y at that
     X between each pair of S level for additional new unseen data levels
