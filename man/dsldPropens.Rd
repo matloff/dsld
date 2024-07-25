@@ -4,6 +4,7 @@
 \title{dsldMatchedATE}
 
 \description{
+Causal inference via matching models.
 Wrapper for \code{Matching::Match}.
 }
 
@@ -12,7 +13,7 @@ dsldMatchedATE(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,propensFtn=NULL)
 }
 
 \arguments{
-    \item{data}{Data frame}
+    \item{data}{Data frame.}
     \item{yName}{Name of the response variable column.}
     \item{sName}{ Name of the sensitive attribute column. The
        attribute must be dichotomous.}
@@ -33,14 +34,18 @@ Object of class 'Match'. See documentation in the
 
 This is a \pkg{dsld} wrapper for \code{Matching::Match}. 
 
-Finds the estimated mean difference between`the matched Y pairs in the
-treated/nontreated (exposed and nonn-exposed) groups, with covariates
-X in 'data' other than the yName and sName columns
+Matched analysis is typically applied to measuring "treatment effects,"
+but is often applied in situations in which the "treatment," S here, is
+an immutable attribute such as race or gender. The usual issues
+concerning observational studies apply.
 
-sName here is the "treatment" or "exposure," S
+The function \code{dsldMatchedATE} finds the estimated mean difference
+between the matched Y pairs in the treated/nontreated (exposed and
+non-exposed) groups, with covariates X in \code{data} other than the
+\code{yName} and \code{sName} columns.
 
-in that optional case, we estimate P(S = 1 | X), either by a logistic
-or k-NN model
+In the propensity model case, we estimate P(S = 1 | X), either by a logistic
+or k-NN model.
 }
 
 \author{
