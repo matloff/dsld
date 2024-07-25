@@ -101,8 +101,13 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
 }
 
 \examples{
-data(svcensus)
-dsldFreqPCoord(svcensus,10,c('age','wageinc','wkswrkd'),'gender')
-# e.g. women tending to be older, below-average wages
+data(lsa)
+dsldFreqPCoord(lsa,75,c('fam_inc','ugpa','gender','lsat'),'race1')
+# a number of interesting trends among the most "typical" law students in the
+# dataset: remarkably little variation among typical
+# African-Americans; typical Hispanic men have low GPAs, poor LSAT
+# scores there is more variation; typical Asian and Black students were
+# female; Asians and Hispanics have the most variation in family income
+# background
 }
 
