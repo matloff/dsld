@@ -11,8 +11,8 @@
 #    qeMLftnName is, e.g. 'qeKNN'); opts is an R list of optional arguments
 #    for that function
 
-dsldML <- function(dataName, yName, sName, sComparisonPts = 'rand5',
-                   qeMLftnName, opts = NULL,holdout=NULL) {
+dsldML<-function(data,yName,sName,sComparisonPts='rand5',
+   qeMLftnName,opts=NULL,holdout=NULL){
 
   # args checking
   # if (!inherits(yName,'name')) stop('specify yName via quote()')
@@ -37,8 +37,11 @@ dsldML <- function(dataName, yName, sName, sComparisonPts = 'rand5',
   {
     subData <- data[data[,scol]==sLevel,]
     subData <- subData[,-scol]
-    cmd <- buildQEcall(qeMLftnName,'subData',yName,opts,holdout=holdout)
-    evalr(cmd)
+    qeMLftn <- get(qeMLftnName)
+    opts[['data']] <- data
+    opts[['yName']] <- yName
+    opts[['sName']] <- sName
+    do.call(qeMLftn,opts)
   }
   
   qeOut <- lapply(slevels,do1Slevel)
