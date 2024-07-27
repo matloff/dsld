@@ -3,17 +3,17 @@
 \title{dsldML}
 
 \description{ 
-Comparison of conditions for sensitive groups via ML algorithms.
+Nonparametric comparison of sensitive groups.
 }
 
 \usage{
-dsldML(dataName, yName, sName, sComparisonPts="rand5", qeMLftnName, 
-    opts=NULL, holdout = NULL)
+dsldML(data,yName,sName,sComparisonPts="rand5",qeMLftnName,
+    opts=NULL,holdout=NULL)
 }
 
 \arguments{
-    \item{dataName}{
-        Quoted name of the data frame comprising the input data.
+    \item{data}{
+        A data frame.
     }
     \item{yName}{
         Name of the response variable column. 
@@ -23,9 +23,9 @@ dsldML(dataName, yName, sName, sComparisonPts="rand5", qeMLftnName,
     }
     \item{sComparisonPts}{
         Data frame of one or more data points at which the regression
-        function is to be estimated.  If this is 'rand5', then the said data
-        points will consist of five randomly chosen rows in the original
-        dataset.
+        function is to be estimated for each level of S.  If this is 
+        'rand5', then the said data points will consist of five randomly 
+        chosen rows in the original dataset.
     }
     \item{qeMLftnName}{
         Quoted name of a prediction function in the \code{qeML} package.
@@ -44,17 +44,22 @@ dsldML(dataName, yName, sName, sComparisonPts="rand5", qeMLftnName,
 
 \examples{  
 data(svcensus) 
-w<-dsldML('svcensus',quote(wageinc),'gender',
-qeMLftnName='qeKNN',opts=list(k=50))
+w <- dsldML(svcensus,'wageinc','gender',qeMLftnName='qeKNN',opts=list(k=50))
 print(w)
-# 5 random data points will be chosen, and qeKNN will used to predict
-# svcensus at those points, once for gender='male and once for
-# gender='female
 }
 
 \details{
+
+    In a linear model with no interactions, one can speak of "the"
+    difference in mean Y given X across treatments, independent of X. 
+    In a nonparametric analysis, there is interaction by definition,
+    and one can only speak of differences across treatments for a
+    specific X value. Hence the need for the argument
+    \code{sComparisonPts}.
+
     The specified \code{qeML} function will be called on the indicated data once
     for each level of the sensitive variable.  For each such level, estimated
     regression function values will be obtained for each row in
     \code{sComparisonPts}.
 }
+
