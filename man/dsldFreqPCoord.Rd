@@ -15,7 +15,7 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
 
 \arguments{
     \item{data}{
-        Data frame or matrix
+        Data frame or matrix.
     }
     \item{m}{
         Number of lines to plot for each group. A negative value in conjunction 
