@@ -1,20 +1,29 @@
 
-dsldFreqPCoord <- function(data, m, columns = 1:ncol(data), sName = NULL,
+dsldFreqPCoord <- function(data, m, sName = NULL,
                            method = "maxdens", faceting = "vert", k = 50,
                            klm = 5 * k, keepidxs = NULL, plotidxs = FALSE,
                            cls = NULL, plot_filename = NULL) {
 
-    # environment setup
-    getSuggestedLib("freqparcoord") # Installs freqparcoord if necessary
+    getSuggestedLib("freqparcoord") 
     getSuggestedLib("ggplot2")
-    
-    # This code allows for columns to be inputted as all strings or all ints
-    # Convert strings to their corresponding column numbers
-    if (all(sapply(columns, is.character))){
-        columns <- match(columns, colnames(data))
+
+    if (!is.null(sName)) {
+       s <- data[[sName]]
+       scol <- which(names(data) == sName)
+       dms <- data[,-scol]
+       dms <- factorsToDummies(dms)
+       dms <- as.data.frame(dms)
+       data <- cbind(dms,s)
+       data <- as.data.frame(data)
+       scol <- ncol(data)
+       colnames(data)[scol] <- sName
+       columns <- 1:(scol-1)
+    } else {
+       data <- factorsToDummies(data)
+       columns <- 1:ncol(data)
     }
-    
-    plot <- freqparcoord::freqparcoord(
+
+    fpcOut <- freqparcoord::freqparcoord(
         data,
         m,
         dispcols = columns,
@@ -28,13 +37,11 @@ dsldFreqPCoord <- function(data, m, columns = 1:ncol(data), sName = NULL,
         cls = cls
     )
     
-    # If no filename argument provided, do not save an image file, just generate the image
     if (!is.null(plot_filename)) {
-        ggplot2::ggsave(plot_filename, plot) # Save as img
-        # pr2file(plot_filename) # Doesn't work with Python, so we are leaving this commented for now
+        ggplot2::ggsave(plot_filename, fpcOut) # Save as img
     }
 
-    return(plot)
+    return(fpcOut)
 }
 
 
