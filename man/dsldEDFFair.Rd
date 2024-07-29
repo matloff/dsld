@@ -27,7 +27,7 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
 
 \arguments{
     \item{data}{
-        Dataframe, training set.
+        Data frame.
     }
     \item{yName}{
         Name of the response variable column. 
@@ -46,10 +46,7 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Y value to be considered "yes," to be coded 1 rather than 0.
     }
     \item{k}{
-        Number of nearest neighbors. In functions other than \code{qeKNN} 
-        for which this is an argument, it is the number of 
-        neighbors to use in finding conditional probabilities via
-        \code{knnCalib}.
+        Number of nearest neighbors. 
     } 
     \item{holdout}{
         Number of rows to use as the holdout/testing set. 
@@ -59,7 +56,7 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Number of trees.
     }
     \item{minNodeSize}{
-        Minimum number of data points in a tree node.
+        Minimum number of data points in a tree leaf.
     }
     \item{mtry}{
         Number of variables randomly tried at each tree split.
@@ -104,23 +101,25 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
 data(compas1) 
 data(svcensus) 
 
-# dsldQeFairKNN: deweight "decile score" column with "race" as the sensitive variable
+# dsldQeFairKNN: deweight "decile score" column with "race" 
+# as the sensitive variable
 knnOut <- dsldQeFairKNN(compas1, "two_year_recid", "race", 
-   list(decile_score=.1), yesYVal = "Yes")
+   list(decile_score=0.1), yesYVal = "Yes")
 knnOut$testAcc 
 knnOut$corrs 
 predict(knnOut, compas1[1,]) 
 
-# dsldFairRF: deweight "decile score" column with "race" as sensitive variable
+# dsldFairRF: deweight "decile score" column with "race" 
+# as sensitive variable
 rfOut <- dsldQeFairRF(compas1, "two_year_recid", "race", 
-   list(decile_score=.3), yesYVal = "Yes")
+   list(decile_score=0.3), yesYVal = "Yes")
 rfOut$testAcc
 rfOut$corrs 
 predict(rfOut, fairml::compas[1,]) 
 
 # dsldQeFairRidgeLin: deweight "occupation" and "age" columns
 lin <- dsldQeFairRidgeLin(svcensus, "wageinc", "gender", deweightPars = 
-  list(occ=.4, age=.2))
+  list(occ=0.4, age=0.2))
 lin$testAcc 
 lin$corrs 
 predict(lin, svcensus[1,])
