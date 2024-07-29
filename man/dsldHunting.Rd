@@ -41,7 +41,10 @@ dsldOHunting(data,yName,sName)
     the top \code{i} important predictors of S will be reported, thus
     suggesting possible confounders. Larger values of \code{i} will
     report more potential confounders, though including progressively
-    weaker ones.
+    weaker ones. 
+
+    The analyst then may then consider omitting the variables C from
+    models of the effect of S on Y.
 
     Note: Run times may be long.
 
@@ -49,6 +52,10 @@ dsldOHunting(data,yName,sName)
     variables, and then the Kendall Tau correlations will be calculated
     betwene S and potential proxy variables O, i.e. every column other
     than Y and S.  (The Y column itself doesn't enter into computation.)
+
+    In fairness analyses, in which one desires to either eliminate or
+    reduce the impact of S, one must consider the indirect effect of S
+    via O. One may wish to eliminate or reduce the role of O.
 
 }
 
