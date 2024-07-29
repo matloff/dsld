@@ -27,7 +27,7 @@ dsldZlrm(data, yName, sName, unfairness)
 
 \arguments{
     \item{data}{
-        Data frame
+        Data frame.
     }
     \item{yName}{
         Name of the response variable column. 
