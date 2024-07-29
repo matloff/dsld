@@ -32,7 +32,7 @@ dsldOHunting(data,yName,sName)
 \details{
 
     \code{dsldCHunting}: The random forests function
-    \code{qeML:qeRF} will be on the indicated data to indicate feature
+    \code{qeML:qeRF} will be run on the indicated data to indicate feature
     importance in prediction of Y (without S) and S (without Y).  Call
     these "important predictors" of Y and S.
 
@@ -47,9 +47,8 @@ dsldOHunting(data,yName,sName)
 
     \code{dsldOHunting}: Factors, if any, will be converted to dummy
     variables, and then the Kendall Tau correlations will be calculated
-    betwene S and potential proxy variables O.  (The Y column will be
-    ignored.)
-
+    betwene S and potential proxy variables O, i.e. every column other
+    than Y and S.  (The Y column itself doesn't enter into computation.)
 
 }
 

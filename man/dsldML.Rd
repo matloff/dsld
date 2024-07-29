@@ -44,7 +44,8 @@ dsldML(data,yName,sName,sComparisonPts="rand5",qeMLftnName,
 
 \examples{  
 data(svcensus) 
-w <- dsldML(svcensus,'wageinc','gender',qeMLftnName='qeKNN',opts=list(k=50))
+w <- dsldML(svcensus,'wageinc','gender',qeMLftnName='qeKNN',
+   opts=list(k=50))
 print(w)
 }
 
