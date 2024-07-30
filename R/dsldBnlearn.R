@@ -6,7 +6,7 @@ dsldIamb <- function(data)
 
    getSuggestedLib('bnlearn')
    dsld:::getSuggestedLib('bnlearn')
-   return(iamb(data))
+   return(bnlearn::iamb(data))
 
 }
 
