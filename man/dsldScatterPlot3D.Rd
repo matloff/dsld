@@ -48,8 +48,7 @@ dsldScatterPlot3D(data, yNames, sName, sGroups = NULL, sortedBy =
   There is no limit by default.
   }
   \item{xlim, ylim, zlim}{
-  The x, y and z limits- a vector with c(min, max)- the plot will 
-  graph according to.
+  The x, y and z limits, each a vector with c(min, max).
   }
   \item{main}{
   The title of the graph. By default, the \code{sName} "vs. " 
