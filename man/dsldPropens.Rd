@@ -54,7 +54,7 @@ or k-NN model.
 
 \examples{
 
-data(lalonde)
+data(lalonde,package='Matching')
 ll <- lalonde
 ll$treat <- as.factor(ll$treat)
 ll$re74 <- NULL
