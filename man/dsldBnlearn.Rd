@@ -37,6 +37,9 @@ discovery, i.e. fits a causal model to \code{data}.
 \examples{
    \donttest{
    data(svcensus)
+   # iamb does not accept integer data
+   svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
+   svcensus$wageinc <- as.numeric(svcensus$wageinc)
    iambOut <- dsldIamb(svcensus)
    plot(iambOut)
    }
