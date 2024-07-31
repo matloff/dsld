@@ -16,7 +16,7 @@ dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2),
 
 \arguments{
     \item{data}{
-        Data frame comprising the input data.
+        Data frame.
     }
     \item{yName}{
         Name of the response variable column. 
@@ -25,8 +25,9 @@ dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2),
         Name of the sensitive attribute column.
     }
     \item{maxFeatureSetSize}{
-        Maximum number of combinations of features to be included in the dataframe; 
-        default argument set as: maxFeatureSetSize = (ncol(data) - 2).
+        Maximum number of combinations of features to be 
+        included in the data frame. 
+        
     }
     \item{holdout}{
         If not NULL, form a holdout set of the specified size. After fitting to the 
@@ -39,10 +40,10 @@ dsldTakeALookAround(data, yName, sName, maxFeatureSetSize = (ncol(data) - 2),
 This function provides a tool for exploring feature combinations to use
 in predicting an outcome Y from features X and a sensitive variable S. 
 
-The features in X will first be considered singly,
-then doubly and so on, up though feature combination size
-\code{maxFeatureSetSize}. Prediction is performed using either a linear
-model (numeric Y) or logit (dichotomous Y).
+The features in X will first be considered singly, then doubly and so
+on, up though feature combination size \code{maxFeatureSetSize}. Y is
+prediction from X either a linear model (numeric Y) or logit
+(dichotomous Y).
 
 The accuracy (based on qeML holdout) will be computed for each of these
 cases: (a) Y predicted from the given feature combination C, (b) Y
