@@ -8,7 +8,7 @@
     package.
 }
 \usage{
-dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
+dsldFreqPCoord(data, m, sName = NULL, method
     = "maxdens", faceting = "vert", k = 50, klm = 5 * k, keepidxs = NULL, 
     plotidxs = FALSE, cls = NULL, plot_filename = NULL)
 }
@@ -22,10 +22,6 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
         with the method \code{maxdens} indicates that the 
         lowest-density lines are to be plotted.  If method is \code{locmax},
         then \code{m} is forced to 1.
-    }
-    \item{columns}{
-        The columns of data to be displayed. This can be entered as either
-        strings or integers, but not a mix.
     }
     \item{sName}{
         Column for the grouping variable, if any (if none, all the data 
@@ -102,7 +98,8 @@ dsldFreqPCoord(data, m, columns = 1:ncol(data), sName = NULL, method
 
 \examples{
 data(lsa)
-dsldFreqPCoord(lsa,75,c('fam_inc','ugpa','gender','lsat'),'race1')
+lsa1 <- lsa[,c('fam_inc','ugpa','gender','lsat','race1')]
+dsldFreqPCoord(lsa1,75,'race1')
 # a number of interesting trends among the most "typical" law students in the
 # dataset: remarkably little variation among typical
 # African-Americans; typical Hispanic men have low GPAs, poor LSAT

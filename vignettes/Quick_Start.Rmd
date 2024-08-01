@@ -146,9 +146,9 @@ As can be seen above, we can use the generic **summary** function to
 inspect coefficients and other output. (The call is dispatched to
 **summary.dsldLM**.) Again, note that much of the information here is
 specific to discrimination issues, reflecting the fact that **dsld**
-wrappers enhance output with discrimination-related material
+wrappers enhance output with discrimination-related material.
 
-Let's look at two in particular, **fam_inc** and
+Let's look at two variables in particular, **fam_inc** and
 **race1black**, whose estimated coefficients are 0.3009 and -4.7483,
 respectively, with standard errors of about 0.0360 and 0.1981.  
 
@@ -195,6 +195,8 @@ consider the code
 dsldConditDisparity(lsa,'bar','race1','lsat')
 ```
 
+We will graph the relation between bar passage and the LSAT, by race.
+
 ![alt text](conditdisparity.png){width=50%}
 
 Notably, all the nonwhite groups exhibited similar outcomes. However,
@@ -224,8 +226,9 @@ dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 
 (Codes 14 and 16 are for Master's and PhD, respectively.)
 
-No, men and women seem to have very similar patterns of education. How
-about occupation?  There are six occupational codes.
+No, men and women seem to have very similar patterns of education. 
+
+How about occupation?  There are six occupational codes.
 
 ``` r
 dsldFrequencyByS(svcensus, cName = "occ", sName = "gender")
@@ -246,10 +249,8 @@ tapply(svcensus$wageinc,svcensus$occ,mean)
 # 50396.47 51373.53 68797.72 53639.86 67019.26 69494.44 
 ```
 
-Yes, thre is quite a bit of variation. 
-
-So, we might consider treating occupation as a confounder but not
-education.
+Yes, thre is quite a bit of variation.  So, we might consider treating
+occupation as a confounder but not education.
 
 # Python interface
 
