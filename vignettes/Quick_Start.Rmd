@@ -75,7 +75,7 @@ functions, and in some cases with generic **plot**.
 
 # Analytical operations
 
-*Treatment comparison in the presence of confounders*
+## Treatment comparison in the presence of confounders
 
 Consider the dataset **lsa**, built into **qeML**, a modified version of
 the dataset **law.school.admissions** that is a common example in ML
@@ -185,7 +185,7 @@ output of **lm**, this would require background the distribution of
 linear combinations of random variables, something many users do not
 have; **dsld** provides it automatically.
 
-*Fair prediction*
+## Fair prediction
 
 The setting of interest, as mentioned, is that in which we wish to
 predict Y from X while limiting the influence of S. Note the word
@@ -264,8 +264,11 @@ Now limiting the effect of this person's race -- he is African-American
 # Graphical/tabular operations
 
 The package includes an extensive set of functions for graphical and
-tabular operations. For instance, continuing the law school example,
-consider the code
+tabular operations. 
+
+*dsldConditDisparity example*
+
+For instance, continuing the law school example, consider the code
 
 ``` r
 dsldConditDisparity(lsa,'bar','race1','lsat')
@@ -276,8 +279,10 @@ We will graph the relation between bar passage and the LSAT, by race.
 ![alt text](conditdisparity.png){width=50%}
 
 Notably, all the nonwhite groups exhibited similar outcomes. However,
-all the groups, both white and nonwhite, converge
-at the higher LSAT score.  
+all the groups, both white and nonwhite, converge at the higher LSAT
+score. 
+
+*dsldFrequencyByS example*
 
 As another example, consider the **svcensus** file included with the
 package, which consists of some year 2000 census data for programmers
@@ -325,8 +330,13 @@ tapply(svcensus$wageinc,svcensus$occ,mean)
 # 50396.47 51373.53 68797.72 53639.86 67019.26 69494.44 
 ```
 
-Yes, thre is quite a bit of variation.  So, we might consider treating
+Yes, there is quite a bit of variation.  So, we might consider treating
 occupation as a confounder but not education.
+
+
+
+
+![alt text](freqparcoord){width=50%}
 
 # Python interface
 
