@@ -333,10 +333,32 @@ tapply(svcensus$wageinc,svcensus$occ,mean)
 Yes, there is quite a bit of variation.  So, we might consider treating
 occupation as a confounder but not education.
 
+*dsldFreqParCoord example*
 
+It is always difficult to visualize in more than two dimensions. One
+technique for doing this is *parallel coordinates*. 
 
+Say our dataset has k columns. Each column will correspond to one
+vertical section in our graph.  For each row of data, we draw polygonal
+line horizontally, with the height at vertical section i between the
+value of variable i for that row. (Typically we center and scale each
+variable.)
 
-![alt text](freqparcoord){width=50%}
+The function **dsldFreqParCoord** displays the m most commonly-appearing
+rows from each level of S. Here we try it on the **lsa** data, with m =
+75:
+
+``` r
+data(lsa)
+lsa1 <- lsa[,c('fam_inc','ugpa','gender','lsat','race1')]
+dsldFreqPCoord(lsa1,75,'race1')
+```
+
+Some interesting aspects arise:
+
+* Black 
+
+![alt text](freqparcoord.png){width=50%}
 
 # Python interface
 
