@@ -187,6 +187,80 @@ have; **dsld** provides it automatically.
 
 *Fair prediction*
 
+The setting of interest, as mentioned, is that in which we wish to
+predict Y from X while limiting the influence of S. Note the word
+*limiting*; we generally cannot fully limit the impact of S, due to
+*proxies*, variables that are correlated with S yet which we need to
+achieve reasonable predictive accuracy. This leads to the
+the Fairness/Utility Tradeoff: The more we emphasize fairness, i.e. the
+smaller the role we allow S and the proxies to play in predicting Y, the
+lesser our utility, i.e. predictive accuracy.
+
+Many methods have been proposed for dealing with this tradeoff, some of
+which are included in the package. Here is an example using the
+**dsldFgrrm** function. It consists of a modified logistic model, with a
+LASSO-style shrinking mechanism to limit the effect of S. The degree of
+limitation is specified by the **unfairness** argument, a value in (0,1];
+smaller values mean more fairness.
+
+The **compas** dataset involves the COMPAS software package, a
+commercial product used by judges to help decide sentences given to
+convicted criminals. It address the question, "How likely is this person
+to commit another crime, say in the next two years?"
+
+Some have claimed that the algorithm is biased against certain racial
+minorities. The dataset allows us to explore alternatives.
+
+``` r
+data(compas)
+names(compas)
+#  [1] "age"             "juv_fel_count"   "decile_score"    "juv_misd_count" 
+#  [5] "juv_other_count" "v_decile_score"  "priors_count"    "sex"            
+#  [9] "two_year_recid"  "race"            "c_jail_in"       "c_jail_out"     
+# [13] "c_offense_date"  "screening_date"  "in_custody"      "out_custody"    
+cmps <- compas[,c('age','juv_fel_count','juv_misd_count',
+   'priors_count','sex','two_year_recid','race')]
+head(cmps)
+  age juv_fel_count juv_misd_count priors_count    sex two_year_recid
+1  69             0              0            0   Male             No
+2  34             0              0            0   Male            Yes
+3  24             0              0            4   Male            Yes
+6  44             0              0            0   Male             No
+7  41             0              0           14   Male            Yes
+9  39             0              0            0 Female             No
+              race
+1            Other
+2 African-American
+3 African-American
+6            Other
+7        Caucasian
+9        Caucasian
+
+```
+
+First, let's run the code with **unfairness = 1**, no attempt at all the
+reduce the impact of S. We'll try predicting whether someone like the
+second person in the dataset will recidivate.
+
+``` r
+z100 <- dsldFgrrm(cmps,'two_year_recid','race',1)
+predict(z100,cmps[2,-6])
+# [1] 0.3756553
+```
+
+The logit analysis estimates a probability of about 37%.
+
+Now let's try setting **unfairness = 0.10**.
+
+``` r
+z010 <- dsldFgrrm(cmps,'two_year_recid','race',0.10)
+predict(z010,cmps[2,-6])
+# [1] 0.3244952
+```
+
+Now limiting the effect of this person's race -- he is African-American
+-- the probability reduces to 32%.
+
 # Graphical/tabular operations
 
 The package includes an extensive set of functions for graphical and
