@@ -73,7 +73,9 @@ corresponding to the sensitive variable S
 Most analytical functions are paired with generic **predict**
 functions, and in some cases with generic **plot**.
 
-# Example
+# Analytical operations
+
+*Treatment comparison in the presence of confounders*
 
 Consider the dataset **lsa**, built into **qeML**, a modified version of
 the dataset **law.school.admissions** that is a common example in ML
@@ -183,7 +185,7 @@ output of **lm**, this would require background the distribution of
 linear combinations of random variables, something many users do not
 have; **dsld** provides it automatically.
 
-
+*Fair prediction*
 
 # Graphical/tabular operations
 
