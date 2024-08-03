@@ -356,7 +356,15 @@ dsldFreqPCoord(lsa1,75,'race1')
 
 Some interesting aspects arise:
 
-* Black 
+* Black students showed the least variation. The most common pattern was
+  that of a female student from a slightly below-average income family,
+  low undergraduate grades, and very low LSAT scores.
+
+* The typical patterns for whites was almost the mirror image of Blacks,
+  though with gender diversity. Asians were similar.
+
+* Hispanics showed a wide variety of income levels and grades, but low
+  LSAT scores.
 
 ![alt text](freqparcoord.png){width=50%}
 
