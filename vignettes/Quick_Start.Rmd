@@ -368,6 +368,50 @@ Some interesting aspects arise:
 
 ![alt text](freqparcoord.png){width=50%}
 
+*dsldTakeALookAround example*
+
+In Fair ML applications, we wish to find a subset C of the columns of X
+that is a "sweet spot" in the Fairness/Utility Tradeoff.  The function
+**dsldTakeALookAround** can be helpful in this regard. It has a 3-column
+output:
+
+* Column (a): accuracy of C in predicting Y.
+
+* Column (b): accuracy of C,S in predicting Y.
+
+* Column (c): accuracy of C in predicting S.
+
+Here accuracy is mean absolute prediction error for numeric Y, overall
+misclassification rate for binary/categorical Y.
+
+Except for sampling variation, (b) should be greater than (c), but if
+the difference is small, it says that C can stand on its own, not
+needing S -- i.e. good Utility. We wish (c) to be small, in that it
+suggests that C does not contain proxies.
+
+``` r
+data(svcensus)
+dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
+#           Feature Names        a        b     c
+# 1                   age 32947.19 30873.18 0.237
+# 2                  educ 31047.38 30125.06 0.221
+# 3                   occ 32078.79 29177.58 0.229
+# 4               wkswrkd 26037.21 26058.17 0.261
+# 5              age,educ 31217.78 31711.95 0.233
+# 6               age,occ 29932.83 32332.44 0.234
+# 7           age,wkswrkd 27469.78 26000.03 0.243
+# 8              educ,occ 29997.97 32611.99 0.276
+# 9          educ,wkswrkd 25470.76 28206.85 0.266
+# 10          occ,wkswrkd 26735.07 25138.36 0.253
+# 11         age,educ,occ 30972.33 28336.55 0.245
+# 12     age,educ,wkswrkd 26365.74 25159.97 0.224
+# 13      age,occ,wkswrkd 26893.18 26487.06 0.266
+# 14     educ,occ,wkswrkd 27039.72 26353.69 0.226
+# 15 age,educ,occ,wkswrkd 25278.55 25474.90 0.250
+```
+
+For instance, the predictor set age, educ and wkswrkd seems good.
+
 # Python interface
 
 Many **dsld** functions have Python interfaces. See the **.py** files in
