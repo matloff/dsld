@@ -28,14 +28,14 @@ Discrimination, be it racial, gender, age or whatever, is often a major
 topic, and a natural application of Data Science. This package consists of
 graphical/tabular and analytical methods toward this end.
 
-The package enables two quite different aspects of discrimination
+The package enables analysis of two quite different aspects of discrimination
 involving a sensitive variable S, an outcome variable Y, and a vector of
 covariates X:
 
-* The classical issue: Are two individuals, identical in all respects X
-  other than the sensitive variable S, treated differently in terms of
-  Y? For instance, do men and women of the same
-  education, occupation and age (X) have the same mean for wage Y?
+* The classical issue: Are two individuals, identical in all respects X,
+  treated differently in terms of S? For instance, do men and women of
+  the same education, occupation and age (X) have the same mean for wage
+  Y?
 
 * Fairness in machine learning (ML): Say we are using an ML method,
   ranging from ordinary linear regression modeling to deep learning, to
@@ -54,9 +54,9 @@ discrimination analysis-specific features. For example, **dsldLinear**
 wraps the standard R linear model function **lm** (via **qeLin**), but
 adds dummy variables for the levels of the sensitive variable S, and
 forms standard errors for their difference in conditional mean Y.  It
-also allows the user to specify that interaction terms be added between
-X and S.  If say S is race, this enables comparison between Black and
-white, Black and Hispanic and so on, at specified X values.
+also allows the user to specify that interaction terms between X and S
+be included.  If say S is race, this enables comparison between Black
+and white, Black and Hispanic and so on, at specified X values.
 
 Care has been taken to design a uniform interface to **dsld** functions.
 In most cases, the first three arguments are 
@@ -198,10 +198,11 @@ lesser our utility, i.e. predictive accuracy.
 
 Many methods have been proposed for dealing with this tradeoff, some of
 which are included in the package. Here is an example using the
-**dsldFgrrm** function. It consists of a modified logistic model, with a
-LASSO-style shrinking mechanism to limit the effect of S. The degree of
-limitation is specified by the **unfairness** argument, a value in (0,1];
-smaller values mean more fairness.
+**dsldFgrrm** function, a wrapper for a function in the **fairml**
+package. It consists of a modified logistic model, with a LASSO-style
+shrinking mechanism that limits the effect of S. The degree of limitation
+is specified by the **unfairness** argument, a value in (0,1]; smaller
+values mean more fairness.
 
 The **compas** dataset involves the COMPAS software package, a
 commercial product used by judges to help decide sentences given to
@@ -209,7 +210,8 @@ convicted criminals. It address the question, "How likely is this person
 to commit another crime, say in the next two years?"
 
 Some have claimed that the algorithm is biased against certain racial
-minorities. The dataset allows us to explore alternatives.
+minorities. The dataset allows us to explore alternatives, say a simple
+logit model with limitations on S.
 
 ``` r
 data(compas)
@@ -338,21 +340,26 @@ occupation as a confounder but not education.
 It is always difficult to visualize in more than two dimensions. One
 technique for doing this is *parallel coordinates*. 
 
-Say our dataset has k columns. Each column will correspond to one
+Say our dataset has p columns. Each column will correspond to one
 vertical section in our graph.  For each row of data, we draw polygonal
-line horizontally, with the height at vertical section i between the
+line horizontally, with the height at vertical section i equal to the
 value of variable i for that row. (Typically we center and scale each
 variable.)
 
-The function **dsldFreqParCoord** displays the m most commonly-appearing
-rows from each level of S. Here we try it on the **lsa** data, with m =
-75:
+So, each row forms a pattern.  The function **dsldFreqParCoord**
+displays the m most commonly-appearing patterns from each level of S.
+(Two patterns are treated as equal if they are near each other in a
+k-nearest neighbor sense; k is an argument to the function.)
+
+Here we try it on the **lsa** data, with m = 75:
 
 ``` r
 data(lsa)
 lsa1 <- lsa[,c('fam_inc','ugpa','gender','lsat','race1')]
 dsldFreqPCoord(lsa1,75,'race1')
 ```
+
+![alt text](freqparcoord.png){width=50%}
 
 Some interesting aspects arise:
 
@@ -365,8 +372,6 @@ Some interesting aspects arise:
 
 * Hispanics showed a wide variety of income levels and grades, but low
   LSAT scores.
-
-![alt text](freqparcoord.png){width=50%}
 
 *dsldTakeALookAround example*
 
@@ -451,5 +456,5 @@ illustrate those concepts.,
 
 # Full function list, by category
 
-Type **vignette('Function_list')**.
+Type **vignette('Function_List')**.
 
