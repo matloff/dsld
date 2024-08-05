@@ -9,7 +9,8 @@ Wrapper for \code{Matching::Match}.
 }
 
 \usage{
-dsldMatchedATE(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,propensFtn=NULL)
+dsldMatchedATE(data,yName,sName,yesSVal,yesYVal=NULL,
+   propensFtn=NULL,k=NULL)
 }
 
 \arguments{
@@ -22,6 +23,7 @@ dsldMatchedATE(data,yName,sName,yesSVal,yesYVal=NULL,k=NULL,propensFtn=NULL)
     \item{yesYVal}{Y value to be considered "yes," to be coded 
        1 rather than 0.}
     \item{propensFtn}{Either 'glm' (logistic), or 'knn'.}
+    \item{k}{Number of nearest neighbors if \code{propensFtn='knn'.}}
 }
 
 \value{
