@@ -7,7 +7,7 @@ Nonparametric comparison of sensitive groups.
 }
 
 \usage{
-dsldML(data,yName,sName,sComparisonPts="rand5",qeMLftnName,
+dsldML(data,yName,sName,qeMLftnName,sComparisonPts="rand5",qeMLftnName,
     opts=NULL,holdout=NULL)
 }
 
@@ -20,6 +20,10 @@ dsldML(data,yName,sName,sComparisonPts="rand5",qeMLftnName,
     }
     \item{sName}{
         Name(s) of the sensitive attribute column(s).
+    }
+    \item{qeMLftnName}{
+        Name of the \pkg{qeML} predictive modeling function to be
+        applied.
     }
     \item{sComparisonPts}{
         Data frame of one or more data points at which the regression
