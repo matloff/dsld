@@ -1,6 +1,5 @@
 \name{dsldLogit}
 \alias{dsldLogit}
-\alias{dsldDiffSLog}
 \alias{predict.dsldGLM}
 \alias{coef.dsldGLM}
 \alias{vcov.dsldGLM}
@@ -15,7 +14,6 @@
 \usage{
 dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE, 
    yesYVal)
-dsldDiffSLog(object, sComparisonPts = NULL) 
 \method{summary}{dsldGLM}(object,...)
 \method{predict}{dsldGLM}(object,xNew,...)
 \method{coef}{dsldGLM}(object,...)
@@ -71,9 +69,6 @@ vcov(log1)
 summary(log1) 
 predict(log1, newData)
             
-xNew <- lsa[c(100,1000,120),-c(8,11)]
-dsldDiffSLog(log1, xNew)
-
 log2 <- dsldLogit(data = law.school.admissions,
     yName = 'bar',sName = 'gender', 
     interactions = FALSE, yesYVal = 'TRUE')

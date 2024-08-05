@@ -1,6 +1,5 @@
 \name{dsldLinear}
 \alias{dsldLinear}
-\alias{dsldDiffSLin}
 \alias{predict.dsldLM}
 \alias{coef.dsldLM}
 \alias{vcov.dsldLM}
@@ -15,7 +14,6 @@
 \usage{
 dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL, 
     useSandwich = FALSE)
-dsldDiffSLin(object, sComparisonPts = NULL) 
 \method{summary}{dsldLM}(object,...)
 \method{predict}{dsldLM}(object,xNew,...)
 \method{coef}{dsldLM}(object,...)
@@ -70,8 +68,6 @@ coef(lin1)
 vcov(lin1) 
 summary(lin1)
 predict(lin1, newData)
-xNew  <- svcensus[c(10:15), -c(4,6)] 
-dsldDiffSLin(lin1, xNew)
 
 lin2 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = FALSE)
 summary(lin2)

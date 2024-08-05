@@ -7,6 +7,7 @@ import('fairness')
 import('Kendall')
 import('freqparcoord')
 import('ggplot2')
+import('rmarkdown')
 
 importFrom("grDevices", "dev.copy", "dev.cur", "dev.off", "dev.set",
                "jpeg", "pdf", "png", "rainbow")
