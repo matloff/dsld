@@ -32,6 +32,8 @@ dsldConfounders(data, sName, graphType = "plotly", fill = FALSE)
 }
 
 \examples{
+\donttest{
 data(svcensus)
 dsldConfounders(svcensus, "educ")
+}
 }
