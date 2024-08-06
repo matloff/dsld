@@ -20,10 +20,10 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    )
 Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>
 VignetteBuilder: knitr
-Imports: randomForest,sandwich, Kendall, ranger, ggplot2, plotly, 
-   freqparcoord, fairness
+Imports: Kendall, ranger, ggplot2, plotly, 
+   freqparcoord, fairness,sandwich
 Depends: R (>= 3.5.0), fairml, gtools, regtools,qeML,rmarkdown
-Suggests: knitr,bnlearn,Matching
+Suggests: knitr,bnlearn,Matching,randomForest
 License: GPL (>= 2) 
 Description: Statistical and graphical tools for detecting and measuring
    discrimination and bias, be it racial, gender, age or other.

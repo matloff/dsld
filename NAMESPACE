@@ -8,7 +8,6 @@ import('Kendall')
 import('freqparcoord')
 import('ggplot2')
 import('rmarkdown')
-import('randomForest')
 
 importFrom("grDevices", "dev.copy", "dev.cur", "dev.off", "dev.set",
                "jpeg", "pdf", "png", "rainbow")
