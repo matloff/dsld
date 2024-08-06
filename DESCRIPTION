@@ -20,7 +20,8 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    )
 Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>
 VignetteBuilder: knitr
-Imports: sandwich, Kendall, ranger, ggplot2, plotly, freqparcoord, fairness
+Imports: randomForest,sandwich, Kendall, ranger, ggplot2, plotly, 
+   freqparcoord, fairness
 Depends: R (>= 3.5.0), fairml, gtools, regtools,qeML,rmarkdown
 Suggests: knitr,bnlearn,Matching
 License: GPL (>= 2) 
