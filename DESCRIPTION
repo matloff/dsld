@@ -1,5 +1,5 @@
 Package: dsld
-Version: 0.2
+Version: 0.2.1
 Title: Data Science Looks at Discrimination
 Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9179-6785")),
@@ -28,6 +28,6 @@ License: GPL (>= 2)
 Description: Statistical and graphical tools for detecting and measuring
    discrimination and bias, be it racial, gender, age or other.
    Detection and remediation of bias in machine learning algorithms.
-   This is an R package, with Python interfaces available.
+   'Python' interfaces available.
 URL: https://github.com/matloff/dsld
 BugReports: https://github.com/matloff/dsld/issues
