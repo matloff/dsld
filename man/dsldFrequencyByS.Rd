@@ -36,6 +36,9 @@ potential confounder.  (Y does not explicitly appear here.)
 
 }
 
+\value{Data frame, one for each level of the sensitive variable S, and
+one column for each level of the confounder C. Each row sums to 1.0.}
+
 \examples{
 data(svcensus) 
 dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")

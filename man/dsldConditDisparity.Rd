@@ -32,6 +32,8 @@ dsldConditDisparity(data, yName, sName, xName, condits = NULL,
     N. Matloff, A. Ashok, S. Martha, A. Mittal
 }
 
+\value{No value; plot.}
+
 \examples{
 \donttest{
 data(compas)

@@ -31,6 +31,8 @@ dsldConfounders(data, sName, graphType = "plotly", fill = FALSE)
     N. Matloff, T. Abdullah, A. Ashok, J. Tran
 }
 
+\value{No value; plot.}
+
 \examples{
 \donttest{
 data(svcensus)

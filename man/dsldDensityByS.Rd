@@ -35,6 +35,8 @@ dsldDensityByS(data, cName, sName, graphType = "plotly", fill = FALSE)
     N. Matloff, T. Abdullah, A. Ashok, J. Tran
 }
 
+\value{No value; plot.}
+
 \examples{
 data(svcensus)
 dsldDensityByS(svcensus, cName = "wageinc", sName = "educ")
