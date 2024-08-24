@@ -30,10 +30,10 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Data frame.
     }
     \item{yName}{
-        Name of the response variable column. 
+        Name of the response variable Y column. 
     }
     \item{sNames}{
-        Name(s) of the sensitive attribute column(s). 
+        Name(s) of the sensitive attribute S column(s). 
     }
     \item{deweightPars}{
         Values for de-emphasizing variables, e.g. 
@@ -43,7 +43,8 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Scale the features. 
     }
     \item{yesYVal}{
-        Y value to be considered "yes," to be coded 1 rather than 0.
+        In the binary Y case, Y value to be considered "yes," to be 
+        coded 1 rather than 0.
     }
     \item{k}{
         Number of nearest neighbors. 
@@ -65,7 +66,8 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         An object returned by the \code{dsld-EDFFAIR} wrapper.  
     }
     \item{newx}{
-        New data to be predicted. Must be in the same format as original data.
+        New data to be predicted. Must be in the same format as original data,
+        without a Y field. The S field if present, will be removed.
     }
     \item{...}{
     Further arguments.

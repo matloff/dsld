@@ -237,12 +237,13 @@ dsldQeFairRidgeLog <- function(data, yName, sNames, deweightPars = NULL,
 # -------- Predict -----------------
 predict.dsldQeFair <- function(object, newx,...) {
   # extract params from the model
-  yName <- object$yName
+  # yName <- object$yName
   sNames <- object$sNames
   scaling <- object$scaling
   scalePars <- object$scalePars
 
-  newx <- newx[, !colnames(newx) %in% c(sNames, yName)]
+  # newx <- newx[, !colnames(newx) %in% c(sNames, yName)]
+  newx <- newx[, !colnames(newx) %in% c(sNames)]
 
   # rescale the data according to how the training data was scaled in the model
   newx <- scaleNewX(newx, scaling, scalePars)
