@@ -100,3 +100,11 @@ summary(lin2)
     using the model fitted from \code{dsldLinear}.
 
 }
+
+\value{
+
+The \code{dsldLinear} function returns an S3 object of class 'dsldLM',
+with one component for each level of S. Each component includes
+information about the fitted model.
+
+}

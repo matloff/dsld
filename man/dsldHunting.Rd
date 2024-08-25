@@ -63,10 +63,20 @@ dsldOHunting(data,yName,sName)
     N. Matloff
 }
 
+\value{
+
+The function \code{dsldCHunting} returns an R list, one component for
+each confounder set found.
+
+The function \code{dsldOHunting} returns an R matrix of correlations, 
+one row for each level of S.
+
+}
+
 \examples{  
 \donttest{
-data(law.school.admissions) 
-dsldCHunting(law.school.admissions,'bar','race1')
+data(lsa) 
+dsldCHunting(lsa,'bar','race1')
 # e.g. suggests confounders 'decile3', 'lsat'
     
 data(mortgageSE)
