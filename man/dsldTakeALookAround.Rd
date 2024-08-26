@@ -72,4 +72,5 @@ dsldTakeALookAround(svcensus, 'educ', 'gender')}
 }
 
 \value{Data frame whose first column consists of the variable names,
-followed by columns 'a', 'b' and 'c' as described in 'details'.
+followed by columns 'a', 'b' and 'c' as described in 'details'.}
+
