@@ -84,8 +84,11 @@ J. Tran and B. Zarate
 }
 
 \examples{
-data("law.school.admissions")
-dsldScatterPlot3D(law.school.admissions, sName = "race1", 
+data(lsa)
+dsldScatterPlot3D(lsa,sName = "race1", 
    yNames=c("ugpa", "lsat","age"), xlim=c(2,4))
 }
+
+\value{No value, plot.}
+
 
