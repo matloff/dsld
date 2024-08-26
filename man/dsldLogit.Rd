@@ -67,7 +67,7 @@ vcov(log1)
 summary(log1) 
 predict(log1, newData)
             
-log2 <- dsldLogit(data = law.school.admissions,
+log2 <- dsldLogit(data = lsa,
     yName = 'bar',sName = 'gender', 
     interactions = FALSE, yesYVal = 'TRUE')
 summary(log2)
