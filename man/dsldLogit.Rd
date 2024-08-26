@@ -58,8 +58,6 @@ dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE,
 }
 
 \examples{
-data(law.school.admissions) 
-lsa <- law.school.admissions 
 
 newData <- lsa[c(2,22,222,2222),-c(8,11)]
 log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')
@@ -83,3 +81,11 @@ summary(log2)
 
 }
 
+
+\value{
+
+The \code{dsldLog} function returns an S3 object of class 'dsldGLM',
+with one component for each level of S. Each component includes
+information about the fitted model.
+
+}

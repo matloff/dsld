@@ -64,3 +64,12 @@ print(w)
     \code{sComparisonPts}.
 }
 
+\value{
+
+An R list. The first component consists of the holdout-set prediction
+accuracies, while the second is a data frame predicted values for each
+sensitive group.
+
+}
+
+
