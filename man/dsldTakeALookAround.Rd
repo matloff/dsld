@@ -70,3 +70,6 @@ dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
 # 'educ', using the default arguments for maxFeatureSetSize = 4
 dsldTakeALookAround(svcensus, 'educ', 'gender')}
 }
+
+\value{Data frame whose first column consists of the variable names,
+followed by columns 'a', 'b' and 'c' as described in 'details'.
