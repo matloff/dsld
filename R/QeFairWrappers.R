@@ -23,12 +23,12 @@ qeFairBase <- function(qeFUNC, data, yName, sNames, scaling, ...,
   
   # construct the model with items from base, and from appendedItems
   transferredItems <- base[names(base) %in% c("classif",
-                        "holdIdxs",
-                        "holdoutPreds",
-                        "testAcc",
-                        "baseAcc"
-                      )]
-
+                                              "holdIdxs",
+                                              "holdoutPreds",
+                                              "testAcc",
+                                              "baseAcc"
+  )]
+  
   model <- list(base = base)
   model <- append(model, transferredItems)
   model <- append(model, appendedItems)
@@ -39,7 +39,7 @@ qeFairBase <- function(qeFUNC, data, yName, sNames, scaling, ...,
     xData <- data[, !colnames(data) %in% yName]
     model$corrs <- sCorr(model, xData, sNames)
   }
-
+  
   # return s3 object
   class(model) <- c("dsldQeFair")
   return(model)
@@ -61,19 +61,19 @@ dsldQeFairRF <- function(data, yName, sNames, deweightPars = NULL, nTree = 500,
   # expand deweights to match the expanded factors in the data in qeFairBase
   expandedDW <- expandDeweights(deweightPars, data[1, ])
   model <- qeFairBase(qeML::qeRFranger,
-    data,
-    yName,
-    sNames,
-    scaling,
-    nTree = nTree,
-    minNodeSize = minNodeSize,
-    mtry = mtry,
-    yesYVal = yesYVal,
-    holdout = holdout,
-    deweightPars = expandedDW,
-    appendedItems = appendedItems
+                      data,
+                      yName,
+                      sNames,
+                      scaling,
+                      nTree = nTree,
+                      minNodeSize = minNodeSize,
+                      mtry = mtry,
+                      yesYVal = yesYVal,
+                      holdout = holdout,
+                      deweightPars = expandedDW,
+                      appendedItems = appendedItems
   )
-
+  
   return(model)
 }
 
@@ -91,25 +91,25 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars = NULL,
   # setup for easier calls
   scaling <- scaleX
   appendedItems <- variablesAsList(yName, sNames, scaling, deweightPars)
-
+  
   # expand deweights to match the expanded factors in the data in qeFairBase
   expandedDW <- expandDeweights(deweightPars, data[1, ])
   expandVars <- names(expandedDW)
   expandVals <- unlist(expandedDW) # to use as qeKNN pars
-
+  
   model <- qeFairBase(qeML::qeKNN,
-    data,
-    yName,
-    sNames,
-    scaling,
-    k = k,
-    yesYVal = yesYVal,
-    holdout = holdout,
-    expandVars = expandVars,
-    expandVals = expandVals,
-    appendedItems = appendedItems
+                      data,
+                      yName,
+                      sNames,
+                      scaling,
+                      k = k,
+                      yesYVal = yesYVal,
+                      holdout = holdout,
+                      expandVars = expandVars,
+                      expandVals = expandVals,
+                      appendedItems = appendedItems
   )
-
+  
   return(model)
 }
 
@@ -126,9 +126,10 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars = NULL,
 # appends testAcc, baseAcc, holdoutPreds with the testing set via predictHoldoutFair
 #
 qeFairRidgeBase <- function(data, yName, sNames, deweightPars,
-                            holdout, yesYVal = 0) {
+                            holdout = floor(min(1000, 0.1 * nrow(data))), yesYVal = 0) {
+  
   linear <- yesYVal == 0     # if we're using the default yesYVal, assume its linear
-
+  
   if (!is.null(holdout)) {
     holdIdxs <- sample(1:nrow(data), holdout)
     test <- data[holdIdxs,]
@@ -136,15 +137,15 @@ qeFairRidgeBase <- function(data, yName, sNames, deweightPars,
   } else {
     train <- data
   }
-
+  
   # perform formula described in edffair paper
   dataExtended <- ridgeModify(train, yName, sNames, deweightPars, yesYVal)
   scalePars <- attr(dataExtended, "scalePars")
   
   base <- 
     if (linear) qeML::qeLin(dataExtended, yName, holdout = NULL)
-    else        qeML::qeLogit(dataExtended, yName, holdout = NULL, yesYVal = yesYVal)
-
+  else        qeML::qeLogit(dataExtended, yName, holdout = NULL, yesYVal = yesYVal)
+  
   # Append these variables to the model object
   classif <- !linear
   scaling <- TRUE
@@ -157,23 +158,23 @@ qeFairRidgeBase <- function(data, yName, sNames, deweightPars,
     classif,
     yesYVal
   )
-
+  
   # construct output model object
   model <- list(base = base)
   model <- append(model, appendedItems)
-
+  
   # add test accuracy and s corr calculations
   if (!is.null(holdout)) {
     model$holdIdxs <- holdIdxs
     testInfo <- predictHoldoutFair(model, test, train)
     model <- append(model, testInfo)
-
+    
     if (!is.null(sNames)) {
       xData <- data[, !colnames(data) %in% yName]
       model$corrs <- sCorr(model, xData, sNames)
     }
   }
-
+  
   # return s3 object
   class(model) <- c("dsldQeFair")
   return(model)
@@ -191,26 +192,26 @@ ridgeModify <- function(data, yName, sNames, deweightPars, yesYVal = 0) {
   expandDW <- expandDeweights(deweightPars, data[1, ])
   expandVars <- names(expandDW)
   expandVals <- unlist(expandDW)
-
+  
   data <- fairScale(data, yName, sNames, scaling = TRUE)
-
+  
   xNames <- colnames(data[,-ncol(data)])
   noYVal <- setdiff(levels(data[,yName]), yesYVal)[[1]]
   yBlank <- if (yesYVal == 0) 0 else noYVal
   p <- ncol(data) - 1   # how many predictors
-
+  
   # formula described in edffair paper
   D <- setNames(rep(0, p), xNames)
   if (!is.null(deweightPars)) {
     D[expandVars] <- sqrt(expandVals)
   }
-
+  
   extension <- data.frame(diag(D))
   extension <- cbind(extension, rep(yBlank, p))
-
+  
   names(extension) <- colnames(data)
   dataExtended <- rbind(data, extension)
-
+  
   attr(dataExtended, "scalePars") <- attr(data, "scalePars")
   return(dataExtended)
 }
@@ -235,17 +236,16 @@ dsldQeFairRidgeLog <- function(data, yName, sNames, deweightPars = NULL,
 # predict.dsldQeFair(log, fairml::compas[1,])
 
 # -------- Predict -----------------
-predict.dsldQeFair <- function(object, newx,...) {
+predict.dsldQeFair <- function(model, newx) {
   # extract params from the model
-  # yName <- object$yName
-  sNames <- object$sNames
-  scaling <- object$scaling
-  scalePars <- object$scalePars
-
-  # newx <- newx[, !colnames(newx) %in% c(sNames, yName)]
+  #yName <- model$yName
+  sNames <- model$sNames
+  scaling <- model$scaling
+  scalePars <- model$scalePars
+  
   newx <- newx[, !colnames(newx) %in% c(sNames)]
-
+  
   # rescale the data according to how the training data was scaled in the model
   newx <- scaleNewX(newx, scaling, scalePars)
-  return(predict(object$base, newx))
+  return(predict(model$base, newx))
 }

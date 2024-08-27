@@ -47,7 +47,7 @@ scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
       center <- scalePars$center
       scale <- scalePars$scale
     }
-
+    
     newx <- scale(newx, center=center, scale=scale)
   }
   
@@ -96,12 +96,12 @@ sCorr <- function(model, xData, sNames) {
   preds <- 
     if (is.list(model$holdoutPreds)) {
       probs <- model$holdoutPreds$probs
-        if (is.matrix(probs))  
-          probs[,1] 
-        else probs
+      if (is.matrix(probs))  
+        probs[,1] 
+      else probs
     }
-    else
-      model$holdoutPreds
+  else
+    model$holdoutPreds
   
   holdIdxs <- model$holdIdxs
   
@@ -116,7 +116,7 @@ sCorr <- function(model, xData, sNames) {
             binaryScorr(preds, xData, sName, holdIdxs)
           else
             nonBinScorr(preds, xData, sName, holdIdxs)
-          )
+        )
     } else { # non-classification case
       if (is.matrix(preds)) preds <- as.vector(preds)
       cor <- cor(preds, sCol)^2
@@ -143,6 +143,7 @@ binaryScorr <- function(preds, xData, sName, holdIdxs) {
   cor <- cor(preds, sProbs)^2
   setNames(cor, sName)
 }
+
 # this gets the correlation for each level in sName, then names it
 nonBinScorr <- function(preds, xData, sName, holdIdxs) {
   # warning with qeLogit(fairml::compas, "race")
@@ -170,15 +171,18 @@ nonBinScorr <- function(preds, xData, sName, holdIdxs) {
 #                baseAcc: number
 predictHoldoutFair <- function(model, test, train) {
   yName <- model$yName
+  rr <- test[,yName]             ### need to fix predictHoldFair()
+  yCol <- c(rr, train[,yName])
+  test <- test[ , !names(test) %in% c(yName)]
   preds <- predict.dsldQeFair(model, test)
-  yCol <- c(test[,yName], train[,yName])
+
   testInfo <- list(holdoutPreds=preds)
   if (model$classif) {
-    testInfo$testAcc <- mean(preds$predClasses != test[, yName])
+    testInfo$testAcc <- mean(preds$predClasses != rr)
     testInfo$baseAcc <- 1 - max(table(yCol)) / length(yCol)
   } else {
-    testInfo$testAcc <- mean(abs(preds - test[,yName]))
-    testInfo$baseAcc <-  mean(abs(test[,yName] - mean(train[,yName])))
+    testInfo$testAcc <- mean(abs(preds - rr))
+    testInfo$baseAcc <-  mean(abs(rr - mean(train[,yName])))
   }
   testInfo
 }
