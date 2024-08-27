@@ -79,12 +79,13 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
     N. Matloff, A. Mittal, J. Tran
 }
 
-\details{
-    Via EDFFair:
+\details{ Via EDFFair:
   
-    EDF reduces the impact of each feature in the proxies of sensitive variables among the X features, 
-    with a different amount of deweighting appliable to each such feature. The goal is to give the user control 
-    over the Fairness/Utility Tradeoff, choosing the desired weighting of fairness and prediction accuracy.
+    EDF reduces the impact of each feature in the proxies of sensitive
+    variables among the X features, with a different amount of
+    deweighting appliable to each such feature. The goal is to give the
+    user control over the Fairness/Utility Tradeoff, choosing the
+    desired weighting of fairness and prediction accuracy.
 
     More details can be found in the references. 
 }
@@ -94,7 +95,6 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
 }
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
 Matloff, Norman, and Wenxi Zhang. "A novel regularization approach to fair ML." \cr
 \code{arXiv preprint arXiv:2208.06557} (2022).
 }
@@ -104,16 +104,17 @@ Matloff, Norman, and Wenxi Zhang. "A novel regularization approach to fair ML." 
 data(compas1) 
 data(svcensus) 
 
-# dsldQeFairKNN: deweight "decile score" column with "race" as the sensitive variable
-knnOut <- dsldQeFairKNN(compas1, "two_year_recid", "race", list(decile_score=0.1), 
-  yesYVal = "Yes")
+# dsldQeFairKNN: deweight "decile score" column with "race" as 
+# the sensitive variable
+knnOut <- dsldQeFairKNN(compas1, "two_year_recid", "race", 
+   list(decile_score=0.1), yesYVal = "Yes")
 knnOut$testAcc 
 knnOut$corrs 
 predict(knnOut, compas1[1,-8]) 
 
 # dsldFairRF: deweight "decile score" column with "race" as sensitive variable
-rfOut <- dsldQeFairRF(compas1, "two_year_recid", "race", list(decile_score=0.3), 
-  yesYVal = "Yes")
+rfOut <- dsldQeFairRF(compas1, "two_year_recid", "race", 
+   list(decile_score=0.3), yesYVal = "Yes")
 rfOut$testAcc
 rfOut$corrs 
 predict(rfOut, compas1[1,-8]) 
