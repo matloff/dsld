@@ -29,7 +29,7 @@ dsldCHunting <- function(data, yName, sName, intersectDepth = 10) {
    dataNoS <- data[, -scol]  # for predicting Y
    dataNoY <- data[, -ycol]  # for predicting S
 
-   impY <- qeRF(dataNoS, yName)$importance
+   impY <- qeML::qeRF(dataNoS, yName)$importance
    impS <- qeRF(dataNoY, sName)$importance
 
    # the 'importance' output format has several different cases, which
