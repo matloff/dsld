@@ -59,6 +59,7 @@ dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE,
 
 \examples{
 
+data(lsa)
 newData <- lsa[c(2,22,222,2222),-c(8,11)]
 log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')
 

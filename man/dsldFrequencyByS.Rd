@@ -46,7 +46,7 @@ dsldFrequencyByS(svcensus, cName = "educ", sName = "gender")
 dsldFrequencyByS(svcensus, cName = "occ", sName = "gender")
 # substantial difference in occupation between genders
 data(lsa)
-lsa$faminc <- as.factor(lsa$fam <- inc)
+lsa$faminc <- as.factor(lsa$fam_inc)
 dsldFrequencyByS(lsa,'faminc','race1')
 # distribution of family income by race
 }
