@@ -13,16 +13,28 @@
 #   yesYVal,yesSVal: the usual
 #   unfairness: use this if calling a fairML function
 #   deweightPars: use this if calling an EDF function
+#   corrType: 'kendall' or 'probs'; see below
 #   holdout: as in qeML etc.
 
 # value: 
 
 #    testAcc as in qeML 
 
-#    corr(T,W)^2 in lieu of corr(Yhat,S)^2, where
+#    correlation between Yhat and S:
 
-#       T =  P(Y = 1 | X,S) in binary Y case; else T = Yhat
-#       W =  P(S = 1 | X) in binary S case; else W = S
+#       'kendall':
+
+#           Kendall corr(T,W):
+
+#              T = Yhat for numeric Y, 1 or 0 for binary Y
+#              W = S for numeric S, 1 or 0 for binary S
+
+#       'probs':
+
+#          corr(T,W)^2 in lieu of corr(Yhat,S)^2, where
+
+#             T =  P(Y = 1 | X,S) in binary Y case; else T = Yhat
+#             W =  P(S = 1 | X) in binary S case; else W = S
 
 # examples
 
@@ -33,9 +45,9 @@
 #   tradeoff(lsabw,'bar','race1','dsldQeFairRidgeLog',
 #      deweightPars=list(fam_inc=0.1),yesYVal='TRUE',yesSVal='white')
 
-tradeoff <- function(data,yName,sName,dsldFtnName,
+fairutilTradeoff <- function(data,yName,sName,dsldFtnName,
    unfairness=NULL,deweightPars=NULL,yesYVal=NULL,yesSVal=NULL,
-   holdout = floor(min(1000, 0.1 * nrow(data)))) 
+   corrType='kendall', holdout = floor(min(1000, 0.1 * nrow(data)))) 
 {
 
    if (dsldFtnName == 'dsldFgrrm')
@@ -79,12 +91,27 @@ tradeoff <- function(data,yName,sName,dsldFtnName,
    ypreds <- predict(fitted,tstxs)
 
    # find T, W
-   T <- ypreds
-   if (!is.null(T$probs)) T <- T$probs
-   if (is.factor(trns)) {
-      tmp <- qeLogit(trnxs,sName,holdout=NULL,yesYVal=yesSVal)
-      W <- predict(tmp,tstx)$probs
-   } else W <- tsts
+   if (corrType == 'kendall') {
+      # T
+      T <- ypreds
+      if (is.factor(trny)) {
+         if (!is.null(T$probs)) T <- as.integer(T$probs > 0.5) else 
+         if (!is.null(T$predClasses)) T <- as.integer(T$predClasses == yesYVal) 
+      }
+      # W
+      if (is.factor(trns)) W <- as.integer(tsts == yesSVal) else W <- tsts
+   } else { 
+      # T
+      if (is.factor(trny)) {
+         T <- predict(fitted,tstxs)$probs
+      } else T <- predict(fitted,tstxs)
+      # W
+      if (is.factor(trns)) {
+         tmp <- qeLogit(trnxs,sName,holdout=NULL)
+         W <- predict(tmp,tstx)$probs
+      } else W <- tsts
+   }
+
    T <- as.vector(T)
    W <- as.vector(W)
 
