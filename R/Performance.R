@@ -107,7 +107,7 @@ fairutilTradeoff <- function(data,yName,sName,dsldFtnName,
       } else T <- predict(fitted,tstxs)
       # W
       if (is.factor(trns)) {
-         tmp <- qeLogit(trnxs,sName,holdout=NULL)
+         tmp <- qeLogit(data=trnxs,yName=sName,yesYVal=yesSVal,holdout=NULL)
          W <- predict(tmp,tstx)$probs
       } else W <- tsts
    }
