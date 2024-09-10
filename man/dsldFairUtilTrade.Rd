@@ -1,4 +1,5 @@
 \name{dsldFairUtilTrade}
+\alias{dsldFairUtilTrade}
 \title{dsldFairUtilTrade}
 
 \description{ 
@@ -25,10 +26,10 @@ dsldFairUtilTrade(data,yName,sName,dsldFtnName,
         binary (two-level R factor).
     }
     \item{dsldFtnName}{
-        Quoted name of one of the \pkg{fairML) or EDF functions.   
+        Quoted name of one of the \pkg{fairML} or EDF functions.   
     }
     \item{unfairness}{
-        Nonnull for the \pkg{fairML) functions.
+        Nonnull for the \pkg{fairML} functions.
     }
     \item{deweightPars}{
         Nonnull for the EDF functions.
@@ -71,8 +72,9 @@ dsldFairUtilTrade(lsabw,'bar','race1','dsldQeFairRidgeLog',
 
 \details{
 
-Tool for exploring tradeoff between utility (predictive accuracy)
-and fairness. Roughly speaking, the latter finds the strength of
+Tool for exploring tradeoff between utility (predictive accuracy, Mean
+Absolute Prediction Error or overall probability of misclassification)
+and fairness. Roughly speaking, the latter is defined as the strength of
 relation between S and predicted Y (the smaller, the better). The main
 issue is definition of "relation" in the case of binary Y or S:
 
