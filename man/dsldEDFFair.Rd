@@ -90,6 +90,13 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
     More details can be found in the references. 
 }
 
+\value{
+
+The EDF functions return objects of class 'dsldQeFair', which include
+components for test and base accuracy, summaries of inputs and so on.
+
+}
+
 \references{
   https://github.com/matloff/EDFfair 
 }

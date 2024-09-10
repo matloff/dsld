@@ -18,3 +18,7 @@ Attempts to load the specified package, halting execution upon failure.
 
 }
 
+\value{
+No value, just side effects.
+}
+
