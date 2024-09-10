@@ -45,7 +45,7 @@
 #   tradeoff(lsabw,'bar','race1','dsldQeFairRidgeLog',
 #      deweightPars=list(fam_inc=0.1),yesYVal='TRUE',yesSVal='white')
 
-fairutilTradeoff <- function(data,yName,sName,dsldFtnName,
+dsldFairUtilTrade <- function(data,yName,sName,dsldFtnName,
    unfairness=NULL,deweightPars=NULL,yesYVal=NULL,yesSVal=NULL,
    corrType='kendall', holdout = floor(min(1000, 0.1 * nrow(data)))) 
 {
