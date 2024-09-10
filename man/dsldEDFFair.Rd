@@ -9,8 +9,7 @@
 
 \description{ 
   Explicitly Deweighted Features: control the effect of proxies 
-  related to sensitive variables for prediction. The following 
-  functions provide wrappers from the EDFFair package (link in references).
+  related to sensitive variables for prediction. 
 }
 
 \usage{
@@ -38,7 +37,10 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
     }
     \item{deweightPars}{
         Values for de-emphasizing variables in a split, e.g. 
-        'list(age=0.2,gender=0.5)'. Lower values means more deweighting.
+        'list(age=0.2,gender=0.5)'. In the linear case,
+        larger values means more deweighting, i.e. less influence of the given 
+        variable on predictions. For KNN and random forests, smaller
+        values mean more deweighting.
     }
     \item{scaleX}{
         Scale the features. Defaults to TRUE.
@@ -47,8 +49,9 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
         Y value to be considered "yes," to be coded 1 rather than 0.
     }
     \item{k}{
-        Number of nearest neighbors. In functions other than qeKNN for which 
-        this is an argument, it is the number of neighbors to use in finding 
+        Number of nearest neighbors. In functions other than 
+        \code{dsldQeFairKNN} for which this is an argument, 
+        it is the number of neighbors to use in finding 
         conditional probabilities via knnCalib.
     } 
     \item{holdout}{
@@ -79,13 +82,25 @@ dsldQeFairRidgeLog(data, yName, sNames, deweightPars = NULL, holdout =
     N. Matloff, A. Mittal, J. Tran
 }
 
-\details{ Via EDFFair:
+\details{ 
   
-    EDF reduces the impact of each feature in the proxies of sensitive
-    variables among the X features, with a different amount of
-    deweighting appliable to each such feature. The goal is to give the
-    user control over the Fairness/Utility Tradeoff, choosing the
-    desired weighting of fairness and prediction accuracy.
+    The sensitive variables S are removed entirely, but there is concern
+    that they still affect prediction indirectly, via a set C of proxy
+    variables. 
+
+    Linear EDF reduces the impact of the proxies through a shinkage
+    process similar to that of ridge regression. Specifically, instead
+    of minimizing the sum of squared errors SSE with respect to a
+    coefficient vector b, we minimize SSE + the squared norm of Db,
+    where D is a diagonal matrix with nonzero elements corresponding to
+    C. Large values penalizing variables in C, thus shrinking them.
+
+    KNN EDF reduces the weights in Euclidean distance for variables in
+    C.  The random forests version reduces the probabilities that a
+    proxy will be used in splitting a node.
+
+    By using various values of the deweighting parameters, the user can
+    choose a desired position in the Fairness-Utility Tradeoff.
 
     More details can be found in the references. 
 }
