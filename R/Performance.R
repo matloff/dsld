@@ -38,11 +38,16 @@
 
 # examples
 
-#   tradeoff(svcensus,'wageinc','gender','dsldFrrm',0.2,yesSVal='male') 
+#   data(svcensus)
+#   dsldFairUtilTrade(svcensus,'wageinc','gender','dsldFrrm',0.2,yesSVal='male')
+#   data(lsa)
+#   race1 <- lsa$race1
+#   lsabw <- lsa[race1 == 'black' | race1 == 'white',]
+## need to get rid of excess levels
 #   race1 <- lsabw$race1
-#   race1 <- as.character(lsabw$race1)
+#   race1 <- as.character(race1)
 #   lsabw$race1 <- as.factor(race1)
-#   tradeoff(lsabw,'bar','race1','dsldQeFairRidgeLog',
+#   dsldFairUtilTrade(lsabw,'bar','race1','dsldQeFairRidgeLog',
 #      deweightPars=list(fam_inc=0.1),yesYVal='TRUE',yesSVal='white')
 
 dsldFairUtilTrade <- function(data,yName,sName,dsldFtnName,
