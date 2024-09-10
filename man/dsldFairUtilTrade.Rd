@@ -1,5 +1,5 @@
-\name{dsldFaireUtilTrade}
-\title{dsldFairTrade}
+\name{dsldFairUtilTrade}
+\title{dsldFairUtilTrade}
 
 \description{ 
 Exploration of the Fairness-Utility Tradeoff.  Finds predictive accuracy
@@ -77,14 +77,15 @@ relation between S and predicted Y (the smaller, the better). The main
 issue is definition of "relation" in the case of binary Y or S:
 
 In the 'kendall' case, binary predicted Y or S is recoded to 1s and 0s,
-and Kendall correlation is used.
+and Kendall correlation is used. In the 'probs' case, binary Y or S is
+replaced by P(Y = 1 | X) and P(S = 1 | X); squared Pearson correlation
+is then computed.
 
 }
 
 \value{
 
-The \code{dsldLinear} function returns an S3 object of class 'dsldLM',
-with one component for each level of S. Each component includes
-information about the fitted model.
-
+A two-component vector, consisting of predictive accuracy and strength
+of relation between S and predicted Y.
 }
+
