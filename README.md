@@ -40,7 +40,7 @@ library(devtools)
 install_github("matloff/dsld", force = TRUE)
 ```
 
-[WAITING TO PUT ON CRAN]
+**Note:** Now also available via CRAN.
 
 ## Analysis categories:
 
