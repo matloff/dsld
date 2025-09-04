@@ -1,6 +1,6 @@
 Package: dsld
 Version: 1.0.0
-Title: Data Science Looks at Discrimination
+Title: dsld: Data Science Looks at Discrimination
 Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9179-6785")),
    person("Taha", "Abdullah", email = "tmabdullah@ucdavis.edu",
