@@ -1,0 +1,3 @@
+# Ignore R history and macOS metadata
+.Rhistory
+.DS_Store
