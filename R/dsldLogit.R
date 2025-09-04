@@ -42,10 +42,11 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
         list(sComparisonPts),
         list(summary(diffModel)),
         list(coef(diffModel)),
-        list(diffData)
+        list(diffData),
+        list(factor_levels(data))
       )
       names(dsldDiffModel) <- c("yName", "sName", "model", "newData",
-                                "summary", "coef", "data")
+                                "summary", "coef", "data", "FactorsInfo")
       class(dsldDiffModel) <- "dsldDiffModel"
       
       # add instance into output list: dsldModel #
@@ -66,10 +67,11 @@ dsldLogit <- function(data, yName, sName, sComparisonPts = NULL, interactions = 
                        list(diffModel),
                        list(summary(diffModel)),
                        list(coef(diffModel)),
-                       list(data)
+                       list(data),
+                       list(factor_levels(data))
     )
     names(dsldDiffModel) <- c("yName", "sName", "model", "summary",
-                              "coef", "data")
+                              "coef", "data", "FactorsInfo")
     
     # add instance into dsldModel
     dsldModel[[sName]] <- dsldDiffModel
@@ -97,9 +99,7 @@ dsldGetData <- function(object) {
   return(mergedData)
 }
 
-### removing this, too complicated -- NM, July 20, 2024
-### restored, NM, Aug 4, 2024
-### #------------------------- dsldDiffSLog function ------------------------------#
+### #------------------------- dsldDiffSLog function --------------------------#
 dsldDiffSLog <- function(object, sComparisonPts = NULL) {
   # naming
   dsldGLM <- object
@@ -217,6 +217,10 @@ dsldDiffSLog <- function(object, sComparisonPts = NULL) {
       stop(paste("Error: sComparisonPts must be a dataframe or equivalent"))
     } 
     
+    if (!is.null(sComparisonPts)) {
+      sComparisonPts <- apply_factor_levels(sComparisonPts, object[[1]]$FactorsInfo)
+    }
+    
     # naming
     xNew <- sComparisonPts
     
@@ -332,6 +336,7 @@ predict.dsldGLM <- function(object, xNew,...){
   if (length(object) == 1) {
     data <- object[[1]]$data
     model <- object[[1]]$model
+    xNew <- apply_factor_levels(xNew, object[[1]]$FactorsInfo)
     predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
     pred <- predictions$fit
     se <- predictions$se.fit
@@ -343,6 +348,7 @@ predict.dsldGLM <- function(object, xNew,...){
     for (i in sNames) {         # loop through each level of S name to compute estimates and standard errors
       data <- object[[i]]$data
       model <- object[[i]]$model
+      xNew <- apply_factor_levels(xNew, object[[1]]$FactorsInfo)
       predictions <- predict(model, xNew, type = "response", se.fit = TRUE)
       pred <- predictions$fit
       se <- predictions$se.fit

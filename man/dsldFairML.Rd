@@ -18,11 +18,11 @@
 dsldFrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
    lambda = 0, save.auxiliary = FALSE)
 dsldFgrrm(data, yName, sName, unfairness, definition = "sp-komiyama", 
-   family = "binomial", lambda = 0, save.auxiliary = FALSE)
+   family = "binomial", lambda = 0, save.auxiliary = FALSE, yesYVal)
 dsldNclm(data, yName, sName, unfairness, covfun = cov, lambda = 0, 
    save.auxiliary = FALSE)
 dsldZlm(data, yName, sName, unfairness)
-dsldZlrm(data, yName, sName, unfairness)
+dsldZlrm(data, yName, sName, unfairness, yesYVal)
 }
 
 \arguments{
@@ -62,39 +62,85 @@ dsldZlrm(data, yName, sName, unfairness)
         A logical value, whether to save the fitted values and the residuals 
         of the auxiliary model that constructs the debiased predictors. 
     }
+    \item{yesYVal}{
+        Y value to be considered 'yes', to be coded 1 rather than 0.
+    }
 }
 
 \details{
 
    See documentation for the \pkg{fairml} package.
+   
+   The DSLD package extends functionality by providing both accuracy 
+   (MAPE or misclassification rate) and fairness (correlation) on the 
+   training set when fitting the model.
 
 }
 
 \value{
     An object of class 'dsldFairML', which includes the model 
-    information, \code{yName}, and \code{sName}.
+    information, \code{yName}, \code{sName}, and model training details.
 }
 
 \author{
-    S. Martha, A. Mittal, B. Ouattara, B. Zarate, J. Tran
+    A. Mittal, S. Martha, B. Ouattara, B. Zarate, J. Tran
 }
 
 \examples{ 
 \donttest{
-data(svcensus) 
+# regression example
+data(svcensus)
+
+# test/train splits
+n <- nrow(svcensus)
+train_idx <- sample(seq_len(n), size = 0.7 * n) 
+train <- svcensus[train_idx, ]
+test  <- svcensus[-train_idx, -4]
+test_y <- svcensus[-train_idx, 4]
+
+# train frrm model // also works with nclm and zlm
+frrmOut <- dsldFrrm(data = train, yName = 'wageinc', sName = 'gender', 
+                    unfairness = 0.2, definition = "sp-komiyama") 
+
+# training results
+summary(frrmOut)
+frrmOut$trainCorrs
+frrmOut$trainAcc
+
+# testing results
+res <- predict(frrmOut, test) 
+res$correlations
+mean(abs(res$preds - test_y))
+
+# also works with dsldNclm, dsldZlm
+
+# classification example
 data(compas1)
 
-yName <- "wageinc"
-sName <- "age"
-frrmOut <- dsldFrrm(svcensus, yName, sName, 0.2, definition = "sp-komiyama") 
-summary(frrmOut)
-predict(frrmOut, svcensus[1:10,]) 
+# test/train splits
+n <- nrow(compas1)
+train_idx <- sample(seq_len(n), size = 0.7 * n) 
+train <- compas1[train_idx, ]
+test  <- compas1[-train_idx, -8]
+test_y <- compas1[-train_idx, 8]
+test_y <- as.factor(as.integer(test_y== 'Yes'))
 
-yName <- "two_year_recid"
-sName <- "age"
-fgrrmOut <- dsldFgrrm(compas1, yName, sName, 0.2, definition = "sp-komiyama")  
+# train fgrrm model // also works with zlrm
+fgrrmOut <- dsldFgrrm(train, yName = "two_year_recid", 
+                      sName = "age", unfairness = 0.05, 
+                      definition = "sp-komiyama", 
+                      yesYVal = 'Yes')  
+# training results
 summary(fgrrmOut)
-predict(fgrrmOut, compas1[c(1:10),]) 
+fgrrmOut$trainCorrs
+fgrrmOut$trainAcc
+
+# testing results
+res <- predict(fgrrmOut, test) 
+res$correlations
+mean(test_y != round(res$preds))
+
+# also works with dsldZlm
 }
 
 }

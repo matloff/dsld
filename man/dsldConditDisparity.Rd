@@ -36,15 +36,15 @@ dsldConditDisparity(data, yName, sName, xName, condits = NULL,
 
 \examples{
 \donttest{
-data(compas)
+data(compas1)
 # graph probability of recidivism by race given age, among those with at
 # most 4 prior convictions and COMPAS decile score at least 6
-compas$two_year_recid <- as.numeric(compas$two_year_recid == "Yes")
-dsldConditDisparity(compas,"two_year_recid", "race", "age", 
-    c("priors_count <= 4","decile_score>=6"), qeKNN)
+compas1$two_year_recid <- as.numeric(compas1$two_year_recid == "Yes")
+dsldConditDisparity(compas1,"two_year_recid", "race", "age", 
+                    c("priors_count <= 4","decile_score>=6"), qeKNN)
 
-dsldConditDisparity(compas,"two_year_recid", "race", "age",
-    "priors_count == 0", qeGBoost)
+dsldConditDisparity(compas1,"two_year_recid", "race", "age",
+                    "priors_count == 0", qeGBoost)
 }
 }
 

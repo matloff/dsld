@@ -40,7 +40,7 @@ dsldFreqPCoord <- function(data, m, sName = NULL,
     if (!is.null(plot_filename)) {
         ggplot2::ggsave(plot_filename, fpcOut) # Save as img
     }
-
+    
     return(fpcOut)
 }
 

@@ -60,18 +60,29 @@ dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE,
 \examples{
 
 data(lsa)
+
+### interactions case - exclude S and Y in newData
 newData <- lsa[c(2,22,222,2222),-c(8,11)]
 log1 <- dsldLogit(lsa,'bar','race1', newData, interactions = TRUE, 'TRUE')
 
+# extract results
 coef(log1)
 vcov(log1) 
-summary(log1) 
+summary(log1)
+
+# predict new data --- one prediction for each level of S per row
 predict(log1, newData)
-            
-log2 <- dsldLogit(data = lsa,
-    yName = 'bar',sName = 'gender', 
-    interactions = FALSE, yesYVal = 'TRUE')
+
+# no interaction case - exclude Y in newData
+newData <- lsa[c(2,22,222,2222),-c(11)]
+log2 <- dsldLogit(data = lsa, yName = 'bar',sName = 'gender', 
+                  interactions = FALSE, yesYVal = 'TRUE')
+
 summary(log2)
+
+# predict on newData  --- one prediction per row
+predict(log2, newData)
+
 }
 
 \details{

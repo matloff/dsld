@@ -52,6 +52,6 @@ dsldFrequencyByS(lsa,'faminc','race1')
 }
 
 \author{
-    N. Matloff, T. Abdullah, A. Ashok, J. Tran
+    N. Matloff, T. Abdullah, A. Ashok, J. Tran, A. Mittal
 }
 

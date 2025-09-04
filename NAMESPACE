@@ -18,6 +18,7 @@ importFrom("stats", "as.formula", "binomial", "coef", "cor", "cov",
 importFrom("utils", "combn")
 importFrom("plotly", "plot_ly", "add_lines","layout")
 importFrom("sandwich", "sandwich")
+importFrom("stats", "model.matrix")
 
 export(
    getSuggestedLib,
@@ -29,7 +30,7 @@ export(
    dsldFgrrm, dsldFrrm, dsldNclm, dsldZlm, dsldZlrm,
    dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN, 
    dsldML, dsldCHunting, dsldOHunting, dsldIamb, dsldMatchedATE,
-   dsldFairUtilTrade
+   dsldFairUtils
 )
 
 S3method(summary, dsldLM)

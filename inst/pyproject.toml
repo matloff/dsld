@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dsldPy"
+version = "0.0.3"
+description = "Python wrappers around the R 'dsld' package via rpy2"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+  {name = "A. Mittal, T. Abdullah, A. Ashok, B. Zarate Estrada, S. Martha, B. Ouattara, J. Tran, and N. Matloff"}
+]
+license = "MIT"
+keywords = ["dsld", "rpy2", "fair machine learning", "statistics", "confounder analysis"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = [
+  "pandas>=1.1",
+  "numpy>=1.20",
+  "Pillow>=8",
+  "pyreadr>=0.4",
+  "rpy2>=3.5",
+  "plotly>=5",
+  "ipython>=7",
+  "nbformat",
+  "scikit-learn",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -61,16 +61,26 @@ dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL,
 \examples{  
 data(svcensus) 
 
+### interactions case - exclude S and Y in newData
 newData <- svcensus[c(1, 18), -c(4,6)] 
 lin1 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = TRUE,
     newData)
+    
+# extract results
 coef(lin1)
 vcov(lin1) 
 summary(lin1)
+
+# predict on newData  --- one prediction for each level of S per row
 predict(lin1, newData)
 
+### no interactions case - exclude Y in newData
+newData <- svcensus[c(1, 18), -c(4)] 
 lin2 <- dsldLinear(svcensus, 'wageinc', 'gender', interactions = FALSE)
 summary(lin2)
+
+# predict on newData  --- one prediction per row
+predict(lin2, newData)
 }
 
 \details{
@@ -95,7 +105,7 @@ summary(lin2)
     of conditions for sensitive groups via linear models, with 
     interactions with S.
 
-    The \code{dsldDiffS} function allows users to compare mean Y at that
+    The \code{dsldDiffSLin} function allows users to compare mean Y at that
     X between each pair of S level for additional new unseen data levels
     using the model fitted from \code{dsldLinear}.
 

@@ -22,9 +22,6 @@ dsldCHunting <- function(data, yName, sName, intersectDepth = 10) {
    scol <- which(names(data) == sName)
    y <- data[, ycol]
    s <- data[, scol]
-   if (!is.factor(y) || !is.factor(s)) {
-      stop('Y and S must be R factors')
-   }
 
    dataNoS <- data[, -scol]  # for predicting Y
    dataNoY <- data[, -ycol]  # for predicting S
@@ -64,3 +61,28 @@ dsldCHunting <- function(data, yName, sName, intersectDepth = 10) {
 
    return(res)
 }
+
+
+# ad hoc aid in deciding which covariates one should treat as
+# proxies
+
+# we want to find variables O that are correlated with S; S need not be
+# binary/categorical
+
+# based on cor(), using Kendall's Tau in order to acccomdate binary
+# variables (0,1 valued), and to mitigate effects of outliers
+
+dsldOHunting <- function(data,yName,sName) 
+{
+  
+  ycol <- which(names(data) == yName)
+  scol <- which(names(data) == sName)
+  
+  sdumms <- regtools::factorsToDummies(data[,scol,drop=FALSE])
+  odumms <- regtools::factorsToDummies(data[,-c(ycol,scol),drop=FALSE])
+  
+  cor(sdumms,odumms,method='kendall')
+  
+}
+
+

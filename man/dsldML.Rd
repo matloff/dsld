@@ -7,8 +7,7 @@ Nonparametric comparison of sensitive groups.
 }
 
 \usage{
-dsldML(data,yName,sName,qeMLftnName,sComparisonPts="rand5",
-    opts=NULL,holdout=NULL)
+dsldML(data,yName,sName,qeMLftnName,sComparisonPts='rand5',opts=NULL)
 }
 
 \arguments{
@@ -33,9 +32,6 @@ dsldML(data,yName,sName,qeMLftnName,sComparisonPts="rand5",
     \item{opts}{
         An R list specifying arguments for the above \code{qeML} function.
     }
-    \item{holdout}{
-        The size of holdout set.
-    }
 }
 
 \author{
@@ -43,10 +39,18 @@ dsldML(data,yName,sName,qeMLftnName,sComparisonPts="rand5",
 }
 
 \examples{  
+
+## applying K-NN
+## also works for: qeRF, qeRFranger, qeLASSO, qePolyLin/qePolyLog, qeXGBoost
+
 data(svcensus) 
+
 w <- dsldML(svcensus,'wageinc','gender',qeMLftnName='qeKNN',
    opts=list(k=50))
+   
+# prints testAcc for each level in sName and the predictions on sComparisonPts
 print(w)
+
 }
 
 \details{

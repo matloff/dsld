@@ -4,7 +4,7 @@
 
 # args:
 
-#    data!, yName, sName as usual 
+#    data, yName, sName as usual 
 
 #    sComparisonPts as in the with-interactions case of dsldLinear()
 #    (nonparametric case necessarily has interactions)
@@ -12,20 +12,24 @@
 #    qeMLftnName is, e.g. 'qeKNN'; opts is an R list of optional arguments
 #    for that function
 
-dsldML<-function(data,yName,sName,qeMLftnName,sComparisonPts='rand5',
-   opts=NULL,holdout=NULL){
+dsldML<-function(data,yName,sName,qeMLftnName,sComparisonPts='rand5',opts=NULL){
 
   ycol <- which(names(data) == yName)
   scol <- which(names(data) == sName)
   slevels <- levels(data[,scol])
+  
+  factors_info = factor_levels(data)
   
   if (sComparisonPts=='rand5'){
     rows <- sample(nrow(data), 5)
     reducedData <- data[rows, ]
     columns <- c(yName, sName)
     sComparisonPts <- reducedData[, !(names(reducedData) %in% columns)]
+    sComparisonPts <- apply_factor_levels(sComparisonPts, factors_info)
   }
-
+  
+  sComparisonPts <- apply_factor_levels(sComparisonPts, factors_info)
+  
   # called from lapply(), calling the QE function on the subset of data
   # corresponding to the specified level of the sensitive variable S
   do1Slevel <- function(sLevel) 

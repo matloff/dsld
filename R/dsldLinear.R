@@ -46,7 +46,9 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
         list(summary(diffModel)),
         list(coef(diffModel)),
         list(covMatrix),
-        list(diffData)
+        list(diffData),
+        list(factor_levels(data))
+        
       )
       names(dsldDiffModel) <- c(
         "yName",
@@ -56,7 +58,8 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
         "summary",
         "coef",
         "covarianceMatrix",
-        "data"
+        "data",
+        "FactorsInfo"
       )
       class(dsldDiffModel) <- "dsldDiffModel"
       
@@ -87,7 +90,8 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
                        list(summary(diffModel)),
                        list(coef(diffModel)),
                        list(covMatrix),
-                       list(data)
+                       list(data),
+                       list(factor_levels(data))
     )
     names(dsldDiffModel) <- c(
       "yName",
@@ -96,7 +100,8 @@ dsldLinear <- function(data, yName, sName, interactions = FALSE,
       "summary",
       "coef",
       "covarianceMatrix",
-      "data"
+      "data",
+      "FactorsInfo"
     )
     
     # add diff model to dsldLM object
@@ -252,6 +257,10 @@ dsldDiffSLin <- function(object, sComparisonPts = NULL) {
       stop(paste("Error: sComparisonPts is not a dataframe"))
     } 
     
+    if (!is.null(sComparisonPts)) {
+      sComparisonPts <- apply_factor_levels(sComparisonPts, object[[1]]$FactorsInfo)
+    }
+    
     # change naming 
     xNew <- sComparisonPts
     
@@ -397,6 +406,7 @@ predict.dsldLM <- function(object, xNew,...) {
   df <- data.frame()
   yName = object[[1]]$yName
   if (length(object) == 1) {
+    xNew <- apply_factor_levels(xNew, object[[1]]$FactorsInfo)
     data <- object[[1]]$data
     colName <- names(data)
     colName <- colName[colName != yName]
@@ -428,6 +438,7 @@ predict.dsldLM <- function(object, xNew,...) {
     return(df)
   }
   else {
+    xNew <- apply_factor_levels(xNew, object[[1]]$FactorsInfo)
     sNames <- names(object)
     for (i in sNames) {
       data <- object[[i]]$data  

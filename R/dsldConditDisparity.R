@@ -23,6 +23,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
     }
 
     y <- data[[yName]]
+    
     dichotY <- inherits(y, "factor") && length(levels(y) == 2)
 
     if (!inherits(y, "numeric") &&

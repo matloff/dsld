@@ -4,8 +4,7 @@
 \title{dsldBnlearn}
 
 \description{
-    Wrappers for functions in the \pkg{bnlearn} package. (Just 
-    (Presently, just \code{iamb}.)
+    Wrappers for functions in the \pkg{bnlearn} package. (Presently, just \code{iamb}.)
 }
 
 \usage{
