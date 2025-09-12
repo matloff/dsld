@@ -18,7 +18,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    person("Brandon", "Zarate Estrada", email = "bdzarate@ucdavis.edu",
    role = c("aut"))
    )
-Maintainer: Norm Matloff <nsmatloff@ucdavis.edu>
+Maintainer: Aditya Mittal <mittalaa@uci.edu>
 VignetteBuilder: knitr
 Imports: Kendall, ranger, ggplot2, plotly, 
    freqparcoord, fairness,sandwich
