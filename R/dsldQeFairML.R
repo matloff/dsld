@@ -29,7 +29,7 @@ dsldQeFairRF <- function(data, yName, sNames, deweightPars = NULL, nTree = 500,
   # setup
   scaling <- FALSE
   appendedItems <- variablesAsList(yName, sNames, scaling, deweightPars)
-  
+
   if (is.factor(data[[yName]]) && is.null(yesYVal)) {
     stop("Missing `yesYVal` for a factor response.")
   } 
@@ -53,13 +53,27 @@ dsldQeFairRF <- function(data, yName, sNames, deweightPars = NULL, nTree = 500,
                       deweightPars = expandedDW,
                       appendedItems = appendedItems
   )
-  
+  # identifier for predict-time logic and y levels (classification)
+  model$func_call <- "dsldQeFairRF"
+  if (!is.null(yesYVal)) {
+    model$yName_info <- levels(data[[yName]])
+  }
+
   # training preds/corrs
   model$trainPreds <- predict.dsldQeFair(model, data[,!colnames(data) %in% c(yName)])
   
   if (!is.null(yesYVal)) {
     # classification case
-    model$trainAcc <- mean(data[[yName]] != model$trainPreds$preds$predClasses)
+    # map 0/1 predClasses to original factor labels for accuracy comparison
+    y_levels <- levels(data[[yName]])
+    noYVal <- setdiff(y_levels, yesYVal)[1]
+    raw_pred <- model$trainPreds$preds$predClasses
+    pred_classes_mapped <- ifelse(as.numeric(as.character(raw_pred)) == 1, yesYVal, noYVal)
+    pred_classes_mapped <- factor(pred_classes_mapped, levels = y_levels)
+    # overwrite extractable predClasses with mapped factor labels
+    model$trainPreds$preds$predClasses <- pred_classes_mapped
+
+    model$trainAcc <- mean(data[[yName]] != pred_classes_mapped)
     model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds$probs[,2])
   } else {
     # regression case
@@ -106,6 +120,11 @@ dsldQeFairKNN <- function(data, yName, sNames, deweightPars = NULL,
                       expandVals = expandVals,
                       appendedItems = appendedItems
   )
+  # identifier for predict-time logic and y levels (classification)
+  model$func_call <- "dsldQeFairKNN"
+  if (!is.null(yesYVal)) {
+    model$yName_info <- levels(data[[yName]])
+  }
   
   # training preds/corrs
   model$trainPreds <- predict.dsldQeFair(model, data[,!colnames(data) %in% c(yName)])
@@ -218,6 +237,9 @@ dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL) {
 # works in the binary classification case
 dsldQeFairRidgeLog <- function(data, yName, sNames, deweightPars = NULL, yesYVal) {
   model = qeFairRidgeBase(data, yName, sNames, deweightPars, yesYVal)
+  # identifier and y levels for classification use later
+  model$func_call <- "dsldQeFairRidgeLog"
+  model$yName_info <- levels(data[[yName]])
   model$trainPreds <- predict.dsldQeFair(model, data[,!colnames(data) %in% c(yName)])
   model$trainAcc <- mean(data[[yName]] != model$trainPreds$preds$predClasses)
   model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds$probs)
@@ -253,6 +275,50 @@ predict.dsldQeFair <- function(object, newx, ...) {
   }
   return(list(preds = preds, correlations = cors))
 }
+
+# predict.dsldQeFair <- function(object, newx, ...) {
+#   # extract params from the model
+#   #yName <- model$yName
+#   sNames <- as.vector(object$sNames)
+#   scaling <- object$scaling
+#   scalePars <- object$scalePars
+  
+  
+#   newxNoS <- newx[, !colnames(newx) %in% c(sNames)]
+#   newxNoS <- apply_factor_levels(newxNoS, object$FactorsInfo)
+  
+#   # rescale the data according to how the training data was scaled in the model
+#   newxNoS <- scaleNewX(newxNoS, scaling, scalePars)
+#   preds = predict(object$base, newxNoS)
+#   if (is.list(preds)) {
+#     if (is.null(dim(preds$probs))) {
+#       # it's a simple vector, already length n
+#       probs <- preds$probs
+#     } else {
+#       # it's a matrix/data frame with 2 columns (0/1)
+#       probs <- preds$probs[,1]
+#     }
+
+#     # If RF classification, map 0/1 predClasses to original factor labels
+#     if (identical(object$func_call, "dsldQeFairRF")) {
+#       y_levels <- object$yName_info
+#       yesYVal <- object$yesYVal
+#       noYVal <- setdiff(y_levels, yesYVal)[1]
+#       raw_num <- suppressWarnings(as.numeric(as.character(preds$predClasses)))
+      
+#       pred_classes_mapped <- ifelse(raw_num == 1, yesYVal, noYVal)
+#       pred_classes_mapped <- factor(pred_classes_mapped, levels = y_levels)
+#       # overwrite extractable predClasses with mapped factor labels
+#       preds$predClasses <- pred_classes_mapped
+
+#     }
+
+#     cors <- s_correlations(newx, sNames, probs)
+#   } else {
+#     cors = s_correlations(newx, sNames, preds)
+#   }
+#   return(list(preds = preds, correlations = cors))
+# }
 
 ### helper functions
 
