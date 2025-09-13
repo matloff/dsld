@@ -327,7 +327,7 @@ expandDeweights <- function(deweightPars, row1) {
           regtools::factorToDummies(row1[,item], item, omitLast = TRUE)
         )
       )
-      expanded <- Map(\(x) deweightPars[[item]], names)
+      expanded <- Map(function(x) deweightPars[[item]], names)
       pars <- append(pars, expanded)
     } else {                          
       pars <- append(pars, deweightPars[item])  # add deweight as usual

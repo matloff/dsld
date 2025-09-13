@@ -9,7 +9,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    role = c("aut")),
    person("Shubhada", "Martha", email = "smartha@ucdavis.edu",
    role = c("aut")),
-   person("Aditya", "Mittal", email = "mittalaa@uci.edu",
+   person("Aditya", "Mittal", email = "adityamittal2031@gmail.com",
    role = c("aut", "cre")),
    person("Billy", "Ouattara", email = "btouattara@ucdavis.edu",
    role = c("aut")),
@@ -18,7 +18,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    person("Brandon", "Zarate Estrada", email = "bdzarate@ucdavis.edu",
    role = c("aut"))
    )
-Maintainer: Aditya Mittal <mittalaa@uci.edu>
+Maintainer: Aditya Mittal <adityamittal2031@gmail.com>
 VignetteBuilder: knitr
 Imports: Kendall, ranger, ggplot2, plotly, 
    freqparcoord, fairness,sandwich
