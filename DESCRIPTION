@@ -2,7 +2,7 @@ Package: dsld
 Version: 1.0.0
 Title: Data Science Looks at Discrimination
 Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
-   role = c("aut", "cre"), comment = c(ORCID = "0000-0001-9179-6785")),
+   role = c("aut"), comment = c(ORCID = "0000-0001-9179-6785")),
    person("Taha", "Abdullah", email = "tmabdullah@ucdavis.edu",
    role = c("aut")),
    person("Arjun", "Ashok", email = "arjashok@ucdavis.edu",
@@ -10,7 +10,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    person("Shubhada", "Martha", email = "smartha@ucdavis.edu",
    role = c("aut")),
    person("Aditya", "Mittal", email = "mittalaa@uci.edu",
-   role = c("aut")),
+   role = c("aut", "cre")),
    person("Billy", "Ouattara", email = "btouattara@ucdavis.edu",
    role = c("aut")),
    person("Jonathan", "Tran", email = "jsttran@ucdavis.edu",

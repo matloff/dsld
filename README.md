@@ -41,12 +41,12 @@ From CRAN :
 install.packages("dsld")
 ```
 
-From GitHub (latest Version):
+<!-- From GitHub (latest Version):
 
 ```r
 library(devtools)
 install_github("matloff/dsld", force = TRUE)
-```
+``` -->
 
 ## Analysis categories:
 
