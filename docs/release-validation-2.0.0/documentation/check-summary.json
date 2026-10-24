@@ -1,0 +1,50 @@
+{
+  "macos-full": {
+    "errors": 0,
+    "warnings": 0,
+    "notes": 1,
+    "passed_regression_checks": 45,
+    "skipped": []
+  },
+  "macos-depends": {
+    "errors": 0,
+    "warnings": 0,
+    "notes": 1,
+    "passed_regression_checks": 44,
+    "skipped": [
+      "SKIP: dsldNclm requires cccp "
+    ]
+  },
+  "macos-suggests": {
+    "errors": 0,
+    "warnings": 0,
+    "notes": 1,
+    "passed_regression_checks": 45,
+    "skipped": []
+  },
+  "linux-release": {
+    "errors": 0,
+    "warnings": 0,
+    "notes": 1,
+    "passed_regression_checks": 45,
+    "skipped": []
+  },
+  "linux-depends": {
+    "errors": 0,
+    "warnings": 0,
+    "notes": 1,
+    "passed_regression_checks": 40,
+    "skipped": [
+      "SKIP: dsldNclm requires cccp ",
+      "SKIP: dsldZlm requires CVXR ",
+      "SKIP: dsldZlrm requires CVXR "
+    ]
+  },
+  "linux-devel": {
+    "errors": 0,
+    "warnings": 0,
+    "notes": 1,
+    "passed_regression_checks": 45,
+    "skipped": []
+  }
+}

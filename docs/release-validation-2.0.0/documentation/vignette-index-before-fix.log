@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/adityamittal/Desktop/PhD/dsld/tools/check_release_artifacts.py", line 140, in <module>
+    main()
+    ~~~~^^
+  File "/Users/adityamittal/Desktop/PhD/dsld/tools/check_release_artifacts.py", line 76, in main
+    assert "dsld/build/vignette.rds" in names, "Missing built vignette index"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Missing built vignette index

@@ -2,10 +2,9 @@
 
 ## 2.0.0 — unpublished release candidate
 
-This release retains the public function signatures while correcting numerical
-behavior and strengthening validation. Earlier local audit candidates were
-numbered 1.0.1 (R) and 0.0.4 (Python); those candidates were never published.
-Both distributions now use 2.0.0 at the maintainer's request.
+This release preserves the public R interfaces, corrects numerical and
+prediction errors, and improves documentation and validation. Both the R
+package and Python interface use version 2.0.0.
 
 ### Dependencies and packaging
 
@@ -63,8 +62,7 @@ Both distributions now use 2.0.0 at the maintainer's request.
 - Refresh both READMEs, help pages, the function guide, and the Quick Start.
   Quick Start results now come from executable chunks.
 - Numerical results affected by the fixes above may change. Invalid inputs now
-  produce earlier, clearer errors. See the [maintenance record](docs/maintenance-2026-10.md)
-  for the rationale, coverage, and validation results.
+  produce earlier, clearer errors.
 
 ## Python interface 2.0.0 — unpublished maintenance version
 

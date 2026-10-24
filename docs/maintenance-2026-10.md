@@ -3,6 +3,8 @@
 This records the initial cleanup pass. The subsequent
 [CRAN readiness audit](cran-readiness-2026-10.md) adds further fixes, experiments,
 real Jupyter-kernel checks, and additional R/platform validation.
+See the [release review](release-2.0.0.md) for the current submission archive
+and completed platform checks.
 
 ## Scope and compatibility
 
@@ -40,7 +42,6 @@ The separate, actively used `fairml` dependency is retained.
 2. Captured the original exported R function signatures for compatibility checks.
 3. Removed the unused `fairness` dependency; declared optional solver packages.
 4. Set up isolated R and Python test installations outside the checkout.
-
 5. Repaired numerical and interface errors, adding reference-based regression checks.
 6. Reworked documentation and executed the README, vignette, and notebook examples.
 7. Built both distributions and validated the installed packages, including current
@@ -250,5 +251,5 @@ for a particular application.
 
 Build products and complete temporary working logs were kept under
 `/private/tmp/dsld-cleanup-20261023`; the compact evidence linked above is retained
-in the repository. No commit, push, CRAN/PyPI submission, or external message was
-performed.
+in the repository. At the end of this initial pass, no commit, push, CRAN/PyPI
+submission, or external message had been performed.

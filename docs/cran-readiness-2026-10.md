@@ -221,5 +221,5 @@ The [complete artifact manifest](submission-validation-2.0.0/archive-sha256.json
 also records the Python hashes and sizes. The [submission comments](../cran-comments.md)
 explain the archive note, maintainer-address change, completed platform checks,
 and reverse-dependency scope. No CRAN/PyPI submission or repository push has
-been made. Changes to package sources after this audit require rebuilding and
+been made at the end of this audit. Changes to package sources require rebuilding and
 checking the resulting archives again.

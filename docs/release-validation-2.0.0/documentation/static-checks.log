@@ -1,0 +1,6 @@
+PASS: 84 local Markdown links; notebook schemas and 27 clean code cells.
+All checks passed!
+26 files already formatted
+PASS: authored-file whitespace; 63 runtime/help/test/data files unchanged; notebook code unchanged; datasets match 7e9f875.
+PASS: overview has exactly book/paper/Python resource links; both README HTML previews contain public links and no maintenance-resource links.
+PASS: generated files are ignored while authored documentation remains tracked; vignette index retained in R archive.

@@ -1,9 +1,14 @@
-# Final 2.0.0 release evidence
+# 2.0.0 release evidence
 
 See the [release review](../release-2.0.0.md) for findings and the submission
 handoff. These files supersede the earlier candidate's checks in
 `submission-validation-2.0.0`; both records are retained so their hashes and
 test counts remain auditable.
+
+The later [documentation rebuild](documentation/README.md) preserves all runtime
+code and records the current submission archive. Files in this directory's
+root describe the preceding `00c708de...` archive; their original hashes and
+check results are retained.
 
 - `archive-sha256.json` identifies the exact R source archive and Python
   distributions. `artifact-verification.log` verifies their contents against

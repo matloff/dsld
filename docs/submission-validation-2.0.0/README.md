@@ -4,6 +4,8 @@ These files support the [readiness report](../cran-readiness-2026-10.md).
 The audit started October 23, 2026 in Pacific time; UTC logs show October 24.
 The earlier `validation-2026-10` directory documents the first cleanup pass,
 not this release candidate.
+For the current archive and later hosted checks, see the
+[release review](../release-2.0.0.md).
 
 ## Artifact identity
 

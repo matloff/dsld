@@ -26,7 +26,7 @@ and limiting sensitive-attribute influence in predictive models.
 | Cross-validated parameter comparison | `dsldFairUtils` |
 
 Use `summary()` for the linear/logistic group comparisons and `predict()` for
-new data. Internal comparison helpers are not exported functions.
+new data. Each function's help page describes its arguments and return values.
 
 The fair-ML fields `trainAcc` and `testAcc` are prediction errors, despite their
 historical names: mean absolute error for regression and misclassification rate

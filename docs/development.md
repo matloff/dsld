@@ -7,6 +7,10 @@ announces a change.
 
 ## Repository map
 
+User documentation lives in the two READMEs, help pages, and vignettes. This
+directory holds contributor guidance and maintenance records; the latest
+[release review](release-2.0.0.md) identifies the checked submission archive.
+
 | Location | Contents |
 | --- | --- |
 | `R/` | Statistical models, fairness wrappers, graphics, and internal utilities |
@@ -21,6 +25,7 @@ announces a change.
 | `.github/workflows/checks.yaml` | R platform matrix and Python/example CI |
 | `NEWS.md`, `docs/maintenance-2026-10.md` | Release changes and detailed maintenance evidence |
 | `docs/cran-readiness-2026-10.md` | Additional CRAN research, experiment design, and submission validation |
+| `docs/release-2.0.0.md` | Current release checks, artifact identity, and submission instructions |
 
 ## Install a development environment
 
@@ -100,6 +105,14 @@ cell in order, with a fresh Python namespace per notebook, while suppressing
 browser/display launches. It does not launch a Jupyter kernel or persist
 outputs. It also shares one embedded R interpreter; each notebook seeds R and
 loads data into its own R environment.
+
+Use a temporary directory or the ignored `validation-output/` directory for
+generated results. `.gitignore` excludes local caches and build outputs;
+`.Rbuildignore` also excludes contributor tools and maintenance records from
+the R source package. Keep authored documentation and selected evidence tracked.
+Do not exclude R's generated `build/vignette.rds` from the source archive;
+it indexes the prebuilt vignettes. The archive checker verifies this file and
+the rendered HTML guides.
 
 The separate kernel runner needs `nbclient` and `ipykernel` (included in the
 Python `examples` extra). It executes each notebook in a fresh Jupyter kernel,

@@ -11,29 +11,21 @@ Discrimination is an important social issue, and many datasets can help us
 investigate it. DSLD brings together statistical models, visualizations, and
 fair machine learning methods to make these investigations more accessible.
 
-The package is intended for teaching and research in statistics and the social
-sciences, organizational analysis, and other applications involving differences
-between groups. Its companion book explains the statistical principles behind
+The package supports teaching and research in statistics and the social
+sciences, organizational analysis, and other studies of differences between
+groups. The companion book explains the statistical principles behind
 the methods and works through practical examples.
 
-- [Companion book](https://htmlpreview.github.io/?https://github.com/matloff/dsldBook/blob/main/_book/index.html)
+- [Companion book](https://matloff.github.io/dsldBook/)
 - [Research paper](https://arxiv.org/abs/2411.04228)
-- [Python interface and examples](inst/README.md)
-- [Development and validation guide](docs/development.md)
-- [Maintenance record](docs/maintenance-2026-10.md) and [release notes](NEWS.md)
-- [CRAN readiness audit](docs/cran-readiness-2026-10.md)
-- [2.0.0 release candidate and submission guide](docs/release-2.0.0.md)
+- [Python interface and examples](https://github.com/matloff/dsld/blob/master/inst/README.md)
 
 ## Installation
 
-**CRAN status:** DSLD was archived on November 27, 2025 because its required
-`fairness` dependency had been archived. This 2.0.0 candidate removes that
-unused dependency. It has not yet been submitted to CRAN; `install.packages("dsld")`
-is therefore not the installation route for this version.
-[CRAN's archive notice](https://cran.r-project.org/package=dsld) preserves the
-original releases.
-
-From an R session with this repository as the working directory:
+DSLD is currently [archived on CRAN](https://cran.r-project.org/package=dsld).
+Version 2.0.0 is available from this repository and has not yet been submitted
+to CRAN. Download or clone the repository, then run the following in R with
+the repository root as your working directory:
 
 ```r
 install.packages("remotes")  # Run once if needed.
@@ -54,7 +46,7 @@ vignette("Quick_Start", package = "dsld")
 vignette("Function_List", package = "dsld")
 ```
 
-See the [Python installation guide](inst/README.md) to use the same R
+See the [Python installation guide](https://github.com/matloff/dsld/blob/master/inst/README.md) to use the same R
 implementations from Python.
 
 ## Two kinds of analysis

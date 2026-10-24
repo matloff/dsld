@@ -32,11 +32,11 @@ Use `summary()` and `predict()` for the supported fitted-model classes.
 
 # Analytical operations
 
-## Treatment comparison in the presence of confounders
+## Group comparisons with confounder adjustment
 
 The `lsa` dataset, supplied by qeML, contains law-school admissions and outcome
-variables. This example retains the original guide's illustration: LSAT score
-as Y, race as S, and the remaining columns as covariates. Some covariates are
+variables. We use LSAT score as Y, race as S, and the remaining columns as
+covariates. Some covariates are
 measured after the LSAT, so this is an illustration of the software rather than
 a causal model of test-score differences.
 
@@ -185,10 +185,10 @@ dsldTakeALookAround(wages, "wageinc", "gender", maxFeatureSetSize = 2, holdout =
 
 # Python interface
 
-The Python package is in `inst/src/dsldPy`. Install the R package first, then run
-`python -m pip install ./inst` from the repository root. The Python README and
-three example notebooks in `inst/examples` cover data conversion, analysis,
-fair prediction, and graphics.
+Install the R package first, then run `python -m pip install ./inst` from the
+repository root. The [Python guide](https://github.com/matloff/dsld/blob/master/inst/README.md)
+includes installation instructions and three notebooks covering data conversion,
+analysis, fair prediction, and graphics.
 
 ```python
 import rpy2.robjects as ro
@@ -203,6 +203,6 @@ dsldPyLinearSummary(model)
 
 # Associated textbook and function reference
 
-The [free companion textbook](https://htmlpreview.github.io/?https://github.com/matloff/dsldBook/blob/main/_book/index.html)
+The [free companion textbook](https://matloff.github.io/dsldBook/)
 explains the statistical concepts using DSLD examples. For the categorized
 function reference, run `vignette("Function_List", package = "dsld")`.

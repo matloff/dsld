@@ -1,6 +1,8 @@
 # R session/user files
 .Rhistory
 .RData
+.Renviron
+.Rproj.user/
 
 # macOS metadata
 .DS_Store
@@ -8,6 +10,8 @@
 # Build, check, and Python installation artifacts
 *.Rcheck/
 dsld_*.tar.gz
+dsldpy-*.tar.gz
+*.whl
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -15,3 +19,14 @@ inst/build/
 inst/dist/
 .venv/
 .ruff_cache/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Local build and validation output; keep authored docs and curated evidence
+/build/
+/dist/
+/check/
+/validation-output/

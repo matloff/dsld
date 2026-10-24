@@ -1,0 +1,7 @@
+200 https://htmlpreview.github.io/?https://github.com/matloff/dsldBook/blob/main/_book/index.html
+FAILED https://github.com/matloff/dsldBook/blob/main/_book/index.html: HTTP Error 404: Not Found
+200 https://arxiv.org/abs/2411.04228
+200 https://github.com/matloff/dsld/blob/master/inst/README.md
+200 https://github.com/matloff/dsld/blob/master/inst/examples/tabular.ipynb
+200 https://github.com/matloff/dsld/blob/master/inst/examples/machine_learning.ipynb
+200 https://github.com/matloff/dsld/blob/master/inst/examples/graphical.ipynb

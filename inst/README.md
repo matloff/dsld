@@ -4,18 +4,17 @@
 available from Python through rpy2. The models use the R implementation, so
 R and the R package `dsld` must be installed first.
 
-- [Project overview and R examples](../README.md)
-- [Companion book](https://htmlpreview.github.io/?https://github.com/matloff/dsldBook/blob/main/_book/index.html)
+- [Project overview and R examples](https://github.com/matloff/dsld#readme)
+- [Companion book](https://matloff.github.io/dsldBook/)
 - [Research paper](https://arxiv.org/abs/2411.04228)
-- [Development and validation](../docs/development.md)
 
 ## Installation
 
-This checkout contains the unpublished Python maintenance version 2.0.0,
-paired with R package version 2.0.0. Install this checkout to use these fixes.
+This repository contains Python interface version 2.0.0, paired with R package
+version 2.0.0. Install both from the same checkout.
 
 1. Install R and confirm that `R RHOME` works in your terminal.
-2. Install the R package using the [repository installation instructions](../README.md#installation).
+2. Install the R package using the [R installation instructions](https://github.com/matloff/dsld#installation).
 3. From the repository root, install the Python interface into your environment:
 
 ```sh
@@ -140,11 +139,11 @@ requested filename.
 The notebooks load the bundled datasets, set random seeds, and run without
 machine-specific file paths:
 
-- [Tabular analysis](examples/tabular.ipynb): group comparisons, feature sets,
+- [Tabular analysis](https://github.com/matloff/dsld/blob/master/inst/examples/tabular.ipynb): group comparisons, feature sets,
   confounder/proxy exploration, frequency tables, and matching.
-- [Machine learning](examples/machine_learning.ipynb): regression,
+- [Machine learning](https://github.com/matloff/dsld/blob/master/inst/examples/machine_learning.ipynb): regression,
   classification, held-out evaluation, and parameter grids.
-- [Graphics](examples/graphical.ipynb): scatterplots, parallel coordinates,
+- [Graphics](https://github.com/matloff/dsld/blob/master/inst/examples/graphical.ipynb): scatterplots, parallel coordinates,
   conditional disparity, network discovery, and group densities.
 
 | Area | Functions |

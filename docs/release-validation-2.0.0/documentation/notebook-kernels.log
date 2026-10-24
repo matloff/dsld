@@ -1,0 +1,9 @@
+RUN graphical.ipynb in a fresh dsld-audit kernel
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+PASS graphical.ipynb: 8 code cells
+RUN machine_learning.ipynb in a fresh dsld-audit kernel
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+PASS machine_learning.ipynb: 10 code cells
+RUN tabular.ipynb in a fresh dsld-audit kernel
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+PASS tabular.ipynb: 9 code cells

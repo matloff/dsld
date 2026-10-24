@@ -72,6 +72,12 @@ def main():
             ), name
         packaged = read_dcf(archive.extractfile("dsld/DESCRIPTION").read())
         assert all(packaged[key] == value for key, value in description.items())
+        if "VignetteBuilder" in description:
+            assert "dsld/build/vignette.rds" in names, "Missing built vignette index"
+            for vignette in (ROOT / "vignettes").glob("*.Rmd"):
+                assert f"dsld/inst/doc/{vignette.stem}.html" in names, (
+                    f"Missing rendered vignette: {vignette.name}"
+                )
         forbidden = (
             "/docs/",
             "/tools/",

@@ -9,3 +9,12 @@
 ^.*\.pyc$
 ^\.ruff_cache$
 ^cran-comments\.md$
+^\.Renviron$
+^\.Rproj\.user$
+^.*\.ipynb_checkpoints.*$
+^\.(pytest_cache|mypy_cache)$
+^\.coverage$
+^htmlcov$
+^(dist|check|validation-output)$
+^dsld(_|py-).*\.tar\.gz$
+^.*\.whl$
