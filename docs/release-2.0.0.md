@@ -53,6 +53,17 @@ note repeats the historical archival reason, now addressed by removing the
 unused `fairness` dependency. Raw evidence is in the
 [documentation-rebuild record](release-validation-2.0.0/documentation/README.md).
 
+The documentation rebuild at
+[`f11b3aa`](https://github.com/matloff/dsld/commit/f11b3aa21ad6cd8e801600ed73bb5560106f70ca)
+also passed all five jobs in its
+[hosted workflow](https://github.com/matloff/dsld/actions/runs/40073575676):
+R release on Windows, macOS, and Linux; Linux R-devel; and Python 3.12 with
+executable examples. All four hosted R checks report `Status: OK`. The
+[workflow manifest](release-validation-2.0.0/documentation/github-workflow-results.json)
+records the checked commit, job results, and settings. Hosted R checks omit
+the PDF manual and disable CRAN incoming checks; the full local checks above
+cover those separately.
+
 | Check | Result and evidence |
 | --- | --- |
 | macOS R 4.5.1, full `--as-cran` | [Passed](release-validation-2.0.0/documentation/macos-full.log), including PDF/HTML manuals, extended examples, tests, and vignettes |

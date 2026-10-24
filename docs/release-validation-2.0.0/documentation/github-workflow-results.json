@@ -1,0 +1,365 @@
+{
+  "repository": "matloff/dsld",
+  "checked_commit": "f11b3aa21ad6cd8e801600ed73bb5560106f70ca",
+  "run_id": 40073575676,
+  "url": "https://github.com/matloff/dsld/actions/runs/40073575676",
+  "verified_at": "2026-10-24 07:22:59 UTC",
+  "conclusion": "success",
+  "submission_archive_sha256": "969f3f14bb9970d3e43b583b6d8a3804db33590518e20a8c63574895a8be9ca4",
+  "archive_scope": "Six local checks use this exact submission archive. Hosted jobs rebuild distributions from the same package sources.",
+  "r_check_arguments": [
+    "--no-manual",
+    "--as-cran"
+  ],
+  "r_check_environment": {
+    "_R_CHECK_CRAN_INCOMING_": "false",
+    "_R_CHECK_FORCE_SUGGESTS_": "false",
+    "NOT_CRAN": "true",
+    "_R_CHECK_SYSTEM_CLOCK_": "FALSE"
+  },
+  "jobs": [
+    {
+      "id": 120812049761,
+      "name": "Python interface and examples",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40073575676,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run r-lib/actions/setup-pandoc@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run r-lib/actions/setup-r@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Install R package and Python wheel",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Check APIs, wrappers, documentation, and examples",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Post Run actions/setup-python@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Post Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        }
+      ],
+      "url": "https://github.com/matloff/dsld/actions/runs/40073575676/job/120812049761"
+    },
+    {
+      "id": 120812049855,
+      "name": "R release on macos-latest",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40073575676,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run r-lib/actions/setup-pandoc@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run r-lib/actions/setup-r@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run r-lib/actions/check-r-package@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ],
+      "url": "https://github.com/matloff/dsld/actions/runs/40073575676/job/120812049855"
+    },
+    {
+      "id": 120812049935,
+      "name": "R release on windows-latest",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40073575676,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run r-lib/actions/setup-pandoc@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run r-lib/actions/setup-r@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run r-lib/actions/check-r-package@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ],
+      "url": "https://github.com/matloff/dsld/actions/runs/40073575676/job/120812049935"
+    },
+    {
+      "id": 120812049988,
+      "name": "R devel on ubuntu-latest",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40073575676,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run r-lib/actions/setup-pandoc@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run r-lib/actions/setup-r@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run r-lib/actions/check-r-package@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ],
+      "url": "https://github.com/matloff/dsld/actions/runs/40073575676/job/120812049988"
+    },
+    {
+      "id": 120812050011,
+      "name": "R release on ubuntu-latest",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40073575676,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run r-lib/actions/setup-pandoc@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run r-lib/actions/setup-r@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run r-lib/actions/check-r-package@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Post Run r-lib/actions/setup-r-dependencies@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run actions/checkout@v7",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        }
+      ],
+      "url": "https://github.com/matloff/dsld/actions/runs/40073575676/job/120812050011"
+    }
+  ]
+}

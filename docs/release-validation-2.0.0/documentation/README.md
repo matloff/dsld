@@ -45,6 +45,12 @@ environment manifests in the parent directory remain applicable because the
 same isolated libraries and containers were reused. `public-links.log` records
 successful requests to the final book, paper, Python-guide, and notebook URLs.
 
+`github-workflow-results.json` records all five successful hosted jobs for
+`f11b3aa`: R release on Windows, macOS, and Linux; Linux R-devel; and Python 3.12.
+Hosted jobs rebuild distributions from the same source and pass the strengthened
+vignette-index check. Their archives can differ in generated metadata from the
+submission archive. Hosted R checks omit the PDF manual and incoming checks.
+
 The two `*-before-*` logs intentionally record findings from earlier builds in
 this pass: the stale book URL and the missing vignette index. The latter was
 caused by an overbroad build exclusion added during this pass, then corrected
