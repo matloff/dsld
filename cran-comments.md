@@ -35,10 +35,21 @@ address has been sent as part of this preparation.
 - Ubuntu 26.04.1, x86_64, R-devel 4.7.0 (2026-10-22 r90748): full
   `R CMD check --as-cran`, including PDF manual, extended examples, all 45
   regression checks, and vignettes: 0 errors, 0 warnings, 1 note.
+- GitHub Actions R 4.6.1 on Windows Server 2022 x64 (build 26100), macOS
+  26.6.2 arm64, and Ubuntu 24.04.5 x86_64: `R CMD check --no-manual --as-cran`
+  passed with `Status: OK` on all three platforms.
+- GitHub Actions Ubuntu 24.04.5 x86_64, R-devel 4.7.0 (2026-10-22 r90748),
+  with CRAN dependencies built from source: `R CMD check --no-manual --as-cran`
+  passed with `Status: OK`.
 
-The Linux checks ran in official R-hub containers. R-devel used R 4.6
+The local Linux checks ran in official R-hub containers. Local R-devel used R 4.6
 dependency binaries, with the current CRAN `lme4` 2.1-0 built separately from
-source under R-devel. Windows and hosted CI were not run in this preparation.
+source under R-devel. The hosted R check action disables CRAN incoming checks,
+so its zero-note results supplement the local full checks and their incoming
+note; they do not replace them. Hosted checks also omit the PDF manual.
+All five jobs in the corrected hosted workflow passed, including the separate
+Python 3.12 interface and executable-documentation job:
+<https://github.com/matloff/dsld/actions/runs/40069425096>.
 
 The incoming note states that this is a new submission and that the package
 was archived, repeating the historical `fairness` dependency reason. The

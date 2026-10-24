@@ -63,21 +63,39 @@ package-check warnings.
 The source was committed and pushed as
 [`c078abf`](https://github.com/matloff/dsld/commit/c078abf81a1df39b5b7d50e8d31733be1bcec4c1).
 The [first hosted run](https://github.com/matloff/dsld/actions/runs/40069000775)
-passed its macOS and Windows R release checks. It exposed a Python API-checker
-portability issue: Python 3.12's `ast.dump` includes empty fields that the
+passed its macOS, Windows, and Linux R release checks. It exposed a Python
+API-checker portability issue: Python 3.12's `ast.dump` includes empty fields that the
 Python 3.14-generated baseline omits. The API itself had not changed. The
 checker now emits a stable structural representation, preserving the original
 baseline and detecting changes to defaults, parameter kinds, and variadic
 arguments. It passes locally under Python 3.12, 3.13, and 3.14. The updated
 workflow also uses the current Node 24-based checkout and Python setup actions.
 These changes affect development tooling only; the checked source archive is
-unchanged. Hosted results for the corrected workflow are recorded separately.
+unchanged. The [corrected workflow](https://github.com/matloff/dsld/actions/runs/40069425096)
+at [`60edf3e`](https://github.com/matloff/dsld/commit/60edf3e91ee7695a8df2abef189de0b7d6741f0d)
+passes all five jobs: R release on Windows, macOS, and Linux; R-devel on Linux;
+and the Python interface and examples. Its Python 3.12
+job also passes the 21 integration tests, both API comparisons, numerical
+references, executable documentation, and archive verification. The complete
+[Python validation step](release-validation-2.0.0/github-python-validation.log)
+is retained, including expected random-forest weight diagnostics.
+The [workflow result manifest](release-validation-2.0.0/github-workflow-results.json)
+records the commit, job IDs, check settings, and successful conclusions.
 
 GitHub's R check action disables CRAN incoming checks and omits the PDF manual,
 so a hosted `Status: OK` is consistent with the local full checks' archive note.
-The [Windows log](release-validation-2.0.0/github-windows-check.log) and
-[macOS log](release-validation-2.0.0/github-macos-check.log) preserve the complete
-package-check portions of those jobs, including platform and R versions.
+The [Windows log](release-validation-2.0.0/github-windows-check.log),
+[macOS log](release-validation-2.0.0/github-macos-check.log), and
+[Linux release log](release-validation-2.0.0/github-linux-release-check.log), and
+[Linux R-devel log](release-validation-2.0.0/github-linux-devel-check.log)
+preserve the complete package-check portions of the corrected workflow,
+including platform and R versions.
+The hosted R-devel run uses GCC on Ubuntu 24.04.5 and the same r90748 snapshot
+as the local Clang-based check. Its CRAN dependencies were built from source;
+the [build record](release-validation-2.0.0/github-linux-devel-dependency-builds.log)
+and [installed-package manifest](release-validation-2.0.0/github-linux-devel-session-info.txt)
+document that independent environment. Initial dependency compilation took
+about 32 minutes; DSLD's own package check then completed in about 93 seconds.
 
 ## Exact submission file
 

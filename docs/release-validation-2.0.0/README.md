@@ -21,6 +21,20 @@ test counts remain auditable.
   all result rows and records matching hashes.
 - The README, notebook, API, static-check, and dependency logs provide the
   remaining validation evidence. Dataset hashes still match commit `7e9f875`.
+- `github-*-check.log` captures complete R package-check sections from the
+  corrected hosted workflow. `github-python-validation.log` contains its
+  complete Python validation step, including both notebook execution methods.
+  Hosted checks build their own archives; hashes at the end of the Python log
+  identify those temporary builds, not the submission archive in
+  `archive-sha256.json`. Generated vignettes and archive metadata can differ
+  across build environments; the archive checker verifies included sources.
+- `github-workflow-results.json` records all five successful jobs at commit
+  `60edf3e`, whose package sources match `c078abf`. The R-devel dependency-build
+  log and session manifest record a fresh installation from source. The Python
+  installation log and R session manifest record that job's dependency versions.
+- `github-python-checker-before-fix.log` records the first run's Python 3.12
+  checker failure. The three `python-api-3.*.log` files verify the corrected
+  checker against the unchanged baseline on Python 3.12, 3.13, and 3.14.
 
 The macOS runs use R 4.5.1/arm64; Linux uses Ubuntu 26.04.1/x86_64 with R 4.6.1
 and R-devel 4.7.0 (2026-10-22 r90748). Thread limits are two, as in the earlier
