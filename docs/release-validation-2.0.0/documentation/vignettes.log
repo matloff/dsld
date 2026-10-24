@@ -1,4 +1,0 @@
-     Item            Title                         
-[1,] "Function_List" "Function List (source, html)"
-[2,] "Quick_Start"   "Quick Start (source, html)"  
-PASS: installed vignette index lists both guides.

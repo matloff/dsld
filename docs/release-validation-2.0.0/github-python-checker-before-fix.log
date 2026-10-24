@@ -1,9 +1,0 @@
-2026-10-24T06:12:12.4041688Z [36;1mpython tools/check_python_api.py[0m
-2026-10-24T06:12:15.1804025Z PASS: 25 exported R signatures and defaults preserved.
-2026-10-24T06:12:20.5876967Z PASS: 120 settings; linear/logistic predictions and standard errors match independent references.
-2026-10-24T06:12:21.3910401Z PASS: 24 CV candidates across 12 seeds match independent penalized normal equations and aggregation.
-2026-10-24T06:12:21.6723061Z Traceback (most recent call last):
-2026-10-24T06:12:21.6736553Z   File "/home/runner/work/dsld/dsld/tools/check_python_api.py", line 49, in <module>
-2026-10-24T06:12:21.6738890Z   File "/home/runner/work/dsld/dsld/tools/check_python_api.py", line 39, in main
-2026-10-24T06:12:21.6741539Z AssertionError: Python signature changed: dsldPyFreqPCoord.py:dsldPyFreqPCoord
-2026-10-24T06:12:21.6794639Z ##[error]Process completed with exit code 1.

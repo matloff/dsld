@@ -25,8 +25,13 @@ inst/dist/
 .coverage
 htmlcov/
 
-# Local build and validation output; keep authored docs and curated evidence
+# Local build and validation output
 /build/
 /dist/
 /check/
 /validation-output/
+
+# Internal maintenance records and CRAN submission correspondence
+# User guides remain tracked in README.md, inst/README.md, man/, and vignettes/.
+/docs/
+/cran-comments.md
