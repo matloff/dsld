@@ -54,8 +54,8 @@ source under R-devel. The hosted R check action disables CRAN incoming checks,
 so its zero-note results supplement the local full checks and their incoming
 note; they do not replace them. Hosted checks also omit the PDF manual.
 All five jobs for the final documentation rebuild passed in the hosted
-workflow, including the separate Python 3.12 interface and executable-
-documentation job:
+workflow, including the Python 3.12 job that tests the interface and runs
+the README and notebook examples:
 <https://github.com/matloff/dsld/actions/runs/40073575676>.
 
 The incoming note states that this is a new submission and that the package
