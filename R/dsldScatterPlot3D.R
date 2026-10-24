@@ -3,26 +3,29 @@ dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
                                maxPoints = NULL, xlim = NULL, ylim = NULL,
                                zlim = NULL, main = NULL, colors = "Paired",
                                opacity = 1, pointSize = 8) {
+    .dsld_check_data(data, c(yNames, sName))
     # environment setup
     getSuggestedLib("plotly")
-    
+
     # limit amount of data points
     if (!is.null(maxPoints)) {
-      data <- data[1:maxPoints, ]
+      if (length(maxPoints) != 1L || !is.finite(maxPoints) || maxPoints < 1L || maxPoints != as.integer(maxPoints))
+        stop("maxPoints must be a positive integer.")
+      data <- data[seq_len(min(maxPoints, nrow(data))), , drop = FALSE]
     }
 
     # args type-checking
-    if (!class(data[, sName]) %in% c("factor", "character"))
+    if (!(is.factor(data[[sName]]) || is.character(data[[sName]])))
       stop(
-        "sName should be of factor or character data type. 
+        "sName should be of factor or character data type.
         Consider setting this as yName instead"
       )
-    
+
     # check 3D plot compatibility
     if (length(yNames) != 3) {
       stop("ScatterPlot3d requires 3 variables for the 3 axis")
     }
-    
+
     # sGroups <- a vector of the individual group names in the 'data'.
     # the user can supply sGroups as an vector of names they want to look at
     if (is.null(sGroups)) {
@@ -32,11 +35,11 @@ dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
     # limits dataset to include only those with a group in groupNames
     data <- data[data[, sName] %in% sGroups, ]
     data <- droplevels(data)
-    
+
     # limit values of data points
     if (!is.null(xlim) | !is.null(ylim) | !is.null(zlim))
       data <- limitRange(data, yNames, xlim, ylim, zlim)
-    
+
     # creates a title
     if (is.null(main)) {
       for (yName in names(data[yNames])) {
@@ -45,7 +48,7 @@ dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
 
       main <- paste(main, " by ", names(data[sName]))
     }
-    
+
     # save this to print to the text of each point
     original <- data
 
@@ -93,7 +96,7 @@ dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
         legend = list(title = list(text = names(data[sName])))
       )
     )
-    
+
     return(fig)
   }
 
@@ -106,9 +109,12 @@ dsldScatterPlot3D <-  function(data, yNames, sName, sGroups = NULL,
 makeSGroups <- function(data, sName, numGroups = NULL, sortedBy = "Name") {
     # If there are 8 possible types the group variable can be, the vector is 8 long.
     # Sorted according to user
+    sortedBy <- match.arg(sortedBy, c("Name", "Frequency", "Frequency-Descending"))
+    if (!is.null(numGroups) && (length(numGroups) != 1L || !is.finite(numGroups) || numGroups < 1L || numGroups != as.integer(numGroups)))
+      stop("numGroups must be NULL or a positive integer.")
     sGroups <- NULL
     switch(sortedBy,
-      "Name" = sGroups <- levels(unique(data[, sName])),
+      "Name" = sGroups <- sort(unique(as.character(data[[sName]][!is.na(data[[sName]])]))),
       "Frequency" = sGroups <-
         names(sort(table(data[, sName]), decreasing = T)),
       "Frequency-Descending" = sGroups <-
@@ -127,17 +133,14 @@ makeSGroups <- function(data, sName, numGroups = NULL, sortedBy = "Name") {
 # Restricts the values of a data frame to specified limits
 limitRange <-
   function(data, yNames, xlim = NULL, ylim = NULL, zlim = NULL) {
-    # in case the user only gives lim as a single number
-    xlim <- rep(xlim, 2)
-    ylim <- rep(ylim, 2)
-    zlim <- rep(zlim, 2)
-    # limits the data frame 
-    if (!is.null(xlim))
-      data <- data[data[, yNames[1]] >= xlim[1] & data[, yNames[1]] <= xlim[2],]
-    if (!is.null(ylim))
-      data <- data[data[, yNames[2]] >= ylim[1] & data[, yNames[2]] <= ylim[2],]
-    if (!is.null(zlim))
-      data <- data[data[, yNames[3]] >= zlim[1] & data[, yNames[3]] <= zlim[2],]
-    
+    limits <- list(xlim, ylim, zlim)
+    for (axis in seq_along(limits)) {
+      bounds <- limits[[axis]]
+      if (is.null(bounds)) next
+      if (!is.numeric(bounds) || length(bounds) != 2L || anyNA(bounds) || bounds[1L] > bounds[2L])
+        stop("Axis limits must be c(min, max) with min <= max.")
+      values <- data[[yNames[axis]]]
+      data <- data[!is.na(values) & values >= bounds[1L] & values <= bounds[2L], , drop = FALSE]
+    }
     data
   }

@@ -1,417 +1,225 @@
-# -------------------------------- QeFairBase ----------------------------------
-# base function to use in qefairRF and qefairKNN. 
-# returns: list with the class "dsldQeFair"
+# Explicitly deweighted features (EDF): the sensitive columns are excluded
+# from model fitting. Shared preprocessing is reused unchanged at prediction.
 qeFairBase <- function(qeFUNC, data, yName, sNames, scaling, ...,
                        appendedItems = list()) {
-  
-  # scale data / expand factors, before training the model
-  train <- fairScale(data, yName, sNames, scaling)
-  base <- qeFUNC(train, yName, ...)
-  
-  model <- list(base = base)
-  model <- append(model, appendedItems)
-  model$scalePars <- attr(train, "scalePars")
-  model$FactorsInfo = factor_levels(data)
-
-  # return s3 object
-  class(model) <- c("dsldQeFair")
-  return(model)
+  training_data <- fairScale(data, yName, sNames, scaling)
+  if (length(appendedItems$distanceWeights)) {
+    for (predictor in names(appendedItems$distanceWeights)) {
+      training_data[[predictor]] <- training_data[[predictor]] * appendedItems$distanceWeights[[predictor]]
+    }
+  }
+  base <- qeFUNC(training_data, yName, ...)
+  model <- c(list(base = base), appendedItems)
+  model$scalePars <- attr(training_data, "scalePars")
+  model$FactorsInfo <- factor_levels(data)
+  model$predictorNames <- setdiff(names(data), c(yName, sNames))
+  model$encodedNames <- setdiff(names(training_data), yName)
+  class(model) <- "dsldQeFair"
+  model
 }
 
-# ------------------------------------- QeFairRF -------------------------------
+.dsld_edf_data <- function(data, yName, sNames, deweightPars, yesYVal = NULL) {
+  .dsld_check_data(data, c(yName, sNames), complete = TRUE)
+  data <- toNumericFactor(data)
+  predictor_names <- setdiff(names(data), c(yName, sNames))
+  if (!length(predictor_names)) stop("At least one predictor other than Y and S is required.")
+  .dsld_check_deweights(deweightPars, predictor_names)
+  if (is.factor(data[[yName]]) || !is.null(yesYVal)) {
+    .dsld_binary_response(data[[yName]], yesYVal)
+    data[[yName]] <- droplevels(factor(data[[yName]]))
+  } else if (!is.numeric(data[[yName]])) stop("Y must be numeric or a binary factor.")
+  data
+}
 
-# No scaling. Appends variables to the final model output via appendedItems
-# Deweights are expanded to match the scaled data
+.dsld_edf_metrics <- function(model, data) {
+  model$trainPreds <- predict.dsldQeFair(model,
+    data[, setdiff(names(data), model$yName), drop = FALSE])
+  if (isTRUE(model$classif)) {
+    probabilities <- .dsld_positive_probability(model$trainPreds$preds)
+    model$trainAcc <- mean(as.integer(data[[model$yName]] == model$yesYVal) !=
+                            as.integer(probabilities > 0.5))
+  } else {
+    probabilities <- as.numeric(model$trainPreds$preds)
+    model$trainAcc <- mean(abs(probabilities - data[[model$yName]]))
+  }
+  model$trainCorrs <- s_correlations(data, model$sNames, probabilities)
+  model
+}
 
 dsldQeFairRF <- function(data, yName, sNames, deweightPars = NULL, nTree = 500,
                          minNodeSize = 10, mtry = floor(sqrt(ncol(data))),
                          yesYVal = NULL) {
-  # setup
+  data <- .dsld_edf_data(data, yName, sNames, deweightPars, yesYVal)
   scaling <- FALSE
-  appendedItems <- variablesAsList(yName, sNames, scaling, deweightPars)
-
-  if (is.factor(data[[yName]]) && is.null(yesYVal)) {
-    stop("Missing `yesYVal` for a factor response.")
-  } 
-  
-  if (!is.factor(data[[yName]]) && !is.null(yesYVal)) {
-    yesYVal = NULL
-  } 
-  
-  # expand deweights to match the expanded factors in the data in qeFairBase
-  expandedDW <- expandDeweights(deweightPars, data[1, ])
-  model <- qeFairBase(qeML::qeRFranger,
-                      data,
-                      yName,
-                      sNames,
-                      scaling,
-                      nTree = nTree,
-                      minNodeSize = minNodeSize,
-                      mtry = mtry,
-                      yesYVal = yesYVal,
-                      holdout = NULL,
-                      deweightPars = expandedDW,
-                      appendedItems = appendedItems
-  )
-  # identifier for predict-time logic and y levels (classification)
+  classif <- is.factor(data[[yName]])
+  expanded_weights <- expandDeweights(deweightPars, data[1L, , drop = FALSE])
+  encoded_names <- setdiff(names(fairScale(data, yName, sNames)), yName)
+  if (missing(mtry)) mtry <- min(mtry, length(encoded_names))
+  weights <- setNames(rep(1, length(encoded_names)), encoded_names)
+  weights[names(expanded_weights)] <- unlist(expanded_weights)
+  if (!any(weights > 0)) stop("At least one predictor must have a positive RF weight.")
+  model <- qeFairBase(qeML::qeRFranger, data, yName, sNames, scaling,
+    nTree = nTree, minNodeSize = minNodeSize, mtry = mtry,
+    yesYVal = yesYVal, holdout = NULL, deweightPars = expanded_weights,
+    appendedItems = variablesAsList(yName, sNames, scaling, deweightPars, yesYVal, classif))
   model$func_call <- "dsldQeFairRF"
-  if (!is.null(yesYVal)) {
-    model$yName_info <- levels(data[[yName]])
-  }
-
-  # training preds/corrs
-  model$trainPreds <- predict.dsldQeFair(model, data[,!colnames(data) %in% c(yName)])
-  
-  if (!is.null(yesYVal)) {
-    # classification case
-    # map 0/1 predClasses to original factor labels for accuracy comparison
-    y_levels <- levels(data[[yName]])
-    noYVal <- setdiff(y_levels, yesYVal)[1]
-    raw_pred <- model$trainPreds$preds$predClasses
-    pred_classes_mapped <- ifelse(as.numeric(as.character(raw_pred)) == 1, yesYVal, noYVal)
-    pred_classes_mapped <- factor(pred_classes_mapped, levels = y_levels)
-    # overwrite extractable predClasses with mapped factor labels
-    model$trainPreds$preds$predClasses <- pred_classes_mapped
-
-    model$trainAcc <- mean(data[[yName]] != pred_classes_mapped)
-    model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds$probs[,2])
-  } else {
-    # regression case
-    model$trainAcc <- mean(abs(model$trainPreds$preds - data[[yName]]))
-    model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds)
-  }
-
-  return(model)
+  if (classif) model$yName_info <- levels(data[[yName]])
+  .dsld_edf_metrics(model, data)
 }
-
-# ------------------------------ QeFairKNN -------------------------------------
-
-# May be scaled. Appends variables to the final model output via appendedItems
-# Deweights are expanded to match the scaled data
 
 dsldQeFairKNN <- function(data, yName, sNames, deweightPars = NULL,
                           yesYVal = NULL, k = 25, scaleX = TRUE) {
-  # setup for easier calls
+  data <- .dsld_edf_data(data, yName, sNames, deweightPars, yesYVal)
+  if (length(k) != 1L || !is.finite(k) || k < 1L || k != as.integer(k) || k >= nrow(data)) {
+    stop("k must be a positive integer smaller than the training sample size.")
+  }
   scaling <- scaleX
-  appendedItems <- variablesAsList(yName, sNames, scaling, deweightPars)
-  
-  # expand deweights to match the expanded factors in the data in qeFairBase
-  expandedDW <- expandDeweights(deweightPars, data[1, ])
-  expandVars <- names(expandedDW)
-  expandVals <- unlist(expandedDW) # to use as qeKNN pars
-  
-  if (is.factor(data[[yName]]) && is.null(yesYVal)) {
-    stop("Missing `yesYVal` for a factor response.")
-  } 
-  
-  if (!is.factor(data[[yName]]) && !is.null(yesYVal)) {
-    yesYVal = NULL
-  } 
-  
-  model <- qeFairBase(qeML::qeKNN,
-                      data,
-                      yName,
-                      sNames,
-                      scaling,
-                      k = k,
-                      yesYVal = yesYVal,
-                      holdout = NULL,
-                      expandVars = expandVars,
-                      expandVals = expandVals,
-                      appendedItems = appendedItems
-  )
-  # identifier for predict-time logic and y levels (classification)
+  classif <- is.factor(data[[yName]])
+  expanded_weights <- expandDeweights(deweightPars, data[1L, , drop = FALSE])
+  model <- qeFairBase(qeML::qeKNN, data, yName, sNames, scaling,
+    k = k, scaleX = FALSE, yesYVal = yesYVal, holdout = NULL,
+    appendedItems = c(variablesAsList(yName, sNames, scaling, deweightPars, yesYVal, classif),
+                      list(distanceWeights = expanded_weights)))
   model$func_call <- "dsldQeFairKNN"
-  if (!is.null(yesYVal)) {
-    model$yName_info <- levels(data[[yName]])
-  }
-  
-  # training preds/corrs
-  model$trainPreds <- predict.dsldQeFair(model, data[,!colnames(data) %in% c(yName)])
-
-  if (!is.null(yesYVal)) {
-    # classification case
-    model$trainAcc <- mean(data[[yName]] != model$trainPreds$preds$predClasses)
-    model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds$probs)
-  } else {
-    # regression case
-    model$trainAcc <- mean(abs(model$trainPreds$preds - data[[yName]]))
-    model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds)
-  }
-  
-  return(model)
+  if (classif) model$yName_info <- levels(data[[yName]])
+  .dsld_edf_metrics(model, data)
 }
 
-# -------------------------------- QeFairRidgeBase -----------------------------
-#
-# base function for the ridge models. 
-# Creates its own training and testing sets 
-# training set is modified w/ ridgeModify, according to EDF paper
-# trains a qeML model with that training set as the base of the output list
-# appends additional variables via variables as list
-# appends testAcc, baseAcc, holdoutPreds with the testing set via predictHoldoutFair
-#
-qeFairRidgeBase <- function(data, yName, sNames, deweightPars, yesYVal = 0) {
-  
-  linear <- yesYVal == 0     # if we're using the default yesYVal, assume its linear
-  
-  # perform formula described in edffair paper
-  dataExtended <- ridgeModify(data, yName, sNames, deweightPars, yesYVal)
-  scalePars <- attr(dataExtended, "scalePars")
-  
-  base <- 
-    if (linear) qeML::qeLin(dataExtended, yName, holdout = NULL)
-  else          qeML::qeLogit(dataExtended, yName, holdout = NULL, yesYVal = yesYVal)
-  
-  # Append these variables to the model object
-  classif <- !linear
+qeFairRidgeBase <- function(data, yName, sNames, deweightPars, yesYVal = NULL) {
+  classif <- !is.null(yesYVal)
   scaling <- TRUE
-  appendedItems <- variablesAsList(
-    sNames,
-    yName,
-    deweightPars,
-    scaling,
-    scalePars,
-    classif,
-    yesYVal
-  )
-  
-  # construct output model object
-  model <- list(base = base)
-  model <- append(model, appendedItems)
-  model$FactorsInfo = factor_levels(data)
-  
-  # return s3 object
-  class(model) <- c("dsldQeFair")
-  return(model)
-}
-
-# modify the training data as described in the edf fair paper
-# essentially, you append a diagonal matrix to the bottom of the training data
-# with each value of the diagonal optionally having a deweighting value
-# the yCol is expanded w/ 0s or a no
-# yesYVal - the yes value in the binary yName. if 0,
-# we're assuming its a linear model
-
-ridgeModify <- function(data, yName, sNames, deweightPars, yesYVal = 0) {
-  # setup expanddeweighting
-  expandDW <- expandDeweights(deweightPars, data[1, ])
-  expandVars <- names(expandDW)
-  expandVals <- unlist(expandDW)
-  
-  data <- fairScale(data, yName, sNames, scaling = TRUE)
-  
-  xNames <- colnames(data[,-ncol(data)])
-  noYVal <- setdiff(levels(data[,yName]), yesYVal)[[1]]
-  yBlank <- if (yesYVal == 0) 0 else noYVal
-  p <- ncol(data) - 1   # how many predictors
-  
-  # formula described in edffair paper
-  D <- setNames(rep(0, p), xNames)
-  if (!is.null(deweightPars)) {
-    D[expandVars] <- sqrt(expandVals)
+  training_data <- ridgeModify(data, yName, sNames, deweightPars, yesYVal)
+  scalePars <- attr(training_data, "scalePars")
+  intercept_column <- NULL
+  if (classif) {
+    base <- qeML::qeLogit(training_data, yName, holdout = NULL, yesYVal = yesYVal)
+  } else {
+    # The penalty rows must not penalize the intercept. An explicit intercept
+    # column is 1 for observations and 0 for the appended penalty rows.
+    intercept_column <- utils::tail(make.unique(c(names(training_data), ".dsld_intercept")), 1L)
+    training_data[[intercept_column]] <- c(rep(1, nrow(data)),
+                                          rep(0, nrow(training_data) - nrow(data)))
+    model_formula <- .dsld_formula(yName, setdiff(names(training_data), yName),
+                                    intercept = FALSE)
+    base <- lm(model_formula, data = training_data)
   }
-  
-  extension <- data.frame(diag(D))
-  extension <- cbind(extension, rep(yBlank, p))
-  
-  names(extension) <- colnames(data)
-  dataExtended <- rbind(data, extension)
-  
-  attr(dataExtended, "scalePars") <- attr(data, "scalePars")
-  return(dataExtended)
+  model <- c(list(base = base),
+    variablesAsList(sNames, yName, deweightPars, scaling, scalePars, classif, yesYVal))
+  model$FactorsInfo <- factor_levels(data)
+  model$predictorNames <- setdiff(names(data), c(yName, sNames))
+  model$encodedNames <- setdiff(names(training_data), c(yName, intercept_column))
+  model$interceptColumn <- intercept_column
+  class(model) <- "dsldQeFair"
+  model
 }
 
+# Augment the design with one penalty row per encoded predictor. The logistic
+# variant retains the original EDF pseudo-observation construction.
+ridgeModify <- function(data, yName, sNames, deweightPars, yesYVal = NULL) {
+  expanded_weights <- expandDeweights(deweightPars, data[1L, , drop = FALSE])
+  training_data <- fairScale(data, yName, sNames, scaling = TRUE)
+  predictor_names <- setdiff(names(training_data), yName)
+  penalty_weights <- setNames(rep(0, length(predictor_names)), predictor_names)
+  if (length(expanded_weights)) {
+    penalty_weights[names(expanded_weights)] <- sqrt(unlist(expanded_weights))
+  }
+  penalty_rows <- as.data.frame(diag(penalty_weights, nrow = length(penalty_weights)), check.names = FALSE)
+  names(penalty_rows) <- predictor_names
+  if (is.null(yesYVal)) {
+    penalty_rows[[yName]] <- 0
+  } else {
+    negative_label <- setdiff(levels(data[[yName]]), as.character(yesYVal))[1L]
+    penalty_rows[[yName]] <- factor(rep(negative_label, nrow(penalty_rows)),
+                                     levels = levels(data[[yName]]))
+  }
+  augmented_data <- rbind(training_data, penalty_rows)
+  attr(augmented_data, "scalePars") <- attr(training_data, "scalePars")
+  augmented_data
+}
 
-### dsldQeFairRidgeLin
 dsldQeFairRidgeLin <- function(data, yName, sNames, deweightPars = NULL) {
-  model = qeFairRidgeBase(data, yName, sNames, deweightPars)
-  model$trainPreds <- predict.dsldQeFair(model, data[,!colnames(data) %in% c(yName)])
-  model$trainAcc <- mean(abs(model$trainPreds$preds - data[[yName]]))
-  model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds)
-  return(model)
+  data <- .dsld_edf_data(data, yName, sNames, deweightPars)
+  if (!is.numeric(data[[yName]])) stop("RidgeLin requires a numeric response.")
+  model <- qeFairRidgeBase(data, yName, sNames, deweightPars)
+  .dsld_edf_metrics(model, data)
 }
 
-
-# dsldQeFairRidgeLog
-# works in the binary classification case
 dsldQeFairRidgeLog <- function(data, yName, sNames, deweightPars = NULL, yesYVal) {
-  model = qeFairRidgeBase(data, yName, sNames, deweightPars, yesYVal)
-  # identifier and y levels for classification use later
+  data <- .dsld_edf_data(data, yName, sNames, deweightPars, yesYVal)
+  model <- qeFairRidgeBase(data, yName, sNames, deweightPars, yesYVal)
   model$func_call <- "dsldQeFairRidgeLog"
   model$yName_info <- levels(data[[yName]])
-  model$trainPreds <- predict.dsldQeFair(model, data[,!colnames(data) %in% c(yName)])
-  model$trainAcc <- mean(data[[yName]] != model$trainPreds$preds$predClasses)
-  model$trainCorrs <- s_correlations(data, sNames, model$trainPreds$preds$probs)
-  return(model)
+  .dsld_edf_metrics(model, data)
 }
 
-# ------------------------------- Predict() ------------------------------------
 predict.dsldQeFair <- function(object, newx, ...) {
-  # extract params from the model
-  #yName <- model$yName
-  sNames <- as.vector(object$sNames)
-  scaling <- object$scaling
-  scalePars <- object$scalePars
-  
-  
-  newxNoS <- newx[, !colnames(newx) %in% c(sNames)]
-  newxNoS <- apply_factor_levels(newxNoS, object$FactorsInfo)
-  
-  # rescale the data according to how the training data was scaled in the model
-  newxNoS <- scaleNewX(newxNoS, scaling, scalePars)
-  preds = predict(object$base, newxNoS)
-  if (is.list(preds)) {
-    if (is.null(dim(preds$probs))) {
-      # it's a simple vector, already length n
-      probs <- preds$probs
-    } else {
-      # it's a matrix/data frame with 2 columns (0/1)
-      probs <- preds$probs[,1]
+  predictor_names <- object$predictorNames
+  if (is.null(predictor_names)) predictor_names <- setdiff(names(newx), c(object$sNames, object$yName))
+  .dsld_check_data(newx, predictor_names)
+  predictors <- apply_factor_levels(newx[, predictor_names, drop = FALSE], object$FactorsInfo)
+  .dsld_check_data(predictors, predictor_names, complete = TRUE)
+  predictors <- scaleNewX(predictors, object$scaling, object$scalePars)
+  if (!is.null(object$encodedNames)) predictors <- predictors[, object$encodedNames, drop = FALSE]
+  if (!is.null(object$interceptColumn)) predictors[[object$interceptColumn]] <- 1
+  if (length(object$distanceWeights)) {
+    for (predictor in names(object$distanceWeights)) {
+      predictors[[predictor]] <- predictors[[predictor]] * object$distanceWeights[[predictor]]
     }
-    cors <- s_correlations(newx, sNames, probs)
+  }
+  predictions <- predict(object$base, predictors)
+  if (is.list(predictions)) {
+    probabilities <- .dsld_positive_probability(predictions)
+    if (!is.null(object$yesYVal) && !is.null(object$yName_info)) {
+      negative_label <- setdiff(object$yName_info, as.character(object$yesYVal))[1L]
+      predictions$predClasses <- factor(ifelse(probabilities > 0.5, object$yesYVal, negative_label),
+                                         levels = object$yName_info)
+    }
   } else {
-    cors = s_correlations(newx, sNames, preds)
+    probabilities <- as.numeric(predictions)
   }
-  return(list(preds = preds, correlations = cors))
+  list(preds = predictions, correlations = s_correlations(newx, object$sNames, probabilities))
 }
 
-# predict.dsldQeFair <- function(object, newx, ...) {
-#   # extract params from the model
-#   #yName <- model$yName
-#   sNames <- as.vector(object$sNames)
-#   scaling <- object$scaling
-#   scalePars <- object$scalePars
-  
-  
-#   newxNoS <- newx[, !colnames(newx) %in% c(sNames)]
-#   newxNoS <- apply_factor_levels(newxNoS, object$FactorsInfo)
-  
-#   # rescale the data according to how the training data was scaled in the model
-#   newxNoS <- scaleNewX(newxNoS, scaling, scalePars)
-#   preds = predict(object$base, newxNoS)
-#   if (is.list(preds)) {
-#     if (is.null(dim(preds$probs))) {
-#       # it's a simple vector, already length n
-#       probs <- preds$probs
-#     } else {
-#       # it's a matrix/data frame with 2 columns (0/1)
-#       probs <- preds$probs[,1]
-#     }
-
-#     # If RF classification, map 0/1 predClasses to original factor labels
-#     if (identical(object$func_call, "dsldQeFairRF")) {
-#       y_levels <- object$yName_info
-#       yesYVal <- object$yesYVal
-#       noYVal <- setdiff(y_levels, yesYVal)[1]
-#       raw_num <- suppressWarnings(as.numeric(as.character(preds$predClasses)))
-      
-#       pred_classes_mapped <- ifelse(raw_num == 1, yesYVal, noYVal)
-#       pred_classes_mapped <- factor(pred_classes_mapped, levels = y_levels)
-#       # overwrite extractable predClasses with mapped factor labels
-#       preds$predClasses <- pred_classes_mapped
-
-#     }
-
-#     cors <- s_correlations(newx, sNames, probs)
-#   } else {
-#     cors = s_correlations(newx, sNames, preds)
-#   }
-#   return(list(preds = preds, correlations = cors))
-# }
-
-### helper functions
-
-# ------------- data scaling --------------
-# factor types are split into binary columns for each level
-# sNames and yName are removed in order for them to be scaled
-# yName is added back.
-# scaledPars are added as an attribute in order to rescale the newx in predict
-# scaling - wether or not the data is scaled
-# returns - a dataframe with a scalePars attribute
-
-fairScale <- function(data, yName, sNames, scaling=FALSE) {
-  predictors <- data[,!colnames(data) %in% c(sNames, yName)]
-  response <- data[,yName]
-  
-  # expand factors
-  predictors <- regtools::factorsToDummies(predictors, omitLast = TRUE)
-  if (scaling) { 
-    predictors <- scale(predictors)
-    # save scalePars in order to rescale newx in predict function
-    scalePars <- list(
-      center=attr(predictors,'scaled:center'),
-      scale=attr(predictors,'scaled:scale')
-    )
+fairScale <- function(data, yName, sNames, scaling = FALSE) {
+  predictors <- data[, setdiff(names(data), c(sNames, yName)), drop = FALSE]
+  predictors <- as.data.frame(regtools::factorsToDummies(predictors, omitLast = TRUE))
+  scale_parameters <- NULL
+  if (scaling) {
+    centers <- vapply(predictors, mean, numeric(1))
+    scales <- vapply(predictors, stats::sd, numeric(1))
+    scales[!is.finite(scales) | scales == 0] <- 1
+    predictors <- as.data.frame(scale(predictors, center = centers, scale = scales))
+    scale_parameters <- list(center = centers, scale = scales)
   }
-  # put it back together
-  data <- cbind(data.frame(predictors), response)
-  colnames(data)[ncol(data)] <- yName
-  
-  if (scaling) attr(data, 'scalePars') <- scalePars
-  data
+  predictors[[yName]] <- data[[yName]]
+  attr(predictors, "scalePars") <- scale_parameters
+  predictors
 }
 
-# factor types are split into binary columns for each level
-# newx is scaled to match how the training data was scaled
-# newx      - data to be converted before predicted on
-# scaling   - was the model trained on scaled data
-# scalePars - a list of (center, scale) that describes how the data was scaled
-# returns   - a dataframe
-scaleNewX <- function(newx, scaling=FALSE, scalePars=NULL) {
-  newx <- regtools::factorsToDummies(newx, omitLast = TRUE)
-  
-  if (scaling) { 
-    center <- TRUE; scale <- TRUE
-    
-    if (!is.null(scalePars)) { 
-      center <- scalePars$center
-      scale <- scalePars$scale
-    }
-    
-    newx <- scale(newx, center=center, scale=scale)
+scaleNewX <- function(newx, scaling = FALSE, scalePars = NULL) {
+  predictors <- as.data.frame(regtools::factorsToDummies(newx, omitLast = TRUE))
+  if (scaling) {
+    if (is.null(scalePars)) stop("Training scale parameters are required for prediction.")
+    predictors <- predictors[, names(scalePars$center), drop = FALSE]
+    predictors <- as.data.frame(scale(predictors, center = scalePars$center, scale = scalePars$scale))
   }
-  
-  newx <- data.frame(newx) # this changes the colnames for some reason
-  newx
+  predictors
 }
 
-# --------- Expand Deweights --------------
-# if one of the deweights is a factor, expand it into a dummy for all the qeFairs
-#
-# deweightPars - in the form of list(var_name=value)
-# row1         - doesnt have to be 1 row, but the only thing this needs is
-#                information on the data type and name of every column
-#
-# returns      - an expanded list(var_value=value) 
 expandDeweights <- function(deweightPars, row1) {
-  pars <- list()
-  for (item in names(deweightPars)) {  # loop through every item
-    if (is.factor(row1[,item])) {      # expand deweight if factor type
-      names <- names(
-        data.frame(
-          regtools::factorToDummies(row1[,item], item, omitLast = TRUE)
-        )
-      )
-      expanded <- Map(function(x) deweightPars[[item]], names)
-      pars <- append(pars, expanded)
-    } else {                          
-      pars <- append(pars, deweightPars[item])  # add deweight as usual
-    }
+  expanded_weights <- list()
+  for (predictor in names(deweightPars)) {
+    if (is.factor(row1[[predictor]])) {
+      dummy_names <- names(data.frame(regtools::factorToDummies(row1[[predictor]],
+                                                               predictor, omitLast = TRUE)))
+      expanded_weights <- c(expanded_weights,
+        setNames(rep(deweightPars[predictor], length(dummy_names)), dummy_names))
+    } else expanded_weights <- c(expanded_weights, deweightPars[predictor])
   }
-  pars
+  expanded_weights
 }
 
-# ------------ Utils -----------------
-# utility to add variables to a list as an item w/ their own name
-# ex. 'model$yName <- yName' for a list of variables
-#
-# ...     - one or more variables to be turned into a list
-#
-# returns - a list
 variablesAsList <- function(...) {
-  names <- as.list(substitute(list(...)))[-1]
-  values <- list(...)
-  list <- setNames(values, names)
-  list
+  variable_names <- vapply(as.list(substitute(list(...)))[-1L], as.character, character(1))
+  setNames(list(...), variable_names)
 }

@@ -17,7 +17,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
             print(dsldFrequencyByS(data, colnames(data)[i], sName))
 
             # require input if there's a next
-            if (i != numCols) {
+            if (interactive() && i != numCols) {
                 cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
                 tempInput <- readline()
             }
@@ -26,7 +26,7 @@ dsldConfounders <- function(data, sName, graphType = "plotly", fill = FALSE) {
             print(dsldDensityByS(data, colnames(data)[i], sName, graphType, fill))
 
             # require input if there's a next
-            if (i != numCols) {
+            if (interactive() && i != numCols) {
                 cat("Press <ENTER> to view next density graph / frequency dataframe...\n")
                 tempInput <- readline()
             }

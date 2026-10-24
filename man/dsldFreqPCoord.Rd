@@ -24,10 +24,9 @@ dsldFreqPCoord(data, m, sName = NULL, method
         then \code{m} is forced to 1.
     }
     \item{sName}{
-        Column for the grouping variable, if any (if none, all the data 
-        is treated as a single group); the column must be a vector or factor. 
-        The column must not be in \code{dispcols}. If 
-        method is \code{locmax}, \code{grpvar} is forced to NULL
+        Name of the grouping column, if any. It is excluded from the plotted
+        axes. With \code{NULL}, all rows form one group. Grouping is ignored
+        when \code{method = "locmax"}.
     }
     \item{method}{
         What to display: 'maxdens' for plotting the most
@@ -48,10 +47,11 @@ dsldFreqPCoord(data, m, sName = NULL, method
         to be much larger than \code{k}, to avoid "noise fitting."
     }
     \item{keepidxs}{
-        If not NULL, the indices of the rows of \code{data} that 
-        are plotted will be stored in a component \code{idxs} of the
-        return value.  The rows themselves will be in a component
-        \code{xdisp}, ordered by \code{data[,dispcols[1]}.
+        Optional numeric column index in the encoded data passed to the
+        backend, used to order retained rows. If not \code{NULL}, the plotted
+        row indices are returned in \code{idxs}, and the encoded rows in
+        \code{xdisp}, ordered by this column. Factor expansion and omission
+        of globally constant predictors can change the column indices.
     }
     \item{plotidxs}{
         If TRUE, lines in the display will be annotated 
@@ -74,12 +74,21 @@ dsldFreqPCoord(data, m, sName = NULL, method
 \details{
     The \code{dsldFreqPCoord} function wraps \code{freqparcoord},
     which uses a frequency-based parallel coordinates method to 
-    vizualize multiple variables simultaneously in graph form.
+    visualize multiple variables simultaneously in graph form.
     
     This is done by plotting either the "most typical" or "least typical"
     (i.e. highest or lowest estimated multivariate density values respectively)
     cases to discern relations between variables.  
     
+    Unused factor levels are dropped before encoding. Constant predictor
+    columns are omitted with a warning because they cannot be scaled.
+    The density estimator also scales within each plotted group. Encoded axes
+    that are constant within any such group are omitted from the plot and
+    density calculation with an explicit warning. Inspect those attributes
+    separately, for example with \code{dsldFrequencyByS}: a deterministic
+    group relationship can be substantively important even though this density
+    estimator cannot use it. At least one axis must vary within every group.
+
     The Y-axis represents the centered and scaled values of the columns.
 }
 

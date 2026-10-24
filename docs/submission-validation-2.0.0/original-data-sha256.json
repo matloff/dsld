@@ -1,0 +1,18 @@
+{
+  "data/compas1.RData": {
+    "sha256": "87ef07c5a7092aa9de40e7ec42dcf343250289d4c5fe638ddb436c848738d8b2",
+    "unchanged_from": "7e9f875"
+  },
+  "data/lak.RData": {
+    "sha256": "8f1bb6b3d63488b4b413beaf752e5e378b03504294dce83bd5fd87f2aa5a695d",
+    "unchanged_from": "7e9f875"
+  },
+  "data/mortgageSE.RData": {
+    "sha256": "b975e572865baf29b7af74aa4659a30df2a56caee86918a634a8086386d1ee0e",
+    "unchanged_from": "7e9f875"
+  },
+  "data/svcensus.RData": {
+    "sha256": "190fc8348821d88729299400569723222db3b7a45c49c46f7b0cf52e76f5db0c",
+    "unchanged_from": "7e9f875"
+  }
+}

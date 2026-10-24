@@ -1,0 +1,35 @@
+{
+  "heldout-results.csv": {
+    "rows": 66,
+    "numerically_equal": true,
+    "byte_identical": true,
+    "sha256": [
+      "560809fb05cd5b52834a3cdfe3089b2a0a92f1bd1552b5230ad6fa5f948877a0",
+      "560809fb05cd5b52834a3cdfe3089b2a0a92f1bd1552b5230ad6fa5f948877a0"
+    ],
+    "relative_tolerance": 1e-10,
+    "absolute_tolerance": 1e-10
+  },
+  "paper-compas-grid.csv": {
+    "rows": 5,
+    "numerically_equal": true,
+    "byte_identical": true,
+    "sha256": [
+      "467e1c5799f62a3dc66bb9589afc48660d26077a4a52213250ed1b0d4585ea6a",
+      "467e1c5799f62a3dc66bb9589afc48660d26077a4a52213250ed1b0d4585ea6a"
+    ],
+    "relative_tolerance": 1e-10,
+    "absolute_tolerance": 1e-10
+  },
+  "paper-census-grid.csv": {
+    "rows": 7,
+    "numerically_equal": true,
+    "byte_identical": true,
+    "sha256": [
+      "a4c0ccdc66c40205947ee578be43257d22973674e3420ece055d927dec32bc0e",
+      "a4c0ccdc66c40205947ee578be43257d22973674e3420ece055d927dec32bc0e"
+    ],
+    "relative_tolerance": 1e-10,
+    "absolute_tolerance": 1e-10
+  }
+}

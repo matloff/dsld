@@ -1,0 +1,78 @@
+{
+  "dsldPyFreqPCoord.py": {
+    "dsldPyFreqPCoord": "arguments(args=[arg(arg='data'), arg(arg='m'), arg(arg='sName'), arg(arg='method'), arg(arg='faceting'), arg(arg='k'), arg(arg='klm'), arg(arg='keepidxs'), arg(arg='plotidxs'), arg(arg='cls'), arg(arg='plot_filename'), arg(arg='show')], defaults=[Constant(value='maxdens'), Constant(value='vert'), Constant(value=50), Constant(value=None), Constant(value=None), Constant(value=False), Constant(value=None), Constant(value=None), Constant(value=True)])"
+  },
+  "dsldPyHunting.py": {
+    "dsldPyCHunting": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='intersectDepth')], defaults=[Constant(value=10)])",
+    "dsldPyOHunting": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName')])"
+  },
+  "dsldPyFrequencybyS.py": {
+    "dsldPyFrequencybyS": "arguments(args=[arg(arg='data'), arg(arg='cName'), arg(arg='sName')])"
+  },
+  "dsldPyConditDisparity.py": {
+    "dsldPyConditDisparity": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='xName'), arg(arg='condits'), arg(arg='qeFtn'), arg(arg='minS'), arg(arg='useLoess')], defaults=[Constant(value=None), Constant(value='qeKNN'), Constant(value=50), Constant(value=True)])"
+  },
+  "dsldPyLinear.py": {
+    "dsldPyLinear": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='interactions'), arg(arg='sComparisonPts'), arg(arg='useSandwich')], defaults=[Constant(value=False), Constant(value=None), Constant(value=False)])",
+    "dsldPyLinearSummary": "arguments(args=[arg(arg='dsldLinear')])",
+    "dsldPyLinearCoef": "arguments(args=[arg(arg='dsldLinear')])",
+    "dsldPyLinearVcov": "arguments(args=[arg(arg='dsldLinear')])",
+    "dsldPyLinearGetData": "arguments(args=[arg(arg='dsldLinear')])",
+    "dsldPyLinearPredict": "arguments(args=[arg(arg='dsldLinear'), arg(arg='newData')])"
+  },
+  "dsldPyDensitybyS.py": {
+    "dsldPyDensitybyS": "arguments(args=[arg(arg='data'), arg(arg='cName'), arg(arg='sName'), arg(arg='graphType'), arg(arg='fill')], defaults=[Constant(value='plotly'), Constant(value=False)])"
+  },
+  "dsldPyFairUtils.py": {
+    "dsldPyFairUtils": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='dsldFTNname'), arg(arg='unfairness'), arg(arg='deweightPars'), arg(arg='yesYVal'), arg(arg='k_folds')], defaults=[Constant(value=None), Constant(value=None), Constant(value=None), Constant(value=5)])"
+  },
+  "Utils.py": {
+    "dsld_Rpy2_IsRDataframe": "arguments(args=[arg(arg='data')])",
+    "dsld_Rpy2_PandasToRDataframe": "arguments(args=[arg(arg='pandas_df')])",
+    "dsld_Rpy2_RDataframeToPandas": "arguments(args=[arg(arg='r_df')])",
+    "read_data": "arguments(args=[arg(arg='filepath')], kwarg=arg(arg='kwargs'))",
+    "preprocess_data": "arguments(args=[arg(arg='data'), arg(arg='cat_features'), arg(arg='num_features')])"
+  },
+  "dsldPyScatterPlot3D.py": {
+    "dsldPyScatterPlot3D": "arguments(args=[arg(arg='data'), arg(arg='yNames'), arg(arg='sName')], kwonlyargs=[arg(arg='bin_numeric_color'), arg(arg='n_bins'), arg(arg='renderer')], kw_defaults=[Constant(value=True), Constant(value=5), Constant(value=None)])"
+  },
+  "dsldPyBnLearn.py": {
+    "dsldPyIamb": "arguments(args=[arg(arg='data'), arg(arg='file'), arg(arg='width'), arg(arg='height'), arg(arg='res')], defaults=[Constant(value='iamb.png'), Constant(value=1200), Constant(value=900), Constant(value=150)])"
+  },
+  "dsldPyQeFairML.py": {
+    "dsldPyQeFairKNN": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sNames'), arg(arg='deweightPars'), arg(arg='yesYVal'), arg(arg='k'), arg(arg='scaleX')], defaults=[Constant(value=None), Constant(value=None), Constant(value=25), Constant(value=True)])",
+    "dsldPyQeFairRF": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sNames'), arg(arg='deweightPars'), arg(arg='nTree'), arg(arg='minNodeSize'), arg(arg='mtry'), arg(arg='yesYVal')], defaults=[Constant(value=None), Constant(value=500), Constant(value=10), Constant(value=None), Constant(value=None)])",
+    "dsldPyQeFairRidgeLin": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sNames'), arg(arg='deweightPars')], defaults=[Constant(value=None)])",
+    "dsldPyQeFairRidgeLog": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sNames'), arg(arg='deweightPars'), arg(arg='yesYVal')], defaults=[Constant(value=None), Constant(value=None)])",
+    "dsldPyQeFairML_Predict": "arguments(args=[arg(arg='model'), arg(arg='newData')])"
+  },
+  "dsldPyMatching.py": {
+    "dsldPyMatchedATE": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='yesSVal'), arg(arg='yesYVal'), arg(arg='propensFtn'), arg(arg='k')], defaults=[Constant(value=None), Constant(value=None), Constant(value=None)])"
+  },
+  "dsldPyML.py": {
+    "dsldPyML": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='qeMLftnName'), arg(arg='sComparisonPts'), arg(arg='opts')], defaults=[Constant(value='rand5'), Constant(value=None)])"
+  },
+  "dsldPyConfounders.py": {
+    "dsldPyConfounders": "arguments(args=[arg(arg='data'), arg(arg='sName'), arg(arg='graphType'), arg(arg='fill')], defaults=[Constant(value='plotly'), Constant(value=False)])"
+  },
+  "dsldPyLogit.py": {
+    "dsldPyLogit": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='sComparisonPts'), arg(arg='interactions'), arg(arg='yesYVal')], defaults=[Constant(value=None), Constant(value=False), Constant(value=None)])",
+    "dsldPyLogitSummary": "arguments(args=[arg(arg='dsldLogit')])",
+    "dsldPyLogitCoef": "arguments(args=[arg(arg='dsldLogit')])",
+    "dsldPyLogitVcov": "arguments(args=[arg(arg='dsldLogit')])",
+    "dsldPyLogitGetData": "arguments(args=[arg(arg='dsldLogit')])",
+    "dsldPyLogitPredict": "arguments(args=[arg(arg='dsldLogit'), arg(arg='newData')])"
+  },
+  "dsldPyTakeALookAround.py": {
+    "dsldPyTakeALookAround": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='maxFeatureSize'), arg(arg='holdout')], defaults=[Constant(value=None), Constant(value=None)])"
+  },
+  "dsldPyFairML.py": {
+    "dsldPyFrrm": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='unfairness'), arg(arg='definition'), arg(arg='lamda'), arg(arg='save')], defaults=[Constant(value='sp-komiyama'), Constant(value=0), Constant(value=False)])",
+    "dsldPyFgrrm": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='unfairness'), arg(arg='definition'), arg(arg='family'), arg(arg='lamda'), arg(arg='save'), arg(arg='yesYVal')], defaults=[Constant(value='sp-komiyama'), Constant(value='binomial'), Constant(value=0), Constant(value=False), Constant(value=None)])",
+    "dsldPyNclm": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='unfairness'), arg(arg='covfun'), arg(arg='lamda'), arg(arg='save')], defaults=[Call(func=Attribute(value=Name(id='robjects', ctx=Load()), attr='r', ctx=Load()), args=[Constant(value='cov')]), Constant(value=0), Constant(value=False)])",
+    "dsldPyZlm": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='unfairness')])",
+    "dsldPyZlrm": "arguments(args=[arg(arg='data'), arg(arg='yName'), arg(arg='sName'), arg(arg='unfairness'), arg(arg='yesYVal')])",
+    "dsldPyFairML_Summary": "arguments(args=[arg(arg='model')])",
+    "dsldPyFairML_Predict": "arguments(args=[arg(arg='model'), arg(arg='newData')])"
+  }
+}

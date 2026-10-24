@@ -1,0 +1,2 @@
+PASS: 120 settings; linear/logistic predictions and standard errors match independent references.
+PASS: 24 CV candidates across 12 seeds match independent penalized normal equations and aggregation.

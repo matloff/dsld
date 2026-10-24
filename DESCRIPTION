@@ -1,5 +1,5 @@
 Package: dsld
-Version: 1.0.0
+Version: 2.0.0
 Title: Data Science Looks at Discrimination
 Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    role = c("aut"), comment = c(ORCID = "0000-0001-9179-6785")),
@@ -9,7 +9,7 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    role = c("aut")),
    person("Shubhada", "Martha", email = "smartha@ucdavis.edu",
    role = c("aut")),
-   person("Aditya", "Mittal", email = "adityamittal2031@gmail.com",
+   person("Aditya", "Mittal", email = "mittalaa@uci.edu",
    role = c("aut", "cre")),
    person("Billy", "Ouattara", email = "btouattara@ucdavis.edu",
    role = c("aut")),
@@ -18,16 +18,21 @@ Authors@R: c( person("Norm", "Matloff", email = "nsmatloff@ucdavis.edu",
    person("Brandon", "Zarate Estrada", email = "bdzarate@ucdavis.edu",
    role = c("aut"))
    )
-Maintainer: Aditya Mittal <adityamittal2031@gmail.com>
+Maintainer: Aditya Mittal <mittalaa@uci.edu>
 VignetteBuilder: knitr
-Imports: Kendall, ranger, ggplot2, plotly, 
-   freqparcoord, fairness,sandwich
-Depends: R (>= 3.5.0), fairml, gtools, regtools,qeML,rmarkdown
-Suggests: knitr,bnlearn,Matching,randomForest
-License: GPL (>= 2) 
-Description: Statistical and graphical tools for detecting and measuring
-   discrimination and bias, be it racial, gender, age or other.
-   Detection and remediation of bias in machine learning algorithms.
-   'Python' interfaces available.
+Imports: Kendall, ranger, ggplot2, plotly,
+   freqparcoord, sandwich
+Depends: R (>= 3.5.0), fairml, gtools, regtools, qeML, rmarkdown
+Suggests: knitr, bnlearn, Matching, randomForest, cccp, CVXR
+License: GPL (>= 2)
+Description: Statistical and graphical tools for exploring group differences
+   and possible discrimination related to sensitive attributes such as race,
+   gender, and age. Includes adjusted group comparisons, matching, distribution
+   plots, and prediction methods that constrain sensitive-attribute influence
+   or deweight selected predictors. Cross-validation supports comparison of
+   prediction error and sensitive-attribute associations. Methods and teaching
+   examples are described by Mittal et al. (2025)
+   <doi:10.48550/arXiv.2411.04228>. Interfaces to the R implementation are
+   also available for 'Python'.
 URL: https://github.com/matloff/dsld
 BugReports: https://github.com/matloff/dsld/issues

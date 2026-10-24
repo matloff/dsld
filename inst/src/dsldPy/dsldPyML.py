@@ -1,57 +1,37 @@
-'''
-    This file contains the interface code for calling the dsldLogit from dsld R package.
-    The code uses rpy2 to handle dsld functions call from R and pandas library to check if
-    users data input is in pandas data frame before doing any computation
-'''
+"""Nonparametric group comparisons through qeML."""
 
-from .Utils import get_dsld, dsld_Rpy2_IsRDataframe, dsld_Rpy2_RDataframeToPandas
-import sys
 import pandas as pd
-import rpy2.robjects as robjects
-from rpy2.robjects import pandas2ri
-from rpy2.robjects import conversion
-from rpy2.robjects.packages import importr
-import rpy2.robjects as ro
-import math
-from rpy2.robjects.vectors import ListVector, FloatVector
-from .Utils import dsld_Rpy2_RDataframeToPandas
-import pandas as pd
+from .Utils import (
+    get_dsld,
+    dsld_Rpy2_IsRDataframe,
+    dsld_Rpy2_RDataframeToPandas,
+    _r_value,
+)
 
-# Import R packages
 
 def map_last_k(df: pd.DataFrame, values: list):
-    k = len(values)
-    last_k_cols = df.columns[-k:]
-    # add "testAcc: " prefix to each column name
-    prefixed_cols = [f"testAcc: {col}" for col in last_k_cols]
-    return dict(zip(prefixed_cols, values))
+    return dict(
+        zip([f"testAcc: {column}" for column in df.columns[-len(values) :]], values)
+    )
 
-def dsldPyML(data, yName, sName, qeMLftnName, sComparisonPts='rand5', opts=None):
 
-    r_data = dsld_Rpy2_IsRDataframe(data)
-    yName = robjects.StrVector([yName])
-    sName = robjects.StrVector([sName])
-    qeMLftnName = robjects.StrVector([qeMLftnName])
-
-    if sComparisonPts != 'rand5':
-        if isinstance(sComparisonPts, pd.DataFrame):
-            sComparisonPts = dsld_Rpy2_IsRDataframe(sComparisonPts)
-        else:
-            sComparisonPts = robjects.StrVector([sComparisonPts])
+def dsldPyML(data, yName, sName, qeMLftnName, sComparisonPts="rand5", opts=None):
+    if isinstance(sComparisonPts, str):
+        if sComparisonPts != "rand5":
+            raise ValueError("sComparisonPts must be a data frame or 'rand5'")
+        comparison_points = _r_value(sComparisonPts)
     else:
-        sComparisonPts = robjects.StrVector(['rand5'])
-
-    if opts is not None:
-        opts = ListVector({k: FloatVector([v]) for k, v in opts.items()})
-    else:
-        opts = robjects.NULL
-    
-    # call dsldML in R
-    dsld = get_dsld()
-    model = dsld.dsldML(r_data, yName, sName, qeMLftnName, sComparisonPts, opts)
-
-    test_accuracies = model[0]
-    comparison_points = dsld_Rpy2_RDataframeToPandas(model[1])
-    comparison_points_dict = map_last_k(comparison_points, test_accuracies)
-
-    return comparison_points_dict, comparison_points
+        comparison_points = dsld_Rpy2_IsRDataframe(sComparisonPts)
+    model = get_dsld().dsldML(
+        dsld_Rpy2_IsRDataframe(data),
+        yName,
+        sName,
+        qeMLftnName,
+        comparison_points,
+        _r_value(opts),
+    )
+    comparisons = dsld_Rpy2_RDataframeToPandas(model.rx2("comparisons"))
+    accuracies = model.rx2("testAccs")
+    return dict(
+        zip([f"testAcc: {name}" for name in accuracies.names], list(accuracies))
+    ), comparisons

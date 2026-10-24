@@ -25,7 +25,8 @@ dsldLinear(data, yName, sName, interactions = FALSE, sComparisonPts = NULL,
         Data frame. 
     }
     \item{yName}{
-       Name of the response variable Y column. 
+       Exact name of the numeric response variable Y column, including any
+       spaces or punctuation.
     }
     \item{sName}{
         Name of the sensitive attribute S column. 
@@ -89,7 +90,7 @@ predict(lin2, newData)
     variable Y using all other variables in \code{data}.  The user may
     select for interactions with the sensitive variable S. 
 
-    The function produces an instance of the `dsldLM` class (an S3
+    The function produces an instance of the \code{dsldLM} class (an S3
     object).  Instances of the generic functions \code{summary} and
     \code{coef} are provided.
 
@@ -105,16 +106,29 @@ predict(lin2, newData)
     of conditions for sensitive groups via linear models, with 
     interactions with S.
 
-    The \code{dsldDiffSLin} function allows users to compare mean Y at that
-    X between each pair of S level for additional new unseen data levels
-    using the model fitted from \code{dsldLinear}.
+    Use \code{predict} with additional comparison rows to obtain group-specific
+    predictions and their standard errors. Summary p-values use an asymptotic
+    normal reference. For separate group fits, the standard error of a
+    difference combines the two prediction variances assuming independent
+    groups. Rank-deficient fits cannot provide the full coefficient contrasts
+    or prediction standard errors and produce an error when these are requested.
+    Explicit factor contrasts are retained when all sensitive levels are
+    observed. Unused sensitive levels are dropped before fitting, which resets
+    their contrasts as in \code{droplevels}.
 
 }
 
 \value{
 
-The \code{dsldLinear} function returns an S3 object of class 'dsldLM',
-with one component for each level of S. Each component includes
-information about the fitted model.
+An S3 object of class \code{dsldLM}. Without interactions, the object contains
+one component named for S. With interactions, it contains one component per
+observed level of S. Each component stores its fitted \code{lm} model,
+coefficients, covariance matrix, training data, and factor encoding.
+
+\code{coef} and \code{vcov} return lists of coefficient vectors and covariance
+matrices. \code{summary} returns coefficient tables and sensitive-group
+comparisons. \code{predict} returns a data frame with \code{row},
+\code{prediction}, and \code{standardError}; separate group fits also include
+\code{level} and return one prediction per group for each new row.
 
 }

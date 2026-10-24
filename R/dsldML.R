@@ -4,7 +4,7 @@
 
 # args:
 
-#    data, yName, sName as usual 
+#    data, yName, sName as usual
 
 #    sComparisonPts as in the with-interactions case of dsldLinear()
 #    (nonparametric case necessarily has interactions)
@@ -14,33 +14,35 @@
 
 dsldML<-function(data,yName,sName,qeMLftnName,sComparisonPts='rand5',opts=NULL){
 
+  .dsld_check_data(data, c(yName, sName), complete = TRUE)
+  data <- toNumericFactor(data)
+  if (!is.factor(data[[sName]]) || nlevels(droplevels(data[[sName]])) < 2L)
+    stop("sName must identify a factor with at least two observed groups.")
+  data[[sName]] <- droplevels(data[[sName]])
   ycol <- which(names(data) == yName)
   scol <- which(names(data) == sName)
   slevels <- levels(data[,scol])
-  
+
   factors_info = factor_levels(data)
-  
-  if (sComparisonPts=='rand5'){
-    rows <- sample(nrow(data), 5)
-    reducedData <- data[rows, ]
-    columns <- c(yName, sName)
-    sComparisonPts <- reducedData[, !(names(reducedData) %in% columns)]
-    sComparisonPts <- apply_factor_levels(sComparisonPts, factors_info)
+
+  if (identical(sComparisonPts, 'rand5')){
+    sComparisonPts <- dsldGetRow5(data, yName, sName)
   }
-  
+  if (!is.data.frame(sComparisonPts)) stop("sComparisonPts must be a data frame or 'rand5'.")
+
   sComparisonPts <- apply_factor_levels(sComparisonPts, factors_info)
-  
+
   # called from lapply(), calling the QE function on the subset of data
   # corresponding to the specified level of the sensitive variable S
-  do1Slevel <- function(sLevel) 
+  do1Slevel <- function(sLevel)
   {
     subData <- data[data[,scol]==sLevel,]
-    subData <- subData[,-scol]
+    subData <- subData[, -scol, drop = FALSE]
     opts[['data']] <- subData
     opts[['yName']] <- yName
     do.call(qeMLftnName,opts)
   }
-  
+
   qeOut <- lapply(slevels,do1Slevel)
   names(qeOut) <- slevels
 
@@ -60,8 +62,8 @@ dsldML<-function(data,yName,sName,qeMLftnName,sComparisonPts='rand5',opts=NULL){
   }
 
   res$comparisons <- tmp
-  
-  return(res) 
+
+  return(res)
 }
 
 

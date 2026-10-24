@@ -1,0 +1,11 @@
+^\.github$
+^\.gitignore$
+^docs$
+^python-tests$
+^tools$
+^inst/src/.*\.egg-info$
+^inst/(build|dist)$
+^.*__pycache__.*$
+^.*\.pyc$
+^\.ruff_cache$
+^cran-comments\.md$

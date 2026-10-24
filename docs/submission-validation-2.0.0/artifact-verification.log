@@ -1,0 +1,15 @@
+PASS: R archive and Python wheel/sdist match source; versions, maintainer, and license agree.
+{
+  "dsld_2.0.0.tar.gz": {
+    "sha256": "520bbf003a6f13866d4fdf4b22e18ba5ddc151dd0bd1349af987a3fa473a7b3c",
+    "bytes": 1098041
+  },
+  "dsldpy-2.0.0-py3-none-any.whl": {
+    "sha256": "a6e43549fd93f6f372acacfdfbe4dd111046739081b1a66c03cba4b1a4a38109",
+    "bytes": 18917
+  },
+  "dsldpy-2.0.0.tar.gz": {
+    "sha256": "490e6e0c7fb1f44f75e53161d53cefa717058fdb371b44b3c781e315a78273a8",
+    "bytes": 16962
+  }
+}

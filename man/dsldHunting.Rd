@@ -3,7 +3,7 @@
 \alias{dsldOHunting}
 \title{Confounder and Proxy Hunting}
 
-\description{ 
+\description{
     Confounder hunting:  searches for variables C that predict both Y and
     S. Proxy hunting:  searches for variables O that predict S.
 }
@@ -18,13 +18,13 @@ dsldOHunting(data,yName,sName)
         Data frame.
     }
     \item{yName}{
-        Name of the response variable column. 
+        Name of the response variable column.
     }
     \item{sName}{
         Name of the sensitive attribute column.
     }
     \item{intersectDepth}{
-        Maximum size of intersection of the Y predictor set and 
+        Maximum size of intersection of the Y predictor set and
         the S predictor set
     }
 }
@@ -41,7 +41,7 @@ dsldOHunting(data,yName,sName)
     the top \code{i} important predictors of S will be reported, thus
     suggesting possible confounders. Larger values of \code{i} will
     report more potential confounders, though including progressively
-    weaker ones. 
+    weaker ones.
 
     The analyst then may then consider omitting the variables C from
     models of the effect of S on Y.
@@ -50,7 +50,7 @@ dsldOHunting(data,yName,sName)
 
     \code{dsldOHunting}: Factors, if any, will be converted to dummy
     variables, and then the Kendall Tau correlations will be calculated
-    betwene S and potential proxy variables O, i.e. every column other
+    between S and potential proxy variables O, i.e. every column other
     than Y and S.  (The Y column itself doesn't enter into computation.)
 
     In fairness analyses, in which one desires to either eliminate or
@@ -68,18 +68,23 @@ dsldOHunting(data,yName,sName)
 The function \code{dsldCHunting} returns an R list, one component for
 each confounder set found.
 
-The function \code{dsldOHunting} returns an R matrix of correlations, 
+The function \code{dsldOHunting} returns an R matrix of correlations,
 one row for each level of S.
 
 }
 
-\examples{  
+\examples{
 \donttest{
-data(lsa) 
+if (requireNamespace("randomForest", quietly = TRUE)) {
+data(lsa)
+set.seed(2026)
+lsa <- lsa[sample.int(nrow(lsa), 1000), ]
 dsldCHunting(lsa,'bar','race1')
 # e.g. suggests confounders 'decile3', 'lsat'
-    
+}
+
 data(mortgageSE)
+mortgageSE <- mortgageSE[sample.int(nrow(mortgageSE), 1000), ]
 dsldOHunting(mortgageSE,'deny','black')
 # e.g. suggests using loan value and condo purchase as proxies
 }

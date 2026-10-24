@@ -1,0 +1,81 @@
+name: Package checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1'
+
+permissions:
+  contents: read
+
+env:
+  R_RANGER_NUM_THREADS: 2
+  OMP_NUM_THREADS: 2
+  OPENBLAS_NUM_THREADS: 2
+  MKL_NUM_THREADS: 2
+
+jobs:
+  r-check:
+    name: R ${{ matrix.r }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-latest, r: release}
+          - {os: ubuntu-latest, r: devel}
+          - {os: macos-latest, r: release}
+          - {os: windows-latest, r: release}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.r }}
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          args: 'c("--no-manual", "--as-cran")'
+          error-on: '"warning"'
+
+  python-check:
+    name: Python interface and examples
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          needs: check
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install R package and Python wheel
+        run: |
+          R CMD INSTALL .
+          python -m pip install build ruff
+          python -m build inst --outdir "$RUNNER_TEMP/dsld-dist"
+          python -m pip install "$RUNNER_TEMP"/dsld-dist/*.whl nbformat scikit-learn nbclient ipykernel
+          cd "$RUNNER_TEMP"
+          R CMD build "$GITHUB_WORKSPACE"
+      - name: Check APIs, wrappers, documentation, and examples
+        run: |
+          Rscript --vanilla tools/check_api.R
+          Rscript --vanilla tools/check_numerical_references.R
+          python tools/check_python_api.py
+          ruff check --select F inst/src python-tests tools
+          python -m unittest discover -s python-tests -v
+          python tools/check_docs.py
+          python tools/run_readme_examples.py
+          python tools/run_notebooks.py
+          python tools/run_notebooks_kernel.py "$RUNNER_TEMP/dsld-notebooks"
+          python tools/check_release_artifacts.py "$RUNNER_TEMP"/dsld_*.tar.gz "$RUNNER_TEMP"/dsld-dist/*.whl "$RUNNER_TEMP"/dsld-dist/*.tar.gz --report "$RUNNER_TEMP/dsld-archive-manifest.json"

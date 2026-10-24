@@ -1,63 +1,33 @@
-
-
-# finds the estimated mean difference between`the matched Y pairs in the
-# treated/nontreated (exposed and nonn-exposed) groups, with covariates
-# X in 'data' other than the yName and sName columns
-
-# sName here is the "treatment" or "exposure," S
-
-# dsld wrapper for Matching::Match; optional propensFtn must be either
-# 'glm' for logit or 'knn' for qeKNN
-
-# in that optional case, we estimate P(S = 1 | X), either by a logistic
-# or k-NN model
-
-# due to the fact that various function calls require different argument
-# types, we may generate several different versions of a variable; e.g.
-# S is a factor but we also need logical and numeric versions
-
+# Estimate the average treatment effect using covariate or propensity matching.
+# S identifies treatment/exposure; yesYVal selects the positive binary outcome.
 dsldMatchedATE <- function(data,yName,sName,yesSVal,yesYVal=NULL,
-   propensFtn=NULL,k=NULL) 
+   propensFtn=NULL,k=NULL)
 {
    getSuggestedLib("Matching")
-
-   ycol <- which(names(data) == yName)
-   y <- data[,ycol]
-
-   if (is.factor(y)) {
-      yLvls <- levels(y)
-      if (length(yLvls) != 2)
-         stop('factor Y can only be dichotomous')
-      yNum <- as.integer(y == yesYVal)
-      dichotY <- TRUE
-   } else {
-      yNum <- y
-      dichotY <- FALSE
+   .dsld_check_data(data, c(yName, sName), complete = TRUE)
+   data <- toNumericFactor(data)
+   if (!is.null(propensFtn)) propensFtn <- match.arg(propensFtn, c("glm", "knn"))
+   treatment <- .dsld_binary_response(data[[sName]], yesSVal)
+   response <- data[[yName]]
+   if (is.factor(response) || !is.null(yesYVal)) {
+      response <- .dsld_binary_response(response, yesYVal)
    }
+   if (!is.numeric(response)) stop("Y must be numeric or a binary factor.")
 
-   scol <- which(names(data) == sName)
-   s <- data[,scol]
-   sLog <- (s == yesSVal)
-   sNum <- as.integer(sLog)
-   
-   x <- data[,-c(ycol,scol)]
-   if (!allNumeric(x))
-      xNum <- factorsToDummies(x,omitLast=TRUE,dfOut=TRUE)
-   else xNum <- as.matrix(x)
+   covariates <- data[, setdiff(names(data), c(yName, sName)), drop = FALSE]
+   if (!ncol(covariates)) stop("At least one matching covariate is required.")
+   if (!allNumeric(covariates)) {
+      matching_values <- factorsToDummies(covariates, omitLast = TRUE, dfOut = TRUE)
+   } else matching_values <- as.matrix(covariates)
 
-   if (!is.null(propensFtn)) {
-      if (propensFtn == 'glm') {
-         matchVals <- glm(sNum ~ xNum,family=binomial)$fitted.values
-      } else {  # qeKNN 
-         tmp <- qeKNN(data[,-ycol],sName,yesYVal=yesSVal,k=k,holdout=NULL)
-         matchVals <- tmp$regests
-      }
-      xNum <- matchVals
-   } 
-
-   matchOut <- Matching::Match(Y=y,Tr=sLog,X=xNum,estimand='ATE',ties=FALSE)
-   matchOut
-
+   if (identical(propensFtn, "glm")) {
+      matching_values <- glm(treatment ~ matching_values, family = binomial)$fitted.values
+   } else if (identical(propensFtn, "knn")) {
+      if (is.null(k)) k <- 25L
+      propensity_model <- qeKNN(data[, setdiff(names(data), yName), drop = FALSE],
+         sName, yesYVal = yesSVal, k = k, holdout = NULL)
+      matching_values <- propensity_model$regests
+   }
+   Matching::Match(Y = response, Tr = treatment, X = matching_values,
+                   estimand = "ATE", ties = FALSE)
 }
-
-

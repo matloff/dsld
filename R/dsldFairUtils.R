@@ -1,224 +1,139 @@
-
-# useful helpers
-### create k-fold split
-make_folds <- function(n, k = 5) {
-  stopifnot(n >= k, k >= 2)
-  idx <- sample.int(n)                                 # shuffle rows
-  split(idx, cut(seq_along(idx), breaks = k, labels = FALSE))
+# Cross-validation helpers. Each candidate uses the same held-out rows.
+make_folds <- function(n, k = 5, strata = NULL) {
+  if (length(k) != 1L || !is.finite(k) || k != as.integer(k) || k < 2L || k > n) {
+    stop("k_folds must be an integer between 2 and the number of rows.")
+  }
+  fold_ids <- integer(n)
+  if (is.null(strata)) {
+    fold_ids[sample.int(n)] <- rep(seq_len(k), length.out = n)
+  } else {
+    if (length(strata) != n || anyNA(strata)) stop("Invalid stratification labels.")
+    if (any(table(strata) < 2L)) stop("Each response class needs at least two rows for cross-validation.")
+    offset <- 0L
+    for (group in unique(strata)) {
+      indices <- which(strata == group)
+      shuffled <- indices[sample.int(length(indices))]
+      fold_ids[shuffled] <- (seq_along(indices) - 1L + offset) %% k + 1L
+      offset <- (offset + length(indices)) %% k
+    }
+  }
+  split(seq_len(n), factor(fold_ids, levels = seq_len(k)))
 }
 
 get_fold_split <- function(data, folds, i) {
-  stopifnot(i >= 1, i <= length(folds))
-  test_idx  <- folds[[i]]
-  train_idx <- setdiff(seq_len(nrow(data)), test_idx)
-  list(
-    train = data[train_idx, , drop = FALSE],
-    test  = data[test_idx,  , drop = FALSE]
-  )
+  stopifnot(i >= 1L, i <= length(folds))
+  test_indices <- folds[[i]]
+  list(train = data[-test_indices, , drop = FALSE],
+       test = data[test_indices, , drop = FALSE])
 }
 
-# Helper: keep only arguments that the target function supports (by name)
 .filter_model_args <- function(ftn_name, user_args) {
   if (is.null(user_args) || !length(user_args)) return(list())
-  ftn <- match.fun(ftn_name)
-  allowed <- names(formals(ftn))
-  keep <- names(user_args) %in% allowed
-  if (any(!keep)) {
-    dropped <- names(user_args)[!keep]
-    warning(sprintf("Ignoring unsupported arg(s) for %s: %s",
-                    ftn_name, paste(dropped, collapse = ", ")),
-            call. = FALSE)
+  if (!is.list(user_args) || is.null(names(user_args)) ||
+      any(!nzchar(names(user_args))) || anyDuplicated(names(user_args))) {
+    stop("model_args must be a named list with unique argument names.")
   }
-  user_args[keep]
+  reserved <- c("data", "yName", "sName", "sNames", "unfairness", "deweightPars", "yesYVal")
+  if (any(names(user_args) %in% reserved)) {
+    stop("model_args cannot override data, column names, response coding, or grid parameters.")
+  }
+  allowed <- names(formals(match.fun(ftn_name)))
+  supported <- names(user_args) %in% allowed
+  if (any(!supported)) {
+    warning("Ignoring unsupported arg(s) for ", ftn_name, ": ",
+            paste(names(user_args)[!supported], collapse = ", "), call. = FALSE)
+  }
+  user_args[supported]
 }
 
-dsldFairUtils <- function(data, yName, sName, dsldFTNName, unfairness = NULL, 
-                          deweightPars = NULL, yesYVal = NULL, k_folds = 5, 
+dsldFairUtils <- function(data, yName, sName, dsldFTNName, unfairness = NULL,
+                          deweightPars = NULL, yesYVal = NULL, k_folds = 5,
                           model_args = NULL) {
-  
-  valid_models <- c("dsldQeFairKNN", "dsldQeFairRF", "dsldQeFairRidgeLin", "dsldQeFairRidgeLog", 
-                    "dsldFrrm", "dsldFgrrm", "dsldNclm", "dsldZlm", "dsldZlrm")
-  if (!(dsldFTNName %in% valid_models)) stop("Invalid dsldFTNName specified")
-  
-  # classification gating
-  if (is.factor(data[[yName]])) {
-    if (is.null(yesYVal)) stop("missing yesYVal")
-    data[[yName]] <- as.factor(as.numeric(data[[yName]] == yesYVal))
+  edf_models <- c("dsldQeFairKNN", "dsldQeFairRF", "dsldQeFairRidgeLin", "dsldQeFairRidgeLog")
+  fairml_models <- c("dsldFrrm", "dsldFgrrm", "dsldNclm", "dsldZlm", "dsldZlrm")
+  if (length(dsldFTNName) != 1L || !dsldFTNName %in% c(edf_models, fairml_models)) {
+    stop("Invalid dsldFTNName specified.")
+  }
+  .dsld_check_data(data, c(yName, sName), complete = TRUE)
+  data <- toNumericFactor(data)
+  classification <- is.factor(data[[yName]]) || !is.null(yesYVal)
+  if (classification) {
+    data[[yName]] <- factor(.dsld_binary_response(data[[yName]], yesYVal), levels = c(0, 1))
     yesYVal <- "1"
   }
-  
-  if (dsldFTNName %in% c("dsldQeFairKNN","dsldQeFairRF","dsldQeFairRidgeLin","dsldQeFairRidgeLog")) {
-   
-    # --- build grid of deweightPars combos ---
-    if (is.null(deweightPars) || !length(deweightPars))
-      stop("Provide deweightPars as a named list. For a grid, use vectors (e.g. list(occ=c(0.2,0.4), educ=c(0.4))).")
-    
-    # If any element has length > 1, treat as grid; else one single combo
-    is_grid <- any(vapply(deweightPars, length, integer(1)) > 1)
-    grid_df <- if (is_grid) {
-      expand.grid(deweightPars, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-    } else {
-      # single row data.frame so we can reuse the same loop
-      as.data.frame(as.list(deweightPars), stringsAsFactors = FALSE)
-    }
-    
-    # Pre-filter user-supplied model args to only those supported by the target function
-    extra <- .filter_model_args(dsldFTNName, model_args)
-    
-    rows <- vector("list", nrow(grid_df))
-    
-    # Cache folds once (same across combos)
-    folds <- make_folds(nrow(data), k = k_folds)
-    
-    # Inner CV runner for one deweight combination (named numeric list)
-    run_one_combo_1 <- function(dw_list_named) {
-      accs <- numeric(length(folds))
-      corr_sums <- NULL
-      feat_names <- NULL
-      
-      for (i in seq_along(folds)) {
-        split <- get_fold_split(data, folds, i)
-        trn <- split$train
-        tst <- split$test
-        y_test <- tst[[yName]]
-        tst_x <- tst[, setdiff(names(tst), yName), drop = FALSE]
-        
-        base_args <- list(
-          data         = trn,
-          yName        = yName,
-          sNames       = sName,
-          deweightPars = dw_list_named
-        )
-        
-        if (!is.null(yesYVal)) base_args$yesYVal <- yesYVal
-        
-        call_args <- utils::modifyList(base_args, extra, keep.null = TRUE)
-        fitted <- do.call(dsldFTNName, call_args)
-        
-        res   <- predict(fitted, tst_x)
-        corrs <- res$correlations   # data.frame: feature, correlation
-        
-        if (is.null(feat_names)) {
-          feat_names <- as.character(corrs$feature)
-          corr_sums  <- setNames(numeric(length(feat_names)), feat_names)
-        }
-        corr_sums[as.character(corrs$feature)] <-
-          corr_sums[as.character(corrs$feature)] + corrs$correlation
-        
-        if (!is.null(yesYVal)) {
-          accs[i] <- mean(y_test != as.integer(res$preds$probs > 0.5))
-        } else {
-          accs[i] <- mean(abs(res$preds - y_test))
-        }
-      }
-      
-      # averages for this combo
-      mean_acc   <- mean(accs)
-      mean_corrs <- corr_sums / length(folds)
-      
-      # return as named list: testAcc + correlation columns
-      c(list(testAcc = mean_acc), as.list(mean_corrs))
-    }
-    
-    # Loop over each row of the grid
-    for (r in seq_len(nrow(grid_df))) {
-      
-      dw_row <- lapply(grid_df[r, , drop = FALSE], function(x) as.numeric(x)[1])
-      names(dw_row) <- names(grid_df)
-      
-      metrics <- run_one_combo_1(dw_row)
-      
-      # Build a single row: params first, then metrics; keep raw names for correlation columns
-      rows[[r]] <- as.data.frame(c(as.list(dw_row), metrics), check.names = FALSE)
-    }
-    
-    # Bind all rows; ensure parameter columns come first
-    out <- do.call(rbind, rows)
-    rownames(out) <- NULL
-    return(out)
-   
-  
-    # fairML wrappers 
-  } else {
-    if (is.null(unfairness) || !length(unfairness))
-      stop("Provide unfairness as a vector of numbers between (0,1]. For example: unfairness = c(0.2, 0.9).")
-    
-    # Pre-filter user-supplied model args to only those supported by the target function
-    extra <- .filter_model_args(dsldFTNName, model_args)
-    
-    # Cache folds once (same across combos)
-    folds <- make_folds(nrow(data), k = k_folds)
-    
-    # Inner CV runner for one unfairness value
-    run_one_combo_2 <- function(u_val) {
-      accs <- numeric(length(folds))
-      corr_sums <- NULL
-      feat_names <- NULL
-      
-      for (i in seq_along(folds)) {
-        split <- get_fold_split(data, folds, i)
-        trn <- split$train
-        tst <- split$test
-        y_test <- tst[[yName]]
-        tst_x <- tst[, setdiff(names(tst), yName), drop = FALSE]
-        
-        base_args <- list(
-          data       = trn,
-          yName      = yName,
-          sName      = sName,
-          unfairness = u_val
-        )
-        if (!is.null(yesYVal)) base_args$yesYVal <- yesYVal
-        
-        call_args <- utils::modifyList(base_args, extra, keep.null = TRUE)
-        fitted <- do.call(dsldFTNName, call_args)
-     
-        res   <- predict(fitted, tst_x)
-        corrs <- res$correlations   # data.frame: feature, correlation
-        
-        if (is.null(feat_names)) {
-          feat_names <- as.character(corrs$feature)
-          corr_sums  <- setNames(numeric(length(feat_names)), feat_names)
-        }
-        corr_sums[as.character(corrs$feature)] <-
-          corr_sums[as.character(corrs$feature)] + corrs$correlation
-        
-        if (!is.null(yesYVal)) {
-          accs[i] <- mean(y_test != as.integer(res$preds > 0.5))
-        } else {
-          accs[i] <- mean(abs(res$preds - y_test))
-        }
-      }
-      
-      # averages for this unfairness value
-      mean_acc   <- mean(accs)
-      mean_corrs <- corr_sums / length(folds)
-      
-      # return as named list: testAcc + correlation columns
-      c(list(testAcc = mean_acc), as.list(mean_corrs))
-    }
-    
-    # Loop over the unfairness vector (no grid_df here)
-    rows <- vector("list", length(unfairness))
-    for (u_idx in seq_along(unfairness)) {
-      unfairVal <- as.numeric(unfairness[u_idx])
-      m <- as.list(run_one_combo_2(unfairVal))  # named list: testAcc + corr cols
-      
-      rows[[u_idx]] <- data.frame(
-        c(
-          list(unfairness = unfairVal, testAcc = m$testAcc),
-          m[setdiff(names(m), "testAcc")]
-        ),
-        check.names = FALSE
-      )
-    }
-    
-    out <- do.call(rbind, rows)
-    rownames(out) <- NULL
-    return(out)
+  classification_models <- c("dsldQeFairRidgeLog", "dsldFgrrm", "dsldZlrm")
+  regression_models <- c("dsldQeFairRidgeLin", "dsldFrrm", "dsldNclm", "dsldZlm")
+  if ((classification && dsldFTNName %in% regression_models) ||
+      (!classification && dsldFTNName %in% classification_models)) {
+    stop("The selected model does not support this response type.")
   }
+  is_edf <- dsldFTNName %in% edf_models
+  if (is_edf) {
+    if (!is.list(deweightPars) || !length(deweightPars) ||
+        is.null(names(deweightPars)) || any(!nzchar(names(deweightPars))) ||
+        anyDuplicated(names(deweightPars))) stop("Provide deweightPars as a named list of numeric vectors.")
+    if (any(!vapply(deweightPars, function(values) {
+      is.numeric(values) && length(values) > 0L && all(is.finite(values)) && all(values >= 0)
+    }, logical(1)))) stop("Deweight grids must contain finite, nonnegative numbers.")
+    parameter_grid <- expand.grid(deweightPars, KEEP.OUT.ATTRS = FALSE,
+                                  stringsAsFactors = FALSE)
+    .dsld_check_deweights(as.list(parameter_grid[1L, , drop = FALSE]),
+                          setdiff(names(data), c(yName, sName)))
+  } else {
+    if (!is.numeric(unfairness) || !length(unfairness) ||
+        any(!is.finite(unfairness)) || any(unfairness <= 0 | unfairness > 1)) {
+      stop("Provide unfairness as numbers in (0, 1].")
+    }
+    parameter_grid <- data.frame(unfairness = unfairness)
+  }
+  extra_args <- .filter_model_args(dsldFTNName, model_args)
+  folds <- make_folds(nrow(data), k_folds,
+                      if (classification) data[[yName]] else NULL)
+  feature_names <- s_correlations(data, sName, seq_len(nrow(data)))$feature
+  results <- vector("list", nrow(parameter_grid))
+  for (candidate in seq_len(nrow(parameter_grid))) {
+    fold_errors <- numeric(length(folds))
+    fold_correlations <- matrix(NA_real_, length(folds), length(feature_names),
+                                 dimnames = list(NULL, feature_names))
+    for (fold in seq_along(folds)) {
+      split_data <- get_fold_split(data, folds, fold)
+      train_data <- split_data$train
+      test_data <- split_data$test
+      call_args <- list(data = train_data, yName = yName)
+      if (is_edf) {
+        call_args$sNames <- sName
+        call_args$deweightPars <- as.list(parameter_grid[candidate, , drop = FALSE])
+      } else {
+        call_args$sName <- sName
+        call_args$unfairness <- parameter_grid$unfairness[candidate]
+      }
+      if (classification) call_args$yesYVal <- yesYVal
+      model <- do.call(dsldFTNName, c(call_args, extra_args))
+      prediction <- predict(model, test_data[, setdiff(names(test_data), yName), drop = FALSE])
+      if (classification) {
+        probabilities <- .dsld_positive_probability(prediction$preds)
+        fold_errors[fold] <- mean(as.integer(test_data[[yName]] == yesYVal) !=
+                                   as.integer(probabilities > 0.5))
+      } else {
+        fold_errors[fold] <- mean(abs(prediction$preds - test_data[[yName]]))
+      }
+      correlations <- prediction$correlations
+      common_features <- intersect(feature_names, correlations$feature)
+      fold_correlations[fold, common_features] <-
+        correlations$correlation[match(common_features, correlations$feature)]
+    }
+    # Weight prediction errors by held-out sample count. Undefined correlations
+    # (constant groups/predictions) stay missing and are not counted as zero.
+    test_error <- stats::weighted.mean(fold_errors, lengths(folds))
+    mean_correlations <- vapply(seq_along(feature_names), function(column) {
+      values <- fold_correlations[, column]
+      if (all(is.na(values))) NA_real_ else mean(values, na.rm = TRUE)
+    }, numeric(1))
+    names(mean_correlations) <- feature_names
+    results[[candidate]] <- as.data.frame(c(as.list(parameter_grid[candidate, , drop = FALSE]),
+      list(testAcc = test_error), as.list(mean_correlations)), check.names = FALSE)
+  }
+  result <- do.call(rbind, results)
+  rownames(result) <- NULL
+  result
 }
-
-
-
-  

@@ -1,5 +1,9 @@
 \name{mortgageSE}
 \alias{mortgageSE}
+\docType{data}
+\usage{data(mortgageSE)}
+\format{A data frame with 2380 rows and 16 columns.
+Use \code{names(mortgageSE)} and \code{str(mortgageSE)} to inspect the included variables and types.}
 
 \title{
   Mortgage Denial

@@ -4,3 +4,14 @@
 
 # macOS metadata
 .DS_Store
+
+# Build, check, and Python installation artifacts
+*.Rcheck/
+dsld_*.tar.gz
+__pycache__/
+*.py[cod]
+*.egg-info/
+inst/build/
+inst/dist/
+.venv/
+.ruff_cache/

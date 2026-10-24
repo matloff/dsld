@@ -18,23 +18,24 @@ dsldMatchedATE(data,yName,sName,yesSVal,yesYVal=NULL,
     \item{yName}{Name of the response variable column.}
     \item{sName}{ Name of the sensitive attribute column. The
        attribute must be dichotomous.}
-    \item{yesSVal}{S value to be considered "yes," to be coded 
+    \item{yesSVal}{S value to be considered "yes," to be coded
        1 rather than 0.}
-    \item{yesYVal}{Y value to be considered "yes," to be coded 
-       1 rather than 0.}
-    \item{propensFtn}{Either 'glm' (logistic), or 'knn'.}
-    \item{k}{Number of nearest neighbors if \code{propensFtn='knn'.}}
+    \item{yesYVal}{Y value to be considered "yes," to be coded
+       1 rather than 0. Required for a factor outcome; when provided for a numeric
+       binary outcome, that outcome is also recoded. Leave NULL for regression.}
+    \item{propensFtn}{NULL for covariate matching, 'glm' for logistic propensity scores, or 'knn'.}
+    \item{k}{Number of nearest neighbors if \code{propensFtn='knn'}. Defaults to 25 when NULL.}
 }
 
 \value{
 
-Object of class 'Match'. See documentation in the 
+Object of class 'Match'. See documentation in the
 \pkg{Matching} package.
 }
 
 \details{
 
-This is a \pkg{dsld} wrapper for \code{Matching::Match}. 
+This is a \pkg{dsld} wrapper for \code{Matching::Match}.
 
 Matched analysis is typically applied to measuring "treatment effects,"
 but is often applied in situations in which the "treatment," S here, is
@@ -56,13 +57,15 @@ or k-NN model.
 
 \examples{
 
+if (requireNamespace("Matching", quietly = TRUE)) {
 data(lalonde,package='Matching')
 ll <- lalonde
 ll$treat <- as.factor(ll$treat)
 ll$re74 <- NULL
 ll$re75 <- NULL
-summary(dsldMatchedATE(ll,'re78','treat','1')) 
+summary(dsldMatchedATE(ll,'re78','treat','1'))
 summary(dsldMatchedATE(ll,'re78','treat','1',propensFtn='glm'))
 summary(dsldMatchedATE(ll,'re78','treat','1',propensFtn='knn',k=15))
+}
 }
 

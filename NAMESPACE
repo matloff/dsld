@@ -3,7 +3,6 @@ import('regtools')
 import('gtools')
 import('ranger')
 import('fairml')
-import('fairness')
 import('Kendall')
 import('freqparcoord')
 import('ggplot2')
@@ -23,12 +22,12 @@ importFrom("stats", "model.matrix")
 export(
    getSuggestedLib,
    dsldFreqPCoord,
-   dsldTakeALookAround, dsldConditDisparity, 
+   dsldTakeALookAround, dsldConditDisparity,
    dsldScatterPlot3D,
-   dsldLinear, dsldLogit, 
+   dsldLinear, dsldLogit,
    dsldConfounders, dsldDensityByS, dsldFrequencyByS,
    dsldFgrrm, dsldFrrm, dsldNclm, dsldZlm, dsldZlrm,
-   dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN, 
+   dsldQeFairRidgeLin, dsldQeFairRF, dsldQeFairRidgeLog, dsldQeFairKNN,
    dsldML, dsldCHunting, dsldOHunting, dsldIamb, dsldMatchedATE,
    dsldFairUtils
 )

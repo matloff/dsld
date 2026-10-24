@@ -1,7 +1,7 @@
 
 # arguments
 
-#   data: input data frame or equivalewnt
+#   data: input data frame or equivalent
 #   yName: response variable
 #   sName: sensitive variable (R factor)
 #   xName: horizontal axis variables
@@ -15,16 +15,20 @@
 dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
                                 qeFtn = qeKNN, minS = 50, useLoess = TRUE)
 {
-    getSuggestedLib('qeML') 
-  
+    getSuggestedLib('qeML')
+    .dsld_check_data(data, c(yName, sName, xName), complete = TRUE)
+
+    if (length(minS) != 1L || !is.finite(minS) || minS < 1L || minS != as.integer(minS))
+        stop("minS must be a positive integer.")
+
     # args type checking
     if (!is.data.frame(data)) {
         stop("data must be a dataframe or equivalent")
     }
 
     y <- data[[yName]]
-    
-    dichotY <- inherits(y, "factor") && length(levels(y) == 2)
+
+    dichotY <- inherits(y, "factor") && nlevels(y) == 2L
 
     if (!inherits(y, "numeric") &&
         !inherits(y, "integer") &&
@@ -65,13 +69,14 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
     # consider only the remaining S-levels
     sLevels <- names(groupByS)
     remainingS <- length(sLevels)
+    if (!remainingS) stop("No groups meet minS after applying condits.")
 
 
    # prepare to plot each sensitive level against X; in this loop, fit
    # the models, and then plot in the following loop
    curXDataList <- list()
    predsList <- list()
-   for (i in 1:remainingS) {
+   for (i in seq_len(remainingS)) {
 
        # setup data for training
        curData <- groupByS[[i]][,-sCol]  # current s-level w/o sensitive column
@@ -82,7 +87,13 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
        # fit ML model
        model <- qeFtn(curData, yName, holdout = NULL)
        preds <- predict(model, curXDF)
-       if (dichotY) preds <- preds$probs
+       if (dichotY) {
+           probabilities <- preds$probs
+           if (is.matrix(probabilities)) {
+               probabilities <- probabilities[, levels(y)[1L]]
+           }
+           preds <- probabilities
+       }
 
        # sort data so that lines() will make sense
        curXData <- as.vector(curXData)
@@ -94,7 +105,7 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
        # store dataframe w/ sorted data for plotting
        # check Loess
        plotdf <- data.frame(curXData, preds)
-       if (useLoess) {
+       if (useLoess && length(curXData) >= 4L) {
            preds <- loess(preds ~ curXData, plotdf)$fitted # loess smoothing
        }
 
@@ -109,8 +120,8 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
    predsMin <- min(sapply(predsList, min))
    ylow <- if (predsMin >= 0) 0.9 * predsMin else 1.1 * predsMin
    yhigh <- if (predsMax >= 0) 1.1 * predsMax else 0.9 * predsMax
-   currXMax <- max(sapply(curXData, max))
-   currXMin <- min(sapply(curXData, min))
+   currXMax <- max(unlist(curXDataList))
+   currXMin <- min(unlist(curXDataList))
 
    plot(
         NULL,
@@ -118,11 +129,11 @@ dsldConditDisparity <- function(data, yName, sName, xName, condits = NULL,
         xlim = c(currXMin, currXMax),
         xlab = xName,
         ylab = yName,
-        main = paste("Underlying Effects of ", sName, " on ", 
+        main = paste("Underlying Effects of ", sName, " on ",
             yName, " wrt ", xName)
    )
 
-   for (i in 1:remainingS) {
+   for (i in seq_len(remainingS)) {
       lines(
         curXDataList[[i]],
         predsList[[i]],

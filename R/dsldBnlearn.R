@@ -1,11 +1,13 @@
 
-# iamb method of causal discovery
+# Conditional-independence structure discovery using bnlearn's IAMB method.
 
 dsldIamb <- function(data)
 {
 
    getSuggestedLib('bnlearn')
-   return(bnlearn::iamb(data))
+   .dsld_check_data(data, names(data), complete = TRUE)
+   # bnlearn distinguishes continuous doubles from integer columns.
+   return(bnlearn::iamb(toNumericFactor(data)))
 
 }
 

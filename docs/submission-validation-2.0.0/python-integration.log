@@ -1,0 +1,76 @@
+test_cross_validation_model_args (test_wrappers.WrapperTests.test_cross_validation_model_args) ... ok
+test_custom_ml_comparisons_and_typed_opts (test_wrappers.WrapperTests.test_custom_ml_comparisons_and_typed_opts) ... ok
+test_edf_classification_models (test_wrappers.WrapperTests.test_edf_classification_models) ... Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+ok
+test_edf_regression_models (test_wrappers.WrapperTests.test_edf_regression_models) ... Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+ok
+test_fairml_models (test_wrappers.WrapperTests.test_fairml_models) ... ok
+test_feature_comparisons (test_wrappers.WrapperTests.test_feature_comparisons) ... ok
+test_frequency_labels (test_wrappers.WrapperTests.test_frequency_labels) ... ok
+test_graphics (test_wrappers.WrapperTests.test_graphics) ... ok
+test_graphics_device_closes_on_failure (test_wrappers.WrapperTests.test_graphics_device_closes_on_failure) ... ok
+test_hunting_results (test_wrappers.WrapperTests.test_hunting_results) ... R callback write-console: In addition:   
+R callback write-console: Warning messages:
+  
+R callback write-console: 1:   
+R callback write-console: In check.unused.args(list(...), character(0)) :  
+R callback write-console: 
+   
+R callback write-console:  unused argument(s): 'useS4'.
+  
+R callback write-console: 2:   
+R callback write-console: In check.unused.args(list(...), character(0)) :  
+R callback write-console: 
+   
+R callback write-console:  unused argument(s): 'useS4'.
+  
+R callback write-console: 3:   
+R callback write-console: In check.unused.args(list(...), character(0)) :  
+R callback write-console: 
+   
+R callback write-console:  unused argument(s): 'useS4'.
+  
+R callback write-console: 4:   
+R callback write-console: In check.unused.args(list(...), character(0)) :  
+R callback write-console: 
+   
+R callback write-console:  unused argument(s): 'useS4'.
+  
+R callback write-console: 5:   
+R callback write-console: In check.unused.args(list(...), character(0)) :  
+R callback write-console: 
+   
+R callback write-console:  unused argument(s): 'useS4'.
+  
+                  x           z
+group.a  0.02840286  0.05562228
+group.b -0.02840286 -0.05562228
+ok
+test_linear_methods_without_global_assignments (test_wrappers.WrapperTests.test_linear_methods_without_global_assignments) ... ok
+test_logit_methods_without_global_assignments (test_wrappers.WrapperTests.test_logit_methods_without_global_assignments) ... ok
+test_matching_returns_object (test_wrappers.WrapperTests.test_matching_returns_object) ... 
+Estimate...  -0.15 
+SE.........  0.056088 
+T-stat.....  -2.6744 
+p.val......  0.0074867 
+
+Original number of observations..............  120 
+Original number of treated obs...............  60 
+Matched number of observations...............  120 
+Matched number of observations  (unweighted).  120 
+
+ok
+test_multiple_sensitive_columns (test_wrappers.WrapperTests.test_multiple_sensitive_columns) ... ok
+test_network_graph_and_device_cleanup (test_wrappers.WrapperTests.test_network_graph_and_device_cleanup) ... ok
+test_preprocess_factor_labels_to_numeric (test_wrappers.WrapperTests.test_preprocess_factor_labels_to_numeric) ... ok
+test_read_csv (test_wrappers.WrapperTests.test_read_csv) ... ok
+test_roundtrip_and_validation (test_wrappers.WrapperTests.test_roundtrip_and_validation) ... ok
+test_single_row_classifier_preserves_probability_columns (test_wrappers.WrapperTests.test_single_row_classifier_preserves_probability_columns) ... Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+ok
+test_typed_options (test_wrappers.WrapperTests.test_typed_options) ... ok
+test_versions (test_wrappers.WrapperTests.test_versions) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 9.459s
+
+OK

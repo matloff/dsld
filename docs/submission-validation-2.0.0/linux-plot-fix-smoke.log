@@ -1,0 +1,5 @@
+Warning message:
+Omitting parallel-coordinate axes constant within a plotted group: category.u, category.v 
+[1] x z y
+Levels: x z y
+PASS grouped categorical and one-axis cases

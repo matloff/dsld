@@ -1,82 +1,39 @@
-
 ---
 title: "Categorized Function List"
-output:
-   rmarkdown::html_vignette
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Function List}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
+DSLD supports two related tasks: estimating differences between sensitive groups
+and limiting sensitive-attribute influence in predictive models.
 
-# Categorized Function List
+| Area | Functions |
+| --- | --- |
+| Adjusted group comparisons | `dsldLinear`, `dsldLogit`, `dsldML` |
+| Confounder and proxy exploration | `dsldCHunting`, `dsldOHunting`, `dsldTakeALookAround` |
+| Group frequency and density summaries | `dsldFrequencyByS`, `dsldDensityByS`, `dsldConfounders` |
+| Multivariate graphics | `dsldFreqPCoord`, `dsldScatterPlot3D`, `dsldConditDisparity` |
+| Matching and structure discovery | `dsldMatchedATE`, `dsldIamb` |
+| fairml models | `dsldFrrm`, `dsldFgrrm`, `dsldNclm`, `dsldZlm`, `dsldZlrm` |
+| Explicitly deweighted features | `dsldQeFairKNN`, `dsldQeFairRF`, `dsldQeFairRidgeLin`, `dsldQeFairRidgeLog` |
+| Cross-validated parameter comparison | `dsldFairUtils` |
 
-</br>
-</br>
-</br>
+Use `summary()` for the linear/logistic group comparisons and `predict()` for
+new data. Internal comparison helpers are not exported functions.
 
-*Tabular confounder exploration*
+The fair-ML fields `trainAcc` and `testAcc` are prediction errors, despite their
+historical names: mean absolute error for regression and misclassification rate
+for binary classification. Smaller errors indicate better prediction. Signed
+correlations describe association with each sensitive attribute or factor level;
+they are not a universal fairness guarantee.
 
-* dsldCHunting
-
-* dsldDiffSLin
-
-* dsldDiffSLog
-
-* dsldTakeALookAround
-     
-*Graphical confounder exploration*
-
-* dsldConditDisparity
-
-* dsldConfounders
-
-* dsldDensityByS
-
-* dsldScatterPlot3D
-
-*Statistical analysisfor group differences*
-
-* dsldLinear
-
-* dsldLogit
-
-* dsldML
-
-*Causal analysis*
-
-* dsldIamb
-
-* dsldMatchedATE
-
-*Fairness in prediction*
-
-* dsldFgrrm
-
-* dsldFrrm
-
-* dsldNclm
-
-* dsldOHunting
-
-* dsldQeFairRF
-
-* dsldQeFairRidgeLin
-
-* dsldQeFairRidgeLog
-
-* dsldZlrm
-
-* dsldZlm
-
-* dsldTakeALookAround
-
-
+The optional packages `Matching`, `bnlearn`, `randomForest`, `cccp`, and `CVXR`
+are required only by their corresponding methods. Consult each function's help
+page for its inputs, return values, and examples.

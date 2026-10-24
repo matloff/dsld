@@ -1,99 +1,49 @@
-### -------------------------- dsldTakeALookAround ---------------------------
+# Compare feature sets on a shared holdout so changes in error reflect changes
+# in predictors, rather than a new random train/test split for every model.
 dsldTakeALookAround <- function(data, yName, sName,
                                 maxFeatureSetSize = (ncol(data) - 2),
                                 holdout = floor(min(1000, 0.1 * nrow(data)))) {
-    # load libraries
-    getSuggestedLib("qeML")
-
-    # args checking #
-    if (maxFeatureSetSize > (ncol(data) - 2)) {
-        stop("maxFeatureSetSize too large!")    # error on invalid size
+  .dsld_check_data(data, c(yName, sName), complete = TRUE)
+  data <- toNumericFactor(data)
+  feature_names <- setdiff(names(data), c(yName, sName))
+  if (length(maxFeatureSetSize) != 1L || !is.finite(maxFeatureSetSize) ||
+      maxFeatureSetSize < 1L || maxFeatureSetSize != as.integer(maxFeatureSetSize) ||
+      maxFeatureSetSize > length(feature_names)) {
+    stop("maxFeatureSetSize must be an integer between 1 and the number of available predictors.")
+  }
+  if (is.null(holdout)) {
+    train_indices <- test_indices <- seq_len(nrow(data))
+  } else {
+    if (length(holdout) != 1L || !is.finite(holdout) || holdout < 1L ||
+        holdout >= nrow(data) || holdout != as.integer(holdout)) {
+      stop("holdout must be NULL or a positive integer smaller than the number of rows.")
     }
-  
-    if (!is.data.frame(data)) {
-        stop("data must be a dataframe or equivalent")       # error on types
+    test_indices <- sample.int(nrow(data), holdout)
+    train_indices <- setdiff(seq_len(nrow(data)), test_indices)
+  }
+  prediction_error <- function(predictor_names, response_name) {
+    train_data <- data[train_indices, c(predictor_names, response_name), drop = FALSE]
+    test_data <- data[test_indices, predictor_names, drop = FALSE]
+    response <- data[[response_name]][test_indices]
+    if (is.numeric(response)) {
+      model <- qeML::qeLin(train_data, response_name, holdout = NULL)
+      mean(abs(predict(model, test_data) - response))
+    } else {
+      model <- qeML::qeLogit(train_data, response_name, holdout = NULL)
+      predictions <- predict(model, test_data)$predClasses
+      mean(as.vector(predictions) != as.character(response))
     }
-    
-    # subset dataset to remove sName and yName
-    max_features_data <- data[, !names(data) %in% c(yName, sName)]
-
-    # get names of feature set 
-    feature_names <- colnames(max_features_data)
-    
-    # initialize empty vectors to populate with test accuracy scores
-    col_names <- c()
-    MSE_Y <- c()
-    MSE_YS <- c()
-    MSE_S <- c()
-    
-    # run for loop to get all possible combinations of features up to maxFeatureSetSize
-    for (i in 1:maxFeatureSetSize) { 
-        # create combination matrix containing i-features
-        combination_matrix <- combn(feature_names, i)
-        
-        # run second for loop across each column of the combination_matrix
-        for (j in 1:dim(combination_matrix)[2]) {
-            # create vector of feature set names across each run - compute 1.
-            current_features <- combination_matrix[,j]                     # get feature names on the jth loop
-            names <- toString(current_features)                            # convert to string
-            names <- gsub(" ","",names)                                    # remove spaces between the characters
-            col_names <- c(col_names, names)                               # append feature names string into vector 
-            
-            # create dataframes to compute test accuracies 
-            feature_data_Y <- data[,c(current_features, yName)]            # dataframe with feature set and Y 
-            feature_data_Y_S <- data[,c(current_features, yName,sName)]    # dataframe with feature set, S and Y
-            feature_data_S <- data[,c(current_features, sName)]            # dataframe with feature set and S
-            
-            # get part 2. and 3.
-            # check whether Y is continuous
-            if (is.numeric(data[[yName]])) {
-                a <- qeLin(feature_data_Y, yName, holdout)$testAcc          # get prediction accuracy for Y of this feature set
-                MSE_Y <- c(MSE_Y, a)                                        # append test accuracy into vector 
-                
-                b <- qeLin(feature_data_Y_S, yName, holdout)$testAcc        # get prediction accuracy for Y of the feature set PLUS s
-                MSE_YS <- c(MSE_YS, b)
-            } 
-            # Y is discrete
-            else { 
-                a <- qeLogit(feature_data_Y, yName, holdout)$testAcc        # get prediction accuracy for Y of this feature set
-                MSE_Y <- c(MSE_Y, a)
-                
-                b <- qeLogit(feature_data_Y_S, yName, holdout)$testAcc      # get prediction accuracy for Y of this feature set PLUS s
-                MSE_YS <- c(MSE_YS, b)
-            }
-            
-            # get 4.
-            # check whether sName is continuous
-            if (is.numeric(data[[sName]])) {
-                c <- qeLin(feature_data_S, sName, holdout)$testAcc          # get prediction accuracy of S from the feature set
-                MSE_S <- c(MSE_S, c)
-            } 
-            # if sName is discrete
-            else {
-                c <- qeLogit(feature_data_S, sName, holdout)$testAcc        # get prediction accuracy of S from the feature set
-                MSE_S <- c(MSE_S, c)
-            }
-        }
+  }
+  results <- list()
+  for (size in seq_len(maxFeatureSetSize)) {
+    feature_sets <- combn(feature_names, size, simplify = FALSE)
+    for (features in feature_sets) {
+      results[[length(results) + 1L]] <- data.frame(
+        "Feature Names" = paste(features, collapse = ","),
+        a = prediction_error(features, yName),
+        b = prediction_error(c(features, sName), yName),
+        c = prediction_error(features, sName), check.names = FALSE)
     }
-    
-    # create dataframe
-    df <- data.frame(col_names, MSE_Y, MSE_YS, MSE_S)
-    colnames(df)[1] <- "Feature Names"
-    colnames(df)[2] <- "a"
-    colnames(df)[3] <- "b"
-    colnames(df)[4] <- "c"
-    return(df)
+  }
+  do.call(rbind, results)
 }
-
-# Test runs
-# Example 1: We investigate the predictive accuracy for a continuous Y,'wageinc', using the default arguments for maxFeatureSetSize = 4
-# data(svcensus)
-# dsldTakeALookAround(svcensus, 'wageinc', 'gender', 4)
-
-# Example 2:  We investigate the predictive accuracy for a categorical Y, 'educ', using the default arguments for maxFeatureSetSize = 4
-# data(svcensus)
-# dsldTakeALookAround(svcensus, 'educ', 'occ')
-
-# Example 3:  We investigate the predictive accuracy for a continuous Y, 'wageinc', using the maxFeatureSetSize = 1
-# data(svcensus)
-# dsldTakeALookAround(svcensus, 'wageinc', 'gender', 1)

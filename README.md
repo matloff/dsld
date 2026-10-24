@@ -1,355 +1,209 @@
+# DSLD: Data Science Looks at Discrimination
 
-# DSLD: Data Science Looks at Discrimination 
+[![CRAN status](https://www.r-pkg.org/badges/version/dsld)](https://cran.r-project.org/package=dsld)
 
-[![CRAN Status](https://www.r-pkg.org/badges/version/dsld)](https://cran.r-project.org/package=dsld)
-
-> Statistical and graphical tools for detecting and measuring discrimination and bias in data
-
-This is an R package with Python interfaces available.
+Statistical and graphical tools for exploring possible discrimination and bias
+in data, with an R package and Python interfaces.
 
 ## Overview
 
-Discrimination is a key social issue in the United States and in a 
-number of other countries. There is lots of available data with which 
-one might investigate possible discrimination. But how might such 
-investigations be conducted?
+Discrimination is an important social issue, and many datasets can help us
+investigate it. DSLD brings together statistical models, visualizations, and
+fair machine learning methods to make these investigations more accessible.
 
-Our **DSLD** package provides statistical and graphical tools for
-detecting and measuring discrimination and bias; be it racial, gender, 
-age or other. It is widely applicable, here are just a few possible use 
-cases:
+The package is intended for teaching and research in statistics and the social
+sciences, organizational analysis, and other applications involving differences
+between groups. Its companion book explains the statistical principles behind
+the methods and works through practical examples.
 
-- Quantitative analysis in instruction and research in the social sciences.
-- Corporate HR analysis and research.
-- Litigation involving discrimination and related issues.
-- Concerned citizenry.
+- [Companion book](https://htmlpreview.github.io/?https://github.com/matloff/dsldBook/blob/main/_book/index.html)
+- [Research paper](https://arxiv.org/abs/2411.04228)
+- [Python interface and examples](inst/README.md)
+- [Development and validation guide](docs/development.md)
+- [Maintenance record](docs/maintenance-2026-10.md) and [release notes](NEWS.md)
+- [CRAN readiness audit](docs/cran-readiness-2026-10.md)
+- [2.0.0 release candidate and submission guide](docs/release-2.0.0.md)
 
-This package is broadly aimed at users ranging from instructors of 
-statistics classes to legal professionals, as it offers a powerful yet 
-intuitive approach to discrimination analysis. It also includes an 80 page 
-**Quarto book** to serve as a guide of the key statistical principles and 
-their applications.
+## Installation
 
-- **Quarto Book**: [Paper](https://htmlpreview.github.io/?https://github.com/matloff/dsldBook/blob/main/_book/index.html) - Important statistical principles and applications.
-- **Research Paper**: [Paper](https://arxiv.org/abs/2411.04228) - Package implementation details.
+**CRAN status:** DSLD was archived on November 27, 2025 because its required
+`fairness` dependency had been archived. This 2.0.0 candidate removes that
+unused dependency. It has not yet been submitted to CRAN; `install.packages("dsld")`
+is therefore not the installation route for this version.
+[CRAN's archive notice](https://cran.r-project.org/package=dsld) preserves the
+original releases.
 
-## Installation:
-
-From CRAN :
-
-```r
-install.packages("dsld")
-```
-
-<!-- From GitHub (latest Version):
+From an R session with this repository as the working directory:
 
 ```r
-library(devtools)
-install_github("matloff/dsld", force = TRUE)
-``` -->
-
-## Analysis categories:
-
-DSLD addresses two main types of bias analysis:
-
-**Estimation Analysis**: Investigates possible discrimination by 
-estimating effects while accounting for confounders. Confounders are
-variables that may affect the outcome variable other than through 
-the sensitive variable. DSLD provides both analytical and graphical functions 
-for this purpose.
-
-**Prediction Analysis**: Addresses algorithmic bias in machine learning 
-by excluding sensitive variables while controlling proxy effects. 
-Proxies are variables strongly related to the sensitive variable that 
-could indirectly introduce bias.
-
-The first case examines *societal* or *institutional bias*. The second case 
-focuses on *algorithmic bias*.
-
-<table border="1">
-   <tr>
-   <th>Statistical Analysis</th>
-   <th>Fair Machine Learning</th>
-   </tr>
-   <tr>
-   <td>Estimate an effect</td>
-   <td>Predict an outcome</td>
-   </tr>
-   <tr>
-   <td>Harm comes from society</td>
-   <td>Harm comes from algorithm</td>
-   </tr>
-   <tr>
-   <td>Include sensitive variables</td>
-   <td>Exclude sensitive variables</td>
-   </tr>
-   <tr>
-   <td>Adjust for covariates</td>
-   <td>Limit proxy impact</td>
-   </tr>
-</table>
-
-We will tour of a small subset of dsld's features using the **svcensus** data 
-included in the package.
-
-### The data
-
-The **svcensus** dataset consists of recorded income across 6 different 
-engineering occupations. It consists of the features: 'age', 'education level', 
-'occupation', 'wage income', 'number of weeks worked', 'gender'.
-
-```R
-> data(svcensus)
-> head(svcensus)
-       age     educ occ wageinc wkswrkd gender
-1 50.30082 zzzOther 102   75000      52 female
-2 41.10139 zzzOther 101   12300      20   male
-3 24.67374 zzzOther 102   15400      52 female
-4 50.19951 zzzOther 100       0      52   male
-5 51.18112 zzzOther 100     160       1 female
-6 57.70413 zzzOther 100       0       0   male
+install.packages("remotes")  # Run once if needed.
+remotes::install_local(".", dependencies = TRUE, upgrade = "never",
+                       build_vignettes = TRUE)
 ```
 
-We will use only a few features to keep things simple. The *Quarto Book* 
-provides a more extensive analysis of examples shown below.
+If the dependencies are already installed, run `R CMD build .` followed by
+`R CMD INSTALL dsld_2.0.0.tar.gz` from the repository root. Building first also
+prepares the vignettes. Optional methods use `bnlearn`, `Matching`, `randomForest`,
+`cccp`, or `CVXR`; their functions explain which package is needed if it is absent.
 
-## Part One: Adjustment for Confounders 
-
-We want to estimate the impact of a sensitive variable [S] 
-on an outcome variable [Y], while accounting for confounders [C]. Let's 
-call such analysis "confounder adjustment."
-
-### Estimation Example
-
-We are investigating a possible gender pay gap between men and women. 
-Here, [Y] is wage and [S] is gender. We will treat age as a confounder [C], 
-using a linear model. For simplicity, no other confounders (such as occupation) 
-or any other predictors [X] are included in this example. 
-
-**No interactions**
+After installation:
 
 ```r
-> data(svcensus)
-> svcensus <- svcensus[,c(1,4,6)]      # subset columns: age, wage, gender
-> z <- dsldLinear(svcensus,'wageinc','gender', interactions = FALSE)
-> summary(z)                              # show coefficients of linear model
-
-$`Summary Coefficients`
-    Covariate   Estimate StandardError PValue
-1 (Intercept) 31079.9174    1378.08158      0
-2         age   489.5728      30.26461      0
-3  gendermale 13098.2091     790.44515      0
-
-$`Sensitive Factor Level Comparisons`
-         Factors Compared Estimates Standard Errors P-Value
-Estimate    male - female  13098.21        790.4451       0
-```
-Our linear model can be written as: 
-
-> E(W) = $\beta_0$ + $\beta_1$ A + $\beta_2$ M
-
-Consider the case without any interaction: Here *W* indicates wage 
-income, *A* is age and *M* denotes an indicator variable, with M = 1 for men and 
-M = 0 for women.
-
-Where W is wage income, A is age, and M is male indicator (M = 1 for men, M = 0 for women).
-
-$\beta_2$ represents the gender wage gap at any age. The linear model shows men earn 
-$13,000 more than women across *all* ages. However, the wage gap might also vary by age. 
-We test for such interactions by fitting separate models for men and women, for example comparing ages 36 and 43:
-
-**Interactions**
-```R
-newData <- data.frame(age=c(36,43))
-z <- dsldLinear(svcensus,'wageinc','gender',interactions=TRUE, newData)
-summary(z)
-
-$female
-    Covariate   Estimate StandardError PValue
-1 (Intercept) 30551.4302    2123.44361      0
-2         age   502.9624      52.07742      0
-
-$male
-    Covariate  Estimate StandardError PValue
-1 (Intercept) 44313.159    1484.82216      0
-2         age   486.161      36.02116      0
-
-$`Sensitive Factor Level Comparisons`
-  Factors Compared New Data Row Estimates Standard Errors
-1    female - male            1 -13156.88        710.9696
-2    female - male            2 -13039.27        710.7782
+library(dsld)
+vignette("Quick_Start", package = "dsld")
+vignette("Function_List", package = "dsld")
 ```
 
-The gender pay gap is -$13,157 at age 36 and -$13,039 at age 43, differing by only $118. 
-This suggests minimal age-gender interaction. We only focused on age as the confounder, 
-but other variables like occupation could be included depending on the analysis goals.
+See the [Python installation guide](inst/README.md) to use the same R
+implementations from Python.
 
-## Part Two: Discovering/Mitigating Bias in Machine Learning
+## Two kinds of analysis
 
-We are predicting [Y] from a feature set [X] and a sensitive variable [S]. 
-We want to minimize the effect of [S], along with any proxies [O] in [X] that may 
-be correlated with [S]. The inherent trade-off of increasing fairness (minimizing [S] and [O]) 
-is reduced utility. The package provides wrappers for several functions. 
+DSLD distinguishes between estimating group differences and building predictive
+models that limit the influence of sensitive attributes.
 
-### Prediction Example
+| | Statistical analysis | Fair machine learning |
+| --- | --- | --- |
+| Main question | How does an outcome differ between groups after adjustment? | How can predictions limit the influence of sensitive attributes and their proxies? |
+| Sensitive attributes | Included to estimate group differences | Excluded or constrained, depending on the method |
+| Other variables | Adjust for selected confounders | Control the influence of possible proxies |
+| Main outputs | Estimates, standard errors, and group comparisons | Predictions, prediction error, and group correlations |
 
-**Goal**: Predict wage income while minimizing gender bias by limiting the 
-impact of occupation as a proxy variable. 
+We use **Y** for the outcome, **S** for a sensitive attribute, **C** for
+confounders, and **X** for other predictors. A statistical association after
+adjustment depends on the variables and model chosen; it does not by itself
+establish a causal explanation.
 
-**Setup**: 
-- **Outcome [Y]**: Wage income
-- **Sensitive Variable [S]**: Gender  
-- **Proxy Variable [O]**: Occupation (deweighted to 0.2)
-- **Method**: Fair K-Nearest Neighbors using `dsldQeFairKNN()`
+## Part one: adjustment for confounders
 
-<table border="1">
+The bundled `svcensus` dataset records age, education, occupation, wage income,
+weeks worked, and gender for workers in engineering occupations. We start with
+age, wage income, and gender to keep the example focused.
 
-   <tr>
-   <th>Fairness/Utility Tradeoff</th>
-   <th>Fairness</th>
-   <th>Accuracy</th>
-   </tr>
+```r
+data(svcensus, package = "dsld")
+wages <- svcensus[, c("age", "wageinc", "gender")]
+head(wages)
 
-   <tr>
-   <td>K-Nearest Neighbors</td>
-   <td>0.1943313</td>
-   <td>25452.08</td>
-   </tr>
+wage_model <- dsldLinear(wages, "wageinc", "gender", interactions = FALSE)
+summary(wage_model)
+```
 
-   <tr>
-   <td>Fair K-NN (via EDFFair)</td>
-   <td>0.0814919</td>
-   <td>26291.38</td>
-   </tr>
-</table>
+Without interactions, the model estimates a common age slope and a constant
+gender difference in expected wage income. `summary()` reports the coefficients,
+the adjusted group comparison, and its standard error. `useSandwich = TRUE`
+requests a sandwich covariance estimate.
 
-The base K-NN model shows 0.194 correlation between predicted wage and gender, with $25,452 prediction error. Using `dsldQeFairKNN`, the correlation drops to 0.081, but test error increases by $839. This shows the fairness-utility trade-off. Users can test parameter combinations to find their optimal balance. The `dsldFairUtils` function facilitates this search.
+Allowing interactions fits a separate model for each group. We can then compare
+predicted wages at specific ages:
 
-## Function List
+```r
+comparison_points <- data.frame(age = c(36, 43))
+interaction_model <- dsldLinear(
+  wages, "wageinc", "gender",
+  interactions = TRUE, sComparisonPts = comparison_points
+)
+summary(interaction_model)
+predict(interaction_model, comparison_points)
+```
 
-1. Graphical Functions
+`dsldLogit()` provides analogous comparisons for a binary outcome; specify its
+positive label with `yesYVal`. `dsldML()` uses a selected qeML method for
+nonparametric group comparisons. Both accept user-supplied comparison points.
 
-<table border="1">
-   <tr>
-   <th>Function</th>
-   <th>Description</th>
-   <th>Use Case</th>
-   </tr>
-   <tr>
-   <td><code>dsldFreqPCoord</code></td>
-   <td>Frequency-based parallel coordinates</td>
-   <td>Visualizing multivariate relationships</td>
-   </tr>
-   <tr>
-   <td><code>dsldScatterPlot3D</code></td>
-   <td>3D scatter plots with color coding</td>
-   <td>Exploring 3D data relationships</td>
-   </tr>
-   <tr>
-   <td><code>dsldConditDisparity</code></td>
-   <td>Conditional disparity plots</td>
-   <td>Detecting Simpson's Paradox</td>
-   </tr>
-   <tr>
-   <td><code>dsldDensityByS</code></td>
-   <td>Density plots by sensitive variable</td>
-   <td>Comparing distributions across groups</td>
-   </tr>
-   <tr>
-   <td><code>dsldConfounders</code></td>
-   <td>Confounder analysis</td>
-   <td>Identifying confounding variables</td>
-   </tr>
-   <tr>
-   <td><code>dsldIamb</code></td>
-   <td>Constraint-based structure learning algorithms</td>
-   <td>Fits a causal model to data</td>
-   </tr>
-</table>
+## Part two: fairness in prediction
 
-2. Analytical Functions
+Suppose we want to predict wage income while reducing the influence of gender
+and occupation as a possible proxy. The EDF methods remove sensitive columns
+from the predictors and deweight selected remaining features.
 
-<table border="1">
-   <tr>
-   <th>Function</th>
-   <th>Description</th>
-   <th>Use Case</th>
-   </tr>
-   <tr>
-   <td><code>dsldLinear</code></td>
-   <td>Linear regression with sensitive group comparisons</td>
-   <td>Regression outcome analysis</td>
-   </tr>
-   <tr>
-   <td><code>dsldLogit</code></td>
-   <td>Logistic regression with sensitive group comparisons</td>
-   <td>Binary outcome analysis</td>
-   </tr>
-   <tr>
-   <td><code>dsldML</code></td>
-   <td>Machine learning with sensitive group comparisons</td>
-   <td>Analysis via non-parametric models (KNN, RF)</td>
-   </tr>
-   <tr>
-   <td><code>dsldTakeALookAround</code></td>
-   <td>Feature set evaluation</td>
-   <td>Assessing prediction fairness</td>
-   </tr>
-   <tr>
-   <td><code>dsldCHunting</code></td>
-   <td>Confounder hunting</td>
-   <td>Finding variables that predict both Y and S</td>
-   </tr>
-   <tr>
-   <td><code>dsldOHunting</code></td>
-   <td>Proxy hunting</td>
-   <td>Finding variables that predict S</td>
-   </tr>
-   <tr>
-   <td><code>dsldMatchedAte</code></td>
-   <td>Causal inference via matching</td>
-   <td>Estimating treatment effects</td>
-   </tr>
-</table>
+Use a reproducible train/test split and evaluate both prediction error and
+association with the sensitive attribute:
 
-3. Fair Machine Learning Functions
+```r
+set.seed(2026)
+model_data <- svcensus[, c("age", "occ", "wageinc", "gender")]
+model_data <- model_data[sample.int(nrow(model_data), 1200), ]
+train_rows <- sample.int(nrow(model_data), 900)
+train_data <- model_data[train_rows, ]
+test_data <- model_data[-train_rows, ]
+test_x <- test_data[, c("age", "occ", "gender")]
 
-<table border="1">
-   <tr>
-   <th>Function</th>
-   <th>Description</th>
-   <th>Package</th>
-   </tr>
-   <tr>
-   <td><code>dsldFairML</code></td>
-   <td>FairML algorithm wrappers</td>
-   <td>FairML</td>
-   </tr>
-   <tr>
-   <td><code>dsldQeFairML</code></td>
-   <td>EDFFair algorithm wrappers</td>
-   <td>EDFFair</td>
-   </tr>
-   <tr>
-   <td><code>dsldFairUtils</code></td>
-   <td>Grid search and parameter optimization for fair ML</td>
-   <td>  </td>
-   </tr>
-</table>
+baseline <- dsldQeFairKNN(train_data, "wageinc", "gender", k = 25)
+fair_model <- dsldQeFairKNN(
+  train_data, "wageinc", "gender", deweightPars = list(occ = 0.2), k = 25
+)
+baseline_predictions <- predict(baseline, test_x)
+fair_predictions <- predict(fair_model, test_x)
 
-**Available Algorithms**:
-- **FairML**: <code>dsldFrrm</code>, <code>dsldFgrrm</code>, <code>dsldZlm</code>, <code>dsldNclm</code>, <code>dsldZlrm</code>
-- **EDFFair**: <code>dsldQeFairKNN</code>, <code>dsldQeFairRf</code>, <code>dsldQeFairRidgeLin</code>, <code>dsldQeFairRidgeLog</code>
+comparison <- data.frame(
+  model = c("KNN", "Deweighted KNN"),
+  test_MAE = c(
+    mean(abs(baseline_predictions$preds - test_data$wageinc)),
+    mean(abs(fair_predictions$preds - test_data$wageinc))
+  )
+)
+comparison
+fair_predictions$correlations
+```
 
-## Authors
+For KNN and random forests, smaller deweights reduce a feature's influence.
+For the ridge variants, larger penalties increase shrinkage. Evaluate the
+resulting tradeoff: deweighting does not guarantee that every error or fairness
+measure improves.
 
-- **Norm Matloff** 
-- **Aditya Mittal** 
-- **Taha Abdullah** 
-- **Arjun Ashok** 
-- **Shubhada Martha** 
-- **Billy Ouattara**
-- **Jonathan Tran** 
-- **Brandon Zarate** 
+Search a small parameter grid using cross-validation:
 
-For issues, contact **Aditya Mittal** at mittalaa@uci.edu
+```r
+set.seed(2026)
+tradeoff <- dsldFairUtils(
+  train_data, "wageinc", "gender", "dsldQeFairKNN",
+  deweightPars = list(occ = c(1, 0.5, 0.2)),
+  k_folds = 3, model_args = list(k = 25)
+)
+tradeoff
+```
+
+### Reading the results
+
+- `trainAcc` and `testAcc` retain their original names but are **errors**:
+  mean absolute error (MAE) for regression and misclassification rate for binary
+  classification. Lower is better. MAE is not a percentage error.
+- `trainCorrs` and prediction `correlations` contain signed correlations between
+  predictions and numeric sensitive attributes or factor-level indicators.
+  For binary classification, they use the probability of `yesYVal` consistently.
+  Compare absolute magnitudes when measuring association; zero correlation is
+  not a general guarantee of fairness or independence.
+- Cross-validation reuses folds across candidates and stratifies binary outcomes.
+  Prediction errors are weighted by held-out sample size. Correlations are
+  averaged over folds where they are defined; constant groups or predictions
+  yield `NA`, rather than a misleading zero.
+- Model fitting requires suitable observed groups and complete, finite data for
+  the fair-ML and matching wrappers. Prediction preprocessing follows the
+  training column order and factor levels. Unseen factor levels need to be
+  resolved before prediction.
+
+## Function guide
+
+| Area | Functions | Purpose |
+| --- | --- | --- |
+| Group comparisons | `dsldLinear`, `dsldLogit`, `dsldML` | Estimate adjusted differences between sensitive groups |
+| Confounders and proxies | `dsldCHunting`, `dsldOHunting`, `dsldTakeALookAround` | Explore variable importance, associations, and predictive feature sets |
+| Matching and discovery | `dsldMatchedATE`, `dsldIamb` | Matching-based treatment effects and conditional-independence structure learning |
+| Group distributions | `dsldFrequencyByS`, `dsldDensityByS`, `dsldConfounders` | Frequency tables and density comparisons |
+| Multivariate graphics | `dsldFreqPCoord`, `dsldScatterPlot3D`, `dsldConditDisparity` | Parallel coordinates, 3D plots, and conditional disparity plots |
+| fairml wrappers | `dsldFrrm`, `dsldFgrrm`, `dsldNclm`, `dsldZlm`, `dsldZlrm` | Models that constrain sensitive-attribute influence |
+| EDF wrappers | `dsldQeFairKNN`, `dsldQeFairRF`, `dsldQeFairRidgeLin`, `dsldQeFairRidgeLog` | Explicit feature deweighting and penalization |
+| Model comparison | `dsldFairUtils` | Cross-validated fairness/utility parameter grids |
+
+The help pages describe individual arguments and return values. For example,
+run `?dsldLinear`, `?dsldQeFairKNN`, or `?dsldFairUtils` in R.
+
+## Authors and support
+
+Norm Matloff, Aditya Mittal, Taha Abdullah, Arjun Ashok, Shubhada Martha,
+Billy Ouattara, Jonathan Tran, and Brandon Zarate.
+
+Report reproducible problems through [GitHub issues](https://github.com/matloff/dsld/issues),
+or contact Aditya Mittal at mittalaa@uci.edu. Include the function call,
+`sessionInfo()`, and a small example that demonstrates the problem.

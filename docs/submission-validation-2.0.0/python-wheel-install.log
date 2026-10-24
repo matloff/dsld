@@ -1,0 +1,8 @@
+WARNING: The directory '/Users/adityamittal/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing /private/tmp/dsld-2.0.0-audit-20261023/dist/dsldpy-2.0.0-py3-none-any.whl
+Installing collected packages: dsldpy
+  Attempting uninstall: dsldpy
+    Found existing installation: dsldPy 2.0.0
+    Uninstalling dsldPy-2.0.0:
+      Successfully uninstalled dsldPy-2.0.0
+Successfully installed dsldpy-2.0.0

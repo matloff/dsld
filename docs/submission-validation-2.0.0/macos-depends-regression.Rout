@@ -1,0 +1,421 @@
+
+R version 4.5.1 (2025-06-13) -- "Great Square Root"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # Deterministic checks of numerical results, public behavior, and edge cases.
+> # Run with Rscript tests/regression.R after installing this checkout.
+> suppressPackageStartupMessages(library(dsld))
+> stopifnot(as.character(packageVersion("dsld")) == "2.0.0")
+> failures <- character()
+> checks <- 0L
+> check <- function(label, code) {
++   checks <<- checks + 1L
++   tryCatch({ force(code); cat("PASS:", label, "\n") }, error = function(error) {
++     failures <<- c(failures, paste(label, conditionMessage(error), sep = ": "))
++     cat("FAIL:", tail(failures, 1L), "\n")
++   })
++ }
+> equal <- function(actual, expected, tolerance = 1e-7) {
++   comparison <- all.equal(unname(actual), unname(expected), tolerance = tolerance,
++                            check.attributes = FALSE)
++   if (!isTRUE(comparison)) stop(paste(comparison, collapse = "; "))
++ }
+> errors <- function(code, pattern = ".") {
++   message <- tryCatch({force(code); NULL}, error = function(error) conditionMessage(error))
++   if (is.null(message) || !grepl(pattern, message)) stop("Expected error matching: ", pattern)
++ }
+> set.seed(910)
+> data <- data.frame(x = rnorm(160), z = rnorm(160),
++                    group = factor(rep(c("a", "b"), 80)))
+> data$y <- 2 + 3 * data$x + 0.5 * data$z + as.integer(data$group == "b") + rnorm(160)
+> binary <- data
+> binary$y <- factor(ifelse(binary$x + 0.15 * binary$z + rnorm(160, sd = .15) > 0, "yes", "no"))
+> predictors <- data[, c("x", "z", "group")]
+> 
+> check("unused fairness namespace is absent", stopifnot(!"fairness" %in% loadedNamespaces()))
+PASS: unused fairness namespace is absent 
+> check("numeric/character conversion preserves single columns", {
++   result <- dsld:::toNumericFactor(data.frame(count = 1:3, label = c("b", "a", "b")))
++   stopifnot(is.double(result$count), is.factor(result$label), nrow(result) == 3L)
++ })
+PASS: numeric/character conversion preserves single columns 
+> check("frequency labels follow table columns", {
++   frame <- data.frame(group = c("g1", "g1", "g1", "g2"),
++                       category = factor(c("b", "a", "a", "a"), levels = c("a", "b", "unused")))
++   result <- dsldFrequencyByS(frame, "category", "group")
++   stopifnot(identical(names(result), paste("Frequency of", levels(frame$category))))
++   equal(result[, 1L], c(2/3, 1))
++ })
+PASS: frequency labels follow table columns 
+> check("correlation indicators preserve missing rows", {
++   frame <- data.frame(group = factor(c("a", NA, "b", "a")))
++   result <- dsld:::s_correlations(frame, "group", c(1, 99, 4, 2))
++   equal(result$correlation[result$feature == "group==a"],
++         cor(c(1, 4, 2), c(1, 0, 1)))
++ })
+PASS: correlation indicators preserve missing rows 
+> check("constant groups and predictions yield NA correlations", {
++   result <- dsld:::s_correlations(data, "group", rep(1, nrow(data)))
++   stopifnot(all(is.na(result$correlation)))
++ })
+PASS: constant groups and predictions yield NA correlations 
+> check("single-row sensitive correlations stay a two-column table", {
++   result <- dsld:::s_correlations(data[1, , drop = FALSE], "group", 0.5)
++   stopifnot(nrow(result) == 2L, all(is.na(result$correlation)))
++ })
+PASS: single-row sensitive correlations stay a two-column table 
+> check("linear predictions and SE match stats::predict", {
++   fitted <- dsldLinear(data, "y", "group")
++   actual <- predict(fitted, predictors[c(3, 1, 2)])
++   reference <- predict(lm(y ~ ., data), predictors, se.fit = TRUE)
++   equal(actual$prediction, reference$fit)
++   equal(actual$standardError, reference$se.fit)
++ })
+PASS: linear predictions and SE match stats::predict 
+> check("linear SE respects dotted names and sum contrasts", {
++   frame <- data; names(frame)[1] <- "x.value"
++   contrasts(frame$group) <- contr.sum(2)
++   fitted <- dsldLinear(frame, "y", "group", useSandwich = TRUE)
++   new_data <- frame[1:4, c("group", "z", "x.value")]
++   reference_model <- lm(y ~ ., frame)
++   design <- model.matrix(delete.response(terms(reference_model)), new_data,
++                          contrasts.arg = reference_model$contrasts)
++   reference_se <- sqrt(diag(design %*% sandwich::sandwich(reference_model) %*% t(design)))
++   equal(predict(fitted, new_data)$standardError, reference_se)
++ })
+PASS: linear SE respects dotted names and sum contrasts 
+> check("four-group contrasts have correct labels and values", {
++   frame <- data; frame$group <- factor(rep(letters[1:4], 40))
++   frame$group_proxy <- frame$x + rnorm(nrow(frame))
++   fitted <- dsldLinear(frame, "y", "group")
++   comparisons <- summary(fitted)[["Sensitive Factor Level Comparisons"]]
++   reference <- lm(y ~ ., frame)
++   points <- frame[rep(1L, 4L), ]; points$group <- factor(letters[1:4])
++   means <- predict(reference, points)
++   pairs <- combn(1:4, 2L)
++   equal(comparisons$Estimates, means[pairs[1L, ]] - means[pairs[2L, ]])
++   stopifnot(identical(comparisons[[1L]], paste(letters[pairs[1L, ]], letters[pairs[2L, ]], sep = " - ")))
++ })
+PASS: four-group contrasts have correct labels and values 
+> check("linear group-specific comparisons match separate fits", {
++   points <- data.frame(x = c(-.2, .5), z = c(.3, -.4))
++   fitted <- dsldLinear(data, "y", "group", interactions = TRUE, sComparisonPts = points)
++   result <- summary(fitted)[["Sensitive Factor Level Comparisons"]]
++   means <- lapply(split(data, data$group), function(frame) predict(lm(y ~ x + z, frame), points))
++   equal(result$Estimates, means$a - means$b)
++ })
+PASS: linear group-specific comparisons match separate fits 
+> check("logit predictions and group contrasts match glm", {
++   fitted <- dsldLogit(binary, "y", "group", yesYVal = "yes")
++   reference <- glm(I(y == "yes") ~ x + z + group, binary, family = binomial())
++   equal(predict(fitted, predictors)$prediction, predict(reference, predictors, type = "response"))
++   equal(summary(fitted)[["Sensitive Factor Level Comparisons"]]$Estimates, coef(reference)["groupb"])
++ })
+PASS: logit predictions and group contrasts match glm 
+Warning messages:
+1: glm.fit: fitted probabilities numerically 0 or 1 occurred 
+2: glm.fit: fitted probabilities numerically 0 or 1 occurred 
+> check("logit interactions produce probability differences", {
++   points <- data.frame(x = c(-.2, .5), z = c(.3, -.4))
++   fitted <- dsldLogit(binary, "y", "group", points, TRUE, "yes")
++   comparisons <- summary(fitted)[["Sensitive Factor Level Comparisons"]]
++   equal(comparisons[[5L]], comparisons[[3L]] - comparisons[[4L]])
++ })
+PASS: logit interactions produce probability differences 
+Warning message:
+glm.fit: fitted probabilities numerically 0 or 1 occurred 
+> check("dsldML accepts supplied comparison data", {
++   result <- dsldML(data, "y", "group", "qeLin", data[1:3, c("x", "z")], opts = list(holdout = NULL))
++   stopifnot(nrow(result$comparisons) == 3L, all(c("a", "b") %in% names(result$comparisons)))
++ })
+PASS: dsldML accepts supplied comparison data 
+> check("ridge linear matches penalized least squares with unpenalized intercept", {
++   fitted <- dsldQeFairRidgeLin(data, "y", "group", list(x = 9, z = 2))
++   design <- cbind(1, scale(data[c("x", "z")]))
++   coefficients <- solve(crossprod(design) + diag(c(0, 9, 2)), crossprod(design, data$y))
++   equal(predict(fitted, predictors)$preds, as.vector(design %*% coefficients))
++ })
+PASS: ridge linear matches penalized least squares with unpenalized intercept 
+> check("default ridge calls accept omitted deweights", {
++   fitted <- dsldQeFairRidgeLin(data, "y", "group")
++   equal(predict(fitted, predictors)$preds, predict(lm(y ~ x + z, data), predictors))
++   logistic <- dsldQeFairRidgeLog(binary, "y", "group", yesYVal = "yes")
++   probabilities <- dsld:::.dsld_positive_probability(predict(logistic, predictors)$preds)
++   stopifnot(length(probabilities) == nrow(binary), all(is.finite(probabilities)),
++             all(probabilities >= 0 & probabilities <= 1))
++ })
+PASS: default ridge calls accept omitted deweights 
+Warning message:
+glm.fit: fitted probabilities numerically 0 or 1 occurred 
+> check("fairml prediction retains ordered factors and custom contrasts", {
++   frame <- data
++   frame$category <- ordered(rep(c("low", "middle", "high", "middle"), 40),
++                              levels = c("low", "middle", "high"))
++   fitted <- dsldFrrm(frame, "y", "group", .8)
++   equal(as.vector(predict(fitted, frame)$preds), as.vector(fitted$trainPreds))
++   frame$category <- factor(frame$category, ordered = FALSE)
++   contrasts(frame$category) <- contr.sum(3)
++   fitted <- dsldFrrm(frame, "y", "group", .8)
++   new_data <- frame
++   new_data$category <- as.character(new_data$category)
++   equal(as.vector(predict(fitted, new_data)$preds), as.vector(fitted$trainPreds))
++ })
+PASS: fairml prediction retains ordered factors and custom contrasts 
+> check("EDF predictions tolerate column reordering and constant features", {
++   frame <- data; frame$constant <- 4
++   fitted <- dsldQeFairKNN(frame, "y", "group", list(x = .4), k = 5)
++   first <- predict(fitted, frame[, c("x", "z", "constant", "group")])$preds
++   second <- predict(fitted, frame[, c("group", "constant", "z", "x")])$preds
++   equal(first, second); stopifnot(all(is.finite(first)))
++ })
+constant 
+       3 
+[1] "deleting"
+PASS: EDF predictions tolerate column reordering and constant features 
+Warning message:
+In regtools::kNN(xm, yToAvg, newx = NULL, k, scaleX = FALSE, classif = classif,  :
+  X data has constant columns:
+> check("KNN scaleX=FALSE agrees with unscaled qeKNN", {
++   frame <- data; frame$x <- frame$x * 100
++   fitted <- dsldQeFairKNN(frame, "y", "group", k = 5, scaleX = FALSE)
++   reference <- qeML::qeKNN(frame[c("x", "z", "y")], "y", k = 5, scaleX = FALSE, holdout = NULL)
++   equal(predict(fitted, frame[c("x", "z", "group")])$preds,
++         predict(reference, frame[c("x", "z")]))
++ })
+PASS: KNN scaleX=FALSE agrees with unscaled qeKNN 
+> for (model_name in c("dsldQeFairKNN", "dsldQeFairRF", "dsldQeFairRidgeLog")) {
++   check(paste(model_name, "positive-class coding and correlations"), {
++     arguments <- list(data = binary, yName = "y", sNames = "group", yesYVal = "no", deweightPars = list(x = .5))
++     if (model_name == "dsldQeFairRF") arguments$nTree <- 40
++     if (model_name == "dsldQeFairKNN") arguments$k <- 5
++     fitted <- do.call(model_name, arguments)
++     result <- predict(fitted, predictors)
++     probability <- dsld:::.dsld_positive_probability(result$preds)
++     equal(fitted$trainAcc, mean((binary$y == "no") != (probability > .5)))
++     equal(fitted$trainCorrs$correlation, result$correlations$correlation)
++     stopifnot(all(as.character(result$preds$predClasses) %in% c("yes", "no")))
++   })
++ }
+PASS: dsldQeFairKNN positive-class coding and correlations 
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+PASS: dsldQeFairRF positive-class coding and correlations 
+PASS: dsldQeFairRidgeLog positive-class coding and correlations 
+Warning message:
+glm.fit: fitted probabilities numerically 0 or 1 occurred 
+> check("ridge logistic supports positive label zero", {
++   frame <- binary; frame$y <- factor(as.integer(frame$y == "yes"))
++   fitted <- dsldQeFairRidgeLog(frame, "y", "group", list(x = .5), yesYVal = "0")
++   stopifnot(isTRUE(fitted$classif), is.list(predict(fitted, predictors)$preds))
++ })
+PASS: ridge logistic supports positive label zero 
+Warning message:
+glm.fit: fitted probabilities numerically 0 or 1 occurred 
+> check("RF cross-validation measures error instead of flattening both probabilities", {
++   set.seed(515)
++   result <- dsldFairUtils(binary, "y", "group", "dsldQeFairRF", yesYVal = "yes",
++     deweightPars = list(x = c(.5, 1)), k_folds = 3, model_args = list(nTree = 40))
++   stopifnot(all(result$testAcc < .25), nrow(result) == 2L)
++ })
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+PASS: RF cross-validation measures error instead of flattening both probabilities 
+> check("CV rejects unsafe overrides and invalid grids", {
++   errors(dsldFairUtils(data, "y", "group", "dsldQeFairKNN", deweightPars = list(x = .5),
++                        model_args = list(data = data)), "cannot override")
++   errors(dsldFairUtils(data, "y", "group", "dsldFrrm", unfairness = 2), "unfairness")
++ })
+PASS: CV rejects unsafe overrides and invalid grids 
+> for (model_name in c("dsldFrrm", "dsldFgrrm", "dsldNclm", "dsldZlm", "dsldZlrm")) {
++   optional <- if (model_name == "dsldNclm") "cccp" else if (model_name %in% c("dsldZlm", "dsldZlrm")) "CVXR" else NULL
++   if (!is.null(optional) && !requireNamespace(optional, quietly = TRUE)) {
++     cat("SKIP:", model_name, "requires", optional, "\n"); next
++   }
++   check(paste(model_name, "training and prediction"), {
++     classification <- model_name %in% c("dsldFgrrm", "dsldZlrm")
++     set.seed(112)
++     fair_binary <- binary
++     fair_binary$y <- factor(ifelse(runif(nrow(data)) < plogis(.5 * data$x), "yes", "no"))
++     arguments <- list(data = if (classification) fair_binary else data,
++                        yName = "y", sName = "group", unfairness = .8)
++     if (classification) arguments$yesYVal <- "yes"
++     fitted <- do.call(model_name, arguments)
++     prediction <- predict(fitted, predictors[c("group", "z", "x")])
++     equal(as.vector(prediction$preds), as.vector(fitted$trainPreds))
++   })
++ }
+PASS: dsldFrrm training and prediction 
+PASS: dsldFgrrm training and prediction 
+SKIP: dsldNclm requires cccp 
+PASS: dsldZlm training and prediction 
+PASS: dsldZlrm training and prediction 
+> if (requireNamespace("Matching", quietly = TRUE)) {
++   check("matching changes sign when the positive outcome is reversed", {
++     set.seed(721); first <- dsldMatchedATE(binary, "y", "group", "b", "yes")
++     set.seed(721); second <- dsldMatchedATE(binary, "y", "group", "b", "no")
++     equal(first$est, -second$est)
++   })
++ }
+PASS: matching changes sign when the positive outcome is reversed 
+> check("one-predictor EDF models", {
++   frame <- data[c("x", "group", "y")]
++   for (model_name in c("dsldQeFairKNN", "dsldQeFairRF", "dsldQeFairRidgeLin")) {
++     arguments <- list(data = frame, yName = "y", sNames = "group", deweightPars = list(x = .5))
++     if (model_name == "dsldQeFairRF") arguments$nTree <- 20
++     if (model_name == "dsldQeFairKNN") arguments$k <- 5
++     fitted <- do.call(model_name, arguments)
++     stopifnot(length(predict(fitted, frame[c("x", "group")])$preds) == nrow(frame))
++   }
++ })
+Warning: Split select weights used. Variable importance measures are only comparable for variables with equal weights.
+PASS: one-predictor EDF models 
+> 
+> check("KNN weights change distances once, on training and prediction", {
++   frame <- data[c("x", "z", "group", "y")]
++   fitted <- dsldQeFairKNN(frame, "y", "group", list(x = .2), k = 7, scaleX = FALSE)
++   reference_data <- frame[c("x", "z", "y")]; reference_data$x <- reference_data$x * .2
++   reference <- qeML::qeKNN(reference_data, "y", k = 7, scaleX = FALSE, holdout = NULL)
++   equal(as.vector(predict(fitted, predictors)$preds),
++         as.vector(predict(reference, reference_data[c("x", "z")])))
++ })
+PASS: KNN weights change distances once, on training and prediction 
+> check("invalid weights, missing columns, and unseen levels fail clearly", {
++   errors(dsldQeFairKNN(data, "y", "group", list(x = -.1)), "nonnegative")
++   errors(dsldQeFairKNN(data, "y", "group", list(group = .1)), "predictor")
++   frame <- data; frame$category <- factor(rep(c("u", "v"), 80))
++   fitted <- dsldQeFairKNN(frame, "y", "group", k = 5)
++   errors(predict(fitted, frame["x"]), "Missing column")
++   frame$category <- "unseen"
++   errors(predict(fitted, frame), "complete, finite")
++ })
+PASS: invalid weights, missing columns, and unseen levels fail clearly 
+> check("CV stratification covers each row exactly once", {
++   labels <- factor(c(rep("rare", 2), rep("common", 21)))
++   folds <- dsld:::make_folds(23, 5, labels)
++   stopifnot(identical(sort(unlist(folds, use.names = FALSE)), 1:23),
++             all(lengths(folds) > 0),
++             all(vapply(folds, function(test) length(unique(labels[-test])) == 2L, logical(1))))
++ })
+PASS: CV stratification covers each row exactly once 
+> check("CV preserves undefined sensitive-level correlations", {
++   frame <- data
++   frame$group <- factor(frame$group, levels = c("a", "b", "absent"))
++   result <- dsldFairUtils(frame, "y", "group", "dsldQeFairRidgeLin",
++     deweightPars = list(x = c(0, 2)), k_folds = 3)
++   stopifnot(all(is.na(result[["group==absent"]])), all(is.finite(result$testAcc)))
++ })
+PASS: CV preserves undefined sensitive-level correlations 
+> check("feature-set comparisons reuse the sampled holdout", {
++   set.seed(919)
++   test_rows <- sample.int(nrow(data), 31)
++   reference <- lm(y ~ x, data[-test_rows, ])
++   expected <- mean(abs(predict(reference, data[test_rows, ]) - data$y[test_rows]))
++   set.seed(919)
++   result <- dsldTakeALookAround(data, "y", "group", maxFeatureSetSize = 1, holdout = 31)
++   equal(result$a[result[["Feature Names"]] == "x"], expected)
++   fitted <- dsldTakeALookAround(data, "y", "group", maxFeatureSetSize = 1, holdout = NULL)
++   equal(fitted$a[fitted[["Feature Names"]] == "x"], mean(abs(residuals(lm(y ~ x, data)))))
++ })
+PASS: feature-set comparisons reuse the sampled holdout 
+> check("density slider includes exactly all groups at every bandwidth", {
++   frame <- data; frame$group <- as.character(frame$group)
++   figure <- plotly::plotly_build(dsldDensityByS(frame, "x", "group"))
++   steps <- figure$x$layout$sliders[[1L]]$steps
++   stopifnot(length(figure$x$data) == 32L, length(steps) == 16L)
++   for (index in seq_along(steps)) {
++     visibility <- steps[[index]]$args[[2L]]
++     stopifnot(length(visibility) == 32L,
++               identical(which(visibility), (index - 1L) * 2L + 1:2))
++   }
++ })
+PASS: density slider includes exactly all groups at every bandwidth 
+> check("density plots include separated character groups", {
++   frame <- data; frame$group <- as.character(frame$group)
++   frame$x[frame$group == "b"] <- frame$x[frame$group == "b"] + 100
++   output <- tempfile(fileext = ".pdf")
++   grDevices::pdf(output)
++   tryCatch({
++     dsldDensityByS(frame, "x", "group", graphType = "plot", fill = TRUE)
++     limits <- par("usr")
++     stopifnot(limits[1L] < min(frame$x), limits[2L] > max(frame$x))
++   }, finally = {grDevices::dev.off(); unlink(output)})
++ })
+PASS: density plots include separated character groups 
+> check("scatter ranges filter rows and maxPoints never pads data", {
++   frame <- data; frame$group <- as.character(frame$group)
++   selected <- dsld:::limitRange(frame, c("x", "z", "y"), xlim = c(-1, 0), ylim = c(0, 1))
++   stopifnot(all(selected$x >= -1 & selected$x <= 0 & selected$z >= 0 & selected$z <= 1))
++   figure <- plotly::plotly_build(dsldScatterPlot3D(frame, c("x", "z", "y"), "group",
++                                                  maxPoints = 1000))
++   stopifnot(sum(vapply(figure$x$data, function(trace) length(trace$x), integer(1))) == nrow(frame))
++ })
+PASS: scatter ranges filter rows and maxPoints never pads data 
+> check("conditional plots cover all groups and reject nonbinary factors", {
++   frame <- data; frame$x[frame$group == "b"] <- frame$x[frame$group == "b"] + 20
++   output <- tempfile(fileext = ".pdf")
++   grDevices::pdf(output)
++   tryCatch({
++     dsldConditDisparity(frame, "y", "group", "x", qeFtn = qeML::qeLin, minS = 20, useLoess = FALSE)
++     limits <- par("usr"); stopifnot(limits[2L] > max(frame$x))
++     errors(dsldConditDisparity(frame, "y", "group", "x", minS = 1000), "No groups")
++     frame$y <- factor(rep(letters[1:4], 40))
++     errors(dsldConditDisparity(frame, "y", "group", "x"), "2-level factor")
++   }, finally = {grDevices::dev.off(); unlink(output)})
++ })
+PASS: conditional plots cover all groups and reject nonbinary factors 
+> check("parallel coordinates handle unused factor levels", {
++   frame <- data; frame$category <- factor(rep(c("u", "v"), 80), levels = c("u", "v", "unused"))
++   diagnostics <- character()
++   figure <- withCallingHandlers(
++     dsldFreqPCoord(frame, 10, "group", method = "randsamp", k = 5, klm = 10),
++     warning = function(warning) {
++       diagnostics <<- c(diagnostics, conditionMessage(warning))
++       invokeRestart("muffleWarning")
++     })
++   stopifnot(inherits(figure, "ggplot"), any(grepl("constant within", diagnostics)),
++             setequal(as.character(unique(figure$data$variable)), c("x", "z", "y")))
++   errors(dsldFreqPCoord(frame[c("category", "group")], 10, "group", k = 5),
++          "varies within every plotted group")
++ })
+PASS: parallel coordinates handle unused factor levels 
+Warning message:
+Omitting parallel-coordinate axes constant within a plotted group: category.u, category.v 
+> if (requireNamespace("Matching", quietly = TRUE)) {
++   check("both propensity backends and numeric binary coding", {
++     for (backend in c("glm", "knn")) {
++       set.seed(312)
++       model <- dsldMatchedATE(data, "y", "group", "b", propensFtn = backend, k = 9)
++       stopifnot(is.finite(model$est))
++     }
++     frame <- binary; frame$y <- as.integer(frame$y == "yes")
++     set.seed(810); first <- dsldMatchedATE(frame, "y", "group", "b", yesYVal = 1)
++     set.seed(810); second <- dsldMatchedATE(frame, "y", "group", "b", yesYVal = 0)
++     equal(first$est, -second$est)
++   })
++ }
+PASS: both propensity backends and numeric binary coding 
+> 
+> cat("\nCompleted", checks, "checks;", length(failures), "failures.\n")
+
+Completed 41 checks; 0 failures.
+> if (length(failures)) stop(paste(failures, collapse = "\n"), call. = FALSE)
+> 
+> proc.time()
+   user  system elapsed 
+  2.379   0.218   2.718 

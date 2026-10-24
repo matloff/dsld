@@ -2,7 +2,7 @@
 \alias{dsldFairUtils}
 \title{dsldFairUtils}
 
-\description{ 
+\description{
 Exploration of the Fairness-Utility Tradeoff.  Finds predictive accuracy
 and correlation between S and predicted Y.
 }
@@ -14,7 +14,7 @@ dsldFairUtils(data, yName, sName, dsldFTNName, unfairness = NULL,
 
 \arguments{
     \item{data}{
-        Data frame. 
+        Data frame.
     }
     \item{yName}{
         Name of the response variable Y column. Y must be numeric or
@@ -24,10 +24,10 @@ dsldFairUtils(data, yName, sName, dsldFTNName, unfairness = NULL,
         Name of the sensitive attribute S column.
     }
     \item{dsldFTNName}{
-        Quoted name of one of the \pkg{fairML} or EDF functions.   
+        Quoted name of one of the \pkg{fairml} or EDF functions.
     }
     \item{unfairness}{
-        Vector of unfairness values. Nonnull for the \pkg{fairML} functions.
+        Vector of unfairness values. Nonnull for the \pkg{fairml} functions.
     }
     \item{deweightPars}{
         List of deweightPars grid. Nonnull for the EDF functions.
@@ -36,13 +36,16 @@ dsldFairUtils(data, yName, sName, dsldFTNName, unfairness = NULL,
         Y value to be treated as Y = 1 for binary Y.
     }
     \item{k_folds}{
-        Number of folds to use in $k$-fold cross-validation. 
-        The final result is reported as the average across all folds.
+        Number of folds to use in $k$-fold cross-validation.
+        Binary response folds are stratified. Prediction errors are weighted by
+        held-out sample size. Each correlation is averaged over folds where it
+        is defined; an entirely undefined correlation is \code{NA}.
     }
-  
+
     \item{model_args}{
-      A named list of additional arguments passed directly to \code{dsldFtnName}. 
-      For example, \code{model_args = list(k = 25)}.
+      A named list of additional arguments passed directly to \code{dsldFTNName}.
+      For example, \code{model_args = list(k = 25)}. This list cannot
+      override the data, column names, positive class, or grid parameters.
     }
 }
 
@@ -50,25 +53,27 @@ dsldFairUtils(data, yName, sName, dsldFTNName, unfairness = NULL,
     A.Mittal, N. Matloff
 }
 
-\examples{  
+\examples{
 
 \donttest{
 data(svcensus)
+set.seed(2026)
+svcensus <- svcensus[sample.int(nrow(svcensus), 1000), ]
 
-## regression examples shown --- also works for classification 
-dsldFairUtils(svcensus, 
+## regression examples shown --- also works for classification
+dsldFairUtils(svcensus,
               'wageinc',
-              'gender', 
-              'dsldQeFairKNN', 
-              k_folds = 5, 
-              model_args = list(k = 25), 
+              'gender',
+              'dsldQeFairKNN',
+              k_folds = 5,
+              model_args = list(k = 25),
               deweightPars = list('occ' = c(0.9,0.2), 'educ' = c(0.3, 0.9)))
 
-dsldFairUtils(svcensus, 
-              'wageinc', 
-              'gender', 
-              'dsldFrrm', 
-              k_folds = 5, 
+dsldFairUtils(svcensus,
+              'wageinc',
+              'gender',
+              'dsldFrrm',
+              k_folds = 5,
               unfairness = c(0.9, 0.6, 0.1,0.05, 0.005))
 }
 }
@@ -84,7 +89,10 @@ relation between S and predicted Y (the smaller, the better).
 
 \value{
 
-A data-frame showing accuracy and correlation between predicted Y and S. 
+A data frame with the grid parameters, \code{testAcc}, and signed
+correlations between predictions and S. \code{testAcc} is MAE or
+misclassification rate, so lower values indicate better prediction.
+Correlations use the probability of \code{yesYVal} for binary outcomes.
 
 }
 

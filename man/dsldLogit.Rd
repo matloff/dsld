@@ -22,11 +22,12 @@ dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE,
 
 \arguments{
     \item{data}{
-        Data frame used to train the linear model; will be split according to
+        Data frame used to train the logistic model; will be split according to
         each level of \code{sName} in output if \code{interactions} is TRUE. 
     }
     \item{yName}{
-        Name of the response variable column. 
+        Exact name of the binary response column, including any spaces or
+        punctuation.
     }
     \item{sName}{
         Name of the sensitive attribute column. 
@@ -36,8 +37,8 @@ dsldLogit(data, yName, sName, sComparisonPts = NULL, interactions = FALSE,
     }
     \item{sComparisonPts}{
         If \code{interactions} is TRUE, a
-        a data frame of new cases (minus Y,S) for which P(Y = 1| X) 
-        will be compared between each pairs of S levels. Must be
+        data frame of new cases (minus Y,S) for which P(Y = yesYVal | X)
+        will be compared between each pair of S levels. Must be
         in the same format as the original data. 
     }
     \item{yesYVal}{
@@ -89,15 +90,30 @@ predict(log2, newData)
 
     The \code{dsldLogit} function fits a logistic 
     regression model to the response variable. Interactions are handled
-    as in \code{dsldLinear}.
+    as in \code{dsldLinear}. Without interactions, sensitive-group comparisons
+    are differences in log odds. With separate group fits, comparisons are
+    differences in predicted probabilities at \code{sComparisonPts}; their
+    standard errors combine the two prediction variances assuming independent
+    groups. Predictions always refer to the event selected by \code{yesYVal}.
+    Explicit factor contrasts are retained when all sensitive levels are
+    observed. Unused sensitive levels are dropped before fitting, which resets
+    their contrasts as in \code{droplevels}.
 
 }
 
 
 \value{
 
-The \code{dsldLog} function returns an S3 object of class 'dsldGLM',
-with one component for each level of S. Each component includes
-information about the fitted model.
+An S3 object of class \code{dsldGLM}. Without interactions, the object contains
+one component named for S. With interactions, it contains one component per
+observed level of S. Each component stores its fitted \code{glm} model,
+coefficients, training data, and factor encoding.
+
+\code{coef} and \code{vcov} return lists of coefficient vectors and covariance
+matrices. \code{summary} returns coefficient tables and sensitive-group
+comparisons. \code{predict} returns a data frame with \code{row},
+\code{prediction} (a probability), and \code{standardError}; separate group
+fits also include \code{level} and return one prediction per group for each new
+row.
 
 }

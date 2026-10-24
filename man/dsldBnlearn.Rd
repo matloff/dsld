@@ -13,7 +13,8 @@ dsldIamb(data)
 
 \arguments{
     \item{data}{
-        Data frame.
+        Data frame with complete, finite observations. Integer columns are
+        converted to numeric and character columns to factors for bnlearn.
     }
 }
 
@@ -35,12 +36,13 @@ discovery, i.e. fits a causal model to \code{data}.
 
 \examples{
    \donttest{
+   if (requireNamespace("bnlearn", quietly = TRUE)) {
    data(svcensus)
-   # iamb does not accept integer data
-   svcensus$wkswrkd <- as.numeric(svcensus$wkswrkd)
-   svcensus$wageinc <- as.numeric(svcensus$wageinc)
+   set.seed(2026)
+   svcensus <- svcensus[sample.int(nrow(svcensus), 1000), ]
    iambOut <- dsldIamb(svcensus)
    plot(iambOut)
+   }
    }
 }
 
