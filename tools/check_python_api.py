@@ -7,6 +7,27 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def stable_ast_dump(node):
+    """Match the compact baseline across Python versions' ast.dump formatting.
+
+    Python 3.13 added show_empty=False; earlier versions print empty list
+    fields. Ignore only empty/optional fields, preserving literal None defaults
+    and the distinction between positional, keyword-only, and variadic args.
+    """
+    if isinstance(node, ast.AST):
+        fields = []
+        for name, value in ast.iter_fields(node):
+            if isinstance(value, list) and not value:
+                continue
+            if value is None and name != "value":
+                continue
+            fields.append(f"{name}={stable_ast_dump(value)}")
+        return f"{type(node).__name__}({', '.join(fields)})"
+    if isinstance(node, list):
+        return "[" + ", ".join(stable_ast_dump(value) for value in node) + "]"
+    return repr(node)
+
+
 def signatures(source):
     result = {}
     for node in ast.parse(source).body:
@@ -17,7 +38,7 @@ def signatures(source):
                 arguments.posonlyargs + arguments.args + arguments.kwonlyargs
             ):
                 argument.annotation = None
-            result[node.name] = ast.dump(arguments, include_attributes=False)
+            result[node.name] = stable_ast_dump(arguments)
     return result
 
 

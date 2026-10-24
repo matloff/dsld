@@ -1,0 +1,70 @@
+2026-10-24T06:10:34.5399768Z * using log directory 'D:/a/dsld/dsld/check/dsld.Rcheck'
+2026-10-24T06:10:34.5400597Z * using R version 4.6.1 (2026-06-24 ucrt)
+2026-10-24T06:10:34.5401172Z * using platform: x86_64-w64-mingw32
+2026-10-24T06:10:34.5401662Z * R was compiled by
+2026-10-24T06:10:34.5402071Z     gcc.exe (GCC) 14.3.0
+2026-10-24T06:10:34.5402486Z     GNU Fortran (GCC) 14.3.0
+2026-10-24T06:10:34.5405876Z * running under: Windows Server 2022 x64 (build 26100)
+2026-10-24T06:10:34.5411643Z * using session charset: UTF-8
+2026-10-24T06:10:34.5417325Z * current time: 2026-10-24 06:10:34 UTC
+2026-10-24T06:10:34.6670436Z * using options '--no-manual --as-cran'
+2026-10-24T06:10:34.6696747Z * checking for file 'dsld/DESCRIPTION' ... OK
+2026-10-24T06:10:34.6697356Z * this is package 'dsld' version '2.0.0'
+2026-10-24T06:10:34.6751852Z * checking package namespace information ... OK
+2026-10-24T06:10:37.4837738Z * checking package dependencies ... OK
+2026-10-24T06:10:37.4862262Z * checking if this is a source package ... OK
+2026-10-24T06:10:37.4862950Z * checking if there is a namespace ... OK
+2026-10-24T06:10:38.6721376Z * checking for executable files ... OK
+2026-10-24T06:10:38.6765623Z * checking for hidden files and directories ... OK
+2026-10-24T06:10:38.6799372Z * checking for portable file names ... OK
+2026-10-24T06:10:49.9937098Z * checking whether package 'dsld' can be installed ... [11s] OK
+2026-10-24T06:10:50.2181659Z * checking installed package size ... OK
+2026-10-24T06:10:50.4935418Z * checking package directory ... OK
+2026-10-24T06:10:50.4946594Z * checking for future file timestamps ... OK
+2026-10-24T06:10:50.4958320Z * checking 'build' directory ... OK
+2026-10-24T06:10:51.0695352Z * checking DESCRIPTION meta-information ... OK
+2026-10-24T06:10:51.0696019Z * checking top-level files ... OK
+2026-10-24T06:10:51.0723114Z * checking for left-over files ... OK
+2026-10-24T06:10:51.3834703Z * checking index information ... OK
+2026-10-24T06:10:52.1100721Z * checking package subdirectories ... OK
+2026-10-24T06:10:52.2168232Z * checking code files for non-ASCII characters ... OK
+2026-10-24T06:10:52.3217831Z * checking R files for syntax errors ... OK
+2026-10-24T06:10:55.0717017Z * checking whether the package can be loaded ... OK
+2026-10-24T06:10:57.8763158Z * checking whether the package can be loaded with stated dependencies ... OK
+2026-10-24T06:11:00.5352654Z * checking whether the package can be unloaded cleanly ... OK
+2026-10-24T06:11:02.7923324Z * checking whether the namespace can be loaded with stated dependencies ... OK
+2026-10-24T06:11:05.4862924Z * checking whether the namespace can be unloaded cleanly ... OK
+2026-10-24T06:11:08.5772448Z * checking loading without being on the library search path ... OK
+2026-10-24T06:11:13.9647357Z * checking whether startup messages can be suppressed ... OK
+2026-10-24T06:11:16.4926460Z * checking dependencies in R code ... OK
+2026-10-24T06:11:19.1076134Z * checking S3 generic/method consistency ... OK
+2026-10-24T06:11:21.5240205Z * checking replacement functions ... OK
+2026-10-24T06:11:24.0261477Z * checking foreign function calls ... OK
+2026-10-24T06:11:39.1067074Z * checking R code for possible problems ... [15s] OK
+2026-10-24T06:11:39.7660490Z * checking Rd files ... OK
+2026-10-24T06:11:39.8769943Z * checking Rd metadata ... OK
+2026-10-24T06:11:40.0833190Z * checking Rd line widths ... OK
+2026-10-24T06:11:40.3934414Z * checking Rd cross-references ... OK
+2026-10-24T06:11:43.1099598Z * checking for missing documentation entries ... OK
+2026-10-24T06:11:50.8149430Z * checking for code/documentation mismatches ... OK
+2026-10-24T06:11:53.9406407Z * checking Rd \usage sections ... OK
+2026-10-24T06:11:54.1462383Z * checking Rd contents ... OK
+2026-10-24T06:11:54.3527593Z * checking for unstated dependencies in examples ... OK
+2026-10-24T06:11:55.5421413Z * checking contents of 'data' directory ... OK
+2026-10-24T06:11:55.7487098Z * checking data for non-ASCII characters ... OK
+2026-10-24T06:11:55.9563504Z * checking data for ASCII and uncompressed saves ... OK
+2026-10-24T06:11:56.2963485Z * checking installed files from 'inst/doc' ... OK
+2026-10-24T06:11:56.6331667Z * checking files in 'vignettes' ... OK
+2026-10-24T06:12:07.8992331Z * checking examples ... [10s] OK
+2026-10-24T06:12:27.5522633Z * checking examples with --run-donttest ... [19s] OK
+2026-10-24T06:12:27.6605089Z * checking for unstated dependencies in 'tests' ... OK
+2026-10-24T06:12:27.8131218Z * checking tests ...
+2026-10-24T06:12:32.6439984Z   Running 'regression.R'
+2026-10-24T06:12:32.6552535Z  OK
+2026-10-24T06:12:33.3220973Z * checking for unstated dependencies in vignettes ... OK
+2026-10-24T06:12:33.3785562Z * checking package vignettes ... OK
+2026-10-24T06:12:40.0351550Z * checking re-building of vignette outputs ... OK
+2026-10-24T06:12:40.0353820Z * checking for non-standard things in the check directory ... OK
+2026-10-24T06:12:40.0354708Z * checking for detritus in the temp directory ... OK
+2026-10-24T06:12:40.0370008Z * DONE
+2026-10-24T06:12:40.0370557Z Status: OK

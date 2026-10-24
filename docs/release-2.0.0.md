@@ -60,9 +60,24 @@ current R's `--as-cran` settings. Expected diagnostic warnings from deliberately
 difficult regression fixtures remain visible in test output; they are not
 package-check warnings.
 
-At this local validation checkpoint, Windows and hosted GitHub Actions results
-are not yet available. The workflow will run after the authorized push; its
-results must be reported separately from the completed local checks.
+The source was committed and pushed as
+[`c078abf`](https://github.com/matloff/dsld/commit/c078abf81a1df39b5b7d50e8d31733be1bcec4c1).
+The [first hosted run](https://github.com/matloff/dsld/actions/runs/40069000775)
+passed its macOS and Windows R release checks. It exposed a Python API-checker
+portability issue: Python 3.12's `ast.dump` includes empty fields that the
+Python 3.14-generated baseline omits. The API itself had not changed. The
+checker now emits a stable structural representation, preserving the original
+baseline and detecting changes to defaults, parameter kinds, and variadic
+arguments. It passes locally under Python 3.12, 3.13, and 3.14. The updated
+workflow also uses the current Node 24-based checkout and Python setup actions.
+These changes affect development tooling only; the checked source archive is
+unchanged. Hosted results for the corrected workflow are recorded separately.
+
+GitHub's R check action disables CRAN incoming checks and omits the PDF manual,
+so a hosted `Status: OK` is consistent with the local full checks' archive note.
+The [Windows log](release-validation-2.0.0/github-windows-check.log) and
+[macOS log](release-validation-2.0.0/github-macos-check.log) preserve the complete
+package-check portions of those jobs, including platform and R versions.
 
 ## Exact submission file
 
