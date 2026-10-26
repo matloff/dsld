@@ -11,7 +11,8 @@ R and the R package `dsld` must be installed first.
 ## Installation
 
 This repository contains Python interface version 2.0.0, paired with R package
-version 2.0.0. Install both from the same checkout.
+version 2.0.0. Install the R package from CRAN, then the Python interface from
+this checkout.
 
 1. Install R and confirm that `R RHOME` works in your terminal.
 2. Install the R package using the [R installation instructions](https://github.com/matloff/dsld#installation).
@@ -25,9 +26,7 @@ Python 3.9 or newer is required. For the example notebooks and their execution
 tools, use `python -m pip install './inst[examples]'`.
 
 `pip install dsldPy` installs the version available on PyPI, which may differ
-from this checkout. It does not install R or the R package. DSLD is currently
-archived on CRAN; installing the local R source is required for this maintenance
-version.
+from this checkout. It does not install R or the R package.
 
 ## Data and a first model
 

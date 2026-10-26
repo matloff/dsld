@@ -22,21 +22,15 @@ the methods and works through practical examples.
 
 ## Installation
 
-DSLD is currently [archived on CRAN](https://cran.r-project.org/package=dsld).
-Version 2.0.0 is available from this repository and has not yet been submitted
-to CRAN. Download or clone the repository, then run the following in R with
-the repository root as your working directory:
+DSLD 2.0.0 is available on [CRAN](https://cran.r-project.org/package=dsld).
+Install the current release in R:
 
 ```r
-install.packages("remotes")  # Run once if needed.
-remotes::install_local(".", dependencies = TRUE, upgrade = "never",
-                       build_vignettes = TRUE)
+install.packages("dsld")
 ```
 
-If the dependencies are already installed, run `R CMD build .` followed by
-`R CMD INSTALL dsld_2.0.0.tar.gz` from the repository root. Building first also
-prepares the vignettes. Optional methods use `bnlearn`, `Matching`, `randomForest`,
-`cccp`, or `CVXR`; their functions explain which package is needed if it is absent.
+Optional methods use `bnlearn`, `Matching`, `randomForest`, `cccp`, or `CVXR`;
+their functions explain which package is needed if it is absent.
 
 After installation:
 
